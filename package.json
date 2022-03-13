@@ -1,0 +1,20 @@
+{
+  "name": "effect-discord",
+  "version": "0.0.1",
+  "description": "Effect-TS discord library",
+  "main": "mod.js",
+  "author": "Tim Smart <tim.smart@arisechurch.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "ttsc"
+  },
+  "devDependencies": {
+    "@effect-ts/tracing-plugin": "^0.19.0",
+    "ttypescript": "^1.5.13",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "@effect-ts/core": "^0.58.0",
+    "@effect-ts/system": "^0.55.0"
+  }
+}

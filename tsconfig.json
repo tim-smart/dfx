@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "preserveSymlinks": true,
+    "moduleResolution": "node",
+    "lib": ["es2020"],
+    "sourceMap": true,
+    "strict": true,
+    "baseUrl": ".",
+    "target": "ES2018",
+    "plugins": [
+      {
+        "transform": "@effect-ts/tracing-plugin"
+      }
+    ]
+  },
+  "exclude": ["node_modules"]
+}
