@@ -1,5 +1,5 @@
 {
-  "name": "effect-discord",
+  "name": "dfx",
   "version": "0.0.1",
   "description": "Effect-TS discord library",
   "main": "mod.js",
