@@ -6,16 +6,22 @@
   "author": "Tim Smart <tim.smart@arisechurch.com>",
   "license": "MIT",
   "scripts": {
-    "prepare": "ttsc"
+    "prepare": "ttsc",
+    "types": "discord-api-codegen ./discord-api-docs -l typescript > types.ts && prettier -w types.ts"
   },
   "devDependencies": {
     "@effect-ts/tracing-plugin": "^0.19.0",
+    "@tim-smart/discord-api-docs-parser": "^0.2.1",
+    "@types/ws": "^8.5.3",
     "prettier": "^2.5.1",
     "ttypescript": "^1.5.13",
     "typescript": "^4.6.2"
   },
   "dependencies": {
     "@effect-ts/core": "^0.58.0",
-    "@effect-ts/system": "^0.55.0"
+    "@effect-ts/node": "^0.38.3",
+    "@effect-ts/system": "^0.55.0",
+    "tslib": "^2.3.1",
+    "ws": "^8.5.0"
   }
 }

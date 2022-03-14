@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "downlevelIteration": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -7,16 +8,18 @@
     "experimentalDecorators": true,
     "preserveSymlinks": true,
     "moduleResolution": "node",
+    "module": "CommonJS",
     "lib": ["es2020"],
     "sourceMap": true,
     "strict": true,
     "baseUrl": ".",
     "target": "ES2022",
+    "importHelpers": true,
     "plugins": [
       {
         "transform": "@effect-ts/tracing-plugin"
       }
     ]
   },
-  "exclude": ["node_modules"]
+  "exclude": ["discord-api-docs", "node_modules"]
 }
