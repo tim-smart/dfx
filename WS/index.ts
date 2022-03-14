@@ -1,18 +1,17 @@
 import * as T from "@effect-ts/core/Effect"
 import * as S from "@effect-ts/core/Effect/Experimental/Stream"
-import * as L from "@effect-ts/core/Effect/Layer"
 import * as M from "@effect-ts/core/Effect/Managed"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
-import { literal, pipe } from "@effect-ts/core/Function"
+import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
-import * as O from "@effect-ts/core/Option"
 import type { _A } from "@effect-ts/core/Utils"
 import { HasClock } from "@effect-ts/system/Clock"
 import * as Ws from "ws"
 
 export type WsError =
   | { _tag: "close"; code: number; reason: string }
+  | { _tag: "error"; cause: unknown }
   | { _tag: "write"; cause: unknown }
 
 type WebSocketStream = S.Stream<HasClock, WsError, Ws.RawData>
@@ -39,6 +38,12 @@ const open = (url: string, options?: Ws.ClientOptions) =>
 const recv = (ws: Ws.WebSocket): WebSocketStream =>
   S.async<unknown, WsError, Ws.RawData>((emit) => {
     ws.on("message", (message) => emit.single(message))
+    ws.on("error", (cause) => {
+      emit.fail({
+        _tag: "error",
+        cause,
+      })
+    })
     ws.on("close", (code, reason) =>
       emit.fail({
         _tag: "close",
@@ -77,14 +82,13 @@ const send = (out: Q.Queue<Message>) => (ws: Ws.WebSocket) =>
         }
       })
     ),
-    S.retry<unknown, WsError, number>(SC.forever),
     S.drain
   )
 
 const duplex = (out: Q.Queue<Message>) => (ws: Ws.WebSocket) =>
   pipe(recv(ws), S.mergeTerminateLeft(send(out)(ws)))
 
-const duplexWithRetry = (
+const openDuplexWithQueue = (
   url: string,
   out: Q.Queue<Message>,
   options?: Ws.ClientOptions
@@ -93,17 +97,7 @@ const duplexWithRetry = (
     open(url, options),
     M.map(duplex(out)),
     S.unwrapManaged,
-    S.catchAll((e) =>
-      pipe(
-        e,
-        // 1012 code is for reconnects
-        O.fromPredicate((e) => e._tag === "close" && e.code === 1012),
-        O.fold(
-          () => S.fail(e),
-          () => duplexWithRetry(url, out, options)
-        )
-      )
-    )
+    S.retry(SC.recurWhile((e) => e._tag === "close" && e.code === 1012))
   )
 
 const openDuplex = (
@@ -113,16 +107,16 @@ const openDuplex = (
   pipe(
     Q.makeUnbounded<Message>(),
     T.map((write) => ({
-      read: duplexWithRetry(url, write, options),
+      read: openDuplexWithQueue(url, write, options),
       write,
     }))
   )
 
 const makeWS = T.succeed({
-  _tag: literal("WSService"),
+  _tag: "WSService",
   open: openDuplex,
-})
+} as const)
 
 export interface WS extends _A<typeof makeWS> {}
 export const WS = tag<WS>()
-export const LiveWS = L.fromEffect(WS)(makeWS)
+export const LiveWS = T.toLayer(WS)(makeWS)

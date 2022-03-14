@@ -7,11 +7,12 @@
   "license": "MIT",
   "scripts": {
     "prepare": "ttsc",
-    "types": "discord-api-codegen ./discord-api-docs -l typescript > types.ts && prettier -w types.ts"
+    "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=Response|./DiscordREST/types' 'endpointReturnType=Response' > types.ts && prettier -w types.ts",
+    "clean": "git clean -fxd -e node_modules/ -e .env"
   },
   "devDependencies": {
     "@effect-ts/tracing-plugin": "^0.19.0",
-    "@tim-smart/discord-api-docs-parser": "^0.2.1",
+    "@tim-smart/discord-api-docs-parser": "^0.3.0",
     "@types/ws": "^8.5.3",
     "prettier": "^2.5.1",
     "ttypescript": "^1.5.13",

@@ -24,10 +24,10 @@
   resolved "https://registry.yarnpkg.com/@effect-ts/tracing-plugin/-/tracing-plugin-0.19.0.tgz#50e16de38c09b8acfc18eac86ec52f2ab194c2d7"
   integrity sha512-DQXmEqqjJkK4M48Q4DWyj53zngj1bTtAgvUVDCmqMN7hdPU7QzystRtuPj+sry/+XWYK9Gdyfm4LoiZadMVg1w==
 
-"@tim-smart/discord-api-docs-parser@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@tim-smart/discord-api-docs-parser/-/discord-api-docs-parser-0.2.1.tgz#e100744d04c3bc881f5e774ccf00cf5ca773d4ab"
-  integrity sha512-JLRlX8jYtVJRg/fSX+Ajyl8ywfPkskrERII12IEFcJ02urSYEXQ0f8Mbs/whGmPRaXD45FsK1HBMnosRee6wFw==
+"@tim-smart/discord-api-docs-parser@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@tim-smart/discord-api-docs-parser/-/discord-api-docs-parser-0.3.0.tgz#8add328ce5b9179d9178274ad2b1fb0897a6bb84"
+  integrity sha512-SACUj2hu59yZUQDxgSoyTwmRF2E3eTnS8kEs2/R2fjQdJsdW+74YPfg0mQg6doP9LXdwWDgI8kSuwwCS2vi6JQ==
   dependencies:
     cheerio "^1.0.0-rc.9"
     fp-ts "^2.10.5"
