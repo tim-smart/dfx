@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Effect-TS discord library",
   "main": "mod.js",
   "author": "Tim Smart <tim.smart@arisechurch.com>",
@@ -13,7 +13,8 @@
   "files": [
     "**/*.ts",
     "**/*.js",
-    "**/*.js.map"
+    "**/*.js.map",
+    "!discord-api-docs/**/*"
   ],
   "devDependencies": {
     "@effect-ts/tracing-plugin": "^0.19.0",
