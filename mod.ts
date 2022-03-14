@@ -1,24 +1,22 @@
 import { Effect as T, pipe } from "@effect-ts/core"
 import * as S from "@effect-ts/core/Effect/Experimental/Stream"
-import { exponential } from "@effect-ts/core/Effect/Schedule"
+import * as Q from "@effect-ts/core/Effect/Queue"
 import * as R from "@effect-ts/node/Runtime"
+import * as DiscordWS from "./DiscordWS"
+import { LiveLog, log } from "./Log"
 import * as WS from "./WS"
 
 pipe(
-  T.accessServiceM(WS.WS)(({ open }) =>
-    open("wss://gateway.discord.gg/?v=9&encoding=json")
+  Q.makeUnbounded<DiscordWS.Message>(),
+  T.map(S.fromQueue()),
+  T.chain((outgoing) =>
+    T.accessService(DiscordWS.DiscordWS)(({ open }) => open({ outgoing }))
   ),
-  T.chain(({ read, write }) =>
-    pipe(
-      read,
-      S.retry(exponential(10)),
-      S.forEach((data) =>
-        T.succeedWith(() => {
-          console.error(data.toString("utf8"))
-        })
-      )
-    )
-  ),
+  T.chain(S.forEach((payload) => log(payload))),
+
+  T.provideSomeLayer(LiveLog),
   T.provideSomeLayer(WS.LiveWS),
+  T.provideSomeLayer(DiscordWS.LiveDiscordWS),
+
   R.runMain
 )
