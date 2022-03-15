@@ -10,6 +10,7 @@ import {
   GatewayOpcode,
   GatewayPayload,
 } from "../types"
+import { memoize } from "../Utils/memoize"
 
 export const opCode =
   (hub: H.Hub<GatewayPayload>) =>
@@ -37,11 +38,11 @@ export const latest = <T>(f: (p: GatewayPayload) => O.Option<T>) =>
     ] as const
   })
 
-export const fromDispatch =
-  (hub: H.Hub<GatewayPayload<GatewayEvent>>) =>
-  <K extends keyof GatewayEvents>(event: K) =>
+export const fromDispatch = (hub: H.Hub<GatewayPayload<GatewayEvent>>) => {
+  return memoize(<K extends keyof GatewayEvents>(event: K) =>
     pipe(
-      S.fromHub_(hub),
-      S.filter((p): p is GatewayPayload<GatewayEvents[K]> => p.t === event),
-      S.map((p) => p.d as GatewayEvents[K])
+      H.filterOutput_(hub, (p) => p.t === event),
+      H.map((p) => p.d as GatewayEvents[K])
     )
+  )
+}
