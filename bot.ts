@@ -44,8 +44,8 @@ const logger = T.chain_(bot, ({ raw }) =>
 )
 
 pipe(
-  logger,
-  T.zipPar(runBot),
+  runBot,
+  T.zipPar(logger),
 
   T.provideSomeLayer(DebugEnv[">+>"](LiveBot)),
   R.runMain
