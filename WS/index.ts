@@ -68,6 +68,7 @@ const send = (out: OutboundStream) => (ws: Ws.WebSocket) =>
           ws.close(1012, "reconnecting")
           cb(T.unit)
         } else {
+          console.error(data)
           ws.send(data, (err) => {
             if (err) {
               cb(T.fail({ _tag: "write", cause: err }))

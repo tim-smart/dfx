@@ -57,7 +57,7 @@ const openImpl = ({
     S.onError((e) =>
       e._tag === "Fail" ? log(serviceTag, "error", e.value) : T.unit
     ),
-    S.retry(SC.exponential(10)),
+    S.retry(SC.exponential(250)),
     S.map(encoding.decode)
   )
 
@@ -65,13 +65,14 @@ export type Connection = ReturnType<typeof openImpl>
 
 // Service definition
 const serviceTag = "DiscordWSService" as const
-const makeDiscordWS = T.succeed({
+const service = {
   _tag: serviceTag,
   open: openImpl,
-} as const)
-export interface DiscordWS extends _A<typeof makeDiscordWS> {}
+} as const
+type Service = typeof service
+export interface DiscordWS extends Service {}
 export const DiscordWS = tag<DiscordWS>()
-export const LiveDiscordWS = T.toLayer(DiscordWS)(makeDiscordWS)
+export const LiveDiscordWS = T.toLayer(DiscordWS)(T.succeed(service))
 
 // Helpers
 export const open = (opts: OpenOpts) =>

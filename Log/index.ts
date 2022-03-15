@@ -10,7 +10,9 @@ const service = {
     }),
 } as const
 
-export type Log = typeof service
+type Service = typeof service
+
+export interface Log extends Service {}
 export const Log = tag<Log>()
 export const LiveLog = T.toLayer(Log)(T.succeed(service))
 

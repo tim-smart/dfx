@@ -1,0 +1,113 @@
+import * as T from "@effect-ts/core/Effect"
+import * as L from "@effect-ts/core/Effect/Layer"
+import * as S from "@effect-ts/core/Effect/Experimental/Stream"
+import * as SK from "@effect-ts/core/Effect/Experimental/Stream/Sink"
+import * as H from "@effect-ts/core/Effect/Hub"
+import * as M from "@effect-ts/core/Effect/Managed"
+import * as Q from "@effect-ts/core/Effect/Queue"
+import { flow, pipe } from "@effect-ts/core/Function"
+import { tag } from "@effect-ts/core/Has"
+import * as O from "@effect-ts/core/Option"
+import { _A } from "@effect-ts/core/Utils"
+import * as DWS from "../DiscordWS"
+import {
+  GatewayEvent,
+  GatewayOpcode,
+  GatewayPayload,
+  ReadyEvent,
+} from "../types"
+import { Reconnect } from "../WS"
+import * as Heartbeats from "./heartbeats"
+import * as Identify from "./identify"
+import * as Invalid from "./invalidSession"
+import * as Utils from "./utils"
+
+const makeImpl = (opts: Identify.Options) =>
+  M.gen(function* (_) {
+    const outbound = yield* _(Q.makeUnbounded<DWS.Message>())
+
+    const [latestReady, updateLatestReady] = yield* _(
+      Utils.latest(
+        flow(
+          O.fromPredicate(
+            (p): p is GatewayPayload<ReadyEvent> =>
+              p.op === GatewayOpcode.DISPATCH && p.t === "READY"
+          ),
+          O.map((p) => p.d!)
+        )
+      )
+    )
+    const [latestSequence, updateLatestSequence] = yield* _(
+      Utils.latest((p) => O.fromNullable(p.s))
+    )
+
+    const hub = yield* _(H.makeUnbounded<GatewayPayload>())
+    const publishToHub = pipe(
+      DWS.open({
+        outgoing: S.fromQueue_(outbound),
+      }),
+      S.unwrap,
+      updateLatestSequence,
+      updateLatestReady,
+      S.tap((p) => H.publish_(hub, p)),
+      S.drain
+    )
+
+    const dispatch: H.Hub<GatewayPayload<GatewayEvent>> = pipe(
+      hub,
+      H.filterOutput((p) => p.op === GatewayOpcode.DISPATCH)
+    )
+    const fromDispatch = Utils.fromDispatch(dispatch)
+
+    // heartbeats
+    const heartbeatEffects = pipe(
+      Heartbeats.fromHub(hub, latestSequence),
+      S.tap((p) => Q.offer_(outbound, p)),
+      S.drain
+    )
+
+    // identify
+    const identifyEffects = pipe(
+      Identify.fromHub(hub, {
+        ...opts,
+        latestSequence,
+        latestReady,
+      }),
+      S.tap((p) => Q.offer_(outbound, p)),
+      S.drain
+    )
+
+    // invalid session
+    const invalidEffects = pipe(
+      Invalid.fromHub(hub, latestReady),
+      S.tap((p) => Q.offer_(outbound, p)),
+      S.drain
+    )
+
+    return {
+      effects: pipe(
+        publishToHub,
+        S.merge(heartbeatEffects),
+        S.merge(identifyEffects),
+        S.merge(invalidEffects)
+      ),
+      raw: hub,
+      dispatch,
+      fromDispatch,
+      send: (p: GatewayPayload) => Q.offer_(outbound, p),
+      reconnect: () => Q.offer_(outbound, Reconnect),
+    } as const
+  })
+
+const makeService = () =>
+  ({
+    _tag: "DiscordShardService",
+    make: makeImpl,
+  } as const)
+
+export interface DiscordShard extends ReturnType<typeof makeService> {}
+export const DiscordShard = tag<DiscordShard>()
+export const LiveDiscordShard = L.fromValue(DiscordShard)(makeService())
+
+export const make = (opts: Identify.Options) =>
+  M.accessServiceM(DiscordShard)(({ make }) => make(opts))
