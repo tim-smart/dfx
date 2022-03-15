@@ -22,7 +22,9 @@ import * as Identify from "./identify"
 import * as Invalid from "./invalidSession"
 import * as Utils from "./utils"
 
-const makeImpl = (opts: Identify.Options) =>
+export type Options = Identify.Options
+
+const makeImpl = (opts: Options) =>
   M.gen(function* (_) {
     const outbound = yield* _(Q.makeUnbounded<DWS.Message>())
 
@@ -44,7 +46,7 @@ const makeImpl = (opts: Identify.Options) =>
     const hub = yield* _(H.makeUnbounded<GatewayPayload>())
     const publishToHub = pipe(
       DWS.open({
-        outgoing: S.fromQueue_(outbound),
+        outgoingQueue: outbound,
       }),
       S.unwrap,
       updateLatestSequence,

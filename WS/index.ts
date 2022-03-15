@@ -1,6 +1,7 @@
 import * as T from "@effect-ts/core/Effect"
 import * as S from "@effect-ts/core/Effect/Experimental/Stream"
 import * as M from "@effect-ts/core/Effect/Managed"
+import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
@@ -18,7 +19,7 @@ export type WebSocketStream<T = Ws.RawData> = S.Stream<HasClock, WsError, T>
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
-export type OutboundStream<T = Message> = S.UIO<T>
+export type OutboundQueue = Q.Dequeue<Message>
 
 const openSocket = (url: string, options?: Ws.ClientOptions) =>
   pipe(
@@ -49,7 +50,7 @@ const recv = (ws: Ws.WebSocket): WebSocketStream =>
     )
   })
 
-const send = (out: OutboundStream) => (ws: Ws.WebSocket) =>
+const send = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
   pipe(
     T.effectAsync<unknown, WsError, void>((cb) => {
       if (ws.readyState & ws.OPEN) {
@@ -60,7 +61,7 @@ const send = (out: OutboundStream) => (ws: Ws.WebSocket) =>
         })
       }
     }),
-    T.map(() => out),
+    T.map(() => S.fromQueue_(out)),
     S.unwrap,
     S.tap((data) =>
       T.effectAsync<unknown, WsError, void>((cb) => {
@@ -82,12 +83,12 @@ const send = (out: OutboundStream) => (ws: Ws.WebSocket) =>
     S.drain
   )
 
-const duplex = (out: OutboundStream) => (ws: Ws.WebSocket) =>
+const duplex = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
   pipe(recv(ws), S.mergeTerminateLeft(send(out)(ws)))
 
 const openDuplex = (
   url: string,
-  out: OutboundStream,
+  out: OutboundQueue,
   options?: Ws.ClientOptions
 ): WebSocketStream =>
   pipe(
@@ -109,6 +110,6 @@ export const LiveWS = T.toLayer(WS)(makeWS)
 // Helpers
 export const open = (
   url: string,
-  out: OutboundStream,
+  out: OutboundQueue,
   options?: Ws.ClientOptions
 ) => T.accessService(WS)(({ open }) => open(url, out, options))

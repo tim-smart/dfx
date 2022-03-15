@@ -1,9 +1,9 @@
 import * as T from "@effect-ts/core/Effect"
 import * as S from "@effect-ts/core/Effect/Experimental/Stream"
+import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
-import { _A } from "@effect-ts/core/Utils"
 import { RawData } from "ws"
 import { log } from "../Log"
 import { GatewayPayload } from "../types"
@@ -15,7 +15,7 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: Encoding
-  outgoing: WS.OutboundStream<Message>
+  outgoingQueue: Q.Queue<Message>
 }
 
 export interface Encoding {
@@ -30,23 +30,20 @@ export const jsonEncoding: Encoding = {
   decode: (p) => JSON.parse(p.toString("utf8")),
 }
 
-const makeOutgoing = (s: S.UIO<Message>, e: Encoding): WS.OutboundStream =>
-  pipe(
-    s,
-    S.map((data) => {
-      if (data === WS.Reconnect) {
-        return data
-      }
+const makeOutgoing = (q: Q.Queue<Message>, e: Encoding): WS.OutboundQueue =>
+  Q.map_(q, (data): WS.Message => {
+    if (data === WS.Reconnect) {
+      return data
+    }
 
-      return e.encode(data)
-    })
-  )
+    return e.encode(data)
+  })
 
 const openImpl = ({
   url = "wss://gateway.discord.gg/",
   version = 9,
   encoding = jsonEncoding,
-  outgoing,
+  outgoingQueue: outgoing,
 }: OpenOpts) =>
   pipe(
     WS.open(

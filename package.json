@@ -9,7 +9,7 @@
     "prepare": "ttsc",
     "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=Response|./DiscordREST/types' 'endpointReturnType=Response' > types.ts && prettier -w types.ts",
     "clean": "git clean -fxd -e node_modules/ -e .env",
-    "dev": "ts-node -C ttypescript mod.ts"
+    "dev": "ts-node -C ttypescript bot.ts"
   },
   "files": [
     "**/*.ts",
