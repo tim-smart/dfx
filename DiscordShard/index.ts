@@ -1,14 +1,12 @@
 import * as T from "@effect-ts/core/Effect"
-import * as L from "@effect-ts/core/Effect/Layer"
 import * as S from "@effect-ts/core/Effect/Experimental/Stream"
-import * as SK from "@effect-ts/core/Effect/Experimental/Stream/Sink"
 import * as H from "@effect-ts/core/Effect/Hub"
+import * as L from "@effect-ts/core/Effect/Layer"
 import * as M from "@effect-ts/core/Effect/Managed"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import { flow, pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
 import * as O from "@effect-ts/core/Option"
-import { _A } from "@effect-ts/core/Utils"
 import * as DWS from "../DiscordWS"
 import {
   GatewayEvent,
@@ -106,7 +104,7 @@ const makeService = () =>
 
 export interface DiscordShard extends ReturnType<typeof makeService> {}
 export const DiscordShard = tag<DiscordShard>()
-export const LiveDiscordShard = L.fromValue(DiscordShard)(makeService())
+export const LiveDiscordShard = L.fromFunction(DiscordShard)(makeService)
 
 export const make = (opts: Identify.Options) =>
   M.accessServiceM(DiscordShard)(({ make }) => make(opts))
