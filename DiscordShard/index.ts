@@ -49,8 +49,7 @@ const makeImpl = (opts: Identify.Options) =>
       S.unwrap,
       updateLatestSequence,
       updateLatestReady,
-      S.tap((p) => H.publish_(hub, p)),
-      S.drain
+      S.forEach((p) => H.publish_(hub, p))
     )
 
     const dispatch: H.Hub<GatewayPayload<GatewayEvent>> = pipe(
@@ -62,8 +61,7 @@ const makeImpl = (opts: Identify.Options) =>
     // heartbeats
     const heartbeatEffects = pipe(
       Heartbeats.fromHub(hub, latestSequence),
-      S.tap((p) => Q.offer_(outbound, p)),
-      S.drain
+      S.forEach((p) => Q.offer_(outbound, p))
     )
 
     // identify
@@ -73,23 +71,22 @@ const makeImpl = (opts: Identify.Options) =>
         latestSequence,
         latestReady,
       }),
-      S.tap((p) => Q.offer_(outbound, p)),
-      S.drain
+      S.forEach((p) => Q.offer_(outbound, p))
     )
 
     // invalid session
     const invalidEffects = pipe(
       Invalid.fromHub(hub, latestReady),
-      S.tap((p) => Q.offer_(outbound, p)),
-      S.drain
+      S.forEach((p) => Q.offer_(outbound, p))
     )
 
     return {
-      effects: pipe(
+      run: pipe(
         publishToHub,
-        S.merge(heartbeatEffects),
-        S.merge(identifyEffects),
-        S.merge(invalidEffects)
+        T.zipPar(heartbeatEffects),
+        T.zipPar(identifyEffects),
+        T.zipPar(invalidEffects),
+        T.ignore
       ),
       raw: hub,
       dispatch,

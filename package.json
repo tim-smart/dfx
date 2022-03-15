@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Effect-TS discord library",
   "main": "mod.js",
   "author": "Tim Smart <tim.smart@arisechurch.com>",
@@ -30,7 +30,22 @@
     "@effect-ts/core": "^0.58.0",
     "@effect-ts/node": "^0.38.3",
     "@effect-ts/system": "^0.55.0",
+    "dotenv": "^16.0.0",
     "tslib": "^2.3.1",
     "ws": "^8.5.0"
+  },
+  "exports": {
+    ".": {
+      "require": "./mod.js"
+    },
+    "./WS": {
+      "require": "./WS/index.js"
+    },
+    "./DiscordShard": {
+      "require": "./DiscordShard/index.js"
+    },
+    "./DiscordWS": {
+      "require": "./DiscordWS/index.js"
+    }
   }
 }

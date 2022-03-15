@@ -33,8 +33,8 @@ const identify = ({ token, intents, shard, presence }: Options) =>
     intents,
     properties: {
       $os: OS.platform(),
-      $browser: "droff",
-      $device: "droff",
+      $browser: "dfx",
+      $device: "dfx",
     },
     shard,
     presence,
