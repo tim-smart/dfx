@@ -54,7 +54,7 @@ const openImpl = ({
     S.onError((e) =>
       e._tag === "Fail" ? log(serviceTag, "error", e.value) : T.unit
     ),
-    S.retry(SC.exponential(250)),
+    S.retry(SC.exponential(1000)),
     S.map(encoding.decode)
   )
 
