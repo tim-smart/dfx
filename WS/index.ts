@@ -5,16 +5,13 @@ import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
-import type { _A } from "@effect-ts/core/Utils"
-import { HasClock } from "@effect-ts/system/Clock"
 import * as Ws from "ws"
+import { logDebug } from "../Log"
 
 export type WsError =
   | { _tag: "close"; code: number; reason: string }
   | { _tag: "error"; cause: unknown }
   | { _tag: "write"; cause: unknown }
-
-export type InboundStream = S.Stream<HasClock, WsError, Ws.RawData>
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
@@ -32,7 +29,7 @@ const openSocket = (url: string, options?: Ws.ClientOptions) =>
     )
   )
 
-const recv = (ws: Ws.WebSocket): InboundStream =>
+const recv = (ws: Ws.WebSocket) =>
   S.async<unknown, WsError, Ws.RawData>((emit) => {
     ws.on("message", (message) => emit.single(message))
     ws.on("error", (cause) => {
@@ -63,6 +60,7 @@ const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
     }),
     T.map(() => S.fromQueue_(out)),
     S.unwrap,
+    S.tap((p) => logDebug("WSService", "send", p)),
     S.tap((data) =>
       T.effectAsync<unknown, WsError, void>((cb) => {
         if (data === Reconnect) {
@@ -89,7 +87,7 @@ const openDuplex = (
   url: string,
   out: OutboundQueue,
   options?: Ws.ClientOptions
-): InboundStream =>
+) =>
   pipe(
     openSocket(url, options),
     M.map(duplex(out)),

@@ -6,9 +6,9 @@ import { tag } from "@effect-ts/core/Has"
 import { _A } from "@effect-ts/core/Utils"
 import * as R from "@effect-ts/node/Runtime"
 import * as Dotemv from "dotenv"
-import { DefaultEnv } from "./mod"
 import * as Shard from "./DiscordShard"
 import { log } from "./Log"
+import { DebugEnv } from "./mod"
 import { GatewayIntents } from "./types"
 
 Dotemv.config()
@@ -36,9 +36,9 @@ const bot = T.accessService(Bot)(({ bot }) => bot)
 const runBot = T.accessServiceM(Bot)(({ bot }) => bot.run)
 
 // logger
-const logger = T.chain_(bot, ({ fromDispatch }) =>
+const logger = T.chain_(bot, ({ raw }) =>
   pipe(
-    fromDispatch("MESSAGE_CREATE"),
+    S.fromHub_(raw),
     S.forEach((p) => log(p))
   )
 )
@@ -47,6 +47,6 @@ pipe(
   logger,
   T.zipPar(runBot),
 
-  T.provideSomeLayer(DefaultEnv[">+>"](LiveBot)),
+  T.provideSomeLayer(DebugEnv[">+>"](LiveBot)),
   R.runMain
 )
