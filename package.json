@@ -13,6 +13,7 @@
   },
   "files": [
     "**/*.ts",
+    "**/*.d.ts",
     "**/*.js",
     "**/*.js.map",
     "!discord-api-docs/**/*"

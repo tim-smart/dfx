@@ -11,6 +11,7 @@
     "module": "CommonJS",
     "lib": ["es2020"],
     "sourceMap": true,
+    "declaration": true,
     "strict": true,
     "target": "ES2022",
     "importHelpers": true,
