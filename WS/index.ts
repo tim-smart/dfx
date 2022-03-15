@@ -14,7 +14,7 @@ export type WsError =
   | { _tag: "error"; cause: unknown }
   | { _tag: "write"; cause: unknown }
 
-export type WebSocketStream<T = Ws.RawData> = S.Stream<HasClock, WsError, T>
+export type InboundStream = S.Stream<HasClock, WsError, Ws.RawData>
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
@@ -32,7 +32,7 @@ const openSocket = (url: string, options?: Ws.ClientOptions) =>
     )
   )
 
-const recv = (ws: Ws.WebSocket): WebSocketStream =>
+const recv = (ws: Ws.WebSocket): InboundStream =>
   S.async<unknown, WsError, Ws.RawData>((emit) => {
     ws.on("message", (message) => emit.single(message))
     ws.on("error", (cause) => {
@@ -50,7 +50,7 @@ const recv = (ws: Ws.WebSocket): WebSocketStream =>
     )
   })
 
-const send = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
+const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
   pipe(
     T.effectAsync<unknown, WsError, void>((cb) => {
       if (ws.readyState & ws.OPEN) {
@@ -69,7 +69,6 @@ const send = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
           ws.close(1012, "reconnecting")
           cb(T.unit)
         } else {
-          console.error(data)
           ws.send(data, (err) => {
             if (err) {
               cb(T.fail({ _tag: "write", cause: err }))
@@ -84,13 +83,13 @@ const send = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
   )
 
 const duplex = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
-  pipe(recv(ws), S.mergeTerminateLeft(send(out)(ws)))
+  S.mergeTerminateLeft_(recv(ws), send(ws, out))
 
 const openDuplex = (
   url: string,
   out: OutboundQueue,
   options?: Ws.ClientOptions
-): WebSocketStream =>
+): InboundStream =>
   pipe(
     openSocket(url, options),
     M.map(duplex(out)),
@@ -98,14 +97,15 @@ const openDuplex = (
     S.retry(SC.recurWhile((e) => e._tag === "close" && e.code === 1012))
   )
 
-const makeWS = T.succeed({
-  _tag: "WSService",
-  open: openDuplex,
-} as const)
+const makeService = () =>
+  ({
+    _tag: "WSService",
+    open: openDuplex,
+  } as const)
 
-export interface WS extends _A<typeof makeWS> {}
+export interface WS extends ReturnType<typeof makeService> {}
 export const WS = tag<WS>()
-export const LiveWS = T.toLayer(WS)(makeWS)
+export const LiveWS = T.toLayer(WS)(T.succeedWith(makeService))
 
 // Helpers
 export const open = (

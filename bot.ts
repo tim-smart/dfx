@@ -31,13 +31,14 @@ const makeBot = pipe(
 interface Bot extends _A<typeof makeBot> {}
 const Bot = tag<Bot>()
 const LiveBot = M.toLayer(Bot)(makeBot)
+
 const bot = T.accessService(Bot)(({ bot }) => bot)
 const runBot = T.accessServiceM(Bot)(({ bot }) => bot.run)
 
 // logger
-const logger = T.chain_(bot, ({ raw }) =>
+const logger = T.chain_(bot, ({ fromDispatch }) =>
   pipe(
-    S.fromHub_(raw),
+    fromDispatch("MESSAGE_CREATE"),
     S.forEach((p) => log(p))
   )
 )
