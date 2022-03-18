@@ -1,4 +1,5 @@
 import * as T from "@effect-ts/core/Effect"
+import * as L from "@effect-ts/core/Effect/Layer"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
@@ -6,7 +7,7 @@ import { tag } from "@effect-ts/core/Has"
 import * as CB from "callbag-effect-ts"
 import { RawData } from "ws"
 import { log } from "../Log"
-import { GatewayOpcode, GatewayPayload } from "../types"
+import { GatewayPayload } from "../types"
 import * as WS from "../WS"
 
 export type Message = GatewayPayload | WS.Reconnect
@@ -60,14 +61,15 @@ export type Connection = ReturnType<typeof openImpl>
 
 // Service definition
 const serviceTag = "DiscordWSService" as const
-const service = {
-  _tag: serviceTag,
-  open: openImpl,
-} as const
-type Service = typeof service
-export interface DiscordWS extends Service {}
+const makeService = () =>
+  ({
+    _tag: serviceTag,
+    open: openImpl,
+  } as const)
+
+export interface DiscordWS extends ReturnType<typeof makeService> {}
 export const DiscordWS = tag<DiscordWS>()
-export const LiveDiscordWS = T.toLayer(DiscordWS)(T.succeed(service))
+export const LiveDiscordWS = L.fromFunction(DiscordWS)(makeService)
 
 // Helpers
 export const open = (opts: OpenOpts) =>
