@@ -1,12 +1,12 @@
 import * as T from "@effect-ts/core/Effect"
-import * as S from "@effect-ts/core/Effect/Experimental/Stream"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
+import * as CB from "callbag-effect-ts"
 import { RawData } from "ws"
 import { log } from "../Log"
-import { GatewayPayload } from "../types"
+import { GatewayOpcode, GatewayPayload } from "../types"
 import * as WS from "../WS"
 
 export type Message = GatewayPayload | WS.Reconnect
@@ -48,14 +48,12 @@ const openImpl = ({
   pipe(
     WS.open(
       `${url}?v=${version}&encoding=${encoding.type}`,
-      makeOutgoing(outgoing, encoding)
+      makeOutgoing(outgoing, encoding),
     ),
-    S.unwrap,
-    S.onError((e) =>
-      e._tag === "Fail" ? log(serviceTag, "error", e.value) : T.unit
-    ),
-    S.retry(SC.exponential(1000)),
-    S.map(encoding.decode)
+    CB.unwrap,
+    CB.tapError((e) => log(serviceTag, "error", e)),
+    CB.retry(SC.exponential(500)),
+    CB.map(encoding.decode),
   )
 
 export type Connection = ReturnType<typeof openImpl>

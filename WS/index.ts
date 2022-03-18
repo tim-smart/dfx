@@ -3,6 +3,7 @@ import * as S from "@effect-ts/core/Effect/Experimental/Stream"
 import * as M from "@effect-ts/core/Effect/Managed"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
+import * as CB from "callbag-effect-ts"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
 import * as Ws from "ws"
@@ -25,12 +26,12 @@ const openSocket = (url: string, options?: Ws.ClientOptions) =>
       T.succeedWith(() => {
         ws.removeAllListeners()
         ws.close()
-      })
-    )
+      }),
+    ),
   )
 
 const recv = (ws: Ws.WebSocket) =>
-  S.async<unknown, WsError, Ws.RawData>((emit) => {
+  CB.async<unknown, WsError, Ws.RawData>((emit) => {
     ws.on("message", (message) => emit.single(message))
     ws.on("error", (cause) => {
       emit.fail({
@@ -43,7 +44,7 @@ const recv = (ws: Ws.WebSocket) =>
         _tag: "close",
         code,
         reason: reason.toString("utf8"),
-      })
+      }),
     )
   })
 
@@ -58,10 +59,10 @@ const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
         })
       }
     }),
-    T.map(() => S.fromQueue_(out)),
-    S.unwrap,
-    S.tap((p) => logDebug("WSService", "send", p)),
-    S.tap((data) =>
+    T.map(() => CB.fromQueue(out)),
+    CB.unwrap,
+    CB.tap((p) => logDebug("WSService", "send", p)),
+    CB.tap((data) =>
       T.effectAsync<unknown, WsError, void>((cb) => {
         if (data === Reconnect) {
           ws.close(1012, "reconnecting")
@@ -75,24 +76,24 @@ const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
             }
           })
         }
-      })
+      }),
     ),
-    S.drain
+    CB.drain,
   )
 
 const duplex = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
-  S.mergeTerminateLeft_(recv(ws), send(ws, out))
+  CB.merge_(recv(ws), send(ws, out))
 
 const openDuplex = (
   url: string,
   out: OutboundQueue,
-  options?: Ws.ClientOptions
+  options?: Ws.ClientOptions,
 ) =>
   pipe(
     openSocket(url, options),
     M.map(duplex(out)),
-    S.unwrapManaged,
-    S.retry(SC.recurWhile((e) => e._tag === "close" && e.code === 1012))
+    CB.unwrapManaged,
+    CB.retry(SC.recurWhile((e) => e._tag === "close" && e.code === 1012)),
   )
 
 const makeService = () =>
@@ -109,5 +110,5 @@ export const LiveWS = T.toLayer(WS)(T.succeedWith(makeService))
 export const open = (
   url: string,
   out: OutboundQueue,
-  options?: Ws.ClientOptions
+  options?: Ws.ClientOptions,
 ) => T.accessService(WS)(({ open }) => open(url, out, options))

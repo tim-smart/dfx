@@ -1,9 +1,8 @@
 import * as T from "@effect-ts/core/Effect"
-import * as S from "@effect-ts/core/Effect/Experimental/Stream"
-import * as H from "@effect-ts/core/Effect/Hub"
 import * as R from "@effect-ts/core/Effect/Ref"
 import { flow, pipe } from "@effect-ts/core/Function"
 import * as O from "@effect-ts/core/Option"
+import * as CB from "callbag-effect-ts"
 import {
   GatewayEvent,
   GatewayEvents,
@@ -13,36 +12,40 @@ import {
 import { memoize } from "../Utils/memoize"
 
 export const opCode =
-  (hub: H.Hub<GatewayPayload>) =>
-  <T = any>(code: GatewayOpcode): S.UIO<GatewayPayload<T>> =>
+  <R, E>(source: CB.EffectSource<R, E, GatewayPayload>) =>
+  <T = any>(code: GatewayOpcode) =>
     pipe(
-      S.fromHub_(hub),
-      S.filter((p) => p.op === code)
+      source,
+      CB.filter((p): p is GatewayPayload<T> => p.op === code),
     )
+
+const maybeUpdateRef = <T>(
+  f: (p: GatewayPayload) => O.Option<T>,
+  ref: R.Ref<O.Option<T>>,
+) =>
+  flow(
+    f,
+    O.fold(
+      () => T.unit,
+      (a) => R.set_(ref, O.some(a)),
+    ),
+  )
 
 export const latest = <T>(f: (p: GatewayPayload) => O.Option<T>) =>
-  T.gen(function* (_) {
-    const ref = yield* _(R.makeRef<O.Option<T>>(O.none))
-
-    return [
-      ref,
-      S.tap(
-        flow(
-          f,
-          O.fold(
-            () => T.unit,
-            (a) => R.set_(ref, O.some(a))
-          )
-        )
-      ),
-    ] as const
-  })
-
-export const fromDispatch = (hub: H.Hub<GatewayPayload<GatewayEvent>>) => {
-  return memoize(<K extends keyof GatewayEvents>(event: K) =>
-    pipe(
-      H.filterOutput_(hub, (p) => p.t === event),
-      H.map((p) => p.d as GatewayEvents[K])
-    )
+  pipe(
+    R.makeRef<O.Option<T>>(O.none),
+    T.map((ref) => [ref, CB.tap(maybeUpdateRef(f, ref))] as const),
   )
-}
+
+export const fromDispatch = <R, E>(
+  source: CB.EffectSource<R, E, GatewayPayload<GatewayEvent>>,
+): (<K extends keyof GatewayEvents>(
+  event: K,
+) => CB.EffectSource<R, E, GatewayEvents[K]>) =>
+  memoize((event) =>
+    pipe(
+      CB.filter_(source, (p) => p.t === event),
+      CB.map((p) => p.d as any),
+      CB.share,
+    ),
+  )

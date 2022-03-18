@@ -1,9 +1,8 @@
 import * as T from "@effect-ts/core/Effect"
-import * as S from "@effect-ts/core/Effect/Experimental/Stream"
-import * as H from "@effect-ts/core/Effect/Hub"
 import * as R from "@effect-ts/core/Effect/Ref"
 import { pipe } from "@effect-ts/core/Function"
 import * as O from "@effect-ts/core/Option"
+import * as CB from "callbag-effect-ts"
 import { Message } from "../DiscordWS"
 import {
   GatewayOpcode,
@@ -14,12 +13,12 @@ import {
 import { Reconnect } from "../WS"
 import * as Utils from "./utils"
 
-export const fromHub = (
-  hub: H.Hub<GatewayPayload>,
-  latestReady: R.Ref<O.Option<ReadyEvent>>
+export const fromRaw = <R, E>(
+  raw: CB.EffectSource<R, E, GatewayPayload>,
+  latestReady: R.Ref<O.Option<ReadyEvent>>,
 ) =>
   pipe(
-    Utils.opCode(hub)<InvalidSessionEvent>(GatewayOpcode.INVALID_SESSION),
-    S.tap((p) => (p.d ? T.unit : R.set_(latestReady, O.none))),
-    S.map((): Message => Reconnect)
+    Utils.opCode(raw)<InvalidSessionEvent>(GatewayOpcode.INVALID_SESSION),
+    CB.tap((p) => (p.d ? T.unit : R.set_(latestReady, O.none))),
+    CB.map((): Message => Reconnect),
   )

@@ -1,9 +1,8 @@
 import * as T from "@effect-ts/core/Effect"
-import * as S from "@effect-ts/core/Effect/Experimental/Stream"
-import * as H from "@effect-ts/core/Effect/Hub"
 import * as R from "@effect-ts/core/Effect/Ref"
 import { pipe } from "@effect-ts/core/Function"
 import * as O from "@effect-ts/core/Option"
+import * as CB from "callbag-effect-ts"
 import * as OS from "os"
 import {
   GatewayOpcode,
@@ -50,7 +49,7 @@ const resume = (token: string, ready: ReadyEvent, seq: number) =>
 const identifyOrResume = (
   opts: Options,
   ready: R.Ref<O.Option<ReadyEvent>>,
-  seq: R.Ref<O.Option<number>>
+  seq: R.Ref<O.Option<number>>,
 ) =>
   pipe(
     R.get(ready),
@@ -60,17 +59,17 @@ const identifyOrResume = (
         O.zip_(...tuple),
         O.fold(
           () => identify(opts),
-          ({ tuple }) => resume(opts.token, ...tuple)
-        )
-      )
-    )
+          ({ tuple }) => resume(opts.token, ...tuple),
+        ),
+      ),
+    ),
   )
 
-export const fromHub = (
-  hub: H.Hub<GatewayPayload>,
-  { latestReady, latestSequence, ...opts }: Options & Requirements
+export const fromRaw = <R, E>(
+  source: CB.EffectSource<R, E, GatewayPayload>,
+  { latestReady, latestSequence, ...opts }: Options & Requirements,
 ) =>
   pipe(
-    Utils.opCode(hub)<HelloEvent>(GatewayOpcode.HELLO),
-    S.mapEffect(() => identifyOrResume(opts, latestReady, latestSequence))
+    Utils.opCode(source)<HelloEvent>(GatewayOpcode.HELLO),
+    CB.mapEffect((_) => identifyOrResume(opts, latestReady, latestSequence)),
   )

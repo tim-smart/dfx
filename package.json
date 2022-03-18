@@ -6,9 +6,9 @@
   "author": "Tim Smart <tim.smart@arisechurch.com>",
   "license": "MIT",
   "scripts": {
-    "prepare": "ttsc",
+    "prepublishOnly": "yarn clean && ttsc",
     "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=Response|./DiscordREST/types' 'endpointReturnType=Response' > types.ts && prettier -w types.ts",
-    "clean": "git clean -fxd -e node_modules/ -e .env",
+    "clean": "git clean -fxd -e node_modules/ -e .env -e .vscode",
     "dev": "ts-node -C ttypescript bot.ts"
   },
   "files": [
@@ -32,6 +32,7 @@
     "@effect-ts/core": "^0.58.0",
     "@effect-ts/node": "^0.38.3",
     "@effect-ts/system": "^0.55.0",
+    "callbag-effect-ts": "^0.7.7",
     "tslib": "^2.3.1",
     "ws": "^8.5.0"
   },
