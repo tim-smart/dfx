@@ -9,7 +9,7 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "module": "CommonJS",
-    "lib": ["es2020"],
+    "lib": ["ESNext"],
     "sourceMap": true,
     "declaration": true,
     "strict": true,

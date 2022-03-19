@@ -426,7 +426,7 @@ export interface BulkDeleteMessageParams {
   /** an array of message ids to delete (2-100) */
   messages: Snowflake[]
 }
-export interface BulkOverwriteGuildApplicationCommandBulkApplicationCommandParams {
+export interface BulkOverwriteGuildApplicationCommandParams {
   /** application command id, if known */
   id: Snowflake
   /** 1-32 character name */
