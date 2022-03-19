@@ -15,31 +15,31 @@
     "@cspotcode/source-map-consumer" "0.8.0"
 
 "@effect-ts/core@^0.58.0":
-  version "0.58.0"
-  resolved "https://registry.yarnpkg.com/@effect-ts/core/-/core-0.58.0.tgz#5bdd3493d4d52ae997f57c0a04d4898df16ddccb"
-  integrity sha512-bnSXjg79Fj9NtVF8Q+srO/h9+KHKGFzyTa0R08syWTX3WjxLRaDgJD53hu7DQ9NffQPoxFotPDelg6waU4c5xw==
+  version "0.58.1"
+  resolved "https://registry.yarnpkg.com/@effect-ts/core/-/core-0.58.1.tgz#9ddb527c8b19501cb1f12bda23c16af722258964"
+  integrity sha512-N0UwVyg+cx7FMG2zFh7uzpkyOk7iGYhiBfVN1K5MqpVXZzLvbuR9yud3SveaIxD0dJnso4AnPzrw6zhctNO+1A==
   dependencies:
-    "@effect-ts/system" "^0.55.0"
+    "@effect-ts/system" "^0.55.1"
 
 "@effect-ts/node@^0.38.3":
   version "0.38.3"
   resolved "https://registry.yarnpkg.com/@effect-ts/node/-/node-0.38.3.tgz#d91558efa94fa3d5dc75a3d516424af74d297949"
   integrity sha512-6+N1oNyp/IMmAstOiZWELCxdd+6jT2vJi1kK23Oj7Pig0suumDNh59AfbZwfX/+JcSScbD1qiIK5gSUN6C9Jow==
 
-"@effect-ts/system@^0.55.0":
-  version "0.55.0"
-  resolved "https://registry.yarnpkg.com/@effect-ts/system/-/system-0.55.0.tgz#57f97aa8a243920e62e02a3184426d9b5069f523"
-  integrity sha512-vQ2bg3cGMsc1ftpSxoXj8E18hfmdZUZY8nZul5rO6x4Qa6l02TSGEwxZYjvXPzTeg7dqpE9teEEOFv3TaJ88tg==
+"@effect-ts/system@^0.55.0", "@effect-ts/system@^0.55.1":
+  version "0.55.1"
+  resolved "https://registry.yarnpkg.com/@effect-ts/system/-/system-0.55.1.tgz#fe157e7639ff6b05a51b62379961662569da98fb"
+  integrity sha512-OEnwd9JhrV2Q5S7cke/ZgR56Hn75DSr1aIkA0PBE1edoX6GKB6nOdu8u/vPhvqjxLHfMgN8o+EVaWUHPLIC1UQ==
 
 "@effect-ts/tracing-plugin@^0.19.0":
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/@effect-ts/tracing-plugin/-/tracing-plugin-0.19.0.tgz#50e16de38c09b8acfc18eac86ec52f2ab194c2d7"
-  integrity sha512-DQXmEqqjJkK4M48Q4DWyj53zngj1bTtAgvUVDCmqMN7hdPU7QzystRtuPj+sry/+XWYK9Gdyfm4LoiZadMVg1w==
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/@effect-ts/tracing-plugin/-/tracing-plugin-0.19.1.tgz#9d568ef49de5f2434f65622b0c829c54ea708184"
+  integrity sha512-F8hL5PEbb3ReFQaF35e6mYpYj+dGDp415HMHO8i8h1aUQOsz8c3R65wuFBuuNmk7joSuPcxte811OvwZmSZr+A==
 
 "@tim-smart/discord-api-docs-parser@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@tim-smart/discord-api-docs-parser/-/discord-api-docs-parser-0.3.0.tgz#8add328ce5b9179d9178274ad2b1fb0897a6bb84"
-  integrity sha512-SACUj2hu59yZUQDxgSoyTwmRF2E3eTnS8kEs2/R2fjQdJsdW+74YPfg0mQg6doP9LXdwWDgI8kSuwwCS2vi6JQ==
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@tim-smart/discord-api-docs-parser/-/discord-api-docs-parser-0.3.2.tgz#ac6184a7c400837be9d2e2148fc15103a51df124"
+  integrity sha512-hFTwg9iugiErLhd1oy8S1Z0sxRILbgY+MzRXEoJL7jJgqsM6uQr2kUk4twGiuubnLp6GC2HhBPTHB93qPfDyKQ==
   dependencies:
     cheerio "^1.0.0-rc.9"
     fp-ts "^2.10.5"
@@ -311,9 +311,9 @@ follow-redirects@^1.14.8:
   integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
 
 fp-ts@^2.10.5:
-  version "2.11.8"
-  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.11.8.tgz#411cde116c446d568f5597b03352d8b3f98e8f82"
-  integrity sha512-WQT6rP6Jt3TxMdQB3IKzvfZKLuldumntgumLhIUhvPrukTHdWNI4JgEHY04Bd0LIOR9IQRpB+7RuxgUU0Vhmcg==
+  version "2.11.9"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.11.9.tgz#bbc204e0932954b59c98a282635754a4b624a05e"
+  integrity sha512-GhYlNKkCOfdjp71ocdtyaQGoqCswEoWDJLRr+2jClnBBq2dnSOtd6QxmJdALq8UhfqCyZZ0f0lxadU4OhwY9nw==
 
 function-bind@^1.1.1:
   version "1.1.1"
@@ -399,9 +399,9 @@ pluralize@^8.0.0:
   integrity sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==
 
 prettier@^2.3.0, prettier@^2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
-  integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.0.tgz#12f8f504c4d8ddb76475f441337542fa799207d4"
+  integrity sha512-m2FgJibYrBGGgQXNzfd0PuDGShJgRavjUoRCw1mZERIWVSXF0iLzLm+aOqTAbLnC3n6JzUhAA8uZnFVghHJ86A==
 
 remeda@^0.0.27:
   version "0.0.27"

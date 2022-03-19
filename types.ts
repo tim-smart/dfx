@@ -426,6 +426,20 @@ export interface BulkDeleteMessageParams {
   /** an array of message ids to delete (2-100) */
   messages: Snowflake[]
 }
+export interface BulkOverwriteGuildApplicationCommandBulkApplicationCommandParams {
+  /** application command id, if known */
+  id: Snowflake
+  /** 1-32 character name */
+  name: string
+  /** 1-100 character description */
+  description: string
+  /** the parameters for the command */
+  options?: ApplicationCommandOption[]
+  /** whether the command is enabled by default when the app is added to a guild */
+  default_permission?: boolean
+  /** the type of command, defaults 1 if not set */
+  type?: ApplicationCommandType
+}
 export interface Button {
   /** 2 for a button */
   type: number
@@ -784,7 +798,7 @@ export interface CreateMessageParams {
   flags: number
 }
 export function createRoutes<O = any>(
-  fetch: <R, P>(route: Route<P, O>) => Response<R>
+  fetch: <R, P>(route: Route<P, O>) => Response<R>,
 ): Endpoints<O> {
   return {
     addGuildMember: (guildId, userId, params, options) =>
@@ -810,7 +824,7 @@ export function createRoutes<O = any>(
       applicationId,
       guildId,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "PUT",
@@ -838,10 +852,16 @@ export function createRoutes<O = any>(
         url: `/applications/${applicationId}/commands`,
         options,
       }),
-    bulkOverwriteGuildApplicationCommands: (applicationId, guildId, options) =>
+    bulkOverwriteGuildApplicationCommands: (
+      applicationId,
+      guildId,
+      params,
+      options,
+    ) =>
       fetch({
         method: "PUT",
         url: `/applications/${applicationId}/guilds/${guildId}/commands`,
+        params,
         options,
       }),
     createChannelInvite: (channelId, params, options) =>
@@ -952,7 +972,7 @@ export function createRoutes<O = any>(
       interactionId,
       interactionToken,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "POST",
@@ -1021,7 +1041,7 @@ export function createRoutes<O = any>(
       applicationId,
       interactionToken,
       messageId,
-      options
+      options,
     ) =>
       fetch({
         method: "DELETE",
@@ -1044,7 +1064,7 @@ export function createRoutes<O = any>(
       applicationId,
       guildId,
       commandId,
-      options
+      options,
     ) =>
       fetch({
         method: "DELETE",
@@ -1102,7 +1122,7 @@ export function createRoutes<O = any>(
     deleteOriginalInteractionResponse: (
       applicationId,
       interactionToken,
-      options
+      options,
     ) =>
       fetch({
         method: "DELETE",
@@ -1138,7 +1158,7 @@ export function createRoutes<O = any>(
       webhookToken,
       messageId,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "DELETE",
@@ -1157,7 +1177,7 @@ export function createRoutes<O = any>(
       guildId,
       commandId,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "PUT",
@@ -1176,7 +1196,7 @@ export function createRoutes<O = any>(
       applicationId,
       interactionToken,
       messageId,
-      options
+      options,
     ) =>
       fetch({
         method: "PATCH",
@@ -1195,7 +1215,7 @@ export function createRoutes<O = any>(
       guildId,
       commandId,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "PATCH",
@@ -1213,7 +1233,7 @@ export function createRoutes<O = any>(
     editOriginalInteractionResponse: (
       applicationId,
       interactionToken,
-      options
+      options,
     ) =>
       fetch({
         method: "PATCH",
@@ -1257,7 +1277,7 @@ export function createRoutes<O = any>(
       applicationId,
       guildId,
       commandId,
-      options
+      options,
     ) =>
       fetch({
         method: "GET",
@@ -1448,7 +1468,7 @@ export function createRoutes<O = any>(
       guildId,
       guildScheduledEventId,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "GET",
@@ -1527,7 +1547,7 @@ export function createRoutes<O = any>(
     getOriginalInteractionResponse: (
       applicationId,
       interactionToken,
-      options
+      options,
     ) =>
       fetch({
         method: "GET",
@@ -1785,7 +1805,7 @@ export function createRoutes<O = any>(
       guildId,
       guildScheduledEventId,
       params,
-      options
+      options,
     ) =>
       fetch({
         method: "PATCH",
@@ -2138,55 +2158,56 @@ export interface Endpoints<O> {
     guildId: string,
     userId: string,
     params?: Partial<AddGuildMemberParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildMember>
   /** Adds a role to a guild member. Requires the MANAGE_ROLES permission. Returns a 204 empty response on success. Fires a Guild Member Update Gateway event. */
   addGuildMemberRole: (
     guildId: string,
     userId: string,
     roleId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Adds another member to a thread. Requires the ability to send messages in the thread. Also requires the thread is not archived. Returns a 204 empty response if the member is successfully added or was already a member of the thread. Fires a Thread Members Update Gateway event. */
   addThreadMember: (
     channelId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   batchEditApplicationCommandPermissions: (
     applicationId: string,
     guildId: string,
     params?: Partial<GuildApplicationCommandPermission[]>,
-    options?: O
+    options?: O,
   ) => Response<GuildApplicationCommandPermission[]>
   /** Begin a prune operation. Requires the KICK_MEMBERS permission. Returns an object with one 'pruned' key indicating the number of members that were removed in the prune operation. For large guilds it's recommended to set the compute_prune_count option to false, forcing 'pruned' to null. Fires multiple Guild Member Remove Gateway events. */
   beginGuildPrune: (
     guildId: string,
     params?: Partial<BeginGuildPruneParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete multiple messages in a single request. This endpoint can only be used on guild channels and requires the MANAGE_MESSAGES permission. Returns a 204 empty response on success. Fires a Message Delete Bulk Gateway event. */
   bulkDeleteMessages: (
     channelId: string,
     params?: Partial<BulkDeleteMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Takes a list of application commands, overwriting the existing global command list for this application. Updates will be available in all guilds after 1 hour. Returns 200 and a list of application command objects. Commands that do not already exist will count toward daily application command create limits. */
   bulkOverwriteGlobalApplicationCommands: (
     applicationId: string,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand[]>
   /** Takes a list of application commands, overwriting the existing command list for this application for the targeted guild. Returns 200 and a list of application command objects. */
   bulkOverwriteGuildApplicationCommands: (
     applicationId: string,
     guildId: string,
-    options?: O
+    params?: Partial<BulkOverwriteGuildApplicationCommandParams>,
+    options?: O,
   ) => Response<ApplicationCommand[]>
   /** Create a new invite object for the channel. Only usable for guild channels. Requires the CREATE_INSTANT_INVITE permission. All JSON parameters for this route are optional, however the request body is not. If you are not sending any fields, you still have to send an empty JSON object ({}). Returns an invite object. Fires an Invite Create Gateway event. */
   createChannelInvite: (
     channelId: string,
     params?: Partial<CreateChannelInviteParams>,
-    options?: O
+    options?: O,
   ) => Response<Invite>
   /** Create a new DM channel with a user. Returns a DM channel object. */
   createDm: (params?: Partial<CreateDmParams>, options?: O) => Response<Channel>
@@ -2194,89 +2215,89 @@ export interface Endpoints<O> {
   createFollowupMessage: (
     applicationId: string,
     interactionToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   createGlobalApplicationCommand: (
     applicationId: string,
     params?: Partial<CreateGlobalApplicationCommandParams>,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand>
   /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. DMs created with this endpoint will not be shown in the Discord client */
   createGroupDm: (
     params?: Partial<CreateGroupDmParams>,
-    options?: O
+    options?: O,
   ) => Response<Channel>
   /** Create a new guild. Returns a guild object on success. Fires a Guild Create Gateway event. */
   createGuild: (
     params?: Partial<CreateGuildParams>,
-    options?: O
+    options?: O,
   ) => Response<Guild>
   createGuildApplicationCommand: (
     applicationId: string,
     guildId: string,
     params?: Partial<CreateGuildApplicationCommandParams>,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand>
   /** Create a guild ban, and optionally delete previous messages sent by the banned user. Requires the BAN_MEMBERS permission. Returns a 204 empty response on success. Fires a Guild Ban Add Gateway event. */
   createGuildBan: (
     guildId: string,
     userId: string,
     params?: Partial<CreateGuildBanParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Create a new channel object for the guild. Requires the MANAGE_CHANNELS permission. If setting permission overwrites, only permissions your bot has in the guild can be allowed/denied. Setting MANAGE_ROLES permission in channels is only possible for guild administrators. Returns the new channel object on success. Fires a Channel Create Gateway event. */
   createGuildChannel: (
     guildId: string,
     params?: Partial<CreateGuildChannelParams>,
-    options?: O
+    options?: O,
   ) => Response<Channel>
   /** Create a new emoji for the guild. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the new emoji object on success. Fires a Guild Emojis Update Gateway event. */
   createGuildEmoji: (
     guildId: string,
     params?: Partial<CreateGuildEmojiParams>,
-    options?: O
+    options?: O,
   ) => Response<Emoji>
   /** Create a new guild based on a template. Returns a guild object on success. Fires a Guild Create Gateway event. */
   createGuildFromGuildTemplate: (
     templateCode: string,
     params?: Partial<CreateGuildFromGuildTemplateParams>,
-    options?: O
+    options?: O,
   ) => Response<Guild>
   /** Create a new role for the guild. Requires the MANAGE_ROLES permission. Returns the new role object on success. Fires a Guild Role Create Gateway event. All JSON params are optional. */
   createGuildRole: (
     guildId: string,
     params?: Partial<CreateGuildRoleParams>,
-    options?: O
+    options?: O,
   ) => Response<Role>
   /** Create a guild scheduled event in the guild. Returns a guild scheduled event object on success. */
   createGuildScheduledEvent: (
     guildId: string,
     params?: Partial<CreateGuildScheduledEventParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildScheduledEvent>
   /** Create a new sticker for the guild. Send a multipart/form-data body. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the new sticker object on success. */
   createGuildSticker: (
     guildId: string,
     params?: Partial<CreateGuildStickerParams>,
-    options?: O
+    options?: O,
   ) => Response<Sticker>
   /** Creates a template for the guild. Requires the MANAGE_GUILD permission. Returns the created guild template object on success. */
   createGuildTemplate: (
     guildId: string,
     params?: Partial<CreateGuildTemplateParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildTemplate>
   /** Create a response to an Interaction from the gateway. Body is an interaction response. Returns 204 No Content. */
   createInteractionResponse: (
     interactionId: string,
     interactionToken: string,
     params?: Partial<InteractionResponse>,
-    options?: O
+    options?: O,
   ) => Response<any>
   createMessage: (
     channelId: string,
     params?: Partial<CreateMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Message>
   /** Create a reaction for the message. This endpoint requires the 'READ_MESSAGE_HISTORY' permission to be present on the current user. Additionally, if nobody else has reacted to the message using this emoji, this endpoint requires the 'ADD_REACTIONS' permission to be present on the current user. Returns a 204 empty response on success.
 The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id. */
@@ -2284,30 +2305,30 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     channelId: string,
     messageId: string,
     emoji: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Creates a new Stage instance associated to a Stage channel. Returns that Stage instance. */
   createStageInstance: (
     params?: Partial<CreateStageInstanceParams>,
-    options?: O
+    options?: O,
   ) => Response<StageInstance>
   /** Creates a new webhook and returns a webhook object on success. Requires the MANAGE_WEBHOOKS permission. */
   createWebhook: (
     channelId: string,
     params?: Partial<CreateWebhookParams>,
-    options?: O
+    options?: O,
   ) => Response<Webhook>
   /** Crosspost a message in a News Channel to following channels. This endpoint requires the 'SEND_MESSAGES' permission, if the current user sent the message, or additionally the 'MANAGE_MESSAGES' permission, for all other messages, to be present for the current user. */
   crosspostMessage: (
     channelId: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<Message>
   /** Deletes all reactions on a message. This endpoint requires the 'MANAGE_MESSAGES' permission to be present on the current user. Fires a Message Reaction Remove All Gateway event. */
   deleteAllReactions: (
     channelId: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Deletes all the reactions for a given emoji on a message. This endpoint requires the MANAGE_MESSAGES permission to be present on the current user. Fires a Message Reaction Remove Emoji Gateway event.
 The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id. */
@@ -2315,13 +2336,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     channelId: string,
     messageId: string,
     emoji: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a channel permission overwrite for a user or role in a channel. Only usable for guild channels. Requires the MANAGE_ROLES permission. Returns a 204 empty response on success. For more information about permissions, see permissions */
   deleteChannelPermission: (
     channelId: string,
     overwriteId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a channel, or close a private message. Requires the MANAGE_CHANNELS permission for the guild, or MANAGE_THREADS if the channel is a thread. Deleting a category does not delete its child channels; they will have their parent_id removed and a Channel Update Gateway event will fire for each of them. Returns a channel object on success. Fires a Channel Delete Gateway event (or Thread Delete if the channel was a thread). */
   deletecloseChannel: (channelId: string, options?: O) => Response<Channel>
@@ -2330,13 +2351,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     applicationId: string,
     interactionToken: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Deletes a global command. Returns 204 No Content on success. */
   deleteGlobalApplicationCommand: (
     applicationId: string,
     commandId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a guild permanently. User must be owner. Returns 204 No Content on success. Fires a Guild Delete Gateway event. */
   deleteGuild: (guildId: string, options?: O) => Response<any>
@@ -2345,43 +2366,43 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     applicationId: string,
     guildId: string,
     commandId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete the given emoji. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns 204 No Content on success. Fires a Guild Emojis Update Gateway event. */
   deleteGuildEmoji: (
     guildId: string,
     emojiId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete the attached integration object for the guild. Deletes any associated webhooks and kicks the associated bot if there is one. Requires the MANAGE_GUILD permission. Returns a 204 empty response on success. Fires a Guild Integrations Update Gateway event. */
   deleteGuildIntegration: (
     guildId: string,
     integrationId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a guild role. Requires the MANAGE_ROLES permission. Returns a 204 empty response on success. Fires a Guild Role Delete Gateway event. */
   deleteGuildRole: (
     guildId: string,
     roleId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a guild scheduled event. Returns a 204 on success. */
   deleteGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete the given sticker. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns 204 No Content on success. */
   deleteGuildSticker: (
     guildId: string,
     stickerId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Deletes the template. Requires the MANAGE_GUILD permission. Returns the deleted guild template object on success. */
   deleteGuildTemplate: (
     guildId: string,
     templateCode: string,
-    options?: O
+    options?: O,
   ) => Response<GuildTemplate>
   /** Delete an invite. Requires the MANAGE_CHANNELS permission on the channel this invite belongs to, or MANAGE_GUILD to remove any invite across the guild. Returns an invite object on success. Fires a Invite Delete Gateway event. */
   deleteInvite: (inviteCode: string, options?: O) => Response<Invite>
@@ -2389,13 +2410,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   deleteMessage: (
     channelId: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Deletes the initial Interaction response. Returns 204 No Content on success. Does not support ephemeral followups. */
   deleteOriginalInteractionResponse: (
     applicationId: string,
     interactionToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a reaction the current user has made for the message. Returns a 204 empty response on success.
 The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id. */
@@ -2403,7 +2424,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     channelId: string,
     messageId: string,
     emoji: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Deletes the Stage instance. Returns 204 No Content. */
   deleteStageInstance: (channelId: string, options?: O) => Response<any>
@@ -2414,7 +2435,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     messageId: string,
     emoji: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Delete a webhook permanently. Requires the MANAGE_WEBHOOKS permission. Returns a 204 No Content response on success. */
   deleteWebhook: (webhookId: string, options?: O) => Response<any>
@@ -2424,60 +2445,60 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     webhookToken: string,
     messageId: string,
     params?: Partial<DeleteWebhookMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Same as above, except this call does not require authentication. */
   deleteWebhookWithToken: (
     webhookId: string,
     webhookToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   editApplicationCommandPermissions: (
     applicationId: string,
     guildId: string,
     commandId: string,
     params?: Partial<EditApplicationCommandPermissionParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildApplicationCommandPermission>
-  /** Edit the channel permission overwrites for a user or role in a channel. Only usable for guild channels. Requires the MANAGE_ROLES permission. Only permissions your bot has in the guild or channel can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel). Returns a 204 empty response on success. For more information about permissions, see permissions. */
+  /** Edit the channel permission overwrites for a user or role in a channel. Only usable for guild channels. Requires the MANAGE_ROLES permission. Only permissions your bot has in the guild or parent channel (if applicable) can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel). Returns a 204 empty response on success. For more information about permissions, see permissions. */
   editChannelPermissions: (
     channelId: string,
     overwriteId: string,
     params?: Partial<EditChannelPermissionParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
-  /** Edits a followup message for an Interaction. Functions the same as Edit Webhook Message. Does not support ephemeral followups. */
+  /** Edits a followup message for an Interaction. Functions the same as Edit Webhook Message. */
   editFollowupMessage: (
     applicationId: string,
     interactionToken: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   editGlobalApplicationCommand: (
     applicationId: string,
     commandId: string,
     params?: Partial<EditGlobalApplicationCommandParams>,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand>
   editGuildApplicationCommand: (
     applicationId: string,
     guildId: string,
     commandId: string,
     params?: Partial<EditGuildApplicationCommandParams>,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand>
   /** Edit a previously sent message. The fields content, embeds, and flags can be edited by the original message author. Other users can only edit flags and only if they have the MANAGE_MESSAGES permission in the corresponding channel. When specifying flags, ensure to include all previously set flags/bits in addition to ones that you are modifying. Only flags documented in the table below may be modified by users (unsupported flag changes are currently ignored without error). */
   editMessage: (
     channelId: string,
     messageId: string,
     params?: Partial<EditMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Message>
   /** Edits the initial Interaction response. Functions the same as Edit Webhook Message. */
   editOriginalInteractionResponse: (
     applicationId: string,
     interactionToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Edits a previously-sent webhook message from the same token. Returns a message object on success. */
   editWebhookMessage: (
@@ -2485,39 +2506,39 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     webhookToken: string,
     messageId: string,
     params?: Partial<EditWebhookMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Message>
   /** Add a new webhook to your GitHub repo (in the repo's settings), and use this endpoint as the "Payload URL." You can choose what events your Discord channel receives by choosing the "Let me select individual events" option and selecting individual events for the new webhook you're configuring. */
   executeGitHubCompatibleWebhook: (
     webhookId: string,
     webhookToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Refer to Slack's documentation for more information. We do not support Slack's channel, icon_emoji, mrkdwn, or mrkdwn_in properties. */
   executeSlackCompatibleWebhook: (
     webhookId: string,
     webhookToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Refer to Uploading Files for details on attachments and multipart/form-data requests. Returns a message or 204 No Content depending on the wait query parameter. */
   executeWebhook: (
     webhookId: string,
     webhookToken: string,
     params?: Partial<ExecuteWebhookParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Follow a News Channel to send messages to a target channel. Requires the MANAGE_WEBHOOKS permission in the target channel. Returns a followed channel object. */
   followNewsChannel: (
     channelId: string,
     params?: Partial<FollowNewsChannelParams>,
-    options?: O
+    options?: O,
   ) => Response<FollowedChannel>
   /** Fetches command permissions for a specific command for your application in a guild. Returns a guild application command permissions object. */
   getApplicationCommandPermissions: (
     applicationId: string,
     guildId: string,
     commandId: string,
-    options?: O
+    options?: O,
   ) => Response<GuildApplicationCommandPermission>
   /** Get a channel by ID. Returns a channel object.  If the channel is a thread, a thread member object is included in the returned result. */
   getChannel: (channelId: string, options?: O) => Response<Channel>
@@ -2527,13 +2548,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getChannelMessage: (
     channelId: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<Message>
   /** Returns the messages for a channel. If operating on a guild channel, this endpoint requires the VIEW_CHANNEL permission to be present on the current user. If the current user is missing the 'READ_MESSAGE_HISTORY' permission in the channel then this will return no messages (since they cannot read the message history). Returns an array of message objects on success. */
   getChannelMessages: (
     channelId: string,
     params?: Partial<GetChannelMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Message[]>
   /** Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission. */
   getChannelWebhooks: (channelId: string, options?: O) => Response<Webhook[]>
@@ -2542,19 +2563,19 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   /** Returns a guild member object for the current user. Requires the guilds.members.read OAuth2 scope. */
   getCurrentUserGuildMember: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<GuildMember>
   /** Returns a list of partial guild objects the current user is a member of. Requires the guilds OAuth2 scope. */
   getCurrentUserGuilds: (
     params?: Partial<GetCurrentUserGuildParams>,
-    options?: O
+    options?: O,
   ) => Response<Guild[]>
-  /** Returns a followup message for an Interaction. Functions the same as Get Webhook Message. Does not support ephemeral followups. */
+  /** Returns a followup message for an Interaction. Functions the same as Get Webhook Message. */
   getFollowupMessage: (
     applicationId: string,
     interactionToken: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   getGateway: (options?: O) => Response<any>
   getGatewayBot: (options?: O) => Response<GetGatewayBotResponse>
@@ -2562,43 +2583,43 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getGlobalApplicationCommand: (
     applicationId: string,
     commandId: string,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand>
   /** Fetch all of the global commands for your application. Returns an array of application command objects. */
   getGlobalApplicationCommands: (
     applicationId: string,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand[]>
   /** Returns the guild object for the given id. If with_counts is set to true, this endpoint will also return approximate_member_count and approximate_presence_count for the guild. */
   getGuild: (
     guildId: string,
     params?: Partial<GetGuildParams>,
-    options?: O
+    options?: O,
   ) => Response<Guild>
   /** Fetch a guild command for your application. Returns an application command object. */
   getGuildApplicationCommand: (
     applicationId: string,
     guildId: string,
     commandId: string,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand>
   /** Fetches command permissions for all commands for your application in a guild. Returns an array of guild application command permissions objects. */
   getGuildApplicationCommandPermissions: (
     applicationId: string,
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<GuildApplicationCommandPermission[]>
   /** Fetch all of the guild commands for your application for a specific guild. Returns an array of application command objects. */
   getGuildApplicationCommands: (
     applicationId: string,
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<ApplicationCommand[]>
   /** Returns an audit log object for the guild. Requires the 'VIEW_AUDIT_LOG' permission. */
   getGuildAuditLog: (
     guildId: string,
     params?: Partial<GetGuildAuditLogParams>,
-    options?: O
+    options?: O,
   ) => Response<AuditLog>
   /** Returns a ban object for the given user or a 404 not found if the ban cannot be found. Requires the BAN_MEMBERS permission. */
   getGuildBan: (guildId: string, userId: string, options?: O) => Response<Ban>
@@ -2610,12 +2631,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getGuildEmoji: (
     guildId: string,
     emojiId: string,
-    options?: O
+    options?: O,
   ) => Response<Emoji>
   /** Returns a list of integration objects for the guild. Requires the MANAGE_GUILD permission. */
   getGuildIntegrations: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<Integration[]>
   /** Returns a list of invite objects (with invite metadata) for the guild. Requires the MANAGE_GUILD permission. */
   getGuildInvites: (guildId: string, options?: O) => Response<Invite[]>
@@ -2623,7 +2644,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getGuildMember: (
     guildId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<GuildMember>
   /** Returns the guild preview object for the given id. If the user is not in the guild, then the guild must be lurkable. */
   getGuildPreview: (guildId: string, options?: O) => Response<GuildPreview>
@@ -2631,7 +2652,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getGuildPruneCount: (
     guildId: string,
     params?: Partial<GetGuildPruneCountParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Returns a list of role objects for the guild. */
   getGuildRoles: (guildId: string, options?: O) => Response<Role[]>
@@ -2640,25 +2661,25 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     guildScheduledEventId: string,
     params?: Partial<GetGuildScheduledEventParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildScheduledEvent>
   /** Get a list of guild scheduled event users subscribed to a guild scheduled event. Returns a list of guild scheduled event user objects on success. Guild member data, if it exists, is included if the with_member query parameter is set. */
   getGuildScheduledEventUsers: (
     guildId: string,
     guildScheduledEventId: string,
     params?: Partial<GetGuildScheduledEventUserParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildScheduledEventUser[]>
   /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the MANAGE_EMOJIS_AND_STICKERS permission. */
   getGuildSticker: (
     guildId: string,
     stickerId: string,
-    options?: O
+    options?: O,
   ) => Response<Sticker>
   /** Returns a guild template object for the given code. */
   getGuildTemplate: (
     templateCode: string,
-    options?: O
+    options?: O,
   ) => Response<GuildTemplate>
   /** Returns an array of guild template objects. Requires the MANAGE_GUILD permission. */
   getGuildTemplates: (guildId: string, options?: O) => Response<GuildTemplate[]>
@@ -2667,14 +2688,14 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   /** Returns a list of voice region objects for the guild. Unlike the similar /voice route, this returns VIP servers when the guild is VIP-enabled. */
   getGuildVoiceRegions: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<VoiceRegion[]>
   /** Returns a list of guild webhook objects. Requires the MANAGE_WEBHOOKS permission. */
   getGuildWebhooks: (guildId: string, options?: O) => Response<Webhook[]>
   /** Returns the Welcome Screen object for the guild. If the welcome screen is not enabled, the MANAGE_GUILD permission is required. */
   getGuildWelcomeScreen: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<WelcomeScreen>
   /** Returns the widget for the guild. */
   getGuildWidget: (guildId: string, options?: O) => Response<GetGuildWidget>
@@ -2682,24 +2703,24 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getGuildWidgetImage: (
     guildId: string,
     params?: Partial<GetGuildWidgetImageParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Returns a guild widget settings object. Requires the MANAGE_GUILD permission. */
   getGuildWidgetSettings: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<GuildWidgetSetting>
   /** Returns an invite object for the given code. */
   getInvite: (
     inviteCode: string,
     params?: Partial<GetInviteParams>,
-    options?: O
+    options?: O,
   ) => Response<Invite>
   /** Returns the initial Interaction response. Functions the same as Get Webhook Message. */
   getOriginalInteractionResponse: (
     applicationId: string,
     interactionToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Returns all pinned messages in the channel as an array of message objects. */
   getPinnedMessages: (channelId: string, options?: O) => Response<Message[]>
@@ -2710,7 +2731,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     messageId: string,
     emoji: string,
     params?: Partial<GetReactionParams>,
-    options?: O
+    options?: O,
   ) => Response<User[]>
   /** Gets the stage instance associated with the Stage channel, if it exists. */
   getStageInstance: (channelId: string, options?: O) => Response<any>
@@ -2720,7 +2741,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getThreadMember: (
     channelId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<ThreadMember>
   /** Returns a user object for a given user ID. */
   getUser: (userId: string, options?: O) => Response<User>
@@ -2734,26 +2755,26 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     webhookToken: string,
     messageId: string,
     params?: Partial<GetWebhookMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Message>
   /** Same as above, except this call does not require authentication and returns no user in the webhook object. */
   getWebhookWithToken: (
     webhookId: string,
     webhookToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Adds a recipient to a Group DM using their access token. */
   groupDmAddRecipient: (
     channelId: string,
     userId: string,
     params?: Partial<GroupDmAddRecipientParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Removes a recipient from a Group DM. */
   groupDmRemoveRecipient: (
     channelId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Adds the current user to a thread. Also requires the thread is not archived. Returns a 204 empty response on success. Fires a Thread Members Update Gateway event. */
   joinThread: (channelId: string, options?: O) => Response<any>
@@ -2764,12 +2785,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   /** Returns all active threads in the channel, including public and private threads. Threads are ordered by their id, in descending order. */
   listActiveThreads: (
     channelId: string,
-    options?: O
+    options?: O,
   ) => Response<ListActiveThreadResponse>
   /** Returns all active threads in the guild, including public and private threads. Threads are ordered by their id, in descending order. */
   listGuildActiveThreads: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<ListGuildActiveThreadResponse>
   /** Returns a list of emoji objects for the given guild. */
   listGuildEmojis: (guildId: string, options?: O) => Response<Emoji[]>
@@ -2777,7 +2798,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   listGuildMembers: (
     guildId: string,
     params?: Partial<ListGuildMemberParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildMember[]>
   /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the MANAGE_EMOJIS_AND_STICKERS permission. */
   listGuildStickers: (guildId: string, options?: O) => Response<Sticker[]>
@@ -2785,7 +2806,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   listJoinedPrivateArchivedThreads: (
     channelId: string,
     params?: Partial<ListJoinedPrivateArchivedThreadParams>,
-    options?: O
+    options?: O,
   ) => Response<ListJoinedPrivateArchivedThreadResponse>
   /** Returns the list of sticker packs available to Nitro subscribers. */
   listNitroStickerPacks: (options?: O) => Response<any>
@@ -2793,24 +2814,24 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   listPrivateArchivedThreads: (
     channelId: string,
     params?: Partial<ListPrivateArchivedThreadParams>,
-    options?: O
+    options?: O,
   ) => Response<ListPrivateArchivedThreadResponse>
   /** Returns archived threads in the channel that are public. When called on a GUILD_TEXT channel, returns threads of type GUILD_PUBLIC_THREAD. When called on a GUILD_NEWS channel returns threads of type GUILD_NEWS_THREAD. Threads are ordered by archive_timestamp, in descending order. Requires the READ_MESSAGE_HISTORY permission. */
   listPublicArchivedThreads: (
     channelId: string,
     params?: Partial<ListPublicArchivedThreadParams>,
-    options?: O
+    options?: O,
   ) => Response<ListPublicArchivedThreadResponse>
   /** Returns a list of guild scheduled event objects for the given guild. */
   listScheduledEventsForGuild: (
     guildId: string,
     params?: Partial<ListScheduledEventsForGuildParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildScheduledEvent[]>
   /** Returns array of thread members objects that are members of the thread. */
   listThreadMembers: (
     channelId: string,
-    options?: O
+    options?: O,
   ) => Response<ThreadMember[]>
   /** Returns an array of voice region objects that can be used when setting a voice or stage channel's rtc_region. */
   listVoiceRegions: (options?: O) => Response<VoiceRegion[]>
@@ -2818,181 +2839,181 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   modifyChannel: (
     channelId: string,
     params?: Partial<ModifyChannelParams>,
-    options?: O
+    options?: O,
   ) => Response<Channel>
   /** Modifies the current member in a guild. Returns a 200 with the updated member object on success. Fires a Guild Member Update Gateway event. */
   modifyCurrentMember: (
     guildId: string,
     params?: Partial<ModifyCurrentMemberParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Modify the requester's user account settings. Returns a user object on success. */
   modifyCurrentUser: (
     params?: Partial<ModifyCurrentUserParams>,
-    options?: O
+    options?: O,
   ) => Response<User>
   modifyCurrentUserNick: (
     guildId: string,
     params?: Partial<ModifyCurrentUserNickParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Updates the current user's voice state. Returns 204 No Content on success. */
   modifyCurrentUserVoiceState: (
     guildId: string,
     params?: Partial<ModifyCurrentUserVoiceStateParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Modify a guild's settings. Requires the MANAGE_GUILD permission. Returns the updated guild object on success. Fires a Guild Update Gateway event. */
   modifyGuild: (
     guildId: string,
     params?: Partial<ModifyGuildParams>,
-    options?: O
+    options?: O,
   ) => Response<Guild>
   /** Modify the positions of a set of channel objects for the guild. Requires MANAGE_CHANNELS permission. Returns a 204 empty response on success. Fires multiple Channel Update Gateway events. */
   modifyGuildChannelPositions: (
     guildId: string,
     params?: Partial<ModifyGuildChannelPositionParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Modify the given emoji. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the updated emoji object on success. Fires a Guild Emojis Update Gateway event. */
   modifyGuildEmoji: (
     guildId: string,
     emojiId: string,
     params?: Partial<ModifyGuildEmojiParams>,
-    options?: O
+    options?: O,
   ) => Response<Emoji>
   /** Modify attributes of a guild member. Returns a 200 OK with the guild member as the body. Fires a Guild Member Update Gateway event. If the channel_id is set to null, this will force the target user to be disconnected from voice. */
   modifyGuildMember: (
     guildId: string,
     userId: string,
     params?: Partial<ModifyGuildMemberParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildMember>
   /** Modify a guild role. Requires the MANAGE_ROLES permission. Returns the updated role on success. Fires a Guild Role Update Gateway event. */
   modifyGuildRole: (
     guildId: string,
     roleId: string,
     params?: Partial<ModifyGuildRoleParams>,
-    options?: O
+    options?: O,
   ) => Response<Role>
   /** Modify the positions of a set of role objects for the guild. Requires the MANAGE_ROLES permission. Returns a list of all of the guild's role objects on success. Fires multiple Guild Role Update Gateway events. */
   modifyGuildRolePositions: (
     guildId: string,
     params?: Partial<ModifyGuildRolePositionParams>,
-    options?: O
+    options?: O,
   ) => Response<Role[]>
   /** Modify a guild scheduled event. Returns the modified guild scheduled event object on success. */
   modifyGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
     params?: Partial<ModifyGuildScheduledEventParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildScheduledEvent>
   /** Modify the given sticker. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the updated sticker object on success. */
   modifyGuildSticker: (
     guildId: string,
     stickerId: string,
     params?: Partial<ModifyGuildStickerParams>,
-    options?: O
+    options?: O,
   ) => Response<Sticker>
   /** Modifies the template's metadata. Requires the MANAGE_GUILD permission. Returns the guild template object on success. */
   modifyGuildTemplate: (
     guildId: string,
     templateCode: string,
     params?: Partial<ModifyGuildTemplateParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildTemplate>
   /** Modify the guild's Welcome Screen. Requires the MANAGE_GUILD permission. Returns the updated Welcome Screen object. */
   modifyGuildWelcomeScreen: (
     guildId: string,
     params?: Partial<ModifyGuildWelcomeScreenParams>,
-    options?: O
+    options?: O,
   ) => Response<WelcomeScreen>
   /** Modify a guild widget settings object for the guild. All attributes may be passed in with JSON and modified. Requires the MANAGE_GUILD permission. Returns the updated guild widget object. */
   modifyGuildWidget: (
     guildId: string,
-    options?: O
+    options?: O,
   ) => Response<GuildWidgetSetting>
   /** Updates fields of an existing Stage instance. Returns the updated Stage instance. */
   modifyStageInstance: (
     channelId: string,
     params?: Partial<ModifyStageInstanceParams>,
-    options?: O
+    options?: O,
   ) => Response<StageInstance>
   /** Updates another user's voice state. */
   modifyUserVoiceState: (
     guildId: string,
     userId: string,
     params?: Partial<ModifyUserVoiceStateParams>,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Modify a webhook. Requires the MANAGE_WEBHOOKS permission. Returns the updated webhook object on success. */
   modifyWebhook: (
     webhookId: string,
     params?: Partial<ModifyWebhookParams>,
-    options?: O
+    options?: O,
   ) => Response<Webhook>
   /** Same as above, except this call does not require authentication, does not accept a channel_id parameter in the body, and does not return a user in the webhook object. */
   modifyWebhookWithToken: (
     webhookId: string,
     webhookToken: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Pin a message in a channel. Requires the MANAGE_MESSAGES permission. Returns a 204 empty response on success. */
   pinMessage: (
     channelId: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Remove the ban for a user. Requires the BAN_MEMBERS permissions. Returns a 204 empty response on success. Fires a Guild Ban Remove Gateway event. */
   removeGuildBan: (
     guildId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Remove a member from a guild. Requires KICK_MEMBERS permission. Returns a 204 empty response on success. Fires a Guild Member Remove Gateway event. */
   removeGuildMember: (
     guildId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Removes a role from a guild member. Requires the MANAGE_ROLES permission. Returns a 204 empty response on success. Fires a Guild Member Update Gateway event. */
   removeGuildMemberRole: (
     guildId: string,
     userId: string,
     roleId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Removes another member from a thread. Requires the MANAGE_THREADS permission, or the creator of the thread if it is a GUILD_PRIVATE_THREAD. Also requires the thread is not archived. Returns a 204 empty response on success. Fires a Thread Members Update Gateway event. */
   removeThreadMember: (
     channelId: string,
     userId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
   /** Returns a list of guild member objects whose username or nickname starts with a provided string. */
   searchGuildMembers: (
     guildId: string,
     params?: Partial<SearchGuildMemberParams>,
-    options?: O
+    options?: O,
   ) => Response<GuildMember[]>
   /** Creates a new thread from an existing message. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create Gateway event. */
   startThreadWithMessage: (
     channelId: string,
     messageId: string,
     params?: Partial<StartThreadWithMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Channel>
   /** Creates a new thread that is not connected to an existing message. The created thread defaults to a GUILD_PRIVATE_THREAD*. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create Gateway event. */
   startThreadWithoutMessage: (
     channelId: string,
     params?: Partial<StartThreadWithoutMessageParams>,
-    options?: O
+    options?: O,
   ) => Response<Channel>
   /** Syncs the template to the guild's current state. Requires the MANAGE_GUILD permission. Returns the guild template object on success. */
   syncGuildTemplate: (
     guildId: string,
     templateCode: string,
-    options?: O
+    options?: O,
   ) => Response<GuildTemplate>
   /** Post a typing indicator for the specified channel. Generally bots should not implement this route. However, if a bot is responding to a command and expects the computation to take a few seconds, this endpoint may be called to let the user know that the bot is processing their message. Returns a 204 empty response on success. Fires a Typing Start Gateway event. */
   triggerTypingIndicator: (channelId: string, options?: O) => Response<any>
@@ -3000,7 +3021,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   unpinMessage: (
     channelId: string,
     messageId: string,
-    options?: O
+    options?: O,
   ) => Response<any>
 }
 export interface ExecuteWebhookParams {
@@ -4818,7 +4839,7 @@ export interface SearchGuildMemberParams {
 export interface SelectMenu {
   /** 3 for a select menu */
   type: number
-  /** a developer-defined identifier for the button, max 100 characters */
+  /** a developer-defined identifier for the select menu, max 100 characters */
   custom_id: string
   /** the choices in the select, max 25 */
   options: SelectOption[]
