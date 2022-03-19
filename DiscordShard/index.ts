@@ -67,7 +67,6 @@ const makeImpl = (shard: [id: number, count: number]) =>
       ),
       CB.share,
     )
-    const fromDispatch = Utils.fromDispatch(dispatch)
 
     // heartbeats
     const heartbeatEffects = pipe(
@@ -104,7 +103,6 @@ const makeImpl = (shard: [id: number, count: number]) =>
       ),
       raw,
       dispatch,
-      fromDispatch,
       send: (p: GatewayPayload) => Q.offer_(outbound, p),
       reconnect: () => Q.offer_(outbound, Reconnect),
     } as const
