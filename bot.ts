@@ -8,17 +8,20 @@ import * as CB from "callbag-effect-ts"
 import * as Dotemv from "dotenv"
 import * as Shard from "./DiscordShard"
 import { log } from "./Log"
-import { DebugEnv } from "./mod"
+import { DebugEnv, makeConfigLayer, rest } from "./mod"
 import { GatewayIntents } from "./types"
 
 Dotemv.config()
 
-const makeBot = pipe(
-  Shard.make({
-    token: process.env.DISCORD_BOT_TOKEN!,
+const Config = makeConfigLayer({
+  token: process.env.DISCORD_BOT_TOKEN!,
+  gateway: {
     intents: GatewayIntents.GUILDS | GatewayIntents.GUILD_MESSAGES,
-    shard: [0, 1],
-  }),
+  },
+})
+
+const makeBot = pipe(
+  Shard.make([0, 1]),
   M.map(
     (bot) =>
       ({
@@ -44,7 +47,13 @@ const pingPong = pipe(
   T.map(({ fromDispatch }) => fromDispatch("MESSAGE_CREATE")),
   CB.unwrap,
   CB.filter((msg) => msg.content.startsWith("!ping")),
-  CB.forEach((msg) => log("got ping", msg)),
+  CB.forEach((msg) =>
+    rest((r) =>
+      r.createMessage(msg.channel_id, {
+        content: "Pong!",
+      }),
+    ),
+  ),
 )
 
 pipe(
@@ -53,5 +62,6 @@ pipe(
   T.zipPar(pingPong),
 
   T.provideSomeLayer(DebugEnv[">+>"](LiveBot)),
+  T.provideSomeLayer(Config),
   R.runMain,
 )

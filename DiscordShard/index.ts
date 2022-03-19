@@ -6,6 +6,7 @@ import { flow, pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
 import * as O from "@effect-ts/core/Option"
 import * as CB from "callbag-effect-ts"
+import * as Config from "../DiscordConfig"
 import * as DWS from "../DiscordWS"
 import {
   GatewayEvent,
@@ -19,10 +20,14 @@ import * as Identify from "./identify"
 import * as Invalid from "./invalidSession"
 import * as Utils from "./utils"
 
-export type Options = Identify.Options
+export interface Options {
+  shard: [number, number]
+}
 
-const makeImpl = (opts: Options) =>
+const makeImpl = (shard: [id: number, count: number]) =>
   M.gen(function* (_) {
+    const token = yield* _(Config.token)
+    const gateway = yield* _(Config.gateway)
     const outbound = yield* _(Q.makeUnbounded<DWS.Message>())
 
     const [latestReady, updateLatestReady] = yield* _(
@@ -73,7 +78,10 @@ const makeImpl = (opts: Options) =>
     // identify
     const identifyEffects = pipe(
       Identify.fromRaw(raw, {
-        ...opts,
+        token,
+        shard,
+        intents: gateway.intents,
+        presence: gateway.presence,
         latestSequence,
         latestReady,
       }),
@@ -112,5 +120,5 @@ export interface DiscordShard extends ReturnType<typeof makeService> {}
 export const DiscordShard = tag<DiscordShard>()
 export const LiveDiscordShard = L.fromFunction(DiscordShard)(makeService)
 
-export const make = (opts: Identify.Options) =>
-  M.accessServiceM(DiscordShard)(({ make }) => make(opts))
+export const make = (shard: [number, number]) =>
+  M.accessServiceM(DiscordShard)(({ make }) => make(shard))

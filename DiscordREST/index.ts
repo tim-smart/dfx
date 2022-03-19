@@ -79,3 +79,5 @@ const make = T.gen(function* (_) {
 })
 
 export const LiveDiscordREST = T.toLayer(DiscordREST)(make)
+
+export const rest = T.accessServiceM(DiscordREST)
