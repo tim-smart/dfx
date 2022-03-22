@@ -123,14 +123,14 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-callbag-effect-ts@^0.9.0:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/callbag-effect-ts/-/callbag-effect-ts-0.9.2.tgz#fa249f3bfb017b92e344d6aa641de4426d14d259"
-  integrity sha512-Y62mZIKisSrYFW1KKC7DApr/bGTDx23iXIFgPxeMTq44adxFhnj69I88CADDpxyC3U+CWTJ6z0rhVbKNzWtLYw==
+callbag-effect-ts@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/callbag-effect-ts/-/callbag-effect-ts-0.9.3.tgz#cdf60b0e250d11b6de79338e34c95639dea891dc"
+  integrity sha512-6H1EfKjy+O8tT98qWGUXKEFfo/S5wgb+LwTBBTboQrQBGDcJEjbsLuxU4TmTwP+XO/WADTTrGvu4VjM943nWLg==
   dependencies:
     "@effect-ts/core" "^0.59.0"
     strict-callbag "^0.9.0"
-    strict-callbag-basics "^0.5.0"
+    strict-callbag-basics "^0.5.1"
 
 callbag-filter@^1.1.0:
   version "1.1.0"
@@ -429,7 +429,7 @@ rxjs@^7.0.1:
   dependencies:
     tslib "^2.1.0"
 
-strict-callbag-basics@^0.5.0:
+strict-callbag-basics@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.5.1.tgz#50b3e0918efe438160dbf1ab236ea0d9f758ef0a"
   integrity sha512-caVULxwxKZtJDWlyw8l7QkCO+jD+GPV2MVoFBP7FBjIcDt1Z8IWx1F1Dvqfc7YHwK2ooqQ3nQrzWi0FN3bDZxg==
