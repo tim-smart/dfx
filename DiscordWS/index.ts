@@ -3,10 +3,12 @@ import * as L from "@effect-ts/core/Effect/Layer"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
-import { tag } from "@effect-ts/core/Has"
+import { tag, Has } from "@effect-ts/core/Has"
+import { HasClock } from "@effect-ts/system/Clock"
 import * as CB from "callbag-effect-ts"
+import { EffectSource } from "callbag-effect-ts"
 import { RawData } from "ws"
-import { log } from "../Log"
+import { log, Log } from "../Log"
 import { GatewayPayload } from "../types"
 import * as WS from "../WS"
 
@@ -55,7 +57,11 @@ const openImpl = ({
     CB.tapError((e) => log(serviceTag, "error", e)),
     CB.retry(SC.exponential(500)),
     CB.map(encoding.decode),
-  )
+  ) as EffectSource<
+    Has<WS.WS> & Has<Log> & HasClock,
+    never,
+    GatewayPayload<any>
+  >
 
 export type Connection = ReturnType<typeof openImpl>
 
