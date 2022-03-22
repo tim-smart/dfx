@@ -430,9 +430,9 @@ rxjs@^7.0.1:
     tslib "^2.1.0"
 
 strict-callbag-basics@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.5.0.tgz#2942a276b92a8cecb641833726dd2325b0f602b8"
-  integrity sha512-IreFGwuR8VwJgBEZjP8M0JcLpnduil3pjIqj+kHrTzOhpYa2TiOZzhCuXO53CqlO5XcOihXpKmFD/E/qtSU8Og==
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.5.1.tgz#50b3e0918efe438160dbf1ab236ea0d9f758ef0a"
+  integrity sha512-caVULxwxKZtJDWlyw8l7QkCO+jD+GPV2MVoFBP7FBjIcDt1Z8IWx1F1Dvqfc7YHwK2ooqQ3nQrzWi0FN3bDZxg==
   dependencies:
     callbag-filter "^1.1.0"
     callbag-flatten "^1.7.0"
