@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/tim-smart/dfx/compare/dfx@0.1.0...dfx@0.2.0) (2022-03-22)
+
+
+### Bug Fixes
+
+* **DiscordWS:** error type should be never after retry ([d0b9d7e](https://github.com/tim-smart/dfx/commit/d0b9d7e9748da874eab79fc77964d5f89fd5b3c5))
+
+
+### Features
+
+* callRest helper ([5c617b6](https://github.com/tim-smart/dfx/commit/5c617b60a967ca8972e00e29e5246c4ca3c45fa4))
+
+
+
+
+
 # 0.1.0 (2022-03-22)
 
 
