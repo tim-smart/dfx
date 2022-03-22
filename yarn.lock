@@ -1277,14 +1277,14 @@ call-bind@^1.0.0, call-bind@^1.0.2:
     function-bind "^1.1.1"
     get-intrinsic "^1.0.2"
 
-callbag-effect-ts@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/callbag-effect-ts/-/callbag-effect-ts-0.9.3.tgz#cdf60b0e250d11b6de79338e34c95639dea891dc"
-  integrity sha512-6H1EfKjy+O8tT98qWGUXKEFfo/S5wgb+LwTBBTboQrQBGDcJEjbsLuxU4TmTwP+XO/WADTTrGvu4VjM943nWLg==
+callbag-effect-ts@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/callbag-effect-ts/-/callbag-effect-ts-0.9.4.tgz#cae6771dd575fc55c6d9635aea468df58f50d96f"
+  integrity sha512-gd8ut50XZLpXNnrMa/861V3y0BgDJqG/cbdHX6fhh1N+GtqTyNjiSTQDE5EFsakqGGOcvoxTh4ID5gtIQ54mZg==
   dependencies:
     "@effect-ts/core" "^0.59.0"
     strict-callbag "^0.9.0"
-    strict-callbag-basics "^0.5.1"
+    strict-callbag-basics "^0.6.2"
 
 callbag-filter@^1.1.0:
   version "1.1.0"
@@ -4250,10 +4250,10 @@ ssri@^8.0.0, ssri@^8.0.1:
   dependencies:
     minipass "^3.1.1"
 
-strict-callbag-basics@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.5.1.tgz#50b3e0918efe438160dbf1ab236ea0d9f758ef0a"
-  integrity sha512-caVULxwxKZtJDWlyw8l7QkCO+jD+GPV2MVoFBP7FBjIcDt1Z8IWx1F1Dvqfc7YHwK2ooqQ3nQrzWi0FN3bDZxg==
+strict-callbag-basics@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.6.2.tgz#ef65c194f63176a87319e4f3b8e9355c0c2f00ac"
+  integrity sha512-2ijcuxFqek2svCF1UPRApoXUCCLaz22x95ZWTRBxSrs7viDhxSaS7rW+JwA3RndDjgUwY/GW5Eygu+aS2cLVoQ==
   dependencies:
     callbag-filter "^1.1.0"
     callbag-flatten "^1.7.0"
