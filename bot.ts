@@ -2,7 +2,7 @@ import * as T from "@effect-ts/core/Effect"
 import { pipe } from "@effect-ts/core/Function"
 import * as R from "@effect-ts/node/Runtime"
 import * as CB from "callbag-effect-ts"
-import * as Dotemv from "dotenv"
+import * as Dotenv from "dotenv"
 import { log } from "./Log"
 import {
   DebugEnv,
@@ -14,7 +14,7 @@ import {
 } from "./mod"
 import { GatewayIntents } from "./types"
 
-Dotemv.config()
+Dotenv.config()
 
 const Config = makeConfigLayer({
   token: process.env.DISCORD_BOT_TOKEN!,

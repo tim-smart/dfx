@@ -22,6 +22,7 @@
     "@effect-ts/tracing-plugin": "^0.19.0",
     "@tim-smart/discord-api-docs-parser": "^0.3.0",
     "@types/ws": "^8.5.3",
+    "callbag-effect-ts": "^0.9.3",
     "dotenv": "^16.0.0",
     "prettier": "^2.5.1",
     "ts-node": "^10.7.0",
@@ -33,9 +34,11 @@
     "@effect-ts/node": "^0.38.3",
     "@effect-ts/system": "^0.56.0",
     "axios": "^0.26.1",
-    "callbag-effect-ts": "^0.9.3",
     "tslib": "^2.3.1",
     "ws": "^8.5.0"
+  },
+  "peerDependencies": {
+    "callbag-effect-ts": "^0.9"
   },
   "exports": {
     ".": {
