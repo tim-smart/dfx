@@ -1,11 +1,13 @@
 import * as T from "@effect-ts/core/Effect"
-import { tag } from "@effect-ts/system/Has"
+import { Has, tag } from "@effect-ts/system/Has"
 import Axios, { AxiosInstance, AxiosRequestConfig, Method } from "axios"
 import * as Config from "../DiscordConfig"
 import { createRoutes, Endpoints } from "../types"
 import * as Http from "./http"
+import { Response, RESTError } from "./types"
 
-export interface DiscordREST extends Endpoints<AxiosRequestConfig> {
+interface AxiosEndpoints extends Endpoints<AxiosRequestConfig> {}
+export interface DiscordREST extends AxiosEndpoints {
   _tag: "DiscordREST"
   axios: AxiosInstance
 }
@@ -81,3 +83,15 @@ const make = T.gen(function* (_) {
 export const LiveDiscordREST = T.toLayer(DiscordREST)(make)
 
 export const rest = T.accessServiceM(DiscordREST)
+
+type InferResponse<T extends (...args: any[]) => Response<any>> = T extends (
+  ...args: any[]
+) => Response<infer R>
+  ? R
+  : never
+
+export const call = <K extends keyof AxiosEndpoints>(
+  method: K,
+  ...args: Parameters<AxiosEndpoints[K]>
+): T.Effect<Has<DiscordREST>, RESTError, InferResponse<AxiosEndpoints[K]>> =>
+  rest((r) => (r[method] as any)(...args))
