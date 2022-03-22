@@ -44,14 +44,20 @@
     ".": {
       "require": "./mod.js"
     },
-    "./WS": {
-      "require": "./WS/index.js"
+    "./DiscordConfig": {
+      "require": "./DiscordConfig/index.js"
+    },
+    "./DiscordREST": {
+      "require": "./DiscordREST/index.js"
     },
     "./DiscordShard": {
       "require": "./DiscordShard/index.js"
     },
     "./DiscordWS": {
       "require": "./DiscordWS/index.js"
+    },
+    "./WS": {
+      "require": "./WS/index.js"
     }
   }
 }
