@@ -6,7 +6,9 @@
   "author": "Tim Smart <tim.smart@arisechurch.com>",
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "yarn clean && ttsc",
+    "prepublishOnly": "yarn clean && yarn build:cjs && yarn build:esm",
+    "build:cjs": "ttsc -p tsconfig.json",
+    "build:esm": "ttsc -p tsconfig.esm.json",
     "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=Response|./DiscordREST/types' 'endpointReturnType=Response' > types.ts && prettier -w types.ts",
     "clean": "git clean -fxd -e node_modules/ -e .env -e .vscode",
     "dev": "ts-node -C ttypescript bot.ts"
