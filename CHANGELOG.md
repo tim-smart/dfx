@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/tim-smart/dfx/compare/dfx@0.2.0...dfx@0.3.0) (2022-03-22)
+
+
+### Code Refactoring
+
+* simplify rest DX ([de57d33](https://github.com/tim-smart/dfx/commit/de57d3399af0d4f0bbbed7830156d85d45363669))
+
+
+### BREAKING CHANGES
+
+* rest api changed
+
+
+
+
+
 # [0.2.0](https://github.com/tim-smart/dfx/compare/dfx@0.1.0...dfx@0.2.0) (2022-03-22)
 
 
