@@ -1,0 +1,12 @@
+{
+  "packages": ["."],
+  "version": "independent",
+  "npmClient": "yarn",
+  "command": {
+    "version": {
+      "allowBranch": "main",
+      "conventionalCommits": true,
+      "createRelease": "github"
+    }
+  }
+}

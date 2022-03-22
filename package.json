@@ -26,6 +26,7 @@
     "@types/ws": "^8.5.3",
     "callbag-effect-ts": "^0.9.3",
     "dotenv": "^16.0.0",
+    "lerna": "^4.0.0",
     "prettier": "^2.5.1",
     "ts-node": "^10.7.0",
     "ttypescript": "^1.5.13",
