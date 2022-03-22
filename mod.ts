@@ -16,4 +16,4 @@ export const DefaultEnv = DiscordEnv["+++"](LiveLog)
 
 export { makeLayer as makeConfigLayer } from "./DiscordConfig"
 export { gateway, fromDispatch, run } from "./DiscordGateway"
-export { rest, call as callRest } from "./DiscordREST"
+export { rest } from "./DiscordREST"

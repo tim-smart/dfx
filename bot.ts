@@ -5,11 +5,11 @@ import * as CB from "callbag-effect-ts"
 import * as Dotenv from "dotenv"
 import { log } from "./Log"
 import {
-  callRest,
   DebugEnv,
   fromDispatch,
   gateway,
   makeConfigLayer,
+  rest,
   run,
 } from "./mod"
 import { GatewayIntents } from "./types"
@@ -31,7 +31,7 @@ const pingPong = pipe(
   fromDispatch("MESSAGE_CREATE"),
   CB.filter((msg) => msg.content.startsWith("!ping")),
   CB.forEach((msg) =>
-    callRest("createMessage", msg.channel_id, {
+    rest.createMessage(msg.channel_id, {
       content: "Pong!",
     }),
   ),

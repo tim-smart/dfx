@@ -1,17 +1,10 @@
 import * as T from "@effect-ts/core/Effect"
-import { Has, tag } from "@effect-ts/system/Has"
-import Axios, { AxiosInstance, AxiosRequestConfig, Method } from "axios"
+import { tag } from "@effect-ts/core/Has"
+import { _A } from "@effect-ts/core/Utils"
+import Axios, { AxiosRequestConfig, Method } from "axios"
 import * as Config from "../DiscordConfig"
-import { createRoutes, Endpoints } from "../types"
+import { createRoutes } from "../types"
 import * as Http from "./http"
-import { Response, RESTError } from "./types"
-
-interface AxiosEndpoints extends Endpoints<AxiosRequestConfig> {}
-export interface DiscordREST extends AxiosEndpoints {
-  _tag: "DiscordREST"
-  axios: AxiosInstance
-}
-export const DiscordREST = tag<DiscordREST>()
 
 interface FormData {
   append: (key: string, value: unknown) => void
@@ -29,8 +22,21 @@ const make = T.gen(function* (_) {
     },
   })
   const request = Http.request(axios)
-  const routes = createRoutes<AxiosRequestConfig>(
-    ({ method, url, params = {}, options = {} }) => {
+
+  return {
+    _tag: "DiscordREST",
+    axios,
+    request,
+  }
+})
+
+export interface DiscordREST extends _A<typeof make> {}
+export const DiscordREST = tag<DiscordREST>()
+export const LiveDiscordREST = T.toLayer(DiscordREST)(make)
+
+export const rest = createRoutes<AxiosRequestConfig>(
+  ({ method, url, params = {}, options = {} }) =>
+    T.accessServiceM(DiscordREST)(({ request }) => {
       const hasBody = method !== "GET" && method !== "DELETE"
       let hasFormData = false
 
@@ -67,31 +73,7 @@ const make = T.gen(function* (_) {
         params: qsParams,
         data,
       }
+
       return request(config)
-    },
-  )
-
-  const rest: DiscordREST = {
-    _tag: "DiscordREST",
-    axios,
-    ...routes,
-  }
-
-  return rest
-})
-
-export const LiveDiscordREST = T.toLayer(DiscordREST)(make)
-
-export const rest = T.accessServiceM(DiscordREST)
-
-type InferResponse<T extends (...args: any[]) => Response<any>> = T extends (
-  ...args: any[]
-) => Response<infer R>
-  ? R
-  : never
-
-export const call = <K extends keyof AxiosEndpoints>(
-  method: K,
-  ...args: Parameters<AxiosEndpoints[K]>
-): T.Effect<Has<DiscordREST>, RESTError, InferResponse<AxiosEndpoints[K]>> =>
-  rest((r) => (r[method] as any)(...args))
+    }),
+)
