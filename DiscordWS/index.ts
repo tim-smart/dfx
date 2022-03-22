@@ -34,13 +34,7 @@ export const jsonEncoding: Encoding = {
 }
 
 const makeOutgoing = (q: Q.Queue<Message>, e: Encoding): WS.OutboundQueue =>
-  Q.map_(q, (data): WS.Message => {
-    if (data === WS.Reconnect) {
-      return data
-    }
-
-    return e.encode(data)
-  })
+  Q.map_(q, (data) => (data === WS.Reconnect ? data : e.encode(data)))
 
 const openImpl = ({
   url = "wss://gateway.discord.gg/",
