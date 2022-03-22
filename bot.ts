@@ -10,7 +10,6 @@ import {
   fromDispatch,
   gateway,
   makeConfigLayer,
-  rest,
   run,
 } from "./mod"
 import { GatewayIntents } from "./types"
