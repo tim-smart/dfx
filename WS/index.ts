@@ -1,5 +1,4 @@
 import * as T from "@effect-ts/core/Effect"
-import * as S from "@effect-ts/core/Effect/Experimental/Stream"
 import * as M from "@effect-ts/core/Effect/Managed"
 import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
@@ -32,7 +31,7 @@ const openSocket = (url: string, options?: Ws.ClientOptions) =>
 
 const recv = (ws: Ws.WebSocket) =>
   CB.async<unknown, WsError, Ws.RawData>((emit) => {
-    ws.on("message", (message) => emit.single(message))
+    ws.on("message", (message) => emit.data(message))
     ws.on("error", (cause) => {
       emit.fail({
         _tag: "error",

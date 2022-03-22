@@ -14,22 +14,22 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@effect-ts/core@^0.58.0":
-  version "0.58.1"
-  resolved "https://registry.yarnpkg.com/@effect-ts/core/-/core-0.58.1.tgz#9ddb527c8b19501cb1f12bda23c16af722258964"
-  integrity sha512-N0UwVyg+cx7FMG2zFh7uzpkyOk7iGYhiBfVN1K5MqpVXZzLvbuR9yud3SveaIxD0dJnso4AnPzrw6zhctNO+1A==
+"@effect-ts/core@^0.59.0":
+  version "0.59.0"
+  resolved "https://registry.yarnpkg.com/@effect-ts/core/-/core-0.59.0.tgz#29f74dd49a49f196039cbf0657709c9ae8770726"
+  integrity sha512-Sil/a6xzFtnQbWlV0SrvKvgaJIxF2FKGtuhd5Vn2hFxBHG/tr4wFg//T0jfFoYi68S1qJ9Y0VOFtFI+OScFLaA==
   dependencies:
-    "@effect-ts/system" "^0.55.1"
+    "@effect-ts/system" "^0.56.0"
 
 "@effect-ts/node@^0.38.3":
   version "0.38.3"
   resolved "https://registry.yarnpkg.com/@effect-ts/node/-/node-0.38.3.tgz#d91558efa94fa3d5dc75a3d516424af74d297949"
   integrity sha512-6+N1oNyp/IMmAstOiZWELCxdd+6jT2vJi1kK23Oj7Pig0suumDNh59AfbZwfX/+JcSScbD1qiIK5gSUN6C9Jow==
 
-"@effect-ts/system@^0.55.0", "@effect-ts/system@^0.55.1":
-  version "0.55.1"
-  resolved "https://registry.yarnpkg.com/@effect-ts/system/-/system-0.55.1.tgz#fe157e7639ff6b05a51b62379961662569da98fb"
-  integrity sha512-OEnwd9JhrV2Q5S7cke/ZgR56Hn75DSr1aIkA0PBE1edoX6GKB6nOdu8u/vPhvqjxLHfMgN8o+EVaWUHPLIC1UQ==
+"@effect-ts/system@^0.56.0":
+  version "0.56.0"
+  resolved "https://registry.yarnpkg.com/@effect-ts/system/-/system-0.56.0.tgz#f5e2f7fcfe55f1fc2ccb54d2c4939e6de210465a"
+  integrity sha512-+k6BtQ/TZmMTC7JQkBl/KsjvcLpv7W1+PFGnkyiBi0Do13QD+pDI1gd9ZKPXTbKvTZPjudLxuf9Bfx19IRhnLg==
 
 "@effect-ts/tracing-plugin@^0.19.0":
   version "0.19.1"
@@ -73,9 +73,9 @@
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
 "@types/node@*":
-  version "17.0.21"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.21.tgz#864b987c0c68d07b4345845c3e63b75edd143644"
-  integrity sha512-DBZCJbhII3r90XbQxI8Y9IjjiiOGlZ0Hr32omXIZvwwZ7p4DMMXGrKXVyPfuoBOri9XNtL0UK69jYIBIsRX3QQ==
+  version "17.0.22"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.22.tgz#38b6c4b9b2f3ed9f2e376cce42a298fb2375251e"
+  integrity sha512-8FwbVoG4fy+ykY86XCAclKZDORttqE5/s7dyWZKLXTdv3vRy5HozBEinG5IqhvPXXzIZEcTVbuHlQEI6iuwcmw==
 
 "@types/ws@^8.5.3":
   version "8.5.3"
@@ -124,19 +124,13 @@ boolbase@^1.0.0:
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
 callbag-effect-ts@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/callbag-effect-ts/-/callbag-effect-ts-0.9.0.tgz#266465fe3398b9680db49fc55a451293b682d704"
-  integrity sha512-DxACLPTLuDeKK9++1XOtnwE9mCzg99J6N8C8CVowBUAPI7iGboLqfqizz6GLJz43OulYBGTqBihsPyqLUYuM5A==
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/callbag-effect-ts/-/callbag-effect-ts-0.9.2.tgz#fa249f3bfb017b92e344d6aa641de4426d14d259"
+  integrity sha512-Y62mZIKisSrYFW1KKC7DApr/bGTDx23iXIFgPxeMTq44adxFhnj69I88CADDpxyC3U+CWTJ6z0rhVbKNzWtLYw==
   dependencies:
-    "@effect-ts/core" "^0.58.0"
-    callbag-filter "^1.1.0"
-    callbag-flatten "^1.7.0"
-    callbag-from-iter "^1.3.0"
-    callbag-map "^1.1.0"
-    callbag-merge "^3.2.2"
-    callbag-share "^1.3.0"
-    callbag-start-with "^3.1.0"
-    strict-callbag "^0.8.0"
+    "@effect-ts/core" "^0.59.0"
+    strict-callbag "^0.9.0"
+    strict-callbag-basics "^0.5.0"
 
 callbag-filter@^1.1.0:
   version "1.1.0"
@@ -276,9 +270,9 @@ domelementtype@^2.0.1, domelementtype@^2.2.0:
   integrity sha512-DtBMo82pv1dFtUmHyr48beiuq792Sxohr+8Hm9zoxklYPfa6n0Z3Byjj2IV7bmr2IyqClnqEQhfgHJJ5QF0R5A==
 
 domhandler@^4.0.0, domhandler@^4.2.0, domhandler@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-4.3.0.tgz#16c658c626cf966967e306f966b431f77d4a5626"
-  integrity sha512-fC0aXNQXqKSFTr2wDNZDhsEYjCiYsDWl3D01kwt25hm1YIPyDGHvvi3rw+PLqHAl/m71MaiF7d5zvBr0p5UB2g==
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-4.3.1.tgz#8d792033416f59d68bc03a5aa7b018c1ca89279c"
+  integrity sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==
   dependencies:
     domelementtype "^2.2.0"
 
@@ -435,10 +429,24 @@ rxjs@^7.0.1:
   dependencies:
     tslib "^2.1.0"
 
-strict-callbag@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/strict-callbag/-/strict-callbag-0.8.0.tgz#44034597362f591c404f9fdcc95b8dc7c0b96cf2"
-  integrity sha512-IHE2vRlNk8qjJnCcs41C+IhmynNCYIFkGyRQrL6IrgRetenslfdjSYnBNx7T2SF9fdg2+yDBuMIeUt1eNs2QPw==
+strict-callbag-basics@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.5.0.tgz#2942a276b92a8cecb641833726dd2325b0f602b8"
+  integrity sha512-IreFGwuR8VwJgBEZjP8M0JcLpnduil3pjIqj+kHrTzOhpYa2TiOZzhCuXO53CqlO5XcOihXpKmFD/E/qtSU8Og==
+  dependencies:
+    callbag-filter "^1.1.0"
+    callbag-flatten "^1.7.0"
+    callbag-from-iter "^1.3.0"
+    callbag-map "^1.1.0"
+    callbag-merge "^3.2.2"
+    callbag-share "^1.3.0"
+    callbag-start-with "^3.1.0"
+    strict-callbag "^0.9.0"
+
+strict-callbag@^0.9.0:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/strict-callbag/-/strict-callbag-0.9.1.tgz#aef2fccff937712c877ee45b77413a5f58ce4192"
+  integrity sha512-m0rTLzf4sFkIobAGDPsfeO3WQNMMHxjN2zq9706nd2kjFu51hzNFuI1EbHXAfw43oX+IEohoNYZyPxVJyWdMJw==
 
 string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
@@ -532,9 +540,9 @@ yargs-parser@^21.0.0:
   integrity sha512-9BK1jFpLzJROCI5TzwZL/TU4gqjK5xiHV/RfWLOahrjAko/e4DJkRDZQXfvqAsiZzzYhgAzbgz6lg48jcm4GLg==
 
 yargs@^17.0.1:
-  version "17.3.1"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.3.1.tgz#da56b28f32e2fd45aefb402ed9c26f42be4c07b9"
-  integrity sha512-WUANQeVgjLbNsEmGk20f+nlHgOqzRFpiGWVaBrYGYIGANIIu3lWjoyi0fNlFmJkvfhCZ6BXINe7/W2O2bV4iaA==
+  version "17.4.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.4.0.tgz#9fc9efc96bd3aa2c1240446af28499f0e7593d00"
+  integrity sha512-WJudfrk81yWFSOkZYpAZx4Nt7V4xp7S/uJkX0CnxovMCt1wCE8LNftPpNuF9X/u9gN5nsD7ycYtRcDf2pL3UiA==
   dependencies:
     cliui "^7.0.2"
     escalade "^3.1.1"
