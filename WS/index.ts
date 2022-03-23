@@ -1,10 +1,10 @@
 import * as T from "@effect-ts/core/Effect"
 import * as M from "@effect-ts/core/Effect/Managed"
-import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
-import * as CB from "callbag-effect-ts"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
+import * as CB from "callbag-effect-ts"
+import { EffectSource } from "callbag-effect-ts"
 import * as Ws from "ws"
 import { logDebug } from "../Log"
 
@@ -16,7 +16,7 @@ export type WsError =
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
-export type OutboundQueue = Q.Dequeue<Message>
+export type Outbound = EffectSource<unknown, never, Message>
 
 const openSocket = (url: string, options?: Ws.ClientOptions) =>
   pipe(
@@ -30,7 +30,7 @@ const openSocket = (url: string, options?: Ws.ClientOptions) =>
   )
 
 const recv = (ws: Ws.WebSocket) =>
-  CB.async<unknown, WsError, Ws.RawData>((emit) => {
+  CB.async<WsError, Ws.RawData>((emit) => {
     ws.on("message", (message) => emit.data(message))
     ws.on("error", (cause) => {
       emit.fail({
@@ -47,7 +47,7 @@ const recv = (ws: Ws.WebSocket) =>
     )
   })
 
-const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
+const send = (ws: Ws.WebSocket, out: Outbound) =>
   pipe(
     T.effectAsync<unknown, WsError, void>((cb) => {
       if (ws.readyState & ws.OPEN) {
@@ -58,7 +58,7 @@ const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
         })
       }
     }),
-    T.map(() => CB.fromQueue(out)),
+    T.map(() => out),
     CB.unwrap,
     CB.tap((p) => logDebug("WSService", "send", p)),
     CB.tap((data) =>
@@ -80,14 +80,10 @@ const send = (ws: Ws.WebSocket, out: OutboundQueue) =>
     CB.drain,
   )
 
-const duplex = (out: OutboundQueue) => (ws: Ws.WebSocket) =>
+const duplex = (out: Outbound) => (ws: Ws.WebSocket) =>
   CB.merge_(recv(ws), send(ws, out))
 
-const openDuplex = (
-  url: string,
-  out: OutboundQueue,
-  options?: Ws.ClientOptions,
-) =>
+const openDuplex = (url: string, out: Outbound, options?: Ws.ClientOptions) =>
   pipe(
     openSocket(url, options),
     M.map(duplex(out)),
@@ -106,8 +102,5 @@ export const WS = tag<WS>()
 export const LiveWS = T.toLayer(WS)(T.succeedWith(makeService))
 
 // Helpers
-export const open = (
-  url: string,
-  out: OutboundQueue,
-  options?: Ws.ClientOptions,
-) => T.accessService(WS)(({ open }) => open(url, out, options))
+export const open = (url: string, out: Outbound, options?: Ws.ClientOptions) =>
+  T.accessService(WS)(({ open }) => open(url, out, options))

@@ -1,7 +1,6 @@
 import * as T from "@effect-ts/core/Effect"
 import * as L from "@effect-ts/core/Effect/Layer"
 import * as M from "@effect-ts/core/Effect/Managed"
-import * as Q from "@effect-ts/core/Effect/Queue"
 import { flow, pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
 import * as O from "@effect-ts/core/Option"
@@ -28,7 +27,13 @@ const makeImpl = (shard: [id: number, count: number]) =>
   M.gen(function* (_) {
     const token = yield* _(Config.token)
     const gateway = yield* _(Config.gateway)
-    const outbound = yield* _(Q.makeUnbounded<DWS.Message>())
+    const [emit, outbound] = CB.asyncEmitter<never, DWS.Message>()
+
+    const sendMessages = CB.forEach((p: DWS.Message) =>
+      T.succeedWith(() => {
+        emit.data(p)
+      }),
+    )
 
     const [latestReady, updateLatestReady] = yield* _(
       Utils.latest(
@@ -71,7 +76,7 @@ const makeImpl = (shard: [id: number, count: number]) =>
     // heartbeats
     const heartbeatEffects = pipe(
       Heartbeats.fromRaw(raw, latestSequence),
-      CB.forEach((p) => Q.offer_(outbound, p)),
+      sendMessages,
     )
 
     // identify
@@ -84,14 +89,11 @@ const makeImpl = (shard: [id: number, count: number]) =>
         latestSequence,
         latestReady,
       }),
-      CB.forEach((p) => Q.offer_(outbound, p)),
+      sendMessages,
     )
 
     // invalid session
-    const invalidEffects = pipe(
-      Invalid.fromRaw(raw, latestReady),
-      CB.forEach((p) => Q.offer_(outbound, p)),
-    )
+    const invalidEffects = pipe(Invalid.fromRaw(raw, latestReady), sendMessages)
 
     return {
       run: pipe(
@@ -103,8 +105,8 @@ const makeImpl = (shard: [id: number, count: number]) =>
       ),
       raw,
       dispatch,
-      send: (p: GatewayPayload) => Q.offer_(outbound, p),
-      reconnect: () => Q.offer_(outbound, Reconnect),
+      send: (p: GatewayPayload) => emit.data(p),
+      reconnect: () => emit.data(Reconnect),
     } as const
   })
 

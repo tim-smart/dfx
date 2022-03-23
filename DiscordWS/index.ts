@@ -1,9 +1,8 @@
 import * as T from "@effect-ts/core/Effect"
 import * as L from "@effect-ts/core/Effect/Layer"
-import * as Q from "@effect-ts/core/Effect/Queue"
 import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
-import { tag, Has } from "@effect-ts/core/Has"
+import { Has, tag } from "@effect-ts/core/Has"
 import { HasClock } from "@effect-ts/system/Clock"
 import * as CB from "callbag-effect-ts"
 import { EffectSource } from "callbag-effect-ts"
@@ -18,7 +17,7 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: Encoding
-  outgoingQueue: Q.Queue<Message>
+  outgoingQueue: EffectSource<unknown, never, Message>
 }
 
 export interface Encoding {
@@ -33,8 +32,11 @@ export const jsonEncoding: Encoding = {
   decode: (p) => JSON.parse(p.toString("utf8")),
 }
 
-const makeOutgoing = (q: Q.Queue<Message>, e: Encoding): WS.OutboundQueue =>
-  Q.map_(q, (data) => (data === WS.Reconnect ? data : e.encode(data)))
+const makeOutgoing = (
+  out: EffectSource<unknown, never, Message>,
+  e: Encoding,
+): WS.Outbound =>
+  CB.map_(out, (data) => (data === WS.Reconnect ? data : e.encode(data)))
 
 const openImpl = ({
   url = "wss://gateway.discord.gg/",
