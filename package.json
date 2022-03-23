@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Effect-TS discord library",
   "main": "mod.js",
   "author": "Tim Smart <tim.smart@arisechurch.com>",
