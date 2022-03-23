@@ -982,9 +982,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*":
-  version "17.0.22"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.22.tgz#38b6c4b9b2f3ed9f2e376cce42a298fb2375251e"
-  integrity sha512-8FwbVoG4fy+ykY86XCAclKZDORttqE5/s7dyWZKLXTdv3vRy5HozBEinG5IqhvPXXzIZEcTVbuHlQEI6iuwcmw==
+  version "17.0.23"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.23.tgz#3b41a6e643589ac6442bdbd7a4a3ded62f33f7da"
+  integrity sha512-UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -4244,9 +4244,9 @@ ssri@^8.0.0, ssri@^8.0.1:
     minipass "^3.1.1"
 
 strict-callbag-basics@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.8.0.tgz#e03820ab584040ad05f80cf381e967940c332213"
-  integrity sha512-tP2MZFj+oXLlnzHAF0igMzkR63piFM6fJ1qSvd7wxBIB0KC2Mx8AzMCrKv1E2IKjRpF7Bdx5q3Fg2CkhahjlNg==
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/strict-callbag-basics/-/strict-callbag-basics-0.8.1.tgz#d43be6802c884624c746e251d8bcafd0b2d18d60"
+  integrity sha512-ksUGif6dl72GkbDgehVTrbpdPH2t50ksry/nEIlHsIFONKEIsm6bVegMuKJTqOPmquLT9ZxwWblBuq4vBLME9Q==
   dependencies:
     callbag-filter "^1.1.0"
     callbag-flatten "^1.7.0"
