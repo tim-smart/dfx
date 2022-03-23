@@ -151,7 +151,7 @@ export interface Application {
   privacy_policy_url?: string
   /** partial user object containing info on the owner of the application */
   owner?: User
-  /** if this application is a game sold on Discord, this field will be the summary field for the store page of its primary sku */
+  /** deprecated: previously if this application was a game sold on Discord, this field would be the summary field for the store page of its primary SKU; now an empty string */
   summary: string
   /** the hex encoded key for verification in interactions and the GameSDK's GetTicket */
   verify_key: string
@@ -3940,7 +3940,7 @@ export interface InteractionCallbackMessage {
 export interface InteractionCallbackModal {
   /** a developer-defined identifier for the component, max 100 characters */
   custom_id: string
-  /** the title of the popup modal */
+  /** the title of the popup modal, max 45 characters */
   title: string
   /** between 1 and 5 (inclusive) components that make up the modal */
   components: Component[]
