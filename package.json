@@ -10,7 +10,7 @@
     "build:cjs": "ttsc -p tsconfig.json",
     "build:esm": "ttsc -p tsconfig.esm.json",
     "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=Response|./DiscordREST/types' 'endpointReturnType=Response' > types.ts && prettier -w types.ts",
-    "clean": "git clean -fxd -e node_modules/ -e .env -e .vscode",
+    "clean": "git clean -fxd -e node_modules/ **/*.js **/*.js.map **/*.d.ts *.js *.js.map *.d.ts",
     "dev": "ts-node -C ttypescript bot.ts"
   },
   "files": [

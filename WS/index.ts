@@ -18,10 +18,19 @@ export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
 export type Outbound = EffectSource<unknown, never, Message>
 
-const openSocket = (url: string, options?: Ws.ClientOptions) => {
-  const ws = new Ws.WebSocket(url, options)
+const openSocket = (url: string, options?: Ws.ClientOptions) =>
+  pipe(
+    T.succeedWith(() => new Ws.WebSocket(url, options)),
+    M.makeExit((ws) =>
+      T.succeedWith(() => {
+        ws.close()
+        ws.removeAllListeners()
+      }),
+    ),
+  )
 
-  const source = CB.async<WsError, Ws.RawData>((emit) => {
+const recv = (ws: Ws.WebSocket) =>
+  CB.async<WsError, Ws.RawData>((emit) => {
     ws.on("message", (message) => emit.data(message))
 
     ws.on("error", (cause) => {
@@ -38,15 +47,7 @@ const openSocket = (url: string, options?: Ws.ClientOptions) => {
         reason: reason.toString("utf8"),
       }),
     )
-
-    return () => {
-      ws.removeAllListeners()
-      ws.close()
-    }
   })
-
-  return [ws, source] as const
-}
 
 const send = (ws: Ws.WebSocket, out: Outbound) =>
   pipe(
@@ -81,14 +82,13 @@ const send = (ws: Ws.WebSocket, out: Outbound) =>
     CB.drain,
   )
 
-const openDuplex = (url: string, out: Outbound, options?: Ws.ClientOptions) => {
-  const [ws, recv] = openSocket(url, options)
-
-  return pipe(
-    CB.merge_(recv, send(ws, out)),
+const openDuplex = (url: string, out: Outbound, options?: Ws.ClientOptions) =>
+  pipe(
+    openSocket(url, options),
+    M.map((ws) => CB.merge_(recv(ws), send(ws, out))),
+    CB.unwrapManaged,
     CB.retry(SC.recurWhile((e) => e._tag === "close" && e.code === 1012)),
   )
-}
 
 const makeService = () =>
   ({
