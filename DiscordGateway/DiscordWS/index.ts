@@ -7,8 +7,8 @@ import { HasClock } from "@effect-ts/system/Clock"
 import * as CB from "callbag-effect-ts"
 import { EffectSource } from "callbag-effect-ts"
 import { RawData } from "ws"
-import { log, Log } from "../Log"
-import { GatewayPayload } from "../types"
+import { log, Log } from "../../Log"
+import { GatewayPayload } from "../../types"
 import * as WS from "../WS"
 
 export type Message = GatewayPayload | WS.Reconnect

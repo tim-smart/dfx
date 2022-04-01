@@ -7,7 +7,7 @@ import {
   Resume,
   UpdatePresence,
   UpdateVoiceState,
-} from "../types"
+} from "../../types"
 
 export const heartbeat = (d: Heartbeat): GatewayPayload => ({
   op: GatewayOpcode.HEARTBEAT,

@@ -9,7 +9,7 @@ import {
   GatewayPayload,
   InvalidSessionEvent,
   ReadyEvent,
-} from "../types"
+} from "../../types"
 import { Reconnect } from "../WS"
 import * as Utils from "./utils"
 

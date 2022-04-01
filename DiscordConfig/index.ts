@@ -15,6 +15,7 @@ export interface DiscordConfig {
   gateway: {
     intents: number
     presence?: UpdatePresence
+    shardCount?: number
   }
 }
 export const DiscordConfig = tag<DiscordConfig>()

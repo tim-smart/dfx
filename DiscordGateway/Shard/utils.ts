@@ -3,7 +3,7 @@ import * as R from "@effect-ts/core/Effect/Ref"
 import { flow, pipe } from "@effect-ts/core/Function"
 import * as O from "@effect-ts/core/Option"
 import * as CB from "callbag-effect-ts"
-import { GatewayOpcode, GatewayPayload } from "../types"
+import { GatewayOpcode, GatewayPayload } from "../../types"
 
 export const opCode =
   <R, E>(source: CB.EffectSource<R, E, GatewayPayload>) =>

@@ -6,7 +6,7 @@ import { tag } from "@effect-ts/core/Has"
 import * as CB from "callbag-effect-ts"
 import { EffectSource } from "callbag-effect-ts"
 import * as Ws from "ws"
-import { logDebug } from "../Log"
+import { logDebug } from "../../Log"
 
 export type WsError =
   | { _tag: "close"; code: number; reason: string }

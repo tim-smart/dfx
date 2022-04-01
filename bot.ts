@@ -4,14 +4,7 @@ import * as R from "@effect-ts/node/Runtime"
 import * as CB from "callbag-effect-ts"
 import * as Dotenv from "dotenv"
 import { log } from "./Log"
-import {
-  DebugEnv,
-  fromDispatch,
-  gateway,
-  makeConfigLayer,
-  rest,
-  run,
-} from "./mod"
+import { DebugEnv, fromDispatch, gateway, makeConfigLayer, rest } from "./mod"
 import { GatewayIntents } from "./types"
 
 Dotenv.config()
@@ -38,8 +31,7 @@ const pingPong = pipe(
 )
 
 pipe(
-  run,
-  T.zipPar(logger),
+  logger,
   T.zipPar(pingPong),
 
   T.provideSomeLayer(DebugEnv),

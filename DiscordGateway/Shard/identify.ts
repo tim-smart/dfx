@@ -10,7 +10,7 @@ import {
   HelloEvent,
   ReadyEvent,
   UpdatePresence,
-} from "../types"
+} from "../../types"
 import * as Commands from "./commands"
 import * as Utils from "./utils"
 

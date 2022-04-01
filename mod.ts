@@ -1,12 +1,14 @@
 import { LiveDiscordGateway } from "./DiscordGateway"
 import { LiveDiscordREST } from "./DiscordREST"
-import * as Shard from "./DiscordShard"
-import { LiveDiscordWS } from "./DiscordWS"
+import { LiveDiscordWS } from "./DiscordGateway/DiscordWS"
 import { LiveLog, LiveLogDebug } from "./Log"
-import * as WS from "./WS"
+import { LiveShard } from "./DiscordGateway/Shard"
+import { LiveMemoryShardStore } from "./DiscordGateway/ShardStore"
+import { LiveWS } from "./DiscordGateway/WS"
 
-const GatewayEnv = WS.LiveWS[">+>"](LiveDiscordWS)
-  [">+>"](Shard.LiveDiscordShard)
+const GatewayEnv = LiveWS[">+>"](LiveDiscordWS)
+  [">+>"](LiveShard)
+  [">+>"](LiveMemoryShardStore)
   [">+>"](LiveDiscordGateway)
 
 const DiscordEnv = GatewayEnv["+++"](LiveDiscordREST)
@@ -15,5 +17,5 @@ export const DebugEnv = DiscordEnv["+++"](LiveLogDebug)
 export const DefaultEnv = DiscordEnv["+++"](LiveLog)
 
 export { makeLayer as makeConfigLayer } from "./DiscordConfig"
-export { gateway, fromDispatch, run } from "./DiscordGateway"
+export { gateway, fromDispatch } from "./DiscordGateway"
 export { rest } from "./DiscordREST"
