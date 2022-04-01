@@ -69,7 +69,5 @@ export const spawn = pipe(
     ),
   ),
 
-  CB.chain((shard) =>
-    CB.merge_(CB.of(shard), CB.drain(CB.fromEffect(shard.run))),
-  ),
+  CB.chainPar((shard) => CB.merge_(CB.of(shard), shard.effects)),
 )

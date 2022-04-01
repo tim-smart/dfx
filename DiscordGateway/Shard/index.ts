@@ -29,7 +29,7 @@ const makeImpl = (shard: [id: number, count: number], url?: string) =>
     const gateway = yield* _(Config.gateway)
     const [emit, outbound] = CB.asyncEmitter<never, DWS.Message>()
 
-    const sendMessages = CB.forEach((p: DWS.Message) =>
+    const sendMessages = CB.tap((p: DWS.Message) =>
       T.succeedWith(() => {
         emit.data(p)
       }),
@@ -58,12 +58,7 @@ const makeImpl = (shard: [id: number, count: number], url?: string) =>
       CB.unwrap,
       CB.share,
     )
-    const updateRefs = pipe(
-      raw,
-      updateLatestSequence,
-      updateLatestReady,
-      CB.runDrain,
-    )
+    const updateRefs = pipe(raw, updateLatestSequence, updateLatestReady)
 
     const dispatch = pipe(
       raw,
@@ -97,12 +92,12 @@ const makeImpl = (shard: [id: number, count: number], url?: string) =>
     const invalidEffects = pipe(Invalid.fromRaw(raw, latestReady), sendMessages)
 
     return {
-      run: pipe(
+      effects: pipe(
         updateRefs,
-        T.zipPar(heartbeatEffects),
-        T.zipPar(identifyEffects),
-        T.zipPar(invalidEffects),
-        T.ignore,
+        CB.merge(heartbeatEffects),
+        CB.merge(identifyEffects),
+        CB.merge(invalidEffects),
+        CB.drain,
       ),
       raw,
       dispatch,
