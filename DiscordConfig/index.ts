@@ -16,6 +16,8 @@ export interface DiscordConfig {
     intents: number
     presence?: UpdatePresence
     shardCount?: number
+
+    identifyRateLimit: readonly [window: number, limit: number]
   }
 }
 export const DiscordConfig = tag<DiscordConfig>()
@@ -35,6 +37,7 @@ export const make = ({ token, rest, gateway }: MakeOpts): DiscordConfig => ({
   },
   gateway: {
     intents: GatewayIntents.GUILDS,
+    identifyRateLimit: [5200, 1],
     ...(gateway ?? {}),
   },
 })

@@ -5,13 +5,16 @@ import { LiveLog, LiveLogDebug } from "./Log"
 import { LiveShard } from "./DiscordGateway/Shard"
 import { LiveMemoryShardStore } from "./DiscordGateway/ShardStore"
 import { LiveWS } from "./DiscordGateway/WS"
+import { LiveMemoryRateLimitStore } from "./RateLimitStore"
 
 const GatewayEnv = LiveWS[">+>"](LiveDiscordWS)
   [">+>"](LiveShard)
   [">+>"](LiveMemoryShardStore)
   [">+>"](LiveDiscordGateway)
 
-const DiscordEnv = GatewayEnv["+++"](LiveDiscordREST)
+const DiscordEnv = GatewayEnv["+++"](LiveDiscordREST)["+++"](
+  LiveMemoryRateLimitStore,
+)
 
 export const DebugEnv = DiscordEnv["+++"](LiveLogDebug)
 export const DefaultEnv = DiscordEnv["+++"](LiveLog)

@@ -3,9 +3,9 @@ import { pipe } from "@effect-ts/core/Function"
 import * as R from "@effect-ts/node/Runtime"
 import * as CB from "callbag-effect-ts"
 import * as Dotenv from "dotenv"
-import { log } from "./Log"
-import { DebugEnv, fromDispatch, gateway, makeConfigLayer, rest } from "./mod"
-import { GatewayIntents } from "./types"
+import { log } from "../Log"
+import { DebugEnv, fromDispatch, gateway, makeConfigLayer, rest } from "../mod"
+import { GatewayIntents } from "../types"
 
 Dotenv.config()
 
@@ -13,6 +13,7 @@ const Config = makeConfigLayer({
   token: process.env.DISCORD_BOT_TOKEN!,
   gateway: {
     intents: GatewayIntents.GUILDS | GatewayIntents.GUILD_MESSAGES,
+    shardCount: 3,
   },
 })
 

@@ -18,6 +18,7 @@ import * as Heartbeats from "./heartbeats"
 import * as Identify from "./identify"
 import * as Invalid from "./invalidSession"
 import * as Utils from "./utils"
+import { maybeWaitCB } from "../../RateLimitStore"
 
 export interface Options {
   shard: [number, number]
@@ -27,9 +28,17 @@ const makeImpl = (shard: [id: number, count: number], url?: string) =>
   M.gen(function* (_) {
     const token = yield* _(Config.token)
     const gateway = yield* _(Config.gateway)
-    const [emit, outbound] = CB.asyncEmitter<never, DWS.Message>()
 
-    const sendMessages = CB.tap((p: DWS.Message) =>
+    const [source, sink] = yield* _(DWS.open({ url }))
+    const [emit, outgoing] = CB.asyncEmitter<never, DWS.Message>()
+    const sendEffect = pipe(
+      outgoing,
+      maybeWaitCB("shard.send", 60100, 120),
+      CB.run(sink),
+    )
+
+    const raw = CB.share(source)
+    const sendMessages = CB.forEach((p: DWS.Message) =>
       T.succeedWith(() => {
         emit.data(p)
       }),
@@ -49,16 +58,12 @@ const makeImpl = (shard: [id: number, count: number], url?: string) =>
     const [latestSequence, updateLatestSequence] = yield* _(
       Utils.latest((p) => O.fromNullable(p.s)),
     )
-
-    const raw = pipe(
-      DWS.open({
-        url,
-        outgoingQueue: outbound,
-      }),
-      CB.unwrap,
-      CB.share,
+    const updateRefs = pipe(
+      raw,
+      updateLatestSequence,
+      updateLatestReady,
+      CB.runDrain,
     )
-    const updateRefs = pipe(raw, updateLatestSequence, updateLatestReady)
 
     const dispatch = pipe(
       raw,
@@ -92,12 +97,12 @@ const makeImpl = (shard: [id: number, count: number], url?: string) =>
     const invalidEffects = pipe(Invalid.fromRaw(raw, latestReady), sendMessages)
 
     return {
-      effects: pipe(
+      run: pipe(
         updateRefs,
-        CB.merge(heartbeatEffects),
-        CB.merge(identifyEffects),
-        CB.merge(invalidEffects),
-        CB.drain,
+        T.zipPar(heartbeatEffects),
+        T.zipPar(identifyEffects),
+        T.zipPar(invalidEffects),
+        T.zipPar(sendEffect),
       ),
       raw,
       dispatch,

@@ -4,6 +4,7 @@ import * as O from "@effect-ts/core/Option"
 import * as CB from "callbag-effect-ts"
 import * as Config from "../DiscordConfig"
 import { rest } from "../DiscordREST"
+import { maybeWaitCB } from "../RateLimitStore"
 import { GetGatewayBotResponse } from "../types"
 import * as Shard from "./Shard"
 import * as Store from "./ShardStore"
@@ -51,23 +52,38 @@ export const spawn = pipe(
   ),
 
   T.zipPar(Config.gateway),
-  T.map(({ tuple: [r, gateway] }) =>
-    CB.map_(configs(gateway.shardCount ?? r.shards), (config) => ({
-      ...config,
-      url: r.url,
-      concurrency: r.session_start_limit.max_concurrency,
-    })),
-  ),
+  T.map(({ tuple: [r, gateway] }) => {
+    const [source, pull] = CB.overridePull(
+      configs(gateway.shardCount ?? r.shards),
+      r.session_start_limit.max_concurrency,
+    )
+
+    return pipe(
+      source,
+      CB.map((config) => ({
+        ...config,
+        url: r.url,
+        concurrency: r.session_start_limit.max_concurrency,
+      })),
+      CB.groupBy((c) => c.id % c.concurrency),
+      CB.chainPar(([config, key]) =>
+        pipe(
+          config,
+          maybeWaitCB(
+            `gateway.sharder.${key}`,
+            gateway.identifyRateLimit[0],
+            gateway.identifyRateLimit[1],
+          ),
+          CB.chain((c) =>
+            CB.fromManaged(Shard.make([c.id, c.totalCount], c.url)),
+          ),
+          CB.tap(() => T.succeedWith(pull)),
+        ),
+      ),
+    )
+  }),
   CB.unwrap,
-
-  CB.groupBy((c) => c.id % c.concurrency),
-  CB.chainPar(([config, key]) =>
-    pipe(
-      config,
-      // TODO: apply rate limits for key
-      CB.chain((c) => CB.fromManaged(Shard.make([c.id, c.totalCount], c.url))),
-    ),
+  CB.chainPar((shard) =>
+    CB.merge_(CB.of(shard), CB.drain(CB.fromEffect(shard.run))),
   ),
-
-  CB.chainPar((shard) => CB.merge_(CB.of(shard), shard.effects)),
 )

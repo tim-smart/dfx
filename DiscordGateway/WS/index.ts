@@ -4,7 +4,7 @@ import * as SC from "@effect-ts/core/Effect/Schedule"
 import { pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
 import * as CB from "callbag-effect-ts"
-import { EffectSource } from "callbag-effect-ts"
+import { EffectSink, EffectSource } from "callbag-effect-ts"
 import * as Ws from "ws"
 import { logDebug } from "../../Log"
 
@@ -16,7 +16,9 @@ export type WsError =
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
-export type Outbound = EffectSource<unknown, never, Message>
+export type Sink = EffectSink<unknown, never, never, Message>
+
+type Outbound = EffectSource<unknown, never, Message>
 
 const openSocket = (url: string, options?: Ws.ClientOptions) =>
   pipe(
@@ -82,13 +84,18 @@ const send = (ws: Ws.WebSocket, out: Outbound) =>
     CB.drain,
   )
 
-const openDuplex = (url: string, out: Outbound, options?: Ws.ClientOptions) =>
-  pipe(
+const openDuplex = (url: string, options?: Ws.ClientOptions) => {
+  const [sink, outbound] = CB.asyncSink<never, Message>()
+
+  const source = pipe(
     openSocket(url, options),
-    M.map((ws) => CB.merge_(recv(ws), send(ws, out))),
+    M.map((ws) => CB.merge_(recv(ws), send(ws, outbound))),
     CB.unwrapManaged,
     CB.retry(SC.recurWhile((e) => e._tag === "close" && e.code === 1012)),
   )
+
+  return [source, sink] as const
+}
 
 const makeService = () =>
   ({
@@ -101,5 +108,5 @@ export const WS = tag<WS>()
 export const LiveWS = T.toLayer(WS)(T.succeedWith(makeService))
 
 // Helpers
-export const open = (url: string, out: Outbound, options?: Ws.ClientOptions) =>
-  T.accessService(WS)(({ open }) => open(url, out, options))
+export const open = (url: string, options?: Ws.ClientOptions) =>
+  T.accessService(WS)(({ open }) => open(url, options))

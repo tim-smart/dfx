@@ -5,6 +5,7 @@ import { pipe } from "@effect-ts/core/Function"
 import { Has, tag } from "@effect-ts/core/Has"
 import { HasClock } from "@effect-ts/system/Clock"
 import * as CB from "callbag-effect-ts"
+import * as CBS from "callbag-effect-ts/Sink"
 import { EffectSource } from "callbag-effect-ts"
 import { RawData } from "ws"
 import { log, Log } from "../../Log"
@@ -17,7 +18,6 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: Encoding
-  outgoingQueue: EffectSource<unknown, never, Message>
 }
 
 export interface Encoding {
@@ -32,32 +32,40 @@ export const jsonEncoding: Encoding = {
   decode: (p) => JSON.parse(p.toString("utf8")),
 }
 
-const makeOutgoing = (
-  out: EffectSource<unknown, never, Message>,
-  e: Encoding,
-): WS.Outbound =>
-  CB.map_(out, (data) => (data === WS.Reconnect ? data : e.encode(data)))
-
 const openImpl = ({
   url = "wss://gateway.discord.gg/",
   version = 9,
   encoding = jsonEncoding,
-  outgoingQueue: outgoing,
 }: OpenOpts) =>
   pipe(
-    WS.open(
-      `${url}?v=${version}&encoding=${encoding.type}`,
-      makeOutgoing(outgoing, encoding),
+    T.do,
+    T.bind("ws", () =>
+      WS.open(`${url}?v=${version}&encoding=${encoding.type}`),
     ),
-    CB.unwrap,
-    CB.tapError((e) => log(serviceTag, "error", e)),
-    CB.retry(SC.exponential(500)),
-    CB.map(encoding.decode),
-  ) as EffectSource<
-    Has<WS.WS> & Has<Log> & HasClock,
-    never,
-    GatewayPayload<any>
-  >
+    T.bind("source", ({ ws: [wsSource] }) =>
+      T.succeedWith(
+        () =>
+          pipe(
+            wsSource,
+            CB.tapError((e) => log(serviceTag, "error", e)),
+            CB.retry(SC.exponential(500)),
+            CB.map(encoding.decode),
+          ) as EffectSource<
+            Has<WS.WS> & Has<Log> & HasClock,
+            never,
+            GatewayPayload<any>
+          >,
+      ),
+    ),
+    T.bind("sink", ({ ws: [, wsSink] }) =>
+      T.succeedWith(() =>
+        CBS.map_(wsSink, (msg: Message) =>
+          msg === WS.Reconnect ? msg : encoding.encode(msg),
+        ),
+      ),
+    ),
+    T.map(({ source, sink }) => [source, sink] as const),
+  )
 
 export type Connection = ReturnType<typeof openImpl>
 
@@ -75,4 +83,4 @@ export const LiveDiscordWS = L.fromFunction(DiscordWS)(makeService)
 
 // Helpers
 export const open = (opts: OpenOpts) =>
-  T.accessService(DiscordWS)(({ open }) => open(opts))
+  T.accessServiceM(DiscordWS)(({ open }) => open(opts))

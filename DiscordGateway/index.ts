@@ -1,5 +1,4 @@
 import * as T from "@effect-ts/core/Effect"
-import * as M from "@effect-ts/core/Effect/Managed"
 import { identity, pipe } from "@effect-ts/core/Function"
 import { tag } from "@effect-ts/core/Has"
 import { _A } from "@effect-ts/core/Utils"
