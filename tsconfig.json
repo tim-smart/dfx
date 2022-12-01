@@ -1,25 +1,27 @@
 {
   "compilerOptions": {
-    "downlevelIteration": true,
+    "baseUrl": ".",
+    "outDir": "dist",
     "resolveJsonModule": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "preserveSymlinks": true,
-    "moduleResolution": "node",
-    "module": "CommonJS",
-    "lib": ["ESNext"],
+    "moduleResolution": "NodeNext",
+    "module": "ES6",
+    "lib": ["ESNext", "DOM"],
     "sourceMap": true,
     "declaration": true,
+    "declarationMap": true,
     "strict": true,
     "target": "ES2022",
-    "importHelpers": true,
-    "plugins": [
-      {
-        "transform": "@effect-ts/tracing-plugin"
-      }
-    ]
+    "incremental": true,
+    "tsPlusConfig": "./tsplus.config.json",
+    "tsPlusTypes": [
+      "./vendor/effect-io-tsplus.json",
+      "./vendor/fp-ts-data-tsplus.json"
+    ],
+    "paths": {
+      "dfx/*": ["./src/*.js"]
+    }
   },
-  "exclude": ["discord-api-docs", "node_modules"]
+  "exclude": ["node_modules/**/*", "_old/**/*"],
+  "include": ["src/**/*"]
 }

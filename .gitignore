@@ -1,6 +1,4 @@
 .env
-*.js
-*.js.map
-*.d.ts
 node_modules/
-.vscode/
+dist/
+_old/
