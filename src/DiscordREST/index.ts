@@ -46,7 +46,7 @@ const make = Do(($) => {
           store.putBucket({
             key: bucket,
             resetAfter: retryAfter.millis,
-            limit,
+            limit: !hasBucket && remaining > 0 ? remaining : limit,
           }),
         )
       }

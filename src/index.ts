@@ -13,11 +13,6 @@ const EnvLive = RateLimitEnv > (LiveConfig > Rest.LiveDiscordREST)
 
 Rest.rest
   .getGatewayBot()
-  .tap(({ data }) =>
-    Effect.sync(() => {
-      console.error(data)
-    }),
-  )
   .repeatN(10)
   .provideLayer(Log.LiveLogDebug >> EnvLive)
   .unsafeRunPromise.catch(console.error)
