@@ -15,6 +15,7 @@ import type {
   Schedule,
   EffectSource,
   EffectSink,
+  Ref,
   Config,
   Discord,
   Http,
@@ -22,6 +23,8 @@ import type {
   RateLimitStore,
   Rest,
   WS,
+  DWS,
+  Shard,
 } from "dfx/common"
 
 /**

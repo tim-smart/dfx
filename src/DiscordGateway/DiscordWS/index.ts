@@ -5,36 +5,41 @@ export type Message = Discord.GatewayPayload | WS.Reconnect
 export interface OpenOpts {
   url?: string
   version?: number
-  encoding?: Encoding
+  encoding?: DiscordWSCodec
 }
 
-export interface Encoding {
+export interface DiscordWSCodec {
   type: "json" | "etf"
   encode: (p: Discord.GatewayPayload) => string | Buffer | ArrayBuffer
   decode: (p: RawData) => Discord.GatewayPayload
 }
-
-export const jsonEncoding: Encoding = {
+export const DiscordWSCodec = Tag<DiscordWSCodec>()
+export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec)({
   type: "json",
   encode: (p) => JSON.stringify(p),
   decode: (p) => JSON.parse(p.toString("utf8")),
-}
+})
 
 export const make = ({
   url = "wss://gateway.discord.gg/",
-  version = 9,
-  encoding = jsonEncoding,
-}: OpenOpts) => {
-  const ws = WS.make(`${url}?v=${version}&encoding=${encoding.type}`)
+  version = 10,
+}: OpenOpts = {}) =>
+  Do(($) => {
+    const encoding = $(Effect.service(DiscordWSCodec))
+    const urlRef = $(Ref.make(`${url}?v=${version}&encoding=${encoding.type}`))
+    const setUrl = (url: string) =>
+      urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
 
-  const source = ws.source
-    .tapError((e) => Log.info("DiscordWS", "ERROR", e))
-    .retry(Schedule.exponential(Duration.seconds(0.5)))
-    .map(encoding.decode)
+    const ws = WS.make(urlRef)
 
-  const sink = ws.sink.map((msg: Message) =>
-    msg === WS.Reconnect ? msg : encoding.encode(msg),
-  )
+    const source = ws.source
+      .tapError((e) => Log.info("DiscordWS", "ERROR", e))
+      .retry(Schedule.exponential(Duration.seconds(0.5)))
+      .map(encoding.decode)
 
-  return { source, sink }
-}
+    const sink = ws.sink.map((msg: Message) =>
+      msg === WS.Reconnect ? msg : encoding.encode(msg),
+    )
+
+    return { source, sink, setUrl }
+  })

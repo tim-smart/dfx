@@ -5,8 +5,11 @@ export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
 
-const socket = (url: string, options?: ClientOptions) =>
-  Effect.sync(() => new WebSocket(url, options)).acquireRelease((ws) =>
+const socket = (urlRef: Ref<string>, options?: ClientOptions) =>
+  Do(($) => {
+    const url = $(urlRef.get)
+    return new WebSocket(url, options)
+  }).acquireRelease((ws) =>
     Effect.sync(() => {
       ws.close()
       ws.removeAllListeners()
@@ -70,7 +73,7 @@ const send = (ws: WebSocket, out: EffectSource<never, never, Message>) =>
       }),
     ).drain
 
-export const make = (url: string, options?: ClientOptions) => {
+export const make = (url: Ref<string>, options?: ClientOptions) => {
   const [sink, outbound] = asyncSink<never, Message>()
 
   const source = pipe(
