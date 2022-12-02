@@ -20,7 +20,8 @@
     ],
     "paths": {
       "dfx/*": ["./src/*.js"]
-    }
+    },
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
   },
   "exclude": ["node_modules/**/*", "_old/**/*"],
   "include": ["src/**/*"]

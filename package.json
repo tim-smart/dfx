@@ -16,7 +16,8 @@
     "clean": "rm -rf dist/"
   },
   "exports": {
-    "./*": "./dist/*.js"
+    ".": "./index.js",
+    "./*": "./*.js"
   },
   "devDependencies": {
     "@tim-smart/discord-api-docs-parser": "^0.4.1",

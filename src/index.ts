@@ -18,5 +18,6 @@ Rest.rest
       console.error(data)
     }),
   )
+  .repeatN(10)
   .provideLayer(Log.LiveLogDebug >> EnvLive)
   .unsafeRunPromise.catch(console.error)

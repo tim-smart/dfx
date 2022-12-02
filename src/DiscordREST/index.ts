@@ -6,6 +6,7 @@ import { rateLimitFromHeaders, routeFromConfig } from "./utils.js"
 const make = Do(($) => {
   const { token, rest } = $(Effect.service(Config.DiscordConfig))
 
+  const log = $(Effect.service(Log.Log))
   const store = $(Effect.service(RateLimitStore.RateLimitStore))
   const { maybeWait } = $(Effect.service(RateLimitStore.RateLimiter))
 
@@ -21,7 +22,7 @@ const make = Do(($) => {
       const maybeBucket = $(store.getBucketForRoute(route))
       const bucket = maybeBucket.getOrElse(
         (): BucketDetails => ({
-          key: route,
+          key: `?.${route}`,
           resetAfter: 5000,
           limit: 1,
         }),
@@ -74,9 +75,11 @@ const make = Do(($) => {
       )
       .catchTag("StatusCodeError", (e) =>
         e.code === 429
-          ? updateBuckets(path, init, e.response).flatMap(() =>
-              request<A>(path, init),
-            )
+          ? Do(($) => {
+              $(log.debug("DiscordREST", "429", path))
+              $(updateBuckets(path, init, e.response))
+              return $(request<A>(path, init))
+            })
           : Effect.fail(e),
       )
       .tap(({ response }) => updateBuckets(path, init, response))
@@ -89,7 +92,7 @@ export const DiscordREST = Tag<DiscordREST>()
 export const LiveDiscordREST = Layer.fromEffect(DiscordREST)(make)
 
 export const rest = Discord.createRoutes<RequestInit>(
-  ({ method, url, params = {}, options = {} }) =>
+  ({ method, url, params, options = {} }) =>
     Effect.serviceWithEffect(DiscordREST)(({ request }) => {
       const hasBody = method !== "GET" && method !== "DELETE"
       let hasFormData = typeof (options?.body as any)?.append === "function"
@@ -102,15 +105,20 @@ export const rest = Discord.createRoutes<RequestInit>(
 
       const qs = new URLSearchParams()
       if (!hasBody) {
-        Object.entries(params as Record<string, string>).forEach(
+        Object.entries((params ?? {}) as Record<string, string>).forEach(
           ([key, value]) => {
             qs.append(key, value)
           },
         )
       } else if (hasFormData) {
         body = options.body!
+        if (params) {
+          ;(body as FormData).append("payload_json", JSON.stringify(params))
+        }
+      } else if (params) {
+        body = JSON.stringify(params)
       } else {
-        body = options.body ?? JSON.stringify(params)
+        body = options.body!
       }
 
       return request(`${url}?${qs.toString()}`, {

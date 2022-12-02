@@ -35,20 +35,27 @@ const makeLimiter = Do(($) => {
   const store = $(Effect.service(RateLimitStore))
   const log = $(Effect.service(Log.Log))
 
-  const maybeWait = (key: string, window: Duration, limit: number) =>
-    store
-      .incrementCounter(key, window.millis, limit)
-      .map(([count, ttl]) => delayFrom(window.millis, limit, count, ttl))
+  const maybeWait = (
+    key: string,
+    window: Duration,
+    limit: number,
+    multiplier = 1.05,
+  ) => {
+    const windowMs = window.millis * multiplier
+    return store
+      .incrementCounter(key, windowMs, limit)
+      .map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl))
       .tap((d) =>
-        log.debug(
-          "RateLimitStore maybeWait",
+        log.debug("RateLimitStore maybeWait", {
           key,
-          window.millis,
+          window: window.millis,
+          windowMs,
           limit,
-          d.millis,
-        ),
+          delay: d.millis,
+        }),
       )
       .tap(Effect.sleep).asUnit
+  }
 
   return { maybeWait }
 })
