@@ -1,6 +1,6 @@
-import { BucketDetails } from "dfx/RateLimitStore/index"
 import { millis } from "@fp-ts/data/Duration"
-import { ResponseWithData, RestResponse } from "./types.js"
+import { BucketDetails } from "dfx/RateLimitStore/index"
+import { ResponseWithData } from "./types.js"
 import { rateLimitFromHeaders, routeFromConfig } from "./utils.js"
 
 const make = Do(($) => {

@@ -14,12 +14,14 @@ specifiers:
   isomorphic-fetch: ^3.0.0
   lerna: ^4.0.0
   typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz
+  ws: ^8.11.0
 
 dependencies:
   '@effect/io': 0.0.28
   '@fp-ts/data': 0.0.19
   callbag-effect-ts: 1.0.0-alpha.8
   isomorphic-fetch: 3.0.0
+  ws: 8.11.0
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.4.1
@@ -4793,6 +4795,19 @@ packages:
       type-fest: 0.4.1
       write-json-file: 3.2.0
     dev: true
+
+  /ws/8.11.0:
+    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

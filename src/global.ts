@@ -12,13 +12,16 @@ import type {
   Chunk,
   Duration,
   Exit,
+  Schedule,
   EffectSource,
+  EffectSink,
   Config,
   Discord,
   Http,
   Log,
   RateLimitStore,
   Rest,
+  WS,
 } from "dfx/common"
 
 /**
