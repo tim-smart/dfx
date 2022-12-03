@@ -10,13 +10,16 @@ export {
   InteractionDefinition,
 } from "./definitions.js"
 
-export const builder = () => new InteractionBuilder<never>([])
+export const builder = () => new InteractionBuilder<never, never>([])
 
-class InteractionBuilder<R> {
-  constructor(readonly definitions: D.InteractionDefinition<R>[]) {}
+class InteractionBuilder<R, E> {
+  constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}
 
-  add<R1>(definition: D.InteractionDefinition<R1>) {
-    return new InteractionBuilder<R | R1>([...this.definitions, definition])
+  add<R1, E1>(definition: D.InteractionDefinition<R1, E1>) {
+    return new InteractionBuilder<R | R1, E | E1>([
+      ...this.definitions,
+      definition,
+    ])
   }
 
   get run() {
@@ -24,28 +27,28 @@ class InteractionBuilder<R> {
   }
 }
 
-const runGateway = <R>(definitions: D.InteractionDefinition<R>[]) =>
+const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
   Do(($) => {
     const globalCommands = definitions.filter(
-      (a): a is D.GlobalApplicationCommand<R> =>
+      (a): a is D.GlobalApplicationCommand<R, E> =>
         a._tag === "GlobalApplicationCommand",
     )
 
     const guildCommands = definitions.filter(
-      (a): a is D.GuildApplicationCommand<R> =>
+      (a): a is D.GuildApplicationCommand<R, E> =>
         a._tag === "GuildApplicationCommand",
     )
 
     const messageComponents = definitions.filter(
-      (a): a is D.MessageComponent<R> => a._tag === "MessageComponent",
+      (a): a is D.MessageComponent<R, E> => a._tag === "MessageComponent",
     )
 
     const modalSubmits = definitions.filter(
-      (a): a is D.ModalSubmit<R> => a._tag === "ModalSubmit",
+      (a): a is D.ModalSubmit<R, E> => a._tag === "ModalSubmit",
     )
 
     const autocompletes = definitions.filter(
-      (a): a is D.Autocomplete<R> => a._tag === "Autocomplete",
+      (a): a is D.Autocomplete<R, E> => a._tag === "Autocomplete",
     )
 
     const application = $(
@@ -58,8 +61,6 @@ const runGateway = <R>(definitions: D.InteractionDefinition<R>[]) =>
       }),
     )
 
-    const gateway = $(Effect.service(Gateway.DiscordGateway))
-
     const allCommands = [...globalCommands, ...guildCommands].reduce(
       (acc, a) => ({
         ...acc,
@@ -67,11 +68,11 @@ const runGateway = <R>(definitions: D.InteractionDefinition<R>[]) =>
       }),
       {} as Record<
         string,
-        D.GlobalApplicationCommand<R> | D.GuildApplicationCommand<R>
+        D.GlobalApplicationCommand<R, E> | D.GuildApplicationCommand<R, E>
       >,
     )
 
-    const handle = (i: Discord.Interaction): Effect<R, never, void> => {
+    const handle = (i: Discord.Interaction): Effect<R, E, void> => {
       switch (i.type) {
         case Discord.InteractionType.APPLICATION_COMMAND:
           const data = i.data as Discord.ApplicationCommandDatum
@@ -102,9 +103,7 @@ const runGateway = <R>(definitions: D.InteractionDefinition<R>[]) =>
       return Effect.unit()
     }
 
-    const run = gateway
-      .fromDispatch("INTERACTION_CREATE")
-      .chainPar((i) => EffectSource.fromEffect(handle(i))).runDrain
+    const run = Gateway.handleDispatch("INTERACTION_CREATE", handle)
 
     $(run)
   })
