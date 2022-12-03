@@ -1,12 +1,7 @@
-import { filter } from "callbag-effect-ts/Source"
-
 export const opCode =
   <R, E>(source: EffectSource<R, E, Discord.GatewayPayload>) =>
   <T = any>(code: Discord.GatewayOpcode) =>
-    pipe(
-      source,
-      filter((p): p is Discord.GatewayPayload<T> => p.op === code),
-    )
+    source.filter((p): p is Discord.GatewayPayload<T> => p.op === code)
 
 const maybeUpdateRef = <T>(
   f: (p: Discord.GatewayPayload) => Maybe<T>,

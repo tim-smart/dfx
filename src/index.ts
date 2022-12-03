@@ -1,36 +1,26 @@
-import Dotenv from "dotenv"
+export * as Config from "./DiscordConfig/index.js"
+export * as DiscordWS from "./DiscordGateway/DiscordWS/index.js"
+export * as Gateway from "./DiscordGateway/index.js"
+export { DiscordREST, LiveDiscordREST, rest } from "./DiscordREST/index.js"
+export * as Ix from "./Interactions/index.js"
+export * as Log from "./Log/index.js"
+export * as RateLimitStore from "./RateLimitStore/index.js"
 
-Dotenv.config()
-
-const LiveConfig = Config.makeLayer({
-  token: process.env.DISCORD_BOT_TOKEN!,
-})
-
-const RateLimitEnv =
+export const LiveRateLimit =
   RateLimitStore.LiveMemoryRateLimitStore > RateLimitStore.LiveRateLimiter
 
-const EnvLive =
-  RateLimitEnv >
-  (LiveConfig > Rest.LiveDiscordREST) + DWS.LiveJsonDiscordWSCodec
+export const LiveREST = LiveRateLimit > Rest.LiveDiscordREST
 
-// Rest.rest
-//   .getGatewayBot()
-//   .repeatN(10)
-//   .provideLayer(Log.LiveLogDebug >> EnvLive)
-//   .unsafeRunPromise.catch(console.error)
+export const LiveGateway =
+  LiveREST + ShardStore.LiveMemoryShardStore + DWS.LiveJsonDiscordWSCodec >
+  Gateway.LiveDiscordGateway
 
-const program = Do(($) => {
-  const shard = $(Shard.make([0, 1]))
+export const LiveBot = LiveREST + LiveGateway
 
-  $(
-    shard.raw
-      .tap((a) =>
-        Effect.sync(() => {
-          console.error("raw", a)
-        }),
-      )
-      .runDrain.zipPar(shard.run),
-  )
-})
-  .provideLayer(Log.LiveLogDebug > EnvLive)
-  .unsafeRunPromise.catch(console.error)
+export const makeLayer = (config: Config.MakeOpts, debug = false) => {
+  const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
+  const LiveConfig = Config.makeLayer(config)
+  const LiveEnv = LiveLog + LiveConfig > LiveBot
+
+  return LiveEnv
+}

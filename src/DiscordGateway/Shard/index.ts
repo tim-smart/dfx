@@ -1,4 +1,3 @@
-import { asyncEmitter, filter } from "callbag-effect-ts/Source"
 import * as Heartbeats from "./heartbeats.js"
 import * as Identify from "./identify.js"
 import * as InvalidSession from "./invalidSession.js"
@@ -10,7 +9,7 @@ export const make = (shard: [id: number, count: number]) =>
 
     const socket = $(DWS.make())
 
-    const [emit, outgoing] = asyncEmitter<never, DWS.Message>()
+    const [emit, outgoing] = EffectSource.asyncEmitter<never, DWS.Message>()
     const limiter = $(Effect.service(RateLimitStore.RateLimiter))
     const sendEffect = outgoing
       .tap(() => limiter.maybeWait("shard.send", Duration.minutes(1), 120))
@@ -58,12 +57,9 @@ export const make = (shard: [id: number, count: number]) =>
     )
 
     const dispatch = $(
-      pipe(
-        raw,
-        filter(
-          (p): p is Discord.GatewayPayload<Discord.ReceiveEvent> =>
-            p.op === Discord.GatewayOpcode.DISPATCH,
-        ),
+      raw.filter(
+        (p): p is Discord.GatewayPayload<Discord.ReceiveEvent> =>
+          p.op === Discord.GatewayOpcode.DISPATCH,
       ).share,
     )
 

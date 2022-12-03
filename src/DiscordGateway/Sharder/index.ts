@@ -1,36 +1,37 @@
-import { empty, overridePull, unwrap } from "callbag-effect-ts/Source"
 import { millis } from "@fp-ts/data/Duration"
+import { overridePull } from "callbag-effect-ts/Source"
 import { ShardStore } from "../ShardStore/index.js"
 
 const configs = (totalCount: number) =>
   Do(($) => {
     const store = $(Effect.service(ShardStore))
+    const claimId = (sharderCount: number) =>
+      store
+        .claimId({
+          totalCount,
+          sharderCount,
+        })
+        .flatMap(
+          (
+            a,
+          ): Effect<
+            never,
+            never,
+            [Maybe<number>, EffectSource<never, never, number>]
+          > =>
+            a.match(
+              () =>
+                Effect.succeed([Maybe.some(sharderCount), EffectSource.empty]),
+              (id) =>
+                Effect.succeed([
+                  Maybe.some(sharderCount + 1),
+                  EffectSource.of(id),
+                ]),
+            ),
+        )
+
     return EffectSource.resource(0, (sharderCount) =>
-      pipe(
-        store
-          .claimId({
-            totalCount,
-            sharderCount,
-          })
-          .flatMap(
-            (
-              a,
-            ): Effect<
-              never,
-              never,
-              [Maybe<number>, EffectSource<never, never, number>]
-            > =>
-              a.match(
-                () => Effect.succeed([Maybe.some(sharderCount), empty]),
-                (id) =>
-                  Effect.succeed([
-                    Maybe.some(sharderCount + 1),
-                    EffectSource.of(id),
-                  ]),
-              ),
-          ),
-        EffectSource.fromEffect,
-      ),
+      EffectSource.fromEffect(claimId(sharderCount)),
     ).map((id) => ({
       id,
       totalCount,
@@ -40,7 +41,7 @@ const configs = (totalCount: number) =>
 const spawnEffect = Effect.structPar({
   gateway: Rest.rest
     .getGatewayBot()
-    .map((r) => r.data)
+    .flatMap((r) => r.json)
     .catchAll(() =>
       Effect.succeed<Discord.GetGatewayBotResponse>({
         url: "wss://gateway.discord.gg/",
@@ -86,6 +87,6 @@ const spawnEffect = Effect.structPar({
       )
   })
 
-export const spawn = pipe(spawnEffect, unwrap).chainPar((shard) =>
+export const spawn = spawnEffect.unwrap.chainPar((shard) =>
   EffectSource.of(shard).merge(EffectSource.fromEffect(shard.run).drain),
 )

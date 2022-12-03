@@ -1,4 +1,3 @@
-import { fromSchedule, unwrap } from "callbag-effect-ts/Source"
 import { millis } from "@fp-ts/data/Duration"
 import * as SendEvents from "./sendEvents.js"
 import * as Utils from "./utils.js"
@@ -18,26 +17,23 @@ export const fromRaw = <R, E>(
   source: EffectSource<R, E, Discord.GatewayPayload>,
   seqRef: Ref<Maybe<number>>,
 ) =>
-  pipe(
-    Ref.make(true).map((ackedRef) => {
-      const heartbeats = Utils.opCode(source)<Discord.HelloEvent>(
-        Discord.GatewayOpcode.HELLO,
+  Ref.make(true).map((ackedRef) => {
+    const heartbeats = Utils.opCode(source)<Discord.HelloEvent>(
+      Discord.GatewayOpcode.HELLO,
+    )
+      .tap(() => ackedRef.set(true))
+      .switchMap((p) =>
+        EffectSource.fromSchedule(
+          Schedule.duration(
+            millis(p.d!.heartbeat_interval * Math.random()),
+          ).andThen(Schedule.spaced(millis(p.d!.heartbeat_interval))),
+        ),
       )
-        .tap(() => ackedRef.set(true))
-        .switchMap((p) =>
-          fromSchedule(
-            Schedule.duration(
-              millis(p.d!.heartbeat_interval * Math.random()),
-            ).andThen(Schedule.spaced(millis(p.d!.heartbeat_interval))),
-          ),
-        )
-        .mapEffect(() => maybeSend(ackedRef, seqRef))
+      .mapEffect(() => maybeSend(ackedRef, seqRef))
 
-      const acks = Utils.opCode(source)(
-        Discord.GatewayOpcode.HEARTBEAT_ACK,
-      ).tap(() => ackedRef.set(true)).drain
+    const acks = Utils.opCode(source)(Discord.GatewayOpcode.HEARTBEAT_ACK).tap(
+      () => ackedRef.set(true),
+    ).drain
 
-      return heartbeats.merge(acks)
-    }),
-    unwrap,
-  )
+    return heartbeats.merge(acks)
+  }).unwrap

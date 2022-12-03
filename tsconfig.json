@@ -20,6 +20,7 @@
       "./vendor/fp-ts-data-tsplus.json"
     ],
     "paths": {
+      "dfx": ["./src/index.js"],
       "dfx/*": ["./src/*.js"]
     },
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo"

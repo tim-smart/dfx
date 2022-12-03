@@ -27,6 +27,7 @@ import type {
   WS,
   DWS,
   Shard,
+  ShardStore,
 } from "dfx/common"
 
 /**

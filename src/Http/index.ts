@@ -36,24 +36,30 @@ export class JsonParseError {
   constructor(readonly reason: unknown) {}
 }
 
-export const json = (r: Response) =>
+export const json = <A = unknown>(r: Response) =>
   Effect.tryCatchPromise(
-    (): Promise<unknown> => r.json(),
+    (): Promise<A> => r.json(),
     (reason) => new JsonParseError(reason),
   )
 
-export const jsonOrResponse = (r: Response) =>
-  r.headers.get("content-type")?.includes("application/json")
-    ? json(r)
-    : Effect.succeed(r)
+export class BlobError {
+  readonly _tag = "BlobError"
+  constructor(readonly reason: unknown) {}
+}
+
+export const blob = (r: Response) =>
+  Effect.tryCatchPromise(
+    () => r.blob(),
+    (reason) => new BlobError(reason),
+  )
 
 export const requestWithJson = <A = unknown>(
   url: URL | string,
   init: RequestInit = {},
 ) =>
-  request(url, init).flatMap((response) =>
-    jsonOrResponse(response).map((data) => ({
-      response,
-      data: data as A,
-    })),
-  )
+  request(url, init).map((response) => ({
+    response,
+    json: json<A>(response),
+    blob: blob(response),
+    text: Effect.promise(() => response.text()),
+  }))

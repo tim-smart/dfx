@@ -1,4 +1,3 @@
-import { asyncSink, unwrap, unwrapScope } from "callbag-effect-ts/Source"
 import { ClientOptions, RawData, WebSocket } from "ws"
 
 export const Reconnect = Symbol()
@@ -47,19 +46,17 @@ export class WebSocketWriteError {
 const send = (ws: WebSocket, out: EffectSource<never, never, Message>) =>
   Do(($) => {
     const log = $(Effect.service(Log.Log))
-    return pipe(
-      Effect.async<never, never, void>((resume) => {
-        if (ws.readyState & ws.OPEN) {
+    return Effect.async<never, never, void>((resume) => {
+      if (ws.readyState & ws.OPEN) {
+        resume(Effect.unit())
+      } else {
+        ws.once("open", () => {
           resume(Effect.unit())
-        } else {
-          ws.once("open", () => {
-            resume(Effect.unit())
-          })
-        }
-      }).map(() => out),
-      unwrap,
-    )
-      .tap((p) => log.debug("WS", "send", p))
+        })
+      }
+    })
+      .map(() => out)
+      .unwrap.tap((p) => log.debug("WS", "send", p))
       .tap((data) =>
         Effect.async<never, WebSocketWriteError, void>((resume) => {
           if (data === Reconnect) {
@@ -80,18 +77,15 @@ const send = (ws: WebSocket, out: EffectSource<never, never, Message>) =>
 
 export const make = (url: Ref<string>, options?: ClientOptions) =>
   Do(($) => {
-    const [sink, outbound] = asyncSink<never, Message>()
+    const [sink, outbound] = EffectSource.asyncSink<never, Message>()
     const log = $(Effect.service(Log.Log))
     const withLog = provideService(Log.Log)(log)
 
-    const source = pipe(
-      Do(($) => {
-        const ws = $(socket(url, options))
-        const sendEffect = $(withLog(send(ws, outbound)))
-        return recv(ws).merge(sendEffect)
-      }),
-      unwrapScope,
-    ).retry(
+    const source = Do(($) => {
+      const ws = $(socket(url, options))
+      const sendEffect = $(withLog(send(ws, outbound)))
+      return recv(ws).merge(sendEffect)
+    }).unwrapScope.retry(
       Schedule.recurWhile(
         (e) => e._tag === "WebSocketCloseError" && e.code === 1012,
       ),

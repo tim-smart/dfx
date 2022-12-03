@@ -34,9 +34,13 @@ export const make = ({
 
     const log = $(Effect.service(Log.Log))
     const source = ws.source
-      .tapError((e) => log.info("DiscordWS", "ERROR", e))
+      .tapError((e: any) => log.info("DiscordWS", "ERROR", e))
       .retry(Schedule.exponential(Duration.seconds(0.5)))
-      .map(encoding.decode)
+      .map(encoding.decode) as EffectSource<
+      never,
+      never,
+      Discord.GatewayPayload
+    >
 
     const sink = ws.sink.map((msg: Message) =>
       msg === WS.Reconnect ? msg : encoding.encode(msg),

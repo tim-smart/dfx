@@ -5,9 +5,9 @@ export const makeFromDispatch =
   <R, E>(
     source: EffectSource<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
   ) =>
-  <K extends keyof Discord.ReceiveEvent>(
+  <K extends keyof Discord.ReceiveEvents>(
     event: K,
-  ): EffectSource<R, E, Discord.ReceiveEvent[K]> =>
+  ): EffectSource<R, E, Discord.ReceiveEvents[K]> =>
     pipe(
       source,
       filter((p) => p.t === event),
