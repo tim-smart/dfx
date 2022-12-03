@@ -42,19 +42,17 @@ export const json = (r: Response) =>
     (reason) => new JsonParseError(reason),
   )
 
-export const text = (r: Response) => Effect.promise(() => r.text())
-
-export const jsonOrText = (r: Response) =>
+export const jsonOrResponse = (r: Response) =>
   r.headers.get("content-type")?.includes("application/json")
     ? json(r)
-    : text(r)
+    : Effect.succeed(r)
 
 export const requestWithJson = <A = unknown>(
   url: URL | string,
   init: RequestInit = {},
 ) =>
   request(url, init).flatMap((response) =>
-    jsonOrText(response).map((data) => ({
+    jsonOrResponse(response).map((data) => ({
       response,
       data: data as A,
     })),
