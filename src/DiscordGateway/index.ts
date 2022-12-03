@@ -19,8 +19,7 @@ export const handleDispatchFactory =
   ): Effect<R | R1, E | E1, void> =>
     source
       .filter((p) => p.t === event)
-      .map((p) => p.d! as Discord.ReceiveEvents[K])
-      .chainPar((a) => EffectSource.fromEffect(handle(a))).runDrain
+      .chainPar((a) => EffectSource.fromEffect(handle(a.d as any))).runDrain
 
 export const make = Do(($) => {
   const shards = $(spawn.share)

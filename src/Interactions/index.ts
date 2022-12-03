@@ -10,8 +10,6 @@ export {
   InteractionDefinition,
 } from "./definitions.js"
 
-export const builder = () => new InteractionBuilder<never, never>([])
-
 class InteractionBuilder<R, E> {
   constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}
 
@@ -22,10 +20,12 @@ class InteractionBuilder<R, E> {
     ])
   }
 
-  get run() {
+  get runGateway() {
     return runGateway(this.definitions)
   }
 }
+
+export const builder = new InteractionBuilder<never, never>([])
 
 const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
   Do(($) => {
@@ -59,6 +59,14 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
       Rest.rest.bulkOverwriteGlobalApplicationCommands(application.id, {
         body: JSON.stringify(globalCommands.map((a) => a.command)),
       }),
+    )
+
+    const guildSync = Gateway.handleDispatch("GUILD_CREATE", (a) =>
+      Rest.rest.bulkOverwriteGuildApplicationCommands(
+        application.id,
+        a.id,
+        guildCommands.map((a) => a.command) as any,
+      ),
     )
 
     const allCommands = [...globalCommands, ...guildCommands].reduce(
@@ -105,10 +113,22 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", handle)
 
-    $(run)
+    $(run.zipPar(guildSync))
   })
 
 const allOptions = (
   options: Discord.ApplicationCommandInteractionDataOption[],
 ): Discord.ApplicationCommandInteractionDataOption[] =>
   options.flatMap((a) => [a, ...(a.options ? allOptions(a.options) : [])])
+
+// Filters
+export const id = (query: string) => (customId: string) =>
+  Effect.succeed(query === customId)
+
+export const regex = (query: RegExp) => (customId: string) =>
+  Effect.succeed(query.test(customId))
+
+export const option =
+  (name: string) =>
+  (focusedOption: Discord.ApplicationCommandInteractionDataOption) =>
+    Effect.succeed(focusedOption.name === name)
