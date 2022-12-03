@@ -1,4 +1,3 @@
-import { none } from "@fp-ts/data/Option"
 import { opCode } from "./utils.js"
 
 export const fromRaw = <R, E>(
@@ -8,5 +7,5 @@ export const fromRaw = <R, E>(
   opCode(raw)<Discord.InvalidSessionEvent>(
     Discord.GatewayOpcode.INVALID_SESSION,
   )
-    .tap((p) => (p.d ? Effect.unit() : latestReady.set(none)))
+    .tap((p) => (p.d ? Effect.unit() : latestReady.set(Maybe.none)))
     .map((): DWS.Message => WS.Reconnect)

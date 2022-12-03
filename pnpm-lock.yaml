@@ -9,7 +9,7 @@ specifiers:
   '@fp-ts/data': ^0.0.19
   '@tim-smart/discord-api-docs-parser': ^0.4.1
   '@types/ws': ^8.5.3
-  callbag-effect-ts: 1.0.0-alpha.11
+  callbag-effect-ts: 1.0.0-alpha.12
   dotenv: ^16.0.3
   isomorphic-fetch: ^3.0.0
   lerna: ^4.0.0
@@ -19,7 +19,7 @@ specifiers:
 dependencies:
   '@effect/io': 0.0.28
   '@fp-ts/data': 0.0.19
-  callbag-effect-ts: 1.0.0-alpha.11_ovckhe4unjbqwl3tkdpea4dhym
+  callbag-effect-ts: 1.0.0-alpha.12_ovckhe4unjbqwl3tkdpea4dhym
   isomorphic-fetch: 3.0.0
   ws: 8.11.0
 
@@ -1288,8 +1288,8 @@ packages:
       callbag: 1.5.1
     dev: false
 
-  /callbag-effect-ts/1.0.0-alpha.11_ovckhe4unjbqwl3tkdpea4dhym:
-    resolution: {integrity: sha512-D7tPanfLE4+aa6FNvpcslk7tnGm4/tUrzE//95za4BplKWqcl9Nviv+a1SClxAI0Il4FcMUwrmnNKTn4Vz4fIQ==}
+  /callbag-effect-ts/1.0.0-alpha.12_ovckhe4unjbqwl3tkdpea4dhym:
+    resolution: {integrity: sha512-FNWOgMOga3i1fGeuBbKsZrEYmB16NIcXbp5RiaVWNty7FZXBJhQ4vlTAku6IhQ95IKtQ7Mplr3sr/MQ6xO7vww==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'

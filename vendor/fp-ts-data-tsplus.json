@@ -244,6 +244,17 @@
       ]
     },
     {
+      "definitionName": "empty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Chunk.Ops",
+          "name": "empty"
+        }
+      ]
+    },
+    {
       "definitionName": "get",
       "definitionKind": "const",
       "extensions": [
@@ -1138,8 +1149,8 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "static",
-          "typeName": "fp-ts/data/Context.Ops",
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/Context",
           "name": "add"
         }
       ]
@@ -1487,6 +1498,28 @@
           "kind": "static",
           "typeName": "fp-ts/data/Duration.Ops",
           "name": "weeks"
+        }
+      ]
+    },
+    {
+      "definitionName": "zero",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Duration.Ops",
+          "name": "zero"
+        }
+      ]
+    },
+    {
+      "definitionName": "infinity",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Duration.Ops",
+          "name": "infinity"
         }
       ]
     },
@@ -1892,28 +1925,6 @@
       ]
     },
     {
-      "definitionName": "traverse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Either.Ops",
-          "name": "traverse"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseTap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Either.Ops",
-          "name": "traverseTap"
-        }
-      ]
-    },
-    {
       "definitionName": "liftPredicate",
       "definitionKind": "const",
       "extensions": [
@@ -1932,6 +1943,28 @@
           "kind": "static",
           "typeName": "fp-ts/data/Either.Ops",
           "name": "liftOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "unit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Either.Ops",
+          "name": "unit"
+        }
+      ]
+    },
+    {
+      "definitionName": "Do",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Either.Ops",
+          "name": "Do"
         }
       ]
     },
@@ -2255,6 +2288,17 @@
       ]
     },
     {
+      "definitionName": "traverse",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/Either",
+          "name": "traverse"
+        }
+      ]
+    },
+    {
       "definitionName": "sequence",
       "definitionKind": "const",
       "extensions": [
@@ -2262,6 +2306,17 @@
           "kind": "pipeable",
           "typeName": "fp-ts/data/Either",
           "name": "sequence"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseTap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/Either",
+          "name": "traverseTap"
         }
       ]
     },
@@ -2558,6 +2613,28 @@
           "name": "=="
         }
       ]
+    },
+    {
+      "definitionName": "symbolHash",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Equal.symbolHash.Ops",
+          "name": "symbolHash"
+        }
+      ]
+    },
+    {
+      "definitionName": "symbolEqual",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Equal.symbolEqual.Ops",
+          "name": "symbolEqual"
+        }
+      ]
     }
   ],
   "@fp-ts/data/Function": [
@@ -2681,61 +2758,6 @@
       ]
     },
     {
-      "definitionName": "constTrue",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Function.Ops",
-          "name": "constTrue"
-        }
-      ]
-    },
-    {
-      "definitionName": "constFalse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Function.Ops",
-          "name": "constFalse"
-        }
-      ]
-    },
-    {
-      "definitionName": "constNull",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Function.Ops",
-          "name": "constNull"
-        }
-      ]
-    },
-    {
-      "definitionName": "constUndefined",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Function.Ops",
-          "name": "constUndefined"
-        }
-      ]
-    },
-    {
-      "definitionName": "constVoid",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Function.Ops",
-          "name": "constVoid"
-        }
-      ]
-    },
-    {
       "definitionName": "flip",
       "definitionKind": "const",
       "extensions": [
@@ -2820,6 +2842,61 @@
           "kind": "static",
           "typeName": "fp-ts/data/Function.Ops",
           "name": "pipe"
+        }
+      ]
+    },
+    {
+      "definitionName": "constTrue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Function.LazyArg.Ops",
+          "name": "constTrue"
+        }
+      ]
+    },
+    {
+      "definitionName": "constFalse",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Function.LazyArg.Ops",
+          "name": "constFalse"
+        }
+      ]
+    },
+    {
+      "definitionName": "constNull",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Function.LazyArg.Ops",
+          "name": "constNull"
+        }
+      ]
+    },
+    {
+      "definitionName": "constUndefined",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Function.LazyArg.Ops",
+          "name": "constUndefined"
+        }
+      ]
+    },
+    {
+      "definitionName": "constVoid",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Function.LazyArg.Ops",
+          "name": "constVoid"
         }
       ]
     }
@@ -4298,50 +4375,6 @@
       ]
     },
     {
-      "definitionName": "foldMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "foldMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "reduceKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceRightKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "reduceRightKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "foldMapKind"
-        }
-      ]
-    },
-    {
       "definitionName": "compact",
       "definitionKind": "const",
       "extensions": [
@@ -4364,68 +4397,24 @@
       ]
     },
     {
-      "definitionName": "traverse",
+      "definitionName": "unit",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "static",
           "typeName": "fp-ts/data/List.Ops",
-          "name": "traverse"
+          "name": "unit"
         }
       ]
     },
     {
-      "definitionName": "traverseTap",
+      "definitionName": "Do",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "static",
           "typeName": "fp-ts/data/List.Ops",
-          "name": "traverseTap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseFilterMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "traverseFilterMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traversePartitionMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "traversePartitionMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseFilter",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "traverseFilter"
-        }
-      ]
-    },
-    {
-      "definitionName": "traversePartition",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/List.Ops",
-          "name": "traversePartition"
+          "name": "Do"
         }
       ]
     },
@@ -4748,6 +4737,17 @@
       ]
     },
     {
+      "definitionName": "foldMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "foldMap"
+        }
+      ]
+    },
+    {
       "definitionName": "toReadonlyArrayWith",
       "definitionKind": "const",
       "extensions": [
@@ -4755,6 +4755,39 @@
           "kind": "pipeable",
           "typeName": "fp-ts/data/List",
           "name": "toReadonlyArrayWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "reduceKind",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "reduceKind"
+        }
+      ]
+    },
+    {
+      "definitionName": "reduceRightKind",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "reduceRightKind"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldMapKind",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "foldMapKind"
         }
       ]
     },
@@ -4792,6 +4825,17 @@
       ]
     },
     {
+      "definitionName": "traverse",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "traverse"
+        }
+      ]
+    },
+    {
       "definitionName": "sequence",
       "definitionKind": "const",
       "extensions": [
@@ -4799,6 +4843,61 @@
           "kind": "pipeable",
           "typeName": "fp-ts/data/List",
           "name": "sequence"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseTap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "traverseTap"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseFilterMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "traverseFilterMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "traversePartitionMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "traversePartitionMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseFilter",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "traverseFilter"
+        }
+      ]
+    },
+    {
+      "definitionName": "traversePartition",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/List",
+          "name": "traversePartition"
         }
       ]
     },
@@ -5024,6 +5123,17 @@
         {
           "kind": "companion",
           "typeName": "fp-ts/data/NonEmpty.Iterable.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "nonEmpty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/NonEmpty.nonEmpty.Ops",
+          "name": "nonEmpty"
         }
       ]
     },
@@ -5328,28 +5438,6 @@
       ]
     },
     {
-      "definitionName": "traverse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "traverse"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseTap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "traverseTap"
-        }
-      ]
-    },
-    {
       "definitionName": "liftNullable",
       "definitionKind": "const",
       "extensions": [
@@ -5390,6 +5478,39 @@
           "kind": "static",
           "typeName": "fp-ts/data/Option.Ops",
           "name": "liftEither"
+        }
+      ]
+    },
+    {
+      "definitionName": "none",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Option.Ops",
+          "name": "none"
+        }
+      ]
+    },
+    {
+      "definitionName": "unit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Option.Ops",
+          "name": "unit"
+        }
+      ]
+    },
+    {
+      "definitionName": "Do",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Option.Ops",
+          "name": "Do"
         }
       ]
     },
@@ -5647,6 +5768,17 @@
       ]
     },
     {
+      "definitionName": "traverse",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/Option",
+          "name": "traverse"
+        }
+      ]
+    },
+    {
       "definitionName": "sequence",
       "definitionKind": "const",
       "extensions": [
@@ -5654,6 +5786,17 @@
           "kind": "pipeable",
           "typeName": "fp-ts/data/Option",
           "name": "sequence"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseTap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/Option",
+          "name": "traverseTap"
         }
       ]
     },
@@ -5944,24 +6087,13 @@
       ]
     },
     {
-      "definitionName": "Do",
+      "definitionName": "productAll",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "static",
           "typeName": "fp-ts/data/Predicate.Ops",
-          "name": "Do"
-        }
-      ]
-    },
-    {
-      "definitionName": "unit",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Predicate.Ops",
-          "name": "unit"
+          "name": "productAll"
         }
       ]
     },
@@ -6054,6 +6186,28 @@
       ]
     },
     {
+      "definitionName": "Do",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Predicate.Ops",
+          "name": "Do"
+        }
+      ]
+    },
+    {
+      "definitionName": "unit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Predicate.Ops",
+          "name": "unit"
+        }
+      ]
+    },
+    {
       "definitionName": "compose",
       "definitionKind": "const",
       "extensions": [
@@ -6116,22 +6270,6 @@
           "kind": "pipeable",
           "typeName": "fp-ts/data/Predicate",
           "name": "productMany"
-        }
-      ]
-    },
-    {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Predicate.Ops",
-          "name": "productAll"
         }
       ]
     },
@@ -6984,28 +7122,6 @@
       ]
     },
     {
-      "definitionName": "traverse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverse"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseWithIndex"
-        }
-      ]
-    },
-    {
       "definitionName": "traverseNonEmpty",
       "definitionKind": "const",
       "extensions": [
@@ -7024,17 +7140,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/ReadonlyArray.Ops",
           "name": "traverseNonEmptyWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseTap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseTap"
         }
       ]
     },
@@ -7105,28 +7210,6 @@
       ]
     },
     {
-      "definitionName": "foldMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMapWithIndex"
-        }
-      ]
-    },
-    {
       "definitionName": "foldMapNonEmpty",
       "definitionKind": "const",
       "extensions": [
@@ -7145,83 +7228,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/ReadonlyArray.Ops",
           "name": "foldMapNonEmptyWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "reduceKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceRightKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "reduceRightKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMapKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseFilterMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseFilterMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traversePartitionMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traversePartitionMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseFilter",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseFilter"
-        }
-      ]
-    },
-    {
-      "definitionName": "traversePartition",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traversePartition"
         }
       ]
     },
@@ -7266,17 +7272,6 @@
           "kind": "static",
           "typeName": "ReadonlyArray",
           "name": "liftEither"
-        }
-      ]
-    },
-    {
-      "definitionName": "intercalate",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "intercalate"
         }
       ]
     },
@@ -7398,6 +7393,28 @@
           "kind": "static",
           "typeName": "fp-ts/data/ReadonlyArray.Ops",
           "name": "every"
+        }
+      ]
+    },
+    {
+      "definitionName": "empty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "ReadonlyArray",
+          "name": "empty"
+        }
+      ]
+    },
+    {
+      "definitionName": "Do",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "ReadonlyArray",
+          "name": "Do"
         }
       ]
     },
@@ -8217,6 +8234,38 @@
       ]
     },
     {
+      "definitionName": "traverse",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traverse"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traverse"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseWithIndex",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traverseWithIndex"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traverseWithIndex"
+        }
+      ]
+    },
+    {
       "definitionName": "sequence",
       "definitionKind": "const",
       "extensions": [
@@ -8229,6 +8278,22 @@
           "kind": "static",
           "typeName": "fp-ts/core/HKT.Kind.Ops",
           "name": "sequence"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseTap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traverseTap"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traverseTap"
         }
       ]
     },
@@ -8361,6 +8426,150 @@
       ]
     },
     {
+      "definitionName": "foldMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "foldMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "ReadonlyArray.Ops",
+          "name": "foldMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldMapWithIndex",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "foldMapWithIndex"
+        },
+        {
+          "kind": "static",
+          "typeName": "ReadonlyArray.Ops",
+          "name": "foldMapWithIndex"
+        }
+      ]
+    },
+    {
+      "definitionName": "reduceKind",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "reduceKind"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "reduceKind"
+        }
+      ]
+    },
+    {
+      "definitionName": "reduceRightKind",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "reduceRightKind"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "reduceRightKind"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldMapKind",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "foldMapKind"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "foldMapKind"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseFilterMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traverseFilterMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traverseFilterMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "traversePartitionMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traversePartitionMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traversePartitionMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "traverseFilter",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traverseFilter"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traverseFilter"
+        }
+      ]
+    },
+    {
+      "definitionName": "traversePartition",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "traversePartition"
+        },
+        {
+          "kind": "static",
+          "typeName": "fp-ts/core/HKT.Kind.Ops",
+          "name": "traversePartition"
+        }
+      ]
+    },
+    {
       "definitionName": "flatMapNullable",
       "definitionKind": "const",
       "extensions": [
@@ -8405,6 +8614,22 @@
           "kind": "static",
           "typeName": "ReadonlyArray.Ops",
           "name": "has"
+        }
+      ]
+    },
+    {
+      "definitionName": "intercalate",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "ReadonlyArray",
+          "name": "intercalate"
+        },
+        {
+          "kind": "static",
+          "typeName": "ReadonlyArray.Ops",
+          "name": "intercalate"
         }
       ]
     },
@@ -9257,6 +9482,17 @@
       ]
     },
     {
+      "definitionName": "unit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/SafeEval.Ops",
+          "name": "unit"
+        }
+      ]
+    },
+    {
       "definitionName": "zip",
       "definitionKind": "const",
       "extensions": [
@@ -9658,28 +9894,6 @@
       ]
     },
     {
-      "definitionName": "flatMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/SortedSet.Ops",
-          "name": "flatMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "map",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/SortedSet.Ops",
-          "name": "map"
-        }
-      ]
-    },
-    {
       "definitionName": "add",
       "definitionKind": "const",
       "extensions": [
@@ -9786,6 +10000,28 @@
           "kind": "pipeable",
           "typeName": "fp-ts/data/SortedSet",
           "name": "forEach"
+        }
+      ]
+    },
+    {
+      "definitionName": "flatMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/SortedSet",
+          "name": "flatMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "map",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "fp-ts/data/SortedSet",
+          "name": "map"
         }
       ]
     },
@@ -12002,6 +12238,17 @@
       ]
     },
     {
+      "definitionName": "EmptyMutableQueue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/mutable/MutableQueue.EmptyMutableQueue.Ops",
+          "name": "EmptyMutableQueue"
+        }
+      ]
+    },
+    {
       "definitionName": "offer",
       "definitionKind": "const",
       "extensions": [
@@ -12604,6 +12851,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/typeclass/Gen.Ops",
           "name": "singleShot"
+        }
+      ]
+    },
+    {
+      "definitionName": "GenKindTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/typeclass/Gen.KindTypeId.Ops",
+          "name": "GenKindTypeId"
         }
       ]
     }

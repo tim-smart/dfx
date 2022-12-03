@@ -1,5 +1,3 @@
-import { none } from "@fp-ts/data/Option"
-
 export interface ClaimIdContext {
   sharderCount: number
   totalCount: number
@@ -19,7 +17,10 @@ const memoryStore = (): ShardStore => {
   return {
     claimId: ({ totalCount }) =>
       Effect.sync(() => {
-        if (currentId >= totalCount) return none
+        if (currentId >= totalCount) {
+          return Maybe.none
+        }
+
         const id = currentId
         currentId++
         return Maybe.some(id)

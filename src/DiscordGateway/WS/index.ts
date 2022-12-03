@@ -45,45 +45,57 @@ export class WebSocketWriteError {
 }
 
 const send = (ws: WebSocket, out: EffectSource<never, never, Message>) =>
-  pipe(
-    Effect.async<never, never, void>((resume) => {
-      if (ws.readyState & ws.OPEN) {
-        resume(Effect.unit())
-      } else {
-        ws.once("open", () => {
-          resume(Effect.unit())
-        })
-      }
-    }).map(() => out),
-    unwrap,
-  )
-    .tap((p) => Log.debug("WS", "send", p))
-    .tap((data) =>
-      Effect.async<never, WebSocketWriteError, void>((resume) => {
-        if (data === Reconnect) {
-          ws.close(1012, "reconnecting")
+  Do(($) => {
+    const log = $(Effect.service(Log.Log))
+    return pipe(
+      Effect.async<never, never, void>((resume) => {
+        if (ws.readyState & ws.OPEN) {
           resume(Effect.unit())
         } else {
-          ws.send(data, (err) => {
-            resume(
-              err ? Effect.fail(new WebSocketWriteError(err!)) : Effect.unit(),
-            )
+          ws.once("open", () => {
+            resume(Effect.unit())
           })
         }
+      }).map(() => out),
+      unwrap,
+    )
+      .tap((p) => log.debug("WS", "send", p))
+      .tap((data) =>
+        Effect.async<never, WebSocketWriteError, void>((resume) => {
+          if (data === Reconnect) {
+            ws.close(1012, "reconnecting")
+            resume(Effect.unit())
+          } else {
+            ws.send(data, (err) => {
+              resume(
+                err
+                  ? Effect.fail(new WebSocketWriteError(err!))
+                  : Effect.unit(),
+              )
+            })
+          }
+        }),
+      ).drain
+  })
+
+export const make = (url: Ref<string>, options?: ClientOptions) =>
+  Do(($) => {
+    const [sink, outbound] = asyncSink<never, Message>()
+    const log = $(Effect.service(Log.Log))
+    const withLog = provideService(Log.Log)(log)
+
+    const source = pipe(
+      Do(($) => {
+        const ws = $(socket(url, options))
+        const sendEffect = $(withLog(send(ws, outbound)))
+        return recv(ws).merge(sendEffect)
       }),
-    ).drain
+      unwrapScope,
+    ).retry(
+      Schedule.recurWhile(
+        (e) => e._tag === "WebSocketCloseError" && e.code === 1012,
+      ),
+    )
 
-export const make = (url: Ref<string>, options?: ClientOptions) => {
-  const [sink, outbound] = asyncSink<never, Message>()
-
-  const source = pipe(
-    socket(url, options).map((ws) => recv(ws).merge(send(ws, outbound))),
-    unwrapScope,
-  ).retry(
-    Schedule.recurWhile(
-      (e) => e._tag === "WebSocketCloseError" && e.code === 1012,
-    ),
-  )
-
-  return { source, sink }
-}
+    return { source, sink }
+  })

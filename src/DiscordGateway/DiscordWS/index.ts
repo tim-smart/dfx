@@ -30,10 +30,11 @@ export const make = ({
     const setUrl = (url: string) =>
       urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
 
-    const ws = WS.make(urlRef)
+    const ws = $(WS.make(urlRef))
 
+    const log = $(Effect.service(Log.Log))
     const source = ws.source
-      .tapError((e) => Log.info("DiscordWS", "ERROR", e))
+      .tapError((e) => log.info("DiscordWS", "ERROR", e))
       .retry(Schedule.exponential(Duration.seconds(0.5)))
       .map(encoding.decode)
 

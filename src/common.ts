@@ -1,4 +1,4 @@
-export type { Effect } from "@effect/io/Effect"
+export { Effect, provideService } from "@effect/io/Effect"
 export type { Layer } from "@effect/io/Layer"
 export type { Schedule } from "@effect/io/Schedule"
 export type { Cause } from "@effect/io/Cause"

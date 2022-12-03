@@ -1,5 +1,4 @@
-import { filter, tap } from "callbag-effect-ts/Source"
-import { none, Option } from "@fp-ts/data/Option"
+import { filter } from "callbag-effect-ts/Source"
 
 export const opCode =
   <R, E>(source: EffectSource<R, E, Discord.GatewayPayload>) =>
@@ -10,9 +9,11 @@ export const opCode =
     )
 
 const maybeUpdateRef = <T>(
-  f: (p: Discord.GatewayPayload) => Option<T>,
-  ref: Ref<Option<T>>,
-) => flow(f, (o) => o.match(Effect.unit, (a) => ref.set(Option.some(a))))
+  f: (p: Discord.GatewayPayload) => Maybe<T>,
+  ref: Ref<Maybe<T>>,
+) => flow(f, (o) => o.match(Effect.unit, (a) => ref.set(Maybe.some(a))))
 
-export const latest = <T>(f: (p: Discord.GatewayPayload) => Option<T>) =>
-  Ref.make<Option<T>>(none).map((ref) => [ref, maybeUpdateRef(f, ref)] as const)
+export const latest = <T>(f: (p: Discord.GatewayPayload) => Maybe<T>) =>
+  Ref.make<Maybe<T>>(Maybe.none).map(
+    (ref) => [ref, maybeUpdateRef(f, ref)] as const,
+  )
