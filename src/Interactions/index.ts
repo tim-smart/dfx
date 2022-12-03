@@ -71,38 +71,40 @@ const runGateway = <R>(definitions: D.InteractionDefinition<R>[]) =>
       >,
     )
 
+    const handle = (i: Discord.Interaction): Effect<R, never, void> => {
+      switch (i.type) {
+        case Discord.InteractionType.APPLICATION_COMMAND:
+          const data = i.data as Discord.ApplicationCommandDatum
+          const command = allCommands[data.name]
+          return command ? command.handle(i as any) : Effect.unit()
+
+        case Discord.InteractionType.MESSAGE_COMPONENT:
+          const mcData = i.data as Discord.MessageComponentDatum
+          return messageComponents
+            .filter((a) => a.predicate(mcData.custom_id))
+            .map((a) => a.handle(i as any)).collectAllParDiscard
+
+        case Discord.InteractionType.MODAL_SUBMIT:
+          const msData = i.data as Discord.ModalSubmitDatum
+          return modalSubmits
+            .filter((a) => a.predicate(msData.custom_id))
+            .map((a) => a.handle(i as any)).collectAllParDiscard
+
+        case Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE:
+          const acData = i.data as Discord.ApplicationCommandDatum
+          const option = allOptions(acData.options!).find((a) => a.focused)
+          if (!option) return Effect.unit()
+          return autocompletes
+            .filter((a) => a.predicate(option))
+            .map((a) => a.handle(i as any)).collectAllParDiscard
+      }
+
+      return Effect.unit()
+    }
+
     const run = gateway
       .fromDispatch("INTERACTION_CREATE")
-      .mapEffect((i): Effect<R, never, void> => {
-        switch (i.type) {
-          case Discord.InteractionType.APPLICATION_COMMAND:
-            const data = i.data as Discord.ApplicationCommandDatum
-            const command = allCommands[data.name]
-            return command ? command.handle(i as any) : Effect.unit()
-
-          case Discord.InteractionType.MESSAGE_COMPONENT:
-            const mcData = i.data as Discord.MessageComponentDatum
-            return messageComponents
-              .filter((a) => a.predicate(mcData.custom_id))
-              .map((a) => a.handle(i as any)).collectAllParDiscard
-
-          case Discord.InteractionType.MODAL_SUBMIT:
-            const msData = i.data as Discord.ModalSubmitDatum
-            return modalSubmits
-              .filter((a) => a.predicate(msData.custom_id))
-              .map((a) => a.handle(i as any)).collectAllParDiscard
-
-          case Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE:
-            const acData = i.data as Discord.ApplicationCommandDatum
-            const option = allOptions(acData.options!).find((a) => a.focused)
-            if (!option) return Effect.unit()
-            return autocompletes
-              .filter((a) => a.predicate(option))
-              .map((a) => a.handle(i as any)).collectAllParDiscard
-        }
-
-        return Effect.unit()
-      }).runDrain
+      .chainPar((i) => EffectSource.fromEffect(handle(i))).runDrain
 
     $(run)
   })
