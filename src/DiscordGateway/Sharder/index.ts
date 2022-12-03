@@ -1,4 +1,4 @@
-import { overridePull, unwrap } from "callbag-effect-ts/Source"
+import { empty, overridePull, unwrap } from "callbag-effect-ts/Source"
 import { millis } from "@fp-ts/data/Duration"
 import { ShardStore } from "../ShardStore/index.js"
 
@@ -12,19 +12,22 @@ const configs = (totalCount: number) =>
             totalCount,
             sharderCount,
           })
-          .flatMap((a) =>
-            a.match(
-              () =>
-                Effect.succeed([
-                  Maybe.some(sharderCount),
-                  EffectSource.empty,
-                ] as const),
-              (id) =>
-                Effect.succeed([
-                  Maybe.some(sharderCount + 1),
-                  EffectSource.of(id),
-                ] as const),
-            ),
+          .flatMap(
+            (
+              a,
+            ): Effect<
+              never,
+              never,
+              [Maybe<number>, EffectSource<never, never, number>]
+            > =>
+              a.match(
+                () => Effect.succeed([Maybe.some(sharderCount), empty]),
+                (id) =>
+                  Effect.succeed([
+                    Maybe.some(sharderCount + 1),
+                    EffectSource.of(id),
+                  ]),
+              ),
           ),
         EffectSource.fromEffect,
       ),

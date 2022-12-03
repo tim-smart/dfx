@@ -1,4 +1,4 @@
-import { RestResponse } from "dfx/DiscordRest/types"
+import { RestResponse } from "dfx/DiscordREST/types"
 export interface ActionMetadatum {
   /** SEND_ALERT_MESSAGE */
   channel_id: Snowflake

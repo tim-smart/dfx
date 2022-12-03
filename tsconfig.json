@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "rootDir": "src",
     "outDir": "dist",
     "resolveJsonModule": true,
     "skipLibCheck": true,

@@ -23,6 +23,7 @@ import type {
   Log,
   RateLimitStore,
   Rest,
+  Gateway,
   WS,
   DWS,
   Shard,

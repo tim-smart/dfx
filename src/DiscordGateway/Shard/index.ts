@@ -61,7 +61,7 @@ export const make = (shard: [id: number, count: number]) =>
       pipe(
         raw,
         filter(
-          (p): p is Discord.GatewayPayload<Discord.SendEvent> =>
+          (p): p is Discord.GatewayPayload<Discord.ReceiveEvent> =>
             p.op === Discord.GatewayOpcode.DISPATCH,
         ),
       ).share,
