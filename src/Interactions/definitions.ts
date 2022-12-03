@@ -47,7 +47,7 @@ export const global = <R, E>(
 export class GuildApplicationCommand<R, E> {
   readonly _tag = "GuildApplicationCommand"
   constructor(
-    readonly command: Discord.CreateGlobalApplicationCommandParams,
+    readonly command: Discord.CreateGuildApplicationCommandParams,
     readonly handle: InteractionHandler<
       R,
       E,

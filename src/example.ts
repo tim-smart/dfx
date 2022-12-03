@@ -3,15 +3,19 @@ import Dotenv from "dotenv"
 
 Dotenv.config()
 
-const LiveEnv = makeLayer({
-  token: process.env.DISCORD_BOT_TOKEN!,
-})
+const LiveEnv = makeLayer(
+  {
+    token: process.env.DISCORD_BOT_TOKEN!,
+  },
+  true,
+)
 
 Ix.builder
   .add(
     Ix.guild(
       {
         name: "hello",
+        description: "Eh yo",
       },
       (i) =>
         rest.createInteractionResponse(i.id, i.token, {
@@ -23,4 +27,6 @@ Ix.builder
     ),
   )
   .runGateway.provideLayer(LiveEnv)
-  .unsafeRunPromise.catch(console.error)
+  .unsafeRunPromiseExit.then((exit) => {
+    exit.isFailure && exit.cause.unsafeRunSync.pretty()
+  })

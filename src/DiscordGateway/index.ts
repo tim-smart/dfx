@@ -16,10 +16,10 @@ export const handleDispatchFactory =
   <K extends keyof Discord.ReceiveEvents, R1, E1, A>(
     event: K,
     handle: (event: Discord.ReceiveEvents[K]) => Effect<R1, E1, A>,
-  ): Effect<R | R1, E | E1, void> =>
+  ): EffectSource<R | R1, E | E1, A> =>
     source
       .filter((p) => p.t === event)
-      .chainPar((a) => EffectSource.fromEffect(handle(a.d as any))).runDrain
+      .chainPar((a) => EffectSource.fromEffect(handle(a.d as any)))
 
 export const make = Do(($) => {
   const shards = $(spawn.share)
@@ -50,6 +50,6 @@ export const handleDispatch = <
   event: K,
   handle: (event: Discord.ReceiveEvents[K]) => Effect<R1, E1, A>,
 ) =>
-  Effect.serviceWithEffect(DiscordGateway)((a) =>
+  Effect.serviceWith(DiscordGateway)((a) =>
     a.handleDispatch(event, handle),
-  )
+  ).unwrap
