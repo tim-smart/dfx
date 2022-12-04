@@ -55,10 +55,11 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
       Rest.rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),
     )
 
-    $(
-      Rest.rest.bulkOverwriteGlobalApplicationCommands(application.id, {
+    const globalSync = Rest.rest.bulkOverwriteGlobalApplicationCommands(
+      application.id,
+      {
         body: JSON.stringify(globalCommands.map((a) => a.command)),
-      }),
+      },
     )
 
     const guildSync = Gateway.handleDispatch("GUILD_CREATE", (a) =>
@@ -113,7 +114,7 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", handle)
 
-    $(run.zipPar(guildSync))
+    $(run.zipPar(globalSync).zipPar(guildSync))
   })
 
 const allOptions = (
