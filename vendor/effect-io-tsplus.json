@@ -2701,6 +2701,17 @@
       ]
     },
     {
+      "definitionName": "mapAccum",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "mapAccum"
+        }
+      ]
+    },
+    {
       "definitionName": "memoizeFunction",
       "definitionKind": "const",
       "extensions": [
@@ -2763,6 +2774,28 @@
           "kind": "static",
           "typeName": "effect/io/Effect.Ops",
           "name": "promise"
+        }
+      ]
+    },
+    {
+      "definitionName": "provideService",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "provideService"
+        }
+      ]
+    },
+    {
+      "definitionName": "provideServiceEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "provideServiceEffect"
         }
       ]
     },
@@ -3097,28 +3130,6 @@
       ]
     },
     {
-      "definitionName": "unsafeRunAsyncWith",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "effect/io/Effect.Ops",
-          "name": "unsafeRunAsyncWith"
-        }
-      ]
-    },
-    {
-      "definitionName": "unsafeRunWith",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "effect/io/Effect.Ops",
-          "name": "unsafeRunWith"
-        }
-      ]
-    },
-    {
       "definitionName": "updateFiberRefs",
       "definitionKind": "const",
       "extensions": [
@@ -3137,6 +3148,17 @@
           "kind": "static",
           "typeName": "effect/io/Effect.Ops",
           "name": "updateRuntimeFlags"
+        }
+      ]
+    },
+    {
+      "definitionName": "updateService",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "updateService"
         }
       ]
     },
@@ -4282,28 +4304,6 @@
       ]
     },
     {
-      "definitionName": "provideService",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "effect/io/Effect",
-          "name": "provideService"
-        }
-      ]
-    },
-    {
-      "definitionName": "provideServiceEffect",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "effect/io/Effect",
-          "name": "provideServiceEffect"
-        }
-      ]
-    },
-    {
       "definitionName": "provideSomeEnvironment",
       "definitionKind": "const",
       "extensions": [
@@ -5126,17 +5126,6 @@
       ]
     },
     {
-      "definitionName": "updateService",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "effect/io/Effect",
-          "name": "updateService"
-        }
-      ]
-    },
-    {
       "definitionName": "validate",
       "definitionKind": "const",
       "extensions": [
@@ -5506,13 +5495,24 @@
       ]
     },
     {
-      "definitionName": "mapAccum",
+      "definitionName": "unsafeRunAsyncWith",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "mapAccum"
+          "typeName": "effect/io/Effect",
+          "name": "unsafeRunAsyncWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "unsafeRunWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Effect",
+          "name": "unsafeRunWith"
         }
       ]
     },
@@ -8331,6 +8331,17 @@
       ]
     },
     {
+      "definitionName": "project",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Layer.Ops",
+          "name": "project"
+        }
+      ]
+    },
+    {
       "definitionName": "scope",
       "definitionKind": "const",
       "extensions": [
@@ -8568,17 +8579,6 @@
           "typeName": "effect/io/Layer",
           "kind": "pipeable-operator",
           "name": "|"
-        }
-      ]
-    },
-    {
-      "definitionName": "project",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "effect/io/Layer",
-          "name": "project"
         }
       ]
     },
