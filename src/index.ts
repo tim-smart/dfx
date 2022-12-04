@@ -19,10 +19,10 @@ export const LiveRateLimit =
 export const LiveREST = LiveRateLimit > Rest.LiveDiscordREST
 
 export const LiveGateway =
-  LiveREST + ShardStore.LiveMemoryShardStore + DWS.LiveJsonDiscordWSCodec >
+  ShardStore.LiveMemoryShardStore + DWS.LiveJsonDiscordWSCodec >
   Gateway.LiveDiscordGateway
 
-export const LiveBot = LiveREST + LiveGateway
+export const LiveBot = LiveREST > LiveGateway
 
 export const makeLayer = (config: Config.MakeOpts, debug = false) => {
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog

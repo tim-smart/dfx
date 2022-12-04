@@ -29,6 +29,11 @@ export const ModalSubmitContext = Tag<Discord.ModalSubmitDatum>()
 export const FocusedOptionContext =
   Tag<Discord.ApplicationCommandInteractionDataOption>()
 
+export interface SubCommandContext {
+  readonly command: Discord.ApplicationCommandInteractionDataOption
+}
+export const SubCommandContext = Tag<SubCommandContext>()
+
 export const respond = (response: InteractionResponse) =>
   Do(($) => {
     const { id, token } = $(Effect.service(InteractionContext))
@@ -39,15 +44,25 @@ export const focusedOptionValue = Effect.serviceWith(FocusedOptionContext)(
   (a) => a.value!,
 )
 
+export const commandOptionsMap = Effect.serviceWith(ApplicationCommandContext)(
+  IxHelpers.optionsMap,
+)
+
 export const handleSubCommand = <R, E>(
   name: string,
-  handle: (
-    a: Discord.ApplicationCommandInteractionDataOption,
-  ) => Effect<R, E, void>,
+  handle: Effect<R, E, void>,
 ) =>
   Effect.serviceWithEffect(ApplicationCommandContext)((a) =>
-    IxHelpers.findSubCommand(name)(a).match(() => Effect.unit(), handle),
+    IxHelpers.findSubCommand(name)(a).match(Effect.unit, (command) =>
+      pipe(handle, Effect.provideService(SubCommandContext)({ command })),
+    ),
   )
+
+export const getSubCommand = Effect.serviceWith(SubCommandContext)(
+  (a) => a.command,
+)
+
+export const subCommandOptionsMap = getSubCommand.map(IxHelpers.optionsMap)
 
 export const modalValues = Effect.serviceWith(ModalSubmitContext)(
   IxHelpers.componentsMap,
