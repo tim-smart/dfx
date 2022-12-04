@@ -1,4 +1,17 @@
+import * as Ctx from "./context.js"
 import * as D from "./definitions.js"
+
+export {
+  InteractionContext,
+  ApplicationCommandContext,
+  ModalSubmitContext,
+  MessageComponentContext,
+  FocusedOptionContext,
+  InteractionResponse,
+  respond,
+  focusedOptionValue,
+  handleSubCommand,
+} from "./context.js"
 
 export {
   global,
@@ -6,7 +19,6 @@ export {
   messageComponent,
   modalSubmit,
   autocomplete,
-  InteractionHandler,
   InteractionDefinition,
 } from "./definitions.js"
 
@@ -20,14 +32,21 @@ class InteractionBuilder<R, E> {
     ])
   }
 
-  get runGateway() {
-    return runGateway(this.definitions)
+  runGateway(opts: RunGatewayOpts = {}) {
+    return runGateway(this.definitions, opts)
   }
 }
 
 export const builder = new InteractionBuilder<never, never>([])
 
-const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
+export interface RunGatewayOpts {
+  sync?: boolean
+}
+
+const runGateway = <R, E>(
+  definitions: D.InteractionDefinition<R, E>[],
+  { sync = true }: RunGatewayOpts = {},
+) =>
   Do(($) => {
     const globalCommands = definitions.filter(
       (a): a is D.GlobalApplicationCommand<R, E> =>
@@ -86,27 +105,55 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
         case Discord.InteractionType.APPLICATION_COMMAND:
           const data = i.data as Discord.ApplicationCommandDatum
           const command = allCommands[data.name]
-          return command ? command.handle(i as any) : Effect.unit()
+          return command
+            ? pipe(
+                command.handle,
+                provideService(Ctx.InteractionContext)(i),
+                provideService(Ctx.ApplicationCommandContext)(data),
+              )
+            : Effect.unit()
 
         case Discord.InteractionType.MESSAGE_COMPONENT:
           const mcData = i.data as Discord.MessageComponentDatum
-          return messageComponents
-            .filter((a) => a.predicate(mcData.custom_id))
-            .map((a) => a.handle(i as any)).collectAllParDiscard
+          return pipe(
+            messageComponents.map((a) =>
+              Do(($) => {
+                const pass = $(a.predicate(mcData.custom_id))
+                $(pass ? a.handle : Effect.unit())
+              }),
+            ).collectAllParDiscard,
+            provideService(Ctx.InteractionContext)(i),
+            provideService(Ctx.MessageComponentContext)(mcData),
+          )
 
         case Discord.InteractionType.MODAL_SUBMIT:
           const msData = i.data as Discord.ModalSubmitDatum
-          return modalSubmits
-            .filter((a) => a.predicate(msData.custom_id))
-            .map((a) => a.handle(i as any)).collectAllParDiscard
+          return pipe(
+            modalSubmits.map((a) =>
+              Do(($) => {
+                const pass = $(a.predicate(msData.custom_id))
+                $(pass ? a.handle : Effect.unit())
+              }),
+            ).collectAllParDiscard,
+            provideService(Ctx.InteractionContext)(i),
+            provideService(Ctx.ModalSubmitContext)(msData),
+          )
 
         case Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE:
           const acData = i.data as Discord.ApplicationCommandDatum
           const option = allOptions(acData.options!).find((a) => a.focused)
           if (!option) return Effect.unit()
-          return autocompletes
-            .filter((a) => a.predicate(option))
-            .map((a) => a.handle(i as any)).collectAllParDiscard
+          return pipe(
+            autocompletes.map((a) =>
+              Do(($) => {
+                const pass = $(a.predicate(option))
+                $(pass ? a.handle : Effect.unit())
+              }),
+            ).collectAllParDiscard,
+            provideService(Ctx.InteractionContext)(i),
+            provideService(Ctx.ApplicationCommandContext)(acData),
+            provideService(Ctx.FocusedOptionContext)(option),
+          )
       }
 
       return Effect.unit()
@@ -114,7 +161,7 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", handle)
 
-    $(run.zipPar(globalSync).zipPar(guildSync))
+    $(sync ? run.zipPar(globalSync).zipPar(guildSync) : run)
   })
 
 const allOptions = (
@@ -125,6 +172,9 @@ const allOptions = (
 // Filters
 export const id = (query: string) => (customId: string) =>
   Effect.succeed(query === customId)
+
+export const idStartsWith = (query: string) => (customId: string) =>
+  Effect.succeed(customId.startsWith(query))
 
 export const regex = (query: RegExp) => (customId: string) =>
   Effect.succeed(query.test(customId))

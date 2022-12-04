@@ -1,19 +1,3 @@
-type Interaction<Type, Data, HasMessage = false> = Omit<
-  Discord.Interaction,
-  "type" | "data" | "message"
-> & {
-  type: Type
-  data: Data
-} & (HasMessage extends true
-    ? {
-        message: Discord.Message
-      }
-    : {})
-
-export type InteractionHandler<R, E, Type, Data, HasMessage = false> = (
-  a: Interaction<Type, Data, HasMessage>,
-) => Effect<R, E, void>
-
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
   | GuildApplicationCommand<R, E>
@@ -25,97 +9,69 @@ export class GlobalApplicationCommand<R, E> {
   readonly _tag = "GlobalApplicationCommand"
   constructor(
     readonly command: Discord.CreateGlobalApplicationCommandParams,
-    readonly handle: InteractionHandler<
-      R,
-      E,
-      Discord.InteractionType.APPLICATION_COMMAND,
-      Discord.ApplicationCommandDatum
-    >,
+    readonly handle: Effect<R, E, void>,
   ) {}
 }
 
 export const global = <R, E>(
   command: Discord.CreateGlobalApplicationCommandParams,
-  handle: InteractionHandler<
-    R,
-    E,
-    Discord.InteractionType.APPLICATION_COMMAND,
-    Discord.ApplicationCommandDatum
-  >,
-) => new GlobalApplicationCommand(command, handle)
+  handle: Effect<R, E, void>,
+) =>
+  new GlobalApplicationCommand<
+    Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
+    E
+  >(command, handle as any)
 
 export class GuildApplicationCommand<R, E> {
   readonly _tag = "GuildApplicationCommand"
   constructor(
     readonly command: Discord.CreateGuildApplicationCommandParams,
-    readonly handle: InteractionHandler<
-      R,
-      E,
-      Discord.InteractionType.APPLICATION_COMMAND,
-      Discord.ApplicationCommandDatum
-    >,
+    readonly handle: Effect<R, E, void>,
   ) {}
 }
 
 export const guild = <R, E>(
   command: Discord.CreateGuildApplicationCommandParams,
-  handle: InteractionHandler<
-    R,
-    E,
-    Discord.InteractionType.APPLICATION_COMMAND,
-    Discord.ApplicationCommandDatum
-  >,
-) => new GuildApplicationCommand(command, handle)
+  handle: Effect<R, E, void>,
+) =>
+  new GuildApplicationCommand<
+    Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
+    E
+  >(command, handle as any)
 
 export class MessageComponent<R, E> {
   readonly _tag = "MessageComponent"
   constructor(
     readonly predicate: (customId: string) => Effect<R, E, boolean>,
-    readonly handle: InteractionHandler<
-      R,
-      E,
-      Discord.InteractionType.MESSAGE_COMPONENT,
-      Discord.MessageComponentDatum,
-      true
-    >,
+    readonly handle: Effect<R, E, void>,
   ) {}
 }
 
 export const messageComponent = <R1, R2, E1, E2>(
   pred: (customId: string) => Effect<R1, E1, boolean>,
-  handle: InteractionHandler<
-    R2,
-    E2,
-    Discord.InteractionType.MESSAGE_COMPONENT,
-    Discord.MessageComponentDatum,
-    true
-  >,
-) => new MessageComponent<R1 | R2, E1 | E2>(pred, handle)
+  handle: Effect<R2, E2, void>,
+) =>
+  new MessageComponent<
+    Exclude<R1 | R2, Discord.Interaction | Discord.MessageComponentDatum>,
+    E1 | E2
+  >(pred as any, handle as any)
 
 export class ModalSubmit<R, E> {
   readonly _tag = "ModalSubmit"
   constructor(
     readonly predicate: (customId: string) => Effect<R, E, boolean>,
-    readonly handle: InteractionHandler<
-      R,
-      E,
-      Discord.InteractionType.MODAL_SUBMIT,
-      Discord.ModalSubmitDatum,
-      true
-    >,
+    readonly handle: Effect<R, E, void>,
   ) {}
 }
 
 export const modalSubmit = <R1, R2, E1, E2>(
   pred: (customId: string) => Effect<R1, E1, boolean>,
-  handle: InteractionHandler<
-    R2,
-    E2,
-    Discord.InteractionType.MODAL_SUBMIT,
-    Discord.ModalSubmitDatum,
-    true
-  >,
-) => new ModalSubmit<R1 | R2, E1 | E2>(pred, handle)
+  handle: Effect<R2, E2, void>,
+) =>
+  new ModalSubmit<
+    Exclude<R1 | R2, Discord.Interaction | Discord.ModalSubmitDatum>,
+    E1 | E2
+  >(pred as any, handle as any)
 
 export class Autocomplete<R, E> {
   readonly _tag = "Autocomplete"
@@ -123,12 +79,7 @@ export class Autocomplete<R, E> {
     readonly predicate: (
       focusedOption: Discord.ApplicationCommandInteractionDataOption,
     ) => Effect<R, E, boolean>,
-    readonly handle: InteractionHandler<
-      R,
-      E,
-      Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE,
-      Discord.ApplicationCommandDatum
-    >,
+    readonly handle: Effect<R, E, void>,
   ) {}
 }
 
@@ -136,10 +87,14 @@ export const autocomplete = <R1, R2, E1, E2>(
   pred: (
     focusedOption: Discord.ApplicationCommandInteractionDataOption,
   ) => Effect<R1, E1, boolean>,
-  handle: InteractionHandler<
-    R2,
-    E2,
-    Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE,
-    Discord.ApplicationCommandDatum
-  >,
-) => new Autocomplete<R1 | R2, E1 | E2>(pred, handle)
+  handle: Effect<R2, E2, void>,
+) =>
+  new Autocomplete<
+    Exclude<
+      R1 | R2,
+      | Discord.Interaction
+      | Discord.ApplicationCommandDatum
+      | Discord.ApplicationCommandInteractionDataOption
+    >,
+    E1 | E2
+  >(pred as any, handle as any)

@@ -12,7 +12,9 @@ import type {
   Cause,
   Chunk,
   Duration,
+  Equal,
   Exit,
+  HashMap,
   Schedule,
   EffectSource,
   EffectSink,
@@ -28,6 +30,12 @@ import type {
   DWS,
   Shard,
   ShardStore,
+  Flags,
+  Intents,
+  IxHelpers,
+  Members,
+  Perms,
+  UI,
 } from "dfx/common"
 
 /**

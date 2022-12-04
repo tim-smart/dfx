@@ -22,7 +22,7 @@ const make = Do(($) => {
       const maybeBucket = $(store.getBucketForRoute(route))
       const bucket = maybeBucket.getOrElse(
         (): BucketDetails => ({
-          key: `?.${route}`,
+          key: `?.${Equal.hash(route)}`,
           resetAfter: 5000,
           limit: 1,
         }),
