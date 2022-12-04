@@ -17,11 +17,14 @@ const configs = (totalCount: number) =>
           ): Effect<
             never,
             never,
-            [Maybe<number>, EffectSource<never, never, number>]
+            readonly [Maybe<number>, EffectSource<never, never, number>]
           > =>
             a.match(
               () =>
-                Effect.succeed([Maybe.some(sharderCount), EffectSource.empty]),
+                Effect.succeed([
+                  Maybe.some(sharderCount),
+                  EffectSource.empty,
+                ] as const).delay(Duration.minutes(3)),
               (id) =>
                 Effect.succeed([
                   Maybe.some(sharderCount + 1),
@@ -73,19 +76,18 @@ const spawnEffect = Effect.structPar({
         concurrency: gateway.session_start_limit.max_concurrency,
       }))
       .groupBy((c) => c.id % c.concurrency)
-      .chainPar(
-        ([shardConfig, key]) =>
-          shardConfig
-            .tap(() =>
-              limiter.maybeWait(
-                `gateway.sharder.${key}`,
-                millis(config.identifyRateLimit[0]),
-                config.identifyRateLimit[1],
-              ),
-            )
-            .mapEffect((c) => Shard.make([c.id, c.totalCount])),
-        // .tap(() => Effect.sync(pull))
+      .chainPar(([shardConfig, key]) =>
+        shardConfig
+          .tap(() =>
+            limiter.maybeWait(
+              `gateway.sharder.${key}`,
+              millis(config.identifyRateLimit[0]),
+              config.identifyRateLimit[1],
+            ),
+          )
+          .mapEffect((c) => Shard.make([c.id, c.totalCount])),
       )
+      .tap(() => Effect.sync(pull))
   })
 
 export const spawn = spawnEffect.unwrap.chainPar((shard) =>

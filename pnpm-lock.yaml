@@ -9,20 +9,26 @@ specifiers:
   '@fp-ts/data': ^0.0.19
   '@tim-smart/discord-api-docs-parser': ^0.4.1
   '@types/ws': ^8.5.3
-  callbag-effect-ts: 1.0.0-alpha.15
+  bufferutil: ^4.0.7
+  callbag-effect-ts: 1.0.0-alpha.17
   dotenv: ^16.0.3
   isomorphic-fetch: ^3.0.0
   lerna: ^4.0.0
   ts-node: ^10.9.1
   typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz
+  utf-8-validate: ^5.0.10
   ws: ^8.11.0
 
 dependencies:
   '@effect/io': 0.0.28
   '@fp-ts/data': 0.0.19
-  callbag-effect-ts: 1.0.0-alpha.15_ovckhe4unjbqwl3tkdpea4dhym
+  callbag-effect-ts: 1.0.0-alpha.17_ovckhe4unjbqwl3tkdpea4dhym
   isomorphic-fetch: 3.0.0
-  ws: 8.11.0
+  ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
+
+optionalDependencies:
+  bufferutil: 4.0.7
+  utf-8-validate: 5.0.10
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.4.1
@@ -1280,6 +1286,14 @@ packages:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
     dev: true
 
+  /bufferutil/4.0.7:
+    resolution: {integrity: sha512-kukuqc39WOHtdxtw4UScxF/WVnMFVSQVKhtx3AjZJzhd0RGZZldcrfSEbVsWWe6KNH253574cq5F+wpv0G9pJw==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.5.0
+    dev: false
+
   /builtins/1.0.3:
     resolution: {integrity: sha512-uYBjakWipfaO/bXI7E8rq6kpwHRZK5cNYrUv2OzZSI/FvmdMyXJ2tG9dKcjEC5YHmHpUAwsargWIZNWdxb/bnQ==}
     dev: true
@@ -1344,15 +1358,15 @@ packages:
       callbag: 1.5.1
     dev: false
 
-  /callbag-effect-ts/1.0.0-alpha.15_ovckhe4unjbqwl3tkdpea4dhym:
-    resolution: {integrity: sha512-WWrqSfFxaekZnkWfEpwOOe10BP3yLyjfuWcSibC888eLlxgbslDNfTFq//4b25X5Q7CZ7A5DreyHyyQSB9z34w==}
+  /callbag-effect-ts/1.0.0-alpha.17_ovckhe4unjbqwl3tkdpea4dhym:
+    resolution: {integrity: sha512-4unWOY/6m34/EXmzbCfQhC5x5Tca68cgd9kN4Fx4bzhEZTngV9XpCVWvhZg5ca4pdCsg4uOEngRsbRgc2M6dVg==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'
     dependencies:
       '@effect/io': 0.0.28
       '@fp-ts/data': 0.0.19
-      strict-callbag-basics: 1.0.1
+      strict-callbag-basics: 1.0.2
     dev: false
 
   /callbag-filter/1.1.0:
@@ -3270,6 +3284,11 @@ packages:
     dependencies:
       whatwg-url: 5.0.0
 
+  /node-gyp-build/4.5.0:
+    resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
+    hasBin: true
+    dev: false
+
   /node-gyp/5.1.1:
     resolution: {integrity: sha512-WH0WKGi+a4i4DUt2mHnvocex/xPLp9pYt5R6M2JdFB7pJ7Z34hveZ4nDTGTiLXCkitA9T8HFZjhinBCiVHYcWw==}
     engines: {node: '>= 6.0.0'}
@@ -4327,8 +4346,8 @@ packages:
       minipass: 3.3.6
     dev: true
 
-  /strict-callbag-basics/1.0.1:
-    resolution: {integrity: sha512-nauKvLf9gR9YZSYKiu8V7iJz1ysw+vG047HO27aonKgigGh4ecWZfV5S5/rQ0GPOP0bELB2442of5SBl3TmrwQ==}
+  /strict-callbag-basics/1.0.2:
+    resolution: {integrity: sha512-bJKwgmG6j8+8pTXJj0mVcuaalZsvuQ9EPvXVyzBjqwciHl0NBW2tJSqt/9xhJKYfzgbQbq/3aKbrG1FNvSh4Cg==}
     dependencies:
       callbag-buffer: 1.0.0
       callbag-buffer-time: 1.0.0
@@ -4722,6 +4741,14 @@ packages:
       punycode: 2.1.1
     dev: true
 
+  /utf-8-validate/5.0.10:
+    resolution: {integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.5.0
+    dev: false
+
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
@@ -4895,7 +4922,7 @@ packages:
       write-json-file: 3.2.0
     dev: true
 
-  /ws/8.11.0:
+  /ws/8.11.0_3cxu5zja4e2r5wmvge7mdcljwq:
     resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -4906,6 +4933,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dependencies:
+      bufferutil: 4.0.7
+      utf-8-validate: 5.0.10
     dev: false
 
   /xtend/4.0.2:

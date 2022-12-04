@@ -62,18 +62,11 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
     )
 
     const guildSync = Gateway.handleDispatch("GUILD_CREATE", (a) =>
-      Rest.rest
-        .bulkOverwriteGuildApplicationCommands(
-          application.id,
-          a.id,
-          guildCommands.map((a) => a.command) as any,
-        )
-        .flatMap((r) => r.json)
-        .catchAll((a) =>
-          Effect.sync(() => {
-            console.error(a)
-          }),
-        ),
+      Rest.rest.bulkOverwriteGuildApplicationCommands(
+        application.id,
+        a.id,
+        guildCommands.map((a) => a.command) as any,
+      ),
     )
 
     const allCommands = [...globalCommands, ...guildCommands].reduce(
@@ -120,7 +113,7 @@ const runGateway = <R, E>(definitions: D.InteractionDefinition<R, E>[]) =>
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", handle)
 
-    $(run.merge(guildSync).runDrain)
+    $(run.zipPar(guildSync))
   })
 
 const allOptions = (

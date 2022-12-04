@@ -30,7 +30,7 @@ export const make = ({
     const setUrl = (url: string) =>
       urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
 
-    const ws = $(WS.make(urlRef))
+    const ws = $(WS.make(urlRef, { perMessageDeflate: false }))
 
     const log = $(Effect.service(Log.Log))
     const source = ws.source

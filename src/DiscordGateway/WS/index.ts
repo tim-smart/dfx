@@ -27,15 +27,17 @@ export class WebSocketCloseError {
 
 const recv = (ws: WebSocket) =>
   EffectSource.async<WebSocketError | WebSocketCloseError, RawData>((emit) => {
-    ws.on("message", (message) => emit.data(message))
+    ws.on("message", (message) => {
+      return emit.data(message)
+    })
 
     ws.on("error", (cause) => {
       emit.fail(new WebSocketError(cause))
     })
 
-    ws.on("close", (code, reason) =>
-      emit.fail(new WebSocketCloseError(code, reason.toString("utf8"))),
-    )
+    ws.on("close", (code, reason) => {
+      return emit.fail(new WebSocketCloseError(code, reason.toString("utf8")))
+    })
   })
 
 export class WebSocketWriteError {

@@ -28,5 +28,7 @@ Ix.builder
   )
   .runGateway.provideLayer(LiveEnv)
   .unsafeRunPromiseExit.then((exit) => {
-    exit.isFailure && exit.cause.unsafeRunSync.pretty()
+    if (exit.isFailure) {
+      console.error(exit.cause.unsafeRunSync.pretty())
+    }
   })

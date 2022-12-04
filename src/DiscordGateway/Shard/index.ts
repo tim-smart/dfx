@@ -56,11 +56,9 @@ export const make = (shard: [id: number, count: number]) =>
       sendMessage,
     )
 
-    const dispatch = $(
-      raw.filter(
-        (p): p is Discord.GatewayPayload<Discord.ReceiveEvent> =>
-          p.op === Discord.GatewayOpcode.DISPATCH,
-      ).share,
+    const dispatch = raw.filter(
+      (p): p is Discord.GatewayPayload<Discord.ReceiveEvent> =>
+        p.op === Discord.GatewayOpcode.DISPATCH,
     )
 
     // identify
