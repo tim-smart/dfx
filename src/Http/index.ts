@@ -5,10 +5,10 @@ export class FetchError {
 
 export class StatusCodeError {
   readonly _tag = "StatusCodeError"
-  get code() {
-    return this.response.status
+  readonly code: number
+  constructor(readonly response: Response) {
+    this.code = response.status
   }
-  constructor(readonly response: Response) {}
 }
 
 export const request = (url: URL | string, init: RequestInit = {}) =>
