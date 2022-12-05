@@ -1,8 +1,11 @@
-import { Ix, makeLayer } from "dfx"
 import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
 import { pipe } from "@fp-ts/data/Function"
+import { Ix, makeLayer } from "dfx"
+import Dotenv from "dotenv"
+
+Dotenv.config()
 
 // Create the dependencies layer
 const LiveEnv = makeLayer({

@@ -46,12 +46,11 @@ const fromHeadersAndBody = (headers: Headers, body: string) =>
     )
   })
 
-export const run = <R, E>(
-  definitions: D.InteractionDefinition<R, E>[],
-  headers: Headers,
-  body: string,
-) =>
-  Do(($) => {
-    const interaction = $(fromHeadersAndBody(headers, body))
-    return $(handlers(definitions)[interaction.type](interaction))
-  })
+export const run = <R, E>(definitions: D.InteractionDefinition<R, E>[]) => {
+  const handler = handlers(definitions)
+  return (headers: Headers, body: string) =>
+    Do(($) => {
+      const interaction = $(fromHeadersAndBody(headers, body))
+      return $(handler[interaction.type](interaction))
+    })
+}

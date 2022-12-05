@@ -48,23 +48,26 @@ class InteractionBuilder<R, E> {
     return Gateway.run<R, R2, E, E2>(this.definitions, catchAll, opts)
   }
 
-  handleWebhook({
-    headers,
-    body,
-    success,
-    empty,
-    error,
-  }: HandleWebhookOpts<
-    E | Webhook.WebhookParseError | Webhook.BadWebhookSignature
-  >) {
-    return Webhook.run(this.definitions, headers, body)
-      .flatMap((o) =>
-        o.match(
-          () => empty,
-          (a) => success(a),
-        ),
-      )
-      .catchAllCause(error)
+  makeWebhookHandler() {
+    const handle = Webhook.run(this.definitions)
+
+    return ({
+      headers,
+      body,
+      success,
+      empty,
+      error,
+    }: HandleWebhookOpts<
+      E | Webhook.WebhookParseError | Webhook.BadWebhookSignature
+    >) =>
+      handle(headers, body)
+        .flatMap((o) =>
+          o.match(
+            () => empty,
+            (a) => success(a),
+          ),
+        )
+        .catchAllCause(error)
   }
 
   get syncGlobal() {

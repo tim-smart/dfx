@@ -23,8 +23,8 @@
     "./*": "./dist/*.js"
   },
   "devDependencies": {
-    "@effect/io": "^0.0.29",
-    "@fp-ts/data": "^0.0.19",
+    "@effect/io": "^0.0.30",
+    "@fp-ts/data": "^0.0.20",
     "@tim-smart/discord-api-docs-parser": "^0.4.1",
     "@types/ws": "^8.5.3",
     "lerna": "^4.0.0",
@@ -46,8 +46,8 @@
   },
   "pnpm": {
     "overrides": {
-      "@effect/io": "^0.0.28",
-      "@fp-ts/data": "^0.0.19"
+      "@effect/io": "^0.0.30",
+      "@fp-ts/data": "^0.0.20"
     }
   }
 }
