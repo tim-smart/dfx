@@ -30,7 +30,7 @@ export class ResolvedDataNotFound {
 
 export const getResolved = <A>(
   name: string,
-  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A,
+  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
   Effect.serviceWithEffect(ApplicationCommandContext)((a) =>
     IxHelpers.resolveOptionValue(
