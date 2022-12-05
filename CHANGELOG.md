@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/tim-smart/dfx/compare/dfx@0.6.0...dfx@0.7.0) (2022-12-05)
+
+
+### Features
+
+* add getResolved helper ([9664354](https://github.com/tim-smart/dfx/commit/96643545e0abcee1a098f5099d80d15d009054b8))
+
+
+
+
+
 # [0.6.0](https://github.com/tim-smart/dfx/compare/dfx@0.5.3...dfx@0.6.0) (2022-12-05)
 
 
