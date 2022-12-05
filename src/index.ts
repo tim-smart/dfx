@@ -31,3 +31,15 @@ export const makeLayer = (config: Config.MakeOpts, debug = false) => {
 
   return LiveEnv
 }
+
+export const makeWebhookLayer = (
+  config: Config.MakeOpts & Ix.WebhookConfig,
+  debug = false,
+) => {
+  const LiveWebhook = Ix.makeWebhookConfig(config)
+  const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
+  const LiveConfig = Config.makeLayer(config)
+  const LiveEnv = LiveLog + LiveConfig + LiveWebhook > LiveREST
+
+  return LiveEnv
+}

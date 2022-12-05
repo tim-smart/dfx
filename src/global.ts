@@ -30,6 +30,7 @@ import type {
   DWS,
   Shard,
   ShardStore,
+  Ix,
   Flags,
   Intents,
   IxHelpers,

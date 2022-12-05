@@ -29,6 +29,7 @@ export interface WebhookConfig {
   publicKey: string
 }
 export const WebhookConfig = Tag<WebhookConfig>()
+export const makeConfig = (a: WebhookConfig) => Layer.succeed(WebhookConfig)(a)
 
 export class WebhookParseError {
   readonly _tag = "WebhookParseError"

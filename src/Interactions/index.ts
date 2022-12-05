@@ -13,6 +13,13 @@ export {
   InteractionDefinition,
 } from "./definitions.js"
 
+export {
+  makeConfig as makeWebhookConfig,
+  WebhookConfig,
+  WebhookParseError,
+  BadWebhookSignature,
+} from "./webhook.js"
+
 class InteractionBuilder<R, E> {
   constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}
 

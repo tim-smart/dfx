@@ -25,6 +25,7 @@ export * as WS from "dfx/DiscordGateway/WS/index"
 export * as DWS from "dfx/DiscordGateway/DiscordWS/index"
 export * as Shard from "dfx/DiscordGateway/Shard/index"
 export * as ShardStore from "dfx/DiscordGateway/ShardStore/index"
+export * as Ix from "dfx/Interactions/index"
 
 export * as Flags from "./Helpers/flags.js"
 export * as Intents from "./Helpers/intents.js"
