@@ -3,6 +3,17 @@ import * as Arr from "@fp-ts/data/ReadonlyArray"
 /**
  * Maybe find a sub-command within the interaction options.
  */
+export const allSubCommands = (interaction: Discord.ApplicationCommandDatum) =>
+  pipe(
+    optionsWithNested(interaction),
+    Arr.filter(
+      (o) => o.type === Discord.ApplicationCommandOptionType.SUB_COMMAND,
+    ),
+  )
+
+/**
+ * Maybe find a sub-command within the interaction options.
+ */
 export const findSubCommand =
   (name: string) => (interaction: Discord.ApplicationCommandDatum) =>
     pipe(
@@ -71,6 +82,14 @@ export const getOption = (name: string) =>
     optionsWithNested,
     Arr.findFirst((o) => o.name === name),
   )
+
+/**
+ * Try find a matching option from the interaction.
+ */
+export const focusedOption = flow(
+  optionsWithNested,
+  Arr.findFirst((o) => o.focused === true),
+)
 
 /**
  * Try find a matching option value from the interaction.

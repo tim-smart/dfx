@@ -31,12 +31,13 @@
     "@effect/io": "^0.0.29",
     "@fp-ts/data": "^0.0.19",
     "callbag-effect-ts": "1.0.0-alpha.17",
-    "isomorphic-fetch": "^3.0.0",
-    "ws": "^8.11.0"
+    "isomorphic-ws": "^5.0.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.7",
-    "utf-8-validate": "^5.0.10"
+    "tweetnacl": "^1.0.3",
+    "utf-8-validate": "^5.0.10",
+    "ws": "^8.11.0"
   },
   "pnpm": {
     "overrides": {

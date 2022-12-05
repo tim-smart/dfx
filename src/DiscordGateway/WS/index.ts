@@ -1,10 +1,10 @@
-import { ClientOptions, RawData, WebSocket } from "ws"
+import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
 
-const socket = (urlRef: Ref<string>, options?: ClientOptions) =>
+const socket = (urlRef: Ref<string>, options?: WebSocket.ClientOptions) =>
   Do(($) => {
     const url = $(urlRef.get)
     return new WebSocket(url, options)
@@ -26,19 +26,21 @@ export class WebSocketCloseError {
 }
 
 const recv = (ws: WebSocket) =>
-  EffectSource.async<WebSocketError | WebSocketCloseError, RawData>((emit) => {
-    ws.on("message", (message) => {
-      return emit.data(message)
-    })
+  EffectSource.async<WebSocketError | WebSocketCloseError, WebSocket.RawData>(
+    (emit) => {
+      ws.on("message", (message) => {
+        return emit.data(message)
+      })
 
-    ws.on("error", (cause) => {
-      emit.fail(new WebSocketError(cause))
-    })
+      ws.on("error", (cause) => {
+        emit.fail(new WebSocketError(cause))
+      })
 
-    ws.on("close", (code, reason) => {
-      return emit.fail(new WebSocketCloseError(code, reason.toString("utf8")))
-    })
-  })
+      ws.on("close", (code, reason) => {
+        return emit.fail(new WebSocketCloseError(code, reason.toString("utf8")))
+      })
+    },
+  )
 
 export class WebSocketWriteError {
   readonly _tag = "WebSocketWriteError"
@@ -77,11 +79,11 @@ const send = (ws: WebSocket, out: EffectSource<never, never, Message>) =>
       ).drain
   })
 
-export const make = (url: Ref<string>, options?: ClientOptions) =>
+export const make = (url: Ref<string>, options?: WebSocket.ClientOptions) =>
   Do(($) => {
     const [sink, outbound] = EffectSource.asyncSink<never, Message>()
     const log = $(Effect.service(Log.Log))
-    const withLog = provideService(Log.Log)(log)
+    const withLog = Effect.provideService(Log.Log)(log)
 
     const source = Do(($) => {
       const ws = $(socket(url, options))

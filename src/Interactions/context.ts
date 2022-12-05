@@ -1,60 +1,66 @@
-export type InteractionResponse =
-  | {
-      type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE
-      data: Discord.InteractionCallbackMessage
-    }
-  | {
-      type: Discord.InteractionCallbackType.UPDATE_MESSAGE
-      data: Discord.InteractionCallbackMessage
-    }
-  | {
-      type: Discord.InteractionCallbackType.MODAL
-      data: Discord.InteractionCallbackModal
-    }
-  | {
-      type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
-    }
-  | {
-      type: Discord.InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
-    }
-  | {
-      type: Discord.InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
-      data: Discord.InteractionCallbackAutocomplete
-    }
+import { InteractionResponse } from "./definitions.js"
+import { InteractionNotFound } from "./handlers.js"
+import * as Arr from "@fp-ts/data/ReadonlyArray"
 
 export const InteractionContext = Tag<Discord.Interaction>()
 export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
 export const MessageComponentContext = Tag<Discord.MessageComponentDatum>()
 export const ModalSubmitContext = Tag<Discord.ModalSubmitDatum>()
-export const FocusedOptionContext =
-  Tag<Discord.ApplicationCommandInteractionDataOption>()
+
+export interface FocusedOptionContext {
+  readonly focusedOption: Discord.ApplicationCommandInteractionDataOption
+}
+export const FocusedOptionContext = Tag<FocusedOptionContext>()
 
 export interface SubCommandContext {
   readonly command: Discord.ApplicationCommandInteractionDataOption
 }
 export const SubCommandContext = Tag<SubCommandContext>()
 
-export const respond = (response: InteractionResponse) =>
-  Do(($) => {
-    const { id, token } = $(Effect.service(InteractionContext))
-    return $(Rest.rest.createInteractionResponse(id, token, response))
-  }).asUnit
-
 export const focusedOptionValue = Effect.serviceWith(FocusedOptionContext)(
-  (a) => a.value!,
+  (a) => a.focusedOption.value ?? "",
 )
 
 export const commandOptionsMap = Effect.serviceWith(ApplicationCommandContext)(
   IxHelpers.optionsMap,
 )
 
-export const handleSubCommand = <R, E>(
-  name: string,
-  handle: Effect<R, E, void>,
-) =>
-  Effect.serviceWithEffect(ApplicationCommandContext)((a) =>
-    IxHelpers.findSubCommand(name)(a).match(Effect.unit, (command) =>
-      pipe(handle, Effect.provideService(SubCommandContext)({ command })),
+export const handleSubCommands = <
+  NER extends Record<string, Effect<any, any, InteractionResponse>>,
+>(
+  commands: NER,
+): Effect<
+  | Exclude<
+      [NER[keyof NER]] extends [
+        { [EffectTypeId]: { _R: (_: never) => infer R } },
+      ]
+        ? R
+        : never,
+      SubCommandContext
+    >
+  | Discord.Interaction
+  | Discord.ApplicationCommandDatum,
+  [NER[keyof NER]] extends [{ [EffectTypeId]: { _E: (_: never) => infer E } }]
+    ? E
+    : never,
+  InteractionResponse
+> =>
+  Effect.struct({
+    interaction: Effect.service(InteractionContext),
+    data: Effect.service(ApplicationCommandContext),
+  }).flatMap(({ interaction, data }) =>
+    pipe(
+      IxHelpers.allSubCommands(data),
+      Arr.findFirst((a) => !!commands[a.name]),
+      (o) => o.toEither(() => new InteractionNotFound(interaction)),
+      Effect.fromEither,
+      (a) =>
+        a.flatMap((command) =>
+          pipe(
+            commands[command.name],
+            Effect.provideService(SubCommandContext)({ command }),
+          ),
+        ),
     ),
   )
 

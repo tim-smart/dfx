@@ -13,43 +13,36 @@ const hello = Ix.guild(
     description: "Eh yo",
     options: [
       {
-        type: Discord.ApplicationCommandOptionType.STRING,
-        name: "country",
-        description: "What country are you from?",
-        autocomplete: true,
+        type: Discord.ApplicationCommandOptionType.SUB_COMMAND,
+        name: "one",
+        description: "The first sub command",
+      },
+      {
+        type: Discord.ApplicationCommandOptionType.SUB_COMMAND,
+        name: "two",
+        description: "The second sub command",
       },
     ],
   },
-  Ix.respond({
-    type: 4,
-    data: {
-      content: "Hello",
-    },
-  }),
-)
+  Ix.handleSubCommands({
+    one: Effect.succeed({
+      type: 4,
+      data: {
+        content: "One",
+      },
+    }),
 
-const autocomplete = Ix.autocomplete(
-  Ix.option("country"),
-  Ix.respond({
-    type: 8,
-    data: {
-      choices: [
-        {
-          name: "New Zealand",
-          value: "NZ",
-        },
-        {
-          name: "United Kingdom",
-          value: "UK",
-        },
-      ],
-    },
+    two: Ix.getSubCommand.map((a) => ({
+      type: 4,
+      data: {
+        content: a.name,
+      },
+    })),
   }),
 )
 
 Ix.builder
   .add(hello)
-  .add(autocomplete)
   .runGateway()
   .provideLayer(LiveEnv)
   .unsafeRunPromiseExit.then((exit) => {

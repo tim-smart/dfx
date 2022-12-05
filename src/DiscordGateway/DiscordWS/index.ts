@@ -1,4 +1,4 @@
-import { RawData } from "ws"
+import WebSocket from "isomorphic-ws"
 
 export type Message = Discord.GatewayPayload | WS.Reconnect
 
@@ -11,7 +11,7 @@ export interface OpenOpts {
 export interface DiscordWSCodec {
   type: "json" | "etf"
   encode: (p: Discord.GatewayPayload) => string | Buffer | ArrayBuffer
-  decode: (p: RawData) => Discord.GatewayPayload
+  decode: (p: WebSocket.RawData) => Discord.GatewayPayload
 }
 export const DiscordWSCodec = Tag<DiscordWSCodec>()
 export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec)({
