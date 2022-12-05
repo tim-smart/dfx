@@ -30,8 +30,13 @@ class InteractionBuilder<R, E> {
     ])
   }
 
-  runGateway(opts: Gateway.RunOpts = {}) {
-    return Gateway.run(this.definitions, opts)
+  runGateway<R2, E2>(
+    catchAll: (
+      e: E | Http.FetchError | Http.StatusCodeError | Http.JsonParseError,
+    ) => Effect<R2, E2, any>,
+    opts: Gateway.RunOpts = {},
+  ) {
+    return Gateway.run<R, R2, E, E2>(this.definitions, catchAll, opts)
   }
 
   handleWebhook(headers: Record<string, string>, rawBody: string) {

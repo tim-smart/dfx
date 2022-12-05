@@ -6,8 +6,11 @@ export interface RunOpts {
   sync?: boolean
 }
 
-export const run = <R, E>(
+export const run = <R, R2, E, E2>(
   definitions: D.InteractionDefinition<R, E>[],
+  catchAll: (
+    e: Http.FetchError | Http.StatusCodeError | Http.JsonParseError | E,
+  ) => Effect<R2, E2, any>,
   { sync = true }: RunOpts = {},
 ) =>
   Do(($) => {
@@ -35,11 +38,13 @@ export const run = <R, E>(
     const handle = handlers(definitions)
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
-      handle[i.type](i).tap((r) =>
-        r.match(Effect.unit, (r) =>
-          Rest.rest.createInteractionResponse(i.id, i.token, r),
-        ),
-      ),
+      handle[i.type](i)
+        .tap((r) =>
+          r.match(Effect.unit, (r) =>
+            Rest.rest.createInteractionResponse(i.id, i.token, r),
+          ),
+        )
+        .catchAll(catchAll),
     )
 
     $(sync ? run.zipPar(globalSync).zipPar(guildSync) : run)
