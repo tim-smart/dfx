@@ -1,5 +1,5 @@
-import * as D from "./definitions.js"
 import { handlers } from "./handlers.js"
+import { InteractionBuilder } from "./index.js"
 import { splitDefinitions } from "./utils.js"
 
 export interface RunOpts {
@@ -7,7 +7,7 @@ export interface RunOpts {
 }
 
 export const run = <R, R2, E, E2>(
-  definitions: D.InteractionDefinition<R, E>[],
+  ix: InteractionBuilder<R, E>,
   catchAll: (
     e: Http.FetchError | Http.StatusCodeError | Http.JsonParseError | E,
   ) => Effect<R2, E2, any>,
@@ -15,7 +15,7 @@ export const run = <R, R2, E, E2>(
 ) =>
   Do(($) => {
     const { GlobalApplicationCommand, GuildApplicationCommand } =
-      splitDefinitions(definitions)
+      splitDefinitions(ix.definitions)
 
     const application = $(
       Rest.rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),
@@ -38,7 +38,7 @@ export const run = <R, R2, E, E2>(
         )
       : Effect.unit()
 
-    const handle = handlers(definitions)
+    const handle = handlers(ix.definitions)
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
       handle[i.type](i)

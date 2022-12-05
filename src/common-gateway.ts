@@ -1,0 +1,5 @@
+export * as Gateway from "dfx/DiscordGateway/index"
+export * as WS from "dfx/DiscordGateway/WS/index"
+export * as DWS from "dfx/DiscordGateway/DiscordWS/index"
+export * as Shard from "dfx/DiscordGateway/Shard/index"
+export * as ShardStore from "dfx/DiscordGateway/ShardStore/index"

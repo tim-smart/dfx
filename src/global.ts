@@ -25,11 +25,6 @@ import type {
   Log,
   RateLimitStore,
   Rest,
-  Gateway,
-  WS,
-  DWS,
-  Shard,
-  ShardStore,
   Ix,
   Flags,
   Intents,
@@ -38,6 +33,11 @@ import type {
   Perms,
   UI,
 } from "dfx/common"
+
+/**
+ * @tsplus global
+ */
+import type { Gateway, WS, DWS, Shard, ShardStore } from "dfx/common-gateway"
 
 /**
  * @tsplus global

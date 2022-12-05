@@ -1,6 +1,4 @@
 import * as D from "./definitions.js"
-import * as Gateway from "./gateway.js"
-import * as Webhook from "./webhook.js"
 
 export * from "./context.js"
 
@@ -16,20 +14,13 @@ export {
 
 export {
   makeConfig as makeWebhookConfig,
+  makeHandler as makeWebhookHandler,
   WebhookConfig,
   WebhookParseError,
   BadWebhookSignature,
 } from "./webhook.js"
 
-export interface HandleWebhookOpts<E> {
-  headers: Webhook.Headers
-  body: string
-  success: (a: Discord.InteractionResponse) => Effect<never, never, void>
-  error: (e: Cause<E>) => Effect<never, never, void>
-  empty: Effect<never, never, void>
-}
-
-class InteractionBuilder<R, E> {
+export class InteractionBuilder<R, E> {
   constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}
 
   add<R1, E1>(definition: D.InteractionDefinition<R1, E1>) {
@@ -37,37 +28,6 @@ class InteractionBuilder<R, E> {
       ...this.definitions,
       definition,
     ])
-  }
-
-  runGateway<R2, E2>(
-    catchAll: (
-      e: E | Http.FetchError | Http.StatusCodeError | Http.JsonParseError,
-    ) => Effect<R2, E2, any>,
-    opts: Gateway.RunOpts = {},
-  ) {
-    return Gateway.run<R, R2, E, E2>(this.definitions, catchAll, opts)
-  }
-
-  makeWebhookHandler() {
-    const handle = Webhook.run(this.definitions)
-
-    return ({
-      headers,
-      body,
-      success,
-      empty,
-      error,
-    }: HandleWebhookOpts<
-      E | Webhook.WebhookParseError | Webhook.BadWebhookSignature
-    >) =>
-      handle(headers, body)
-        .flatMap((o) =>
-          o.match(
-            () => empty,
-            (a) => success(a),
-          ),
-        )
-        .catchAllCause(error)
   }
 
   get syncGlobal() {
