@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/tim-smart/dfx/compare/dfx@0.7.0...dfx@0.7.1) (2022-12-05)
+
+
+### Bug Fixes
+
+* absord undefined type in getResolved ([645be29](https://github.com/tim-smart/dfx/commit/645be29850c8d7b8e79f2b2aca52459523967727))
+
+
+
+
+
 # [0.7.0](https://github.com/tim-smart/dfx/compare/dfx@0.6.0...dfx@0.7.0) (2022-12-05)
 
 
