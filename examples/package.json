@@ -1,0 +1,20 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@effect/io": "^0.0.30",
+    "@fp-ts/data": "^0.0.20",
+    "dfx": "^0.8.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  }
+}

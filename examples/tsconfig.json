@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
-    "resolveJsonModule": false,
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
     "module": "ESNext",
@@ -14,15 +13,6 @@
     "strict": true,
     "target": "ES2022",
     "incremental": true,
-    "tsPlusConfig": "./tsplus.config.json",
-    "tsPlusTypes": [
-      "./vendor/effect-io-tsplus.json",
-      "./vendor/fp-ts-data-tsplus.json"
-    ],
-    "paths": {
-      "dfx": ["./src/index.js"],
-      "dfx/*": ["./src/*.js"]
-    },
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
   },
   "exclude": ["node_modules/**/*"],
