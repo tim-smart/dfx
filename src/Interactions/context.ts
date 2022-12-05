@@ -18,6 +18,30 @@ export interface SubCommandContext {
 }
 export const SubCommandContext = Tag<SubCommandContext>()
 
+export const getCommand = Effect.service(ApplicationCommandContext)
+
+export class ResolvedDataNotFound {
+  readonly _tag = "ResolvedDataNotFound"
+  constructor(
+    readonly data: Discord.ApplicationCommandDatum,
+    readonly name: string,
+  ) {}
+}
+
+export const getResolved = <A>(
+  name: string,
+  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A,
+) =>
+  Effect.serviceWithEffect(ApplicationCommandContext)((a) =>
+    IxHelpers.resolveOptionValue(
+      name,
+      f,
+    )(a).match(
+      () => Effect.fail(new ResolvedDataNotFound(a, name)),
+      Effect.succeed,
+    ),
+  )
+
 export const focusedOptionValue = Effect.serviceWith(FocusedOptionContext)(
   (a) => a.focusedOption.value ?? "",
 )
