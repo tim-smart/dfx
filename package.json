@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -40,8 +40,8 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.7",
-    "utf-8-validate": "^5.0.10",
     "isomorphic-ws": "^5.0.0",
+    "utf-8-validate": "^5.0.10",
     "ws": "^8.11.0"
   },
   "pnpm": {
