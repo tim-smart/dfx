@@ -36,7 +36,9 @@ export const run = <R, E>(
 
     const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
       handle[i.type](i).tap((r) =>
-        Rest.rest.createInteractionResponse(i.id, i.token, r),
+        r.match(Effect.unit, (r) =>
+          Rest.rest.createInteractionResponse(i.id, i.token, r),
+        ),
       ),
     )
 

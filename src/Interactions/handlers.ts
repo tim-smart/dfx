@@ -12,7 +12,7 @@ export const handlers = <R, E>(
   definitions: D.InteractionDefinition<R, E>[],
 ): Record<
   Discord.InteractionType,
-  (i: Discord.Interaction) => Effect<R, E, Discord.InteractionResponse>
+  (i: Discord.Interaction) => Effect<R, E, Maybe<Discord.InteractionResponse>>
 > => {
   const { allCommands, autocompletes, messageComponents, modalSubmits } =
     splitDefinitions(definitions)
@@ -21,7 +21,7 @@ export const handlers = <R, E>(
     [Discord.InteractionType.PING]: () =>
       Effect.succeed({
         type: Discord.InteractionCallbackType.PONG,
-      }),
+      }).asSome,
 
     [Discord.InteractionType.APPLICATION_COMMAND]: (i) => {
       const data = i.data as Discord.ApplicationCommandDatum
@@ -32,7 +32,7 @@ export const handlers = <R, E>(
             Effect.fail(new InteractionNotFound(i)) as any as Effect<
               R,
               E,
-              Discord.InteractionResponse
+              Maybe<Discord.InteractionResponse>
             >,
           (command) => command.handle,
         ),
@@ -61,7 +61,7 @@ export const handlers = <R, E>(
                   Effect.fail(new InteractionNotFound(i)) as any as Effect<
                     R,
                     E,
-                    Discord.InteractionResponse
+                    Maybe<Discord.InteractionResponse>
                   >,
                 (a) => a.command.handle,
               ),
@@ -91,7 +91,7 @@ export const handlers = <R, E>(
                   Effect.fail(new InteractionNotFound(i)) as any as Effect<
                     R,
                     E,
-                    Discord.InteractionResponse
+                    Maybe<Discord.InteractionResponse>
                   >,
                 (a) => a.command.handle,
               ),
@@ -123,7 +123,7 @@ export const handlers = <R, E>(
                       Effect.fail(new InteractionNotFound(i)) as any as Effect<
                         R,
                         E,
-                        Discord.InteractionResponse
+                        Maybe<Discord.InteractionResponse>
                       >,
                     (a) => a.command.handle,
                   ),
