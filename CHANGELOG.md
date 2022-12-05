@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/tim-smart/dfx/compare/dfx@0.8.4...dfx@0.9.0) (2022-12-05)
+
+
+### Features
+
+* improve handleWebhook api ([52ffb7b](https://github.com/tim-smart/dfx/commit/52ffb7b364f7354f60f26d4ad80881091331f863))
+
+
+
+
+
 ## [0.8.4](https://github.com/tim-smart/dfx/compare/dfx@0.8.3...dfx@0.8.4) (2022-12-05)
 
 **Note:** Version bump only for package dfx
