@@ -56,7 +56,7 @@ export class GuildApplicationCommand<R, E> {
 
 export const guild = <R, E>(
   command: Discord.CreateGuildApplicationCommandParams,
-  handle: Effect<R, E, Discord.InteractionResponse>,
+  handle: Effect<R, E, InteractionResponse>,
 ) =>
   new GuildApplicationCommand<
     Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
