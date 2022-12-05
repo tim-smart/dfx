@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@effect/io': ^0.0.30
   '@fp-ts/data': ^0.0.20
-  dfx: link:..
+  dfx: ^0.9.1
   dotenv: ^16.0.3
   fastify: ^4.10.2
   ts-node: ^10.9.1
@@ -12,7 +12,7 @@ specifiers:
 dependencies:
   '@effect/io': 0.0.30
   '@fp-ts/data': 0.0.20
-  dfx: link:..
+  dfx: 0.9.1_bonjnmg6oatqyr73vbdnw4brbi
   dotenv: 16.0.3
   fastify: 4.10.2
 
@@ -182,6 +182,108 @@ packages:
       ieee754: 1.2.1
     dev: false
 
+  /bufferutil/4.0.7:
+    resolution: {integrity: sha512-kukuqc39WOHtdxtw4UScxF/WVnMFVSQVKhtx3AjZJzhd0RGZZldcrfSEbVsWWe6KNH253574cq5F+wpv0G9pJw==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.5.0
+    dev: false
+
+  /callbag-buffer-time/1.0.0:
+    resolution: {integrity: sha512-Y9XqJWqs0M9gTvn8jQit+pXDYxrzh7KqIgN9MhwT5NzQGgEACSCzYKQpjT6p9ejfnimFjHWQC9+bifjIKnKxDQ==}
+    dependencies:
+      callbag-buffer: 1.0.0
+      callbag-interval: 1.2.0
+    dev: false
+
+  /callbag-buffer/1.0.0:
+    resolution: {integrity: sha512-o2QIDeWbwSoBxI7oC9WABNRX38J4N+oCH9vbAvte1jssbie/kaRG/X4fBeGoMsocR4wYNk23NTn3DMqY+C5fgA==}
+    dev: false
+
+  /callbag-concat/1.2.1:
+    resolution: {integrity: sha512-iIC4FCUF7sKnt4gDKHNjMRHekebdaA1/udjON/mCLg31EzzTO/dE9nfxpcj+G/63KopFXVQdZKQDsu7UOYGpPg==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-effect-ts/1.0.0-alpha.17_bonjnmg6oatqyr73vbdnw4brbi:
+    resolution: {integrity: sha512-4unWOY/6m34/EXmzbCfQhC5x5Tca68cgd9kN4Fx4bzhEZTngV9XpCVWvhZg5ca4pdCsg4uOEngRsbRgc2M6dVg==}
+    peerDependencies:
+      '@effect/io': '*'
+      '@fp-ts/data': '*'
+    dependencies:
+      '@effect/io': 0.0.30
+      '@fp-ts/data': 0.0.20
+      strict-callbag-basics: 1.0.2
+    dev: false
+
+  /callbag-filter/1.1.0:
+    resolution: {integrity: sha512-m6ZHEd9JYHBAYJAdeqgt3gIKSoZOizfJTxIPd8EvDwY8Dr44+slm090WvCrrlz2SZoU8mCqpmZ8TFrGKXHo/yw==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-flatten/1.7.0:
+    resolution: {integrity: sha512-1nekVS5GwI38CRcIzmLFRFmXeoHkLG/SkUAwwvarwL4srmHW994UzFAcwwQbZjI9gudqfVDvY+LnopNb4Dtc4w==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-from-iter/1.3.0:
+    resolution: {integrity: sha512-iBc6O6DYDWQBjlOZzdU/SbJofK0pN3TjNWC4fDIQePBk5FWCZKVll/coXiVU6gpwbBaS0Om/d/PVbVK8Ki17Ew==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-from-obs/1.2.0:
+    resolution: {integrity: sha512-InhdPC6P4Gdpg7nuXSkocDFlb+//sbwCrVCYhxOHhSVm1gDcw/zSA+IF1gHdYtk4RQKKaCymUFCkVVUVSRThVQ==}
+    dependencies:
+      symbol-observable: 1.2.0
+    dev: false
+
+  /callbag-interval/1.2.0:
+    resolution: {integrity: sha512-jo2UQZ+vvGWvCCykqKzL7ixSoTmvzDysQGTQkI3qQF28weRSMSmH5k86qmm7ddfPW1yNczcL93uhGnWC5e34Og==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-scan/1.1.0:
+    resolution: {integrity: sha512-5Aw9LR8b4Fg/gC++lWrq9sXEqgO0c5Gk+HWaFhFoVqgujSUVRxFw+c4bLw1eExWrBX6OeBDbVZ/2rMr/E0q9cQ==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-share/1.3.0:
+    resolution: {integrity: sha512-KqM16UzlvK3DcYRsT6Myabm4GqvsMQIoGLWmawVVoMAw3534O0XCa+6Sai0mjFKenC3tqTacyChlusoZoZmdsg==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-start-with/3.1.0:
+    resolution: {integrity: sha512-jeEvUoZqZj8ZVMgST7ci9wCH33e9vaARQCFrPy/8et0HYL6RNzgwi3BmfcIy63d6vpqGbciYex/3T4TiFxGgyA==}
+    dev: false
+
+  /callbag-take-while/2.0.0:
+    resolution: {integrity: sha512-c6nnV14Xh/QEzkD6dgFSitMs0moh4ejF0zSf5SyHxNZdOjJtO+B9G9FKH7GCKPI9q485sjJ51/WcZLCloY1RdA==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-take/1.5.0:
+    resolution: {integrity: sha512-8aOxp+gzfVQtDe+tk9PhKbC9QR9Vap4KFA0xccUiXFK9VjIS0fSt/Yi454viPpMhJkhRcx1BsjyF34Cj57W89A==}
+    dependencies:
+      callbag: 1.5.1
+    dev: false
+
+  /callbag-to-async-iterable/1.0.0:
+    resolution: {integrity: sha512-+N53OaDKIq/LfZf20IkoiltbYx/8RI6d+j8A9vaYP5/VsoxXFKscz9Mz6JaBprb1I/PVq1b9CKOrTe7ESxiPVw==}
+    dev: false
+
+  /callbag/1.5.1:
+    resolution: {integrity: sha512-FGpkXYZ018Wpeevhsp7R2iABZuDamg54TaObKI48JBNGzMlkb9bRwS54eR0sgFksQpspsCan4iaaVbAbxm9MIg==}
+    dev: false
+
   /content-type/1.0.4:
     resolution: {integrity: sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==}
     engines: {node: '>= 0.6'}
@@ -206,6 +308,23 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: false
+
+  /dfx/0.9.1_bonjnmg6oatqyr73vbdnw4brbi:
+    resolution: {integrity: sha512-C+Feg1BcO5OuDhpaqihqwQoGLD/4ARzDaRYNSciyF+iS+2jL9vjH+8TqYM6hGqf5E4PyfEUREtxrvOrDRRlgag==}
+    peerDependencies:
+      '@effect/io': '*'
+      '@fp-ts/data': '*'
+    dependencies:
+      '@effect/io': 0.0.30
+      '@fp-ts/data': 0.0.20
+      callbag-effect-ts: 1.0.0-alpha.17_bonjnmg6oatqyr73vbdnw4brbi
+      isomorphic-ws: 5.0.0_ws@8.11.0
+    optionalDependencies:
+      bufferutil: 4.0.7
+      tweetnacl: 1.0.3
+      utf-8-validate: 5.0.10
+      ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
     dev: false
 
   /diff/4.0.2:
@@ -313,6 +432,14 @@ packages:
     engines: {node: '>= 0.10'}
     dev: false
 
+  /isomorphic-ws/5.0.0_ws@8.11.0:
+    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
+    peerDependencies:
+      ws: '*'
+    dependencies:
+      ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
+    dev: false
+
   /json-schema-traverse/1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
     dev: false
@@ -338,6 +465,11 @@ packages:
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+    dev: false
+
+  /node-gyp-build/4.5.0:
+    resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
+    hasBin: true
     dev: false
 
   /on-exit-leak-free/2.1.0:
@@ -470,6 +602,41 @@ packages:
     engines: {node: '>= 10.x'}
     dev: false
 
+  /strict-callbag-basics/1.0.2:
+    resolution: {integrity: sha512-bJKwgmG6j8+8pTXJj0mVcuaalZsvuQ9EPvXVyzBjqwciHl0NBW2tJSqt/9xhJKYfzgbQbq/3aKbrG1FNvSh4Cg==}
+    dependencies:
+      callbag-buffer: 1.0.0
+      callbag-buffer-time: 1.0.0
+      callbag-concat: 1.2.1
+      callbag-filter: 1.1.0
+      callbag-flatten: 1.7.0
+      callbag-from-iter: 1.3.0
+      callbag-from-obs: 1.2.0
+      callbag-interval: 1.2.0
+      callbag-scan: 1.1.0
+      callbag-share: 1.3.0
+      callbag-start-with: 3.1.0
+      callbag-take: 1.5.0
+      callbag-take-while: 2.0.0
+      callbag-to-async-iterable: 1.0.0
+      strict-callbag: 1.0.0
+      symbol-observable: 4.0.0
+    dev: false
+
+  /strict-callbag/1.0.0:
+    resolution: {integrity: sha512-V0ysCDVSM1Q5UVuTRNpkUnKzdRnv0vFb5H1ByZROtc+Iou/yCss4yK4wvUlI4wxXTzmUCFzU6fS0cZDGY2ypiQ==}
+    dev: false
+
+  /symbol-observable/1.2.0:
+    resolution: {integrity: sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /symbol-observable/4.0.0:
+    resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}
+    engines: {node: '>=0.10'}
+    dev: false
+
   /thread-stream/2.2.0:
     resolution: {integrity: sha512-rUkv4/fnb4rqy/gGy7VuqK6wE1+1DOCOWy4RMeaV69ZHMP11tQKZvZSip1yTgrKCMZzEMcCL/bKfHvSfDHx+iQ==}
     dependencies:
@@ -511,6 +678,12 @@ packages:
       yn: 3.1.1
     dev: true
 
+  /tweetnacl/1.0.3:
+    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /typescript/4.9.3:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
     engines: {node: '>=4.2.0'}
@@ -523,9 +696,34 @@ packages:
       punycode: 2.1.1
     dev: false
 
+  /utf-8-validate/5.0.10:
+    resolution: {integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.5.0
+    dev: false
+
   /v8-compile-cache-lib/3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
     dev: true
+
+  /ws/8.11.0_3cxu5zja4e2r5wmvge7mdcljwq:
+    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
+    engines: {node: '>=10.0.0'}
+    requiresBuild: true
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dependencies:
+      bufferutil: 4.0.7
+      utf-8-validate: 5.0.10
+    dev: false
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
