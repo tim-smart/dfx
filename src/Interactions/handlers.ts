@@ -14,7 +14,7 @@ export const handlers = <R, E>(
   Discord.InteractionType,
   (i: Discord.Interaction) => Effect<R, E, Maybe<Discord.InteractionResponse>>
 > => {
-  const { allCommands, autocompletes, messageComponents, modalSubmits } =
+  const { Commands, Autocomplete, MessageComponent, ModalSubmit } =
     splitDefinitions(definitions)
 
   return {
@@ -27,7 +27,7 @@ export const handlers = <R, E>(
       const data = i.data as Discord.ApplicationCommandDatum
 
       return pipe(
-        Maybe.fromNullable(allCommands[data.name]).match(
+        Maybe.fromNullable(Commands[data.name]).match(
           () =>
             Effect.fail(new InteractionNotFound(i)) as any as Effect<
               R,
@@ -45,7 +45,7 @@ export const handlers = <R, E>(
       const data = i.data as Discord.ModalSubmitDatum
 
       return pipe(
-        modalSubmits,
+        ModalSubmit,
         Arr.map((a) =>
           Effect.struct({
             command: Effect.succeed(a),
@@ -75,7 +75,7 @@ export const handlers = <R, E>(
       const data = i.data as Discord.MessageComponentDatum
 
       return pipe(
-        messageComponents,
+        MessageComponent,
         Arr.map((a) =>
           Effect.struct({
             command: Effect.succeed(a),
@@ -107,7 +107,7 @@ export const handlers = <R, E>(
       return IxHelpers.focusedOption(data)
         .map((focusedOption) =>
           pipe(
-            autocompletes,
+            Autocomplete,
             Arr.map((a) =>
               Effect.struct({
                 command: Effect.succeed(a),

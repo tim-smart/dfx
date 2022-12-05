@@ -14,7 +14,8 @@ export const run = <R, R2, E, E2>(
   { sync = true }: RunOpts = {},
 ) =>
   Do(($) => {
-    const { globalCommands, guildCommands } = splitDefinitions(definitions)
+    const { GlobalApplicationCommand, GuildApplicationCommand } =
+      splitDefinitions(definitions)
 
     const application = $(
       Rest.rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),
@@ -23,7 +24,7 @@ export const run = <R, R2, E, E2>(
     const globalSync = Rest.rest.bulkOverwriteGlobalApplicationCommands(
       application.id,
       {
-        body: JSON.stringify(globalCommands.map((a) => a.command)),
+        body: JSON.stringify(GlobalApplicationCommand.map((a) => a.command)),
       },
     )
 
@@ -31,7 +32,7 @@ export const run = <R, R2, E, E2>(
       Rest.rest.bulkOverwriteGuildApplicationCommands(
         application.id,
         a.id,
-        guildCommands.map((a) => a.command) as any,
+        GuildApplicationCommand.map((a) => a.command) as any,
       ),
     )
 
