@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/tim-smart/dfx/compare/dfx@0.5.3...dfx@0.6.0) (2022-12-05)
+
+
+### Features
+
+* export types ([618cf55](https://github.com/tim-smart/dfx/commit/618cf55bf77c456d120b90abfbdc4fdc4b756a4f))
+
+
+
+
+
 ## [0.5.3](https://github.com/tim-smart/dfx/compare/dfx@0.5.2...dfx@0.5.3) (2022-12-05)
 
 **Note:** Version bump only for package dfx
