@@ -28,13 +28,15 @@ export const run = <R, R2, E, E2>(
       },
     )
 
-    const guildSync = Gateway.handleDispatch("GUILD_CREATE", (a) =>
-      Rest.rest.bulkOverwriteGuildApplicationCommands(
-        application.id,
-        a.id,
-        GuildApplicationCommand.map((a) => a.command) as any,
-      ),
-    )
+    const guildSync = GuildApplicationCommand.length
+      ? Gateway.handleDispatch("GUILD_CREATE", (a) =>
+          Rest.rest.bulkOverwriteGuildApplicationCommands(
+            application.id,
+            a.id,
+            GuildApplicationCommand.map((a) => a.command) as any,
+          ),
+        )
+      : Effect.unit()
 
     const handle = handlers(definitions)
 

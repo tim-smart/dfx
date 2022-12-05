@@ -11,6 +11,7 @@ export {
   modalSubmit,
   autocomplete,
   InteractionDefinition,
+  InteractionResponse,
 } from "./definitions.js"
 
 export {
@@ -41,6 +42,39 @@ class InteractionBuilder<R, E> {
 
   handleWebhook(headers: Webhook.Headers, rawBody: string) {
     return Webhook.run(this.definitions, headers, rawBody)
+  }
+
+  get syncGlobal() {
+    const commands = this.definitions
+      .filter(
+        (c): c is D.GlobalApplicationCommand<R, E> =>
+          c._tag === "GlobalApplicationCommand",
+      )
+      .map((c) => c.command)
+
+    return Rest.rest
+      .getCurrentBotApplicationInformation()
+      .flatMap((r) => r.json)
+      .flatMap((app) =>
+        Rest.rest.bulkOverwriteGlobalApplicationCommands(app.id, {
+          body: JSON.stringify(commands),
+        }),
+      )
+  }
+
+  syncGuild(appId: Discord.Snowflake, guildId: Discord.Snowflake) {
+    const commands = this.definitions
+      .filter(
+        (c): c is D.GuildApplicationCommand<R, E> =>
+          c._tag === "GuildApplicationCommand",
+      )
+      .map((c) => c.command)
+
+    return Rest.rest.bulkOverwriteGuildApplicationCommands(
+      appId,
+      guildId,
+      commands as any,
+    )
   }
 }
 
