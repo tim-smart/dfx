@@ -6,7 +6,7 @@ export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
 }
 
-export type Headers = Record<string, string | string[]>
+export type Headers = Record<string, string | string[] | undefined>
 
 const checkSignature = (publicKey: string, headers: Headers, body: string) =>
   Maybe.struct({
