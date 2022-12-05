@@ -1,6 +1,7 @@
 import { InteractionResponse } from "./definitions.js"
 import { InteractionNotFound } from "./handlers.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
+import { optionsMap } from "dfx/Helpers/interactions"
 
 export const InteractionContext = Tag<Discord.Interaction>()
 export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
@@ -22,7 +23,7 @@ export const focusedOptionValue = Effect.serviceWith(FocusedOptionContext)(
 )
 
 export const commandOptionsMap = Effect.serviceWith(ApplicationCommandContext)(
-  IxHelpers.optionsMap,
+  optionsMap,
 )
 
 export const handleSubCommands = <
