@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/tim-smart/dfx/compare/dfx@0.5.0...dfx@0.5.1) (2022-12-05)
+
+
+### Bug Fixes
+
+* tighten response constraint on guild commands ([a8b5647](https://github.com/tim-smart/dfx/commit/a8b56471b5ce7bf3ef44b0312ed5e53b62f4cfa0))
+
+
+
+
+
 # [0.5.0](https://github.com/tim-smart/dfx/compare/dfx@0.3.1...dfx@0.5.0) (2022-12-05)
 
 
