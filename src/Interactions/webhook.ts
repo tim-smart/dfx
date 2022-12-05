@@ -2,6 +2,7 @@ import Nacl from "tweetnacl"
 import * as D from "./definitions.js"
 import { handlers } from "./handlers.js"
 import { InteractionBuilder } from "./index.js"
+import { fromHex } from "./utils.js"
 
 export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
@@ -9,26 +10,36 @@ export class BadWebhookSignature {
 
 export type Headers = Record<string, string | string[] | undefined>
 
-const checkSignature = (publicKey: string, headers: Headers, body: string) =>
+const checkSignature = (
+  publicKey: Uint8Array,
+  headers: Headers,
+  body: string,
+) =>
   Maybe.struct({
     signature: Maybe.fromNullable(headers["x-signature-ed25519"]),
     timestamp: Maybe.fromNullable(headers["x-signature-timestamp"]),
   })
-    .filter((a) =>
-      Nacl.sign.detached.verify(
-        Buffer.from(a.timestamp + body),
-        Buffer.from(`${a.signature}`, "hex"),
-        Buffer.from(publicKey, "hex"),
-      ),
-    )
+    .filter((a) => {
+      const enc = new TextEncoder()
+      return Nacl.sign.detached.verify(
+        enc.encode(a.timestamp + body),
+        fromHex(`${a.signature}`),
+        publicKey,
+      )
+    })
     .toEither(() => new BadWebhookSignature()).asUnit
 
-export interface WebhookConfig {
+export interface MakeConfigOpts {
   applicationId: string
   publicKey: string
 }
+const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
+  applicationId,
+  publicKey: fromHex(publicKey),
+})
+export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
-export const makeConfig = (a: WebhookConfig) => Layer.succeed(WebhookConfig)(a)
+export const makeConfigLayer = flow(makeConfig, Layer.succeed(WebhookConfig))
 
 export class WebhookParseError {
   readonly _tag = "WebhookParseError"

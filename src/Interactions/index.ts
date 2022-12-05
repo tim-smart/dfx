@@ -13,8 +13,9 @@ export {
 } from "./definitions.js"
 
 export {
-  makeConfig as makeWebhookConfig,
+  makeConfigLayer as makeWebhookConfig,
   makeHandler as makeWebhookHandler,
+  MakeConfigOpts as MakeWebhookConfigOpts,
   WebhookConfig,
   WebhookParseError,
   BadWebhookSignature,

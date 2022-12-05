@@ -18,7 +18,7 @@ export const LiveRateLimit =
 export const LiveREST = LiveRateLimit > Rest.LiveDiscordREST
 
 export const makeLayer = (
-  config: Config.MakeOpts & Ix.WebhookConfig,
+  config: Config.MakeOpts & Ix.MakeWebhookConfigOpts,
   debug = false,
 ) => {
   const LiveWebhook = Ix.makeWebhookConfig(config)
