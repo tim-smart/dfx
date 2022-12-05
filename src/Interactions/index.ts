@@ -21,6 +21,14 @@ export {
   BadWebhookSignature,
 } from "./webhook.js"
 
+export interface HandleWebhookOpts<E> {
+  headers: Webhook.Headers
+  body: string
+  success: (a: Discord.InteractionResponse) => Effect<never, never, void>
+  error: (e: Cause<E>) => Effect<never, never, void>
+  empty: Effect<never, never, void>
+}
+
 class InteractionBuilder<R, E> {
   constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}
 
@@ -40,8 +48,23 @@ class InteractionBuilder<R, E> {
     return Gateway.run<R, R2, E, E2>(this.definitions, catchAll, opts)
   }
 
-  handleWebhook(headers: Webhook.Headers, rawBody: string) {
-    return Webhook.run(this.definitions, headers, rawBody)
+  handleWebhook({
+    headers,
+    body,
+    success,
+    empty,
+    error,
+  }: HandleWebhookOpts<
+    E | Webhook.WebhookParseError | Webhook.BadWebhookSignature
+  >) {
+    return Webhook.run(this.definitions, headers, body)
+      .flatMap((o) =>
+        o.match(
+          () => empty,
+          (a) => success(a),
+        ),
+      )
+      .catchAllCause(error)
   }
 
   get syncGlobal() {
