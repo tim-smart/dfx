@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/tim-smart/dfx/compare/dfx@0.7.1...dfx@0.8.0) (2022-12-05)
+
+
+### Features
+
+* support not responding in Interactions ([9b6b365](https://github.com/tim-smart/dfx/commit/9b6b3652adfef8bc7ef8dc5e3d87115a8182ce23))
+
+
+
+
+
 ## [0.7.1](https://github.com/tim-smart/dfx/compare/dfx@0.7.0...dfx@0.7.1) (2022-12-05)
 
 
