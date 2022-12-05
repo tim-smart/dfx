@@ -13,7 +13,13 @@ export const splitDefinitions = <R, E>(
       ...acc,
       [a._tag]: [...(acc[a._tag] ?? []), a],
     }),
-    {} as any,
+    {
+      Autocomplete: [],
+      GlobalApplicationCommand: [],
+      GuildApplicationCommand: [],
+      MessageComponent: [],
+      ModalSubmit: [],
+    },
   )
 
   const Commands = [
