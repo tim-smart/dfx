@@ -6,11 +6,9 @@ export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
 }
 
-const checkSignature = (
-  publicKey: string,
-  headers: Record<string, string>,
-  body: string,
-) =>
+export type Headers = Record<string, string | string[]>
+
+const checkSignature = (publicKey: string, headers: Headers, body: string) =>
   Maybe.struct({
     signature: Maybe.fromNullable(headers["x-signature-ed25519"]),
     timestamp: Maybe.fromNullable(headers["x-signature-timestamp"]),
@@ -18,7 +16,7 @@ const checkSignature = (
     .filter((a) =>
       Nacl.sign.detached.verify(
         Buffer.from(a.timestamp + body),
-        Buffer.from(a.signature, "hex"),
+        Buffer.from(`${a.signature}`, "hex"),
         Buffer.from(publicKey, "hex"),
       ),
     )
@@ -36,7 +34,7 @@ export class WebhookParseError {
   constructor(readonly reason: unknown) {}
 }
 
-const fromHeadersAndBody = (headers: Record<string, string>, body: string) =>
+const fromHeadersAndBody = (headers: Headers, body: string) =>
   Do(($) => {
     const { publicKey } = $(Effect.service(WebhookConfig))
     $(Effect.fromEither(checkSignature(publicKey, headers, body)))
@@ -50,7 +48,7 @@ const fromHeadersAndBody = (headers: Record<string, string>, body: string) =>
 
 export const run = <R, E>(
   definitions: D.InteractionDefinition<R, E>[],
-  headers: Record<string, string>,
+  headers: Headers,
   body: string,
 ) =>
   Do(($) => {

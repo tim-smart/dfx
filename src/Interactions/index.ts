@@ -39,7 +39,7 @@ class InteractionBuilder<R, E> {
     return Gateway.run<R, R2, E, E2>(this.definitions, catchAll, opts)
   }
 
-  handleWebhook(headers: Record<string, string>, rawBody: string) {
+  handleWebhook(headers: Webhook.Headers, rawBody: string) {
     return Webhook.run(this.definitions, headers, rawBody)
   }
 }
