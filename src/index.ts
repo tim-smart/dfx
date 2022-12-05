@@ -1,3 +1,5 @@
+export * as Discord from "./types.js"
+
 export * as Config from "./DiscordConfig/index.js"
 export * as DiscordWS from "./DiscordGateway/DiscordWS/index.js"
 export * as Gateway from "./DiscordGateway/index.js"
