@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "callbag-effect-ts": "1.0.0-alpha.17",
-    "isomorphic-ws": "^5.0.0"
+    "tweetnacl": "^1.0.3"
   },
   "peerDependencies": {
     "@effect/io": "*",
@@ -40,8 +40,8 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.7",
-    "tweetnacl": "^1.0.3",
     "utf-8-validate": "^5.0.10",
+    "isomorphic-ws": "^5.0.0",
     "ws": "^8.11.0"
   },
   "pnpm": {
