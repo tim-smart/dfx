@@ -25,9 +25,7 @@
   "devDependencies": {
     "@tim-smart/discord-api-docs-parser": "^0.4.1",
     "@types/ws": "^8.5.3",
-    "dotenv": "^16.0.3",
     "lerna": "^4.0.0",
-    "ts-node": "^10.9.1",
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz"
   },
   "dependencies": {
