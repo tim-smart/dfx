@@ -13,7 +13,7 @@
   "author": "Tim Smart <hello@timsmart.co>",
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "npm run clean && npm run build:tsc",
+    "prepublishOnly": "pnpm run clean && pnpm run build:tsc",
     "build:tsc": "tsc -p tsconfig.json",
     "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=RestResponse|dfx/DiscordREST/types' 'endpointReturnType=RestResponse' > src/types.ts && prettier -w src/types.ts",
     "clean": "rm -rf dist/ *.tsbuildinfo"
