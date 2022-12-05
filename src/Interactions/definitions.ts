@@ -22,6 +22,14 @@ export type InteractionResponse =
       data: Discord.InteractionCallbackAutocomplete
     }
 
+type EnforceDescription<T> = T extends {
+  type: Exclude<Discord.ApplicationCommandType, 1>
+}
+  ? T
+  : T extends { description: string }
+  ? T
+  : "description is missing"
+
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
   | GuildApplicationCommand<R, E>
@@ -37,14 +45,18 @@ export class GlobalApplicationCommand<R, E> {
   ) {}
 }
 
-export const global = <R, E>(
-  command: Discord.CreateGlobalApplicationCommandParams,
+export const global = <
+  R,
+  E,
+  A extends Discord.CreateGlobalApplicationCommandParams,
+>(
+  command: EnforceDescription<A>,
   handle: Effect<R, E, InteractionResponse>,
 ) =>
   new GlobalApplicationCommand<
     Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
     E
-  >(command, handle as any)
+  >(command as any, handle as any)
 
 export class GuildApplicationCommand<R, E> {
   readonly _tag = "GuildApplicationCommand"
@@ -54,14 +66,18 @@ export class GuildApplicationCommand<R, E> {
   ) {}
 }
 
-export const guild = <R, E>(
-  command: Discord.CreateGuildApplicationCommandParams,
+export const guild = <
+  R,
+  E,
+  A extends Discord.CreateGuildApplicationCommandParams,
+>(
+  command: EnforceDescription<A>,
   handle: Effect<R, E, InteractionResponse>,
 ) =>
   new GuildApplicationCommand<
     Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
     E
-  >(command, handle as any)
+  >(command as any, handle as any)
 
 export class MessageComponent<R, E> {
   readonly _tag = "MessageComponent"
