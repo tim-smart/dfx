@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.10](https://github.com/tim-smart/dfx/compare/dfx@0.9.9...dfx@0.9.10) (2022-12-06)
+
+
+### Bug Fixes
+
+* package.json import ([a53639d](https://github.com/tim-smart/dfx/commit/a53639d9ff3cf364e3146dc73bf3549c2018fcc0))
+
+
+
+
+
 ## [0.9.9](https://github.com/tim-smart/dfx/compare/dfx@0.9.8...dfx@0.9.9) (2022-12-06)
 
 **Note:** Version bump only for package dfx
