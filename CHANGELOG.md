@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.7](https://github.com/tim-smart/dfx/compare/dfx@0.9.5...dfx@0.9.7) (2022-12-06)
+
+
+### Bug Fixes
+
+* handleSubCommands type ([0516918](https://github.com/tim-smart/dfx/commit/0516918df98cb0d8ef9239e5368068a1e3ff0c6e))
+
+
+
+
+
 ## [0.9.5](https://github.com/tim-smart/dfx/compare/dfx@0.9.4...dfx@0.9.5) (2022-12-06)
 
 **Note:** Version bump only for package dfx
