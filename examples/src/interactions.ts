@@ -2,7 +2,8 @@ import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
 import { pipe } from "@fp-ts/data/Function"
-import { Ix, IxRunGateway, makeLayer } from "dfx"
+import { run } from "callbag-effect-ts/Source"
+import { Ix, runIxGateway, makeLayer } from "dfx"
 import Dotenv from "dotenv"
 
 Dotenv.config()
@@ -29,13 +30,15 @@ const hello = Ix.global(
 
 // Build your program use `Ix.builder`
 const ix = Ix.builder.add(hello)
-const program = IxRunGateway(ix, (e) => Effect.fail(e))
 
 // Run it
-pipe(program, Effect.provideLayer(LiveEnv), Effect.unsafeRunPromiseExit).then(
-  (exit) => {
-    if (Exit.isFailure(exit)) {
-      console.error(pipe(exit.cause, Cause.pretty()))
-    }
-  },
-)
+pipe(
+  ix,
+  runIxGateway((e) => Effect.fail(e)),
+  Effect.provideLayer(LiveEnv),
+  Effect.unsafeRunPromiseExit,
+).then((exit) => {
+  if (Exit.isFailure(exit)) {
+    console.error(pipe(exit.cause, Cause.pretty()))
+  }
+})

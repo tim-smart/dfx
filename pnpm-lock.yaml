@@ -20,11 +20,11 @@ specifiers:
 
 dependencies:
   callbag-effect-ts: 1.0.0-alpha.17_bonjnmg6oatqyr73vbdnw4brbi
-  isomorphic-ws: 5.0.0_ws@8.11.0
+  tweetnacl: 1.0.3
 
 optionalDependencies:
   bufferutil: 4.0.7
-  tweetnacl: 1.0.3
+  isomorphic-ws: 5.0.0_ws@8.11.0
   utf-8-validate: 5.0.10
   ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
 
@@ -1233,6 +1233,7 @@ packages:
     dependencies:
       node-gyp-build: 4.5.0
     dev: false
+    optional: true
 
   /builtins/1.0.3:
     resolution: {integrity: sha512-uYBjakWipfaO/bXI7E8rq6kpwHRZK5cNYrUv2OzZSI/FvmdMyXJ2tG9dKcjEC5YHmHpUAwsargWIZNWdxb/bnQ==}
@@ -2713,11 +2714,13 @@ packages:
 
   /isomorphic-ws/5.0.0_ws@8.11.0:
     resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
+    requiresBuild: true
     peerDependencies:
       ws: '*'
     dependencies:
       ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
     dev: false
+    optional: true
 
   /isstream/0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
@@ -3210,6 +3213,7 @@ packages:
     resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
     hasBin: true
     dev: false
+    optional: true
 
   /node-gyp/5.1.1:
     resolution: {integrity: sha512-WH0WKGi+a4i4DUt2mHnvocex/xPLp9pYt5R6M2JdFB7pJ7Z34hveZ4nDTGTiLXCkitA9T8HFZjhinBCiVHYcWw==}
@@ -4546,7 +4550,6 @@ packages:
     resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     requiresBuild: true
     dev: false
-    optional: true
 
   /type-fest/0.18.1:
     resolution: {integrity: sha512-OIAYXk8+ISY+qTOwkHtKqzAuxchoMiD9Udx+FSGQDuiRR+PJKJHc2NJAXlbhkGwTt/4/nKZxELY1w3ReWOL8mw==}
@@ -4647,6 +4650,7 @@ packages:
     dependencies:
       node-gyp-build: 4.5.0
     dev: false
+    optional: true
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -4831,6 +4835,7 @@ packages:
       bufferutil: 4.0.7
       utf-8-validate: 5.0.10
     dev: false
+    optional: true
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
