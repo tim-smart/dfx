@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/tim-smart/dfx/compare/dfx@0.9.12...dfx@0.10.0) (2022-12-06)
+
+
+### Bug Fixes
+
+* error types ([e9f5d54](https://github.com/tim-smart/dfx/commit/e9f5d544e6a90ffbe3a19c9c1427932804ca64c6))
+
+
+### Features
+
+* more Ix filters ([36e03f0](https://github.com/tim-smart/dfx/commit/36e03f00e7e515c1fcd42233d26b53be7456191c))
+
+
+
+
+
 ## [0.9.12](https://github.com/tim-smart/dfx/compare/dfx@0.9.11...dfx@0.9.12) (2022-12-06)
 
 
