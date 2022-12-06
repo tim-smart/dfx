@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/tim-smart/dfx/compare/dfx@0.11.0...dfx@0.12.0) (2022-12-06)
+
+
+### Features
+
+* add makeSimpleWebhookHandler ([f5f5f3a](https://github.com/tim-smart/dfx/commit/f5f5f3aea1bd2254f4fb2ec0a4bf68d4627085ea))
+
+
+
+
+
 # [0.11.0](https://github.com/tim-smart/dfx/compare/dfx@0.10.1...dfx@0.11.0) (2022-12-06)
 
 
