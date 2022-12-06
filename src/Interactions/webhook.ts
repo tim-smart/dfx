@@ -73,7 +73,6 @@ export interface HandleWebhookOpts<E> {
   body: string
   success: (a: Discord.InteractionResponse) => Effect<never, never, void>
   error: (e: Cause<E>) => Effect<never, never, void>
-  empty: Effect<never, never, void>
 }
 
 export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
@@ -83,17 +82,8 @@ export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
     headers,
     body,
     success,
-    empty,
     error,
   }: HandleWebhookOpts<
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
-  >) =>
-    handle(headers, body)
-      .flatMap((o) =>
-        o.match(
-          () => empty,
-          (a) => success(a),
-        ),
-      )
-      .catchAllCause(error)
+  >) => handle(headers, body).flatMap(success).catchAllCause(error)
 }

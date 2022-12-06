@@ -1,5 +1,4 @@
 import { InteractionResponse } from "./definitions.js"
-import { DefinitionNotFound } from "./handlers.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
 import { optionsMap } from "dfx/Helpers/interactions"
 import { EffectTypeId, Effect } from "@effect/io/Effect"
@@ -57,7 +56,7 @@ export class SubCommandNotFound {
 }
 
 export const handleSubCommands = <
-  NER extends Record<string, Effect<any, any, Maybe<InteractionResponse>>>,
+  NER extends Record<string, Effect<any, any, InteractionResponse>>,
 >(
   commands: NER,
 ): Effect<
@@ -77,7 +76,7 @@ export const handleSubCommands = <
       ? E
       : never)
   | SubCommandNotFound,
-  Maybe<InteractionResponse>
+  InteractionResponse
 > =>
   Effect.service(ApplicationCommandContext).flatMap((data) =>
     pipe(

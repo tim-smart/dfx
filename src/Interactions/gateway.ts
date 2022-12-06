@@ -52,9 +52,7 @@ export const run =
       const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
         pipe(
           handle[i.type](i).tap((r) =>
-            r.match(Effect.unit, (r) =>
-              Rest.rest.createInteractionResponse(i.id, i.token, r),
-            ),
+            Rest.rest.createInteractionResponse(i.id, i.token, r),
           ),
           postHandler,
           Effect.provideService(InteractionContext)(i),

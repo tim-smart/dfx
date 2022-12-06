@@ -11,7 +11,7 @@ export class DefinitionNotFound {
 type Handler<R, E> = Effect<
   R | Discord.Interaction,
   E | DefinitionNotFound,
-  Maybe<Discord.InteractionResponse>
+  Discord.InteractionResponse
 >
 
 export const handlers = <R, E>(
@@ -27,7 +27,7 @@ export const handlers = <R, E>(
     [Discord.InteractionType.PING]: () =>
       Effect.succeed({
         type: Discord.InteractionCallbackType.PONG,
-      }).asSome,
+      }),
 
     [Discord.InteractionType.APPLICATION_COMMAND]: (i) => {
       const data = i.data as Discord.ApplicationCommandDatum
@@ -100,7 +100,7 @@ export const handlers = <R, E>(
             Arr.map((a) =>
               Effect.struct({
                 command: Effect.succeed(a),
-                match: a.predicate(focusedOption),
+                match: a.predicate(data, focusedOption),
               }),
             ),
             (a) =>
@@ -117,7 +117,7 @@ export const handlers = <R, E>(
             Effect.provideService(Ctx.FocusedOptionContext)({ focusedOption }),
           ),
         )
-        .getOrElse(() => Effect.fail(new DefinitionNotFound(i)) as any)
+        .getOrElse(() => Effect.fail(new DefinitionNotFound(i)))
     },
   }
 }

@@ -80,12 +80,21 @@ export const idRegex = (query: RegExp) => (customId: string) =>
 export const option =
   (command: string, optionName: string) =>
   (
-    data: Discord.ApplicationCommandDatum,
-    focusedOption: Discord.ApplicationCommandInteractionDataOption,
+    data: Pick<Discord.ApplicationCommandDatum, "name">,
+    focusedOption: Pick<
+      Discord.ApplicationCommandInteractionDataOption,
+      "name"
+    >,
   ) =>
     Effect.succeed(data.name === command && focusedOption.name === optionName)
 
 export const optionOnly =
   (optionName: string) =>
-  (focusedOption: Discord.ApplicationCommandInteractionDataOption) =>
+  (
+    _: unknown,
+    focusedOption: Pick<
+      Discord.ApplicationCommandInteractionDataOption,
+      "name"
+    >,
+  ) =>
     Effect.succeed(focusedOption.name === optionName)
