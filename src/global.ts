@@ -3,7 +3,6 @@
  */
 import type {
   Effect,
-  EffectTypeId,
   Layer,
   Either,
   Maybe,

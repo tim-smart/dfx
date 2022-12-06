@@ -2,6 +2,7 @@ import { InteractionResponse } from "./definitions.js"
 import { InteractionNotFound } from "./handlers.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
 import { optionsMap } from "dfx/Helpers/interactions"
+import { EffectTypeId, Effect } from "@effect/io/Effect"
 
 export const InteractionContext = Tag<Discord.Interaction>()
 export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
