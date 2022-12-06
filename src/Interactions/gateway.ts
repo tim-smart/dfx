@@ -1,5 +1,5 @@
 import { DefinitionNotFound, handlers } from "./handlers.js"
-import { InteractionBuilder } from "./index.js"
+import { InteractionBuilder, InteractionContext } from "./index.js"
 import { splitDefinitions } from "./utils.js"
 
 export interface RunOpts {
@@ -7,18 +7,21 @@ export interface RunOpts {
 }
 
 export const run =
-  <R2, E, E2>(
-    catchAll: (
-      e:
+  <R, R2, E, E2>(
+    postHandler: (
+      effect: Effect<
+        R | Rest.DiscordREST | Discord.Interaction,
+        | E
         | Http.FetchError
         | Http.StatusCodeError
         | Http.JsonParseError
-        | DefinitionNotFound
-        | E,
-    ) => Effect<R2, E2, any>,
+        | DefinitionNotFound,
+        void
+      >,
+    ) => Effect<R2, E2, void>,
     { sync = true }: RunOpts = {},
   ) =>
-  <R>(ix: InteractionBuilder<R, E>) =>
+  (ix: InteractionBuilder<R, E>) =>
     Do(($) => {
       const { GlobalApplicationCommand, GuildApplicationCommand } =
         splitDefinitions(ix.definitions)
@@ -47,13 +50,15 @@ export const run =
       const handle = handlers(ix.definitions)
 
       const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
-        handle[i.type](i)
-          .tap((r) =>
+        pipe(
+          handle[i.type](i).tap((r) =>
             r.match(Effect.unit, (r) =>
               Rest.rest.createInteractionResponse(i.id, i.token, r),
             ),
-          )
-          .catchAll(catchAll),
+          ),
+          postHandler,
+          Effect.provideService(InteractionContext)(i),
+        ),
       )
 
       $(sync ? run.zipPar(globalSync).zipPar(guildSync) : run)

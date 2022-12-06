@@ -8,8 +8,8 @@ export class DefinitionNotFound {
   constructor(readonly interaction: Discord.Interaction) {}
 }
 
-export type Handler<R, E> = Effect<
-  R,
+type Handler<R, E> = Effect<
+  R | Discord.Interaction,
   E | DefinitionNotFound,
   Maybe<Discord.InteractionResponse>
 >
@@ -38,7 +38,6 @@ export const handlers = <R, E>(
           (command) => command.handle,
         ),
         (a) => a,
-        Effect.provideService(Ctx.InteractionContext)(i),
         Effect.provideService(Ctx.ApplicationCommandContext)(data),
       )
     },
@@ -63,7 +62,6 @@ export const handlers = <R, E>(
                 (a) => a.command.handle,
               ),
           ),
-        Effect.provideService(Ctx.InteractionContext)(i),
         Effect.provideService(Ctx.ModalSubmitContext)(data),
       )
     },
@@ -88,7 +86,6 @@ export const handlers = <R, E>(
                 (a) => a.command.handle,
               ),
           ),
-        Effect.provideService(Ctx.InteractionContext)(i),
         Effect.provideService(Ctx.MessageComponentContext)(data),
       )
     },
@@ -116,7 +113,6 @@ export const handlers = <R, E>(
                     (a) => a.command.handle,
                   ),
               ),
-            Effect.provideService(Ctx.InteractionContext)(i),
             Effect.provideService(Ctx.ApplicationCommandContext)(data),
             Effect.provideService(Ctx.FocusedOptionContext)({ focusedOption }),
           ),

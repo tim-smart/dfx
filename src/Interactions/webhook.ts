@@ -1,7 +1,7 @@
 import Nacl from "tweetnacl"
 import * as D from "./definitions.js"
 import { DefinitionNotFound, handlers } from "./handlers.js"
-import { InteractionBuilder } from "./index.js"
+import { InteractionBuilder, InteractionContext } from "./index.js"
 import { fromHex } from "./utils.js"
 
 export class BadWebhookSignature {
@@ -63,7 +63,8 @@ const run = <R, E>(definitions: D.InteractionDefinition<R, E>[]) => {
   return (headers: Headers, body: string) =>
     Do(($) => {
       const interaction = $(fromHeadersAndBody(headers, body))
-      return $(handler[interaction.type](interaction))
+      const provide = Effect.provideService(InteractionContext)(interaction)
+      return $(provide(handler[interaction.type](interaction)))
     })
 }
 

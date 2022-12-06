@@ -1,5 +1,5 @@
 import { InteractionResponse } from "./definitions.js"
-import { DefinitionNotFound, Handler } from "./handlers.js"
+import { DefinitionNotFound } from "./handlers.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
 import { optionsMap } from "dfx/Helpers/interactions"
 import { EffectTypeId, Effect } from "@effect/io/Effect"
