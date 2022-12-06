@@ -51,7 +51,7 @@ export const commandOptionsMap = Effect.serviceWith(ApplicationCommandContext)(
 )
 
 export const handleSubCommands = <
-  NER extends Record<string, Effect<any, any, InteractionResponse>>,
+  NER extends Record<string, Effect<any, any, Maybe<InteractionResponse>>>,
 >(
   commands: NER,
 ): Effect<
@@ -68,7 +68,7 @@ export const handleSubCommands = <
   [NER[keyof NER]] extends [{ [EffectTypeId]: { _E: (_: never) => infer E } }]
     ? E
     : never,
-  InteractionResponse
+  Maybe<InteractionResponse>
 > =>
   Effect.struct({
     interaction: Effect.service(InteractionContext),

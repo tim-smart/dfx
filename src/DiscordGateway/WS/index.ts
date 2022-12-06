@@ -29,7 +29,7 @@ const recv = (ws: WebSocket) =>
   EffectSource.async<WebSocketError | WebSocketCloseError, WebSocket.RawData>(
     (emit) => {
       ws.on("message", (message) => {
-        return emit.data(message)
+        emit.data(message)
       })
 
       ws.on("error", (cause) => {
@@ -37,7 +37,7 @@ const recv = (ws: WebSocket) =>
       })
 
       ws.on("close", (code, reason) => {
-        return emit.fail(new WebSocketCloseError(code, reason.toString("utf8")))
+        emit.fail(new WebSocketCloseError(code, reason.toString("utf8")))
       })
     },
   )
