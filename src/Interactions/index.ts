@@ -74,10 +74,18 @@ export const id = (query: string) => (customId: string) =>
 export const idStartsWith = (query: string) => (customId: string) =>
   Effect.succeed(customId.startsWith(query))
 
-export const regex = (query: RegExp) => (customId: string) =>
+export const idRegex = (query: RegExp) => (customId: string) =>
   Effect.succeed(query.test(customId))
 
 export const option =
-  (name: string) =>
+  (command: string, optionName: string) =>
+  (
+    data: Discord.ApplicationCommandDatum,
+    focusedOption: Discord.ApplicationCommandInteractionDataOption,
+  ) =>
+    Effect.succeed(data.name === command && focusedOption.name === optionName)
+
+export const optionOnly =
+  (optionName: string) =>
   (focusedOption: Discord.ApplicationCommandInteractionDataOption) =>
-    Effect.succeed(focusedOption.name === name)
+    Effect.succeed(focusedOption.name === optionName)
