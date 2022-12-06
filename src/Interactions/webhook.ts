@@ -87,3 +87,10 @@ export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
   >) => handle(headers, body).flatMap(success).catchAllCause(error)
 }
+
+export const makeSimpleHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
+  const handle = run(ix.definitions)
+
+  return ({ headers, body }: { headers: Headers; body: string }) =>
+    handle(headers, body)
+}

@@ -11,7 +11,7 @@ export class DefinitionNotFound {
 type Handler<R, E> = Effect<
   R | Discord.Interaction,
   E | DefinitionNotFound,
-  Discord.InteractionResponse
+  D.InteractionResponse
 >
 
 export const handlers = <R, E>(
@@ -27,7 +27,7 @@ export const handlers = <R, E>(
     [Discord.InteractionType.PING]: () =>
       Effect.succeed({
         type: Discord.InteractionCallbackType.PONG,
-      }),
+      } as any),
 
     [Discord.InteractionType.APPLICATION_COMMAND]: (i) => {
       const data = i.data as Discord.ApplicationCommandDatum

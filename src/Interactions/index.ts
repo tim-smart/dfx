@@ -15,6 +15,7 @@ export {
 export {
   makeConfigLayer as makeWebhookConfig,
   makeHandler as makeWebhookHandler,
+  makeSimpleHandler as makeSimpleWebhookHandler,
   MakeConfigOpts as MakeWebhookConfigOpts,
   WebhookConfig,
   WebhookParseError,
