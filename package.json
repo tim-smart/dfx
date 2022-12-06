@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -27,7 +27,7 @@
     "@fp-ts/data": "^0.0.20",
     "@tim-smart/discord-api-docs-parser": "^0.4.1",
     "@types/ws": "^8.5.3",
-    "lerna": "^4.0.0",
+    "lerna": "^6.1.0",
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz"
   },
   "dependencies": {
