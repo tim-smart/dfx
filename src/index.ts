@@ -5,7 +5,7 @@ export * as DiscordWS from "./DiscordGateway/DiscordWS/index.js"
 export * as Gateway from "./DiscordGateway/index.js"
 export { DiscordREST, LiveDiscordREST, rest } from "./DiscordREST/index.js"
 export * as Ix from "./Interactions/index.js"
-export { run as IxRunGateway } from "./Interactions/gateway.js"
+export { run as runIxGateway } from "./Interactions/gateway.js"
 export * as Log from "./Log/index.js"
 export * as RateLimitStore from "./RateLimitStore/index.js"
 
