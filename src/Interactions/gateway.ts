@@ -1,4 +1,4 @@
-import { handlers } from "./handlers.js"
+import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder } from "./index.js"
 import { splitDefinitions } from "./utils.js"
 
@@ -9,7 +9,12 @@ export interface RunOpts {
 export const run =
   <R2, E, E2>(
     catchAll: (
-      e: Http.FetchError | Http.StatusCodeError | Http.JsonParseError | E,
+      e:
+        | Http.FetchError
+        | Http.StatusCodeError
+        | Http.JsonParseError
+        | DefinitionNotFound
+        | E,
     ) => Effect<R2, E2, any>,
     { sync = true }: RunOpts = {},
   ) =>

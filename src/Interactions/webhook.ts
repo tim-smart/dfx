@@ -1,6 +1,6 @@
 import Nacl from "tweetnacl"
 import * as D from "./definitions.js"
-import { handlers } from "./handlers.js"
+import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder } from "./index.js"
 import { fromHex } from "./utils.js"
 
@@ -84,7 +84,9 @@ export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
     success,
     empty,
     error,
-  }: HandleWebhookOpts<E | WebhookParseError | BadWebhookSignature>) =>
+  }: HandleWebhookOpts<
+    E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
+  >) =>
     handle(headers, body)
       .flatMap((o) =>
         o.match(
