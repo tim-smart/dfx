@@ -23,7 +23,7 @@ const hello = Ix.global(
     name: "hello",
     description: "A basic command",
   },
-  Effect.succeedSome({
+  Effect.succeed({
     type: 4,
     data: {
       content: "Hello!",
