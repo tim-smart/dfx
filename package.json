@@ -6,10 +6,6 @@
     "access": "public",
     "directory": "dist"
   },
-  "files": [
-    "dist/**/*",
-    "src/**/*"
-  ],
   "description": "Effect-TS discord library",
   "author": "Tim Smart <hello@timsmart.co>",
   "license": "MIT",
