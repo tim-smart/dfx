@@ -6837,6 +6837,11 @@
           "kind": "getter",
           "typeName": "effect/io/Exit",
           "name": "isFailure"
+        },
+        {
+          "typeName": "effect/io/Exit.Ops",
+          "kind": "static",
+          "name": "isFailure"
         }
       ]
     },
@@ -6847,6 +6852,11 @@
         {
           "kind": "getter",
           "typeName": "effect/io/Exit",
+          "name": "isSuccess"
+        },
+        {
+          "typeName": "effect/io/Exit.Ops",
+          "kind": "static",
           "name": "isSuccess"
         }
       ]
