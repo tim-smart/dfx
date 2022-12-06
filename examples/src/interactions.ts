@@ -2,7 +2,6 @@ import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
 import { pipe } from "@fp-ts/data/Function"
-import { run } from "callbag-effect-ts/Source"
 import { Ix, runIxGateway, makeLayer } from "dfx"
 import Dotenv from "dotenv"
 
