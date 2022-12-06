@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.12](https://github.com/tim-smart/dfx/compare/dfx@0.9.11...dfx@0.9.12) (2022-12-06)
+
+
+### Bug Fixes
+
+* add missing error types to Ix ([a3a404f](https://github.com/tim-smart/dfx/commit/a3a404f00bee39d6cabf9eef404636ba9e6c2ebd))
+
+
+
+
+
 ## [0.9.11](https://github.com/tim-smart/dfx/compare/dfx@0.9.10...dfx@0.9.11) (2022-12-06)
 
 
