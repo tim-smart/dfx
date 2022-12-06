@@ -2,7 +2,7 @@ import { millis } from "@fp-ts/data/Duration"
 import { BucketDetails } from "dfx/RateLimitStore/index"
 import { ResponseWithData } from "./types.js"
 import { rateLimitFromHeaders, routeFromConfig } from "./utils.js"
-import Pkg from "../../package.json" assert { type: "json" }
+import Pkg from "../package.json" assert { type: "json" }
 
 const make = Do(($) => {
   const { token, rest } = $(Effect.service(Config.DiscordConfig))
