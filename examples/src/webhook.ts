@@ -21,7 +21,7 @@ const hello = Ix.global(
     name: "hello",
     description: "A basic command",
   },
-  Effect.succeedSome({
+  Effect.succeed({
     type: 4,
     data: {
       content: "Hello!",
@@ -65,10 +65,6 @@ server.post("/", (req, reply) => {
         Effect.sync(() => {
           reply.send(a)
         }),
-      empty: Effect.sync(() => {
-        console.error("NO RESPONSE")
-        reply.code(500).send()
-      }),
       error: (e) =>
         Effect.sync(() => {
           console.error("FAILURE", Cause.pretty()(e))

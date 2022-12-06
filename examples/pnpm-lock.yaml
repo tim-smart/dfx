@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@effect/io': ^0.0.30
   '@fp-ts/data': ^0.0.20
-  dfx: ^0.9.1
+  dfx: ^0.11.0
   dotenv: ^16.0.3
   esbuild: ^0.15.18
   fastify: ^4.10.2
@@ -13,7 +13,7 @@ specifiers:
 dependencies:
   '@effect/io': 0.0.30
   '@fp-ts/data': 0.0.20
-  dfx: 0.9.1_bonjnmg6oatqyr73vbdnw4brbi
+  dfx: 0.11.0_bonjnmg6oatqyr73vbdnw4brbi
   dotenv: 16.0.3
   fastify: 4.10.2
 
@@ -209,6 +209,7 @@ packages:
     dependencies:
       node-gyp-build: 4.5.0
     dev: false
+    optional: true
 
   /callbag-buffer-time/1.0.0:
     resolution: {integrity: sha512-Y9XqJWqs0M9gTvn8jQit+pXDYxrzh7KqIgN9MhwT5NzQGgEACSCzYKQpjT6p9ejfnimFjHWQC9+bifjIKnKxDQ==}
@@ -330,8 +331,8 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.9.1_bonjnmg6oatqyr73vbdnw4brbi:
-    resolution: {integrity: sha512-C+Feg1BcO5OuDhpaqihqwQoGLD/4ARzDaRYNSciyF+iS+2jL9vjH+8TqYM6hGqf5E4PyfEUREtxrvOrDRRlgag==}
+  /dfx/0.11.0_bonjnmg6oatqyr73vbdnw4brbi:
+    resolution: {integrity: sha512-JcPyqXx583KkaDMW/ZSMfPSEOyzaT9m+ispxXSk7Uex43qcNLsNgRcmHFzp4fvT+HVkpEpgz1WHge/wU0NyhxQ==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'
@@ -339,10 +340,10 @@ packages:
       '@effect/io': 0.0.30
       '@fp-ts/data': 0.0.20
       callbag-effect-ts: 1.0.0-alpha.17_bonjnmg6oatqyr73vbdnw4brbi
-      isomorphic-ws: 5.0.0_ws@8.11.0
+      tweetnacl: 1.0.3
     optionalDependencies:
       bufferutil: 4.0.7
-      tweetnacl: 1.0.3
+      isomorphic-ws: 5.0.0_ws@8.11.0
       utf-8-validate: 5.0.10
       ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
     dev: false
@@ -664,11 +665,13 @@ packages:
 
   /isomorphic-ws/5.0.0_ws@8.11.0:
     resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
+    requiresBuild: true
     peerDependencies:
       ws: '*'
     dependencies:
       ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
     dev: false
+    optional: true
 
   /json-schema-traverse/1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
@@ -701,6 +704,7 @@ packages:
     resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
     hasBin: true
     dev: false
+    optional: true
 
   /on-exit-leak-free/2.1.0:
     resolution: {integrity: sha512-VuCaZZAjReZ3vUwgOB8LxAosIurDiAW0s13rI1YwmaP++jvcxP77AWoQvenZebpCA2m8WC1/EosPYPMjnRAp/w==}
@@ -912,7 +916,6 @@ packages:
     resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     requiresBuild: true
     dev: false
-    optional: true
 
   /typescript/4.9.3:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
@@ -933,6 +936,7 @@ packages:
     dependencies:
       node-gyp-build: 4.5.0
     dev: false
+    optional: true
 
   /v8-compile-cache-lib/3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
@@ -954,6 +958,7 @@ packages:
       bufferutil: 4.0.7
       utf-8-validate: 5.0.10
     dev: false
+    optional: true
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}

@@ -31,10 +31,16 @@ const hello = Ix.global(
   }),
 )
 
-// Run it
+// Run it and handle errors
 pipe(
   Ix.builder.add(hello),
-  runIxGateway((error) => Effect.fail(error)),
+  runIxGateway(
+    Effect.catchAll((e) =>
+      Effect.sync(() => {
+        console.error("CAUGHT ERROR", e)
+      }),
+    ),
+  ),
   Effect.providerLayer(Dependencies),
   Effect.unsafeRunPromise,
 )

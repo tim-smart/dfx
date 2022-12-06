@@ -19,7 +19,7 @@ const hello = Ix.global(
     name: "hello",
     description: "A basic command",
   },
-  Effect.succeedSome({
+  Effect.succeed({
     type: 4,
     data: {
       content: "Hello!",
@@ -33,7 +33,13 @@ const ix = Ix.builder.add(hello)
 // Run it
 pipe(
   ix,
-  runIxGateway((e) => Effect.fail(e)),
+  runIxGateway(
+    Effect.catchAll((e) =>
+      Effect.sync(() => {
+        console.error("CAUGHT ERROR", e)
+      }),
+    ),
+  ),
   Effect.provideLayer(LiveEnv),
   Effect.unsafeRunPromiseExit,
 ).then((exit) => {
