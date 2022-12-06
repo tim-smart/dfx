@@ -1,5 +1,5 @@
 import { InteractionResponse } from "./definitions.js"
-import { InteractionNotFound } from "./handlers.js"
+import { DefinitionNotFound, Handler } from "./handlers.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
 import { optionsMap } from "dfx/Helpers/interactions"
 import { EffectTypeId, Effect } from "@effect/io/Effect"
@@ -51,6 +51,11 @@ export const commandOptionsMap = Effect.serviceWith(ApplicationCommandContext)(
   optionsMap,
 )
 
+export class SubCommandNotFound {
+  readonly _tag = "SubCommandNotFound"
+  constructor(readonly data: Discord.ApplicationCommandDatum) {}
+}
+
 export const handleSubCommands = <
   NER extends Record<string, Effect<any, any, Maybe<InteractionResponse>>>,
 >(
@@ -66,19 +71,19 @@ export const handleSubCommands = <
     >
   | Discord.Interaction
   | Discord.ApplicationCommandDatum,
-  [NER[keyof NER]] extends [{ [EffectTypeId]: { _E: (_: never) => infer E } }]
-    ? E
-    : never,
+  | ([NER[keyof NER]] extends [
+      { [EffectTypeId]: { _E: (_: never) => infer E } },
+    ]
+      ? E
+      : never)
+  | SubCommandNotFound,
   Maybe<InteractionResponse>
 > =>
-  Effect.struct({
-    interaction: Effect.service(InteractionContext),
-    data: Effect.service(ApplicationCommandContext),
-  }).flatMap(({ interaction, data }) =>
+  Effect.service(ApplicationCommandContext).flatMap((data) =>
     pipe(
       IxHelpers.allSubCommands(data),
       Arr.findFirst((a) => !!commands[a.name]),
-      (o) => o.toEither(() => new InteractionNotFound(interaction)),
+      (o) => o.toEither(() => new SubCommandNotFound(data)),
       Effect.fromEither,
       (a) =>
         a.flatMap((command) =>

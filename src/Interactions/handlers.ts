@@ -3,16 +3,22 @@ import * as D from "./definitions.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
 import { splitDefinitions } from "./utils.js"
 
-export class InteractionNotFound {
-  readonly _tag = "InteractionNotFound"
+export class DefinitionNotFound {
+  readonly _tag = "DefinitionNotFound"
   constructor(readonly interaction: Discord.Interaction) {}
 }
+
+export type Handler<R, E> = Effect<
+  R,
+  E | DefinitionNotFound,
+  Maybe<Discord.InteractionResponse>
+>
 
 export const handlers = <R, E>(
   definitions: D.InteractionDefinition<R, E>[],
 ): Record<
   Discord.InteractionType,
-  (i: Discord.Interaction) => Effect<R, E, Maybe<Discord.InteractionResponse>>
+  (i: Discord.Interaction) => Handler<R, E>
 > => {
   const { Commands, Autocomplete, MessageComponent, ModalSubmit } =
     splitDefinitions(definitions)
@@ -28,14 +34,10 @@ export const handlers = <R, E>(
 
       return pipe(
         Maybe.fromNullable(Commands[data.name]).match(
-          () =>
-            Effect.fail(new InteractionNotFound(i)) as any as Effect<
-              R,
-              E,
-              Maybe<Discord.InteractionResponse>
-            >,
+          () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
           (command) => command.handle,
         ),
+        (a) => a,
         Effect.provideService(Ctx.InteractionContext)(i),
         Effect.provideService(Ctx.ApplicationCommandContext)(data),
       )
@@ -57,12 +59,7 @@ export const handlers = <R, E>(
             a
               .findFirst((a) => a.match)
               .match(
-                () =>
-                  Effect.fail(new InteractionNotFound(i)) as any as Effect<
-                    R,
-                    E,
-                    Maybe<Discord.InteractionResponse>
-                  >,
+                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
                 (a) => a.command.handle,
               ),
           ),
@@ -87,12 +84,7 @@ export const handlers = <R, E>(
             a
               .findFirst((a) => a.match)
               .match(
-                () =>
-                  Effect.fail(new InteractionNotFound(i)) as any as Effect<
-                    R,
-                    E,
-                    Maybe<Discord.InteractionResponse>
-                  >,
+                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
                 (a) => a.command.handle,
               ),
           ),
@@ -120,11 +112,7 @@ export const handlers = <R, E>(
                   .findFirst((a) => a.match)
                   .match(
                     () =>
-                      Effect.fail(new InteractionNotFound(i)) as any as Effect<
-                        R,
-                        E,
-                        Maybe<Discord.InteractionResponse>
-                      >,
+                      Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
                     (a) => a.command.handle,
                   ),
               ),
@@ -133,7 +121,7 @@ export const handlers = <R, E>(
             Effect.provideService(Ctx.FocusedOptionContext)({ focusedOption }),
           ),
         )
-        .getOrElse(() => Effect.fail(new InteractionNotFound(i)) as any)
+        .getOrElse(() => Effect.fail(new DefinitionNotFound(i)) as any)
     },
   }
 }
