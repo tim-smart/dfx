@@ -25,11 +25,11 @@
     "@tim-smart/discord-api-docs-parser": "^0.4.1",
     "@types/ws": "^8.5.3",
     "lerna": "^6.1.0",
-    "ts-toolbelt": "^9.6.0",
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz"
   },
   "dependencies": {
     "callbag-effect-ts": "1.0.0-alpha.17",
+    "ts-toolbelt": "^9.6.0",
     "tweetnacl": "^1.0.3"
   },
   "peerDependencies": {
