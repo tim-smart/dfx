@@ -1,5 +1,6 @@
 import { Effect, EffectTypeId } from "@effect/io/Effect"
 import {
+  FocusedOptionContext,
   RequiredOptionNotFound,
   ResolvedDataNotFound,
   SubCommandContext,
@@ -125,12 +126,13 @@ export const autocomplete = <R1, R2, E1, E2>(
       R1 | R2,
       | Discord.Interaction
       | Discord.ApplicationCommandDatum
-      | Discord.ApplicationCommandInteractionDataOption
+      | FocusedOptionContext
     >,
     E1 | E2
   >(pred as any, handle as any)
 
-// Command handler helpers
+// ==== Command handler helpers
+
 type CommandHandler<R, E, A = any> =
   | Effect<R, E, Discord.InteractionResponse>
   | CommandHandlerFn<R, E, A>
