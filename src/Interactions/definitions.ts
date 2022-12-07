@@ -1,10 +1,8 @@
 import { Effect, EffectTypeId } from "@effect/io/Effect"
 import {
   FocusedOptionContext,
-  RequiredOptionNotFound,
   ResolvedDataNotFound,
   SubCommandContext,
-  SubCommandNotFound,
 } from "./context.js"
 import type { F } from "ts-toolbelt"
 
@@ -153,27 +151,11 @@ export interface CommandHelper<A> {
 
   optionValue: (
     name: RequiredCommandOptions<A>["name"],
-  ) => Effect<Discord.ApplicationCommandDatum, RequiredOptionNotFound, string>
+  ) => Effect<Discord.ApplicationCommandDatum, never, string>
 
   optionValueOptional: (
     name: CommandOptions<A>["name"],
   ) => Effect<Discord.ApplicationCommandDatum, never, Maybe<string>>
-
-  subCommandOption: (
-    name: SubCommandOptions<A>["name"],
-  ) => Effect<
-    SubCommandContext,
-    never,
-    Maybe<Discord.ApplicationCommandInteractionDataOption>
-  >
-
-  subCommandOptionValue: (
-    name: RequiredSubCommandOptions<A>["name"],
-  ) => Effect<SubCommandContext, RequiredOptionNotFound, string>
-
-  subCommandOptionValueOptional: (
-    name: SubCommandOptions<A>["name"],
-  ) => Effect<SubCommandContext, never, Maybe<string>>
 
   subCommands: <
     NER extends SubCommands<A> extends never
@@ -195,12 +177,9 @@ export interface CommandHelper<A> {
       >
     | Discord.Interaction
     | Discord.ApplicationCommandDatum,
-    | ([NER[keyof NER]] extends [
-        { [EffectTypeId]: { _E: (_: never) => infer E } },
-      ]
-        ? E
-        : never)
-    | SubCommandNotFound,
+    [NER[keyof NER]] extends [{ [EffectTypeId]: { _E: (_: never) => infer E } }]
+      ? E
+      : never,
     Discord.InteractionResponse
   >
 }
@@ -237,29 +216,26 @@ type CommandOptions<A> = ExtractOptions<
   >
 >
 
-type RequiredCommandOptions<A> = RequiredOptions<
-  A,
-  Exclude<
-    Discord.ApplicationCommandOptionType,
-    | Discord.ApplicationCommandOptionType.SUB_COMMAND
-    | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
-  >
->
-
 type SubCommands<A> = ExtractOptions<
   A,
   Discord.ApplicationCommandOptionType.SUB_COMMAND
 >
 
-type SubCommandOptions<A> = Exclude<
-  SubCommands<A>["options"],
-  undefined
->[number]
-
 type RequiredSubCommandOptions<A> = Extract<
   Exclude<SubCommands<A>["options"], undefined>[number],
   { required: true }
 >
+
+type RequiredCommandOptions<A> =
+  | RequiredOptions<
+      A,
+      Exclude<
+        Discord.ApplicationCommandOptionType,
+        | Discord.ApplicationCommandOptionType.SUB_COMMAND
+        | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
+      >
+    >
+  | RequiredSubCommandOptions<A>
 
 type Resolvables<A> = ExtractOptions<
   A,

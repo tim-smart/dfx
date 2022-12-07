@@ -19,9 +19,6 @@ const context: D.CommandHelper<any> = {
   option: Ctx.findOption,
   optionValue: Ctx.optionValue,
   optionValueOptional: Ctx.optionValueOptional,
-  subCommandOption: Ctx.findSubCommandOption,
-  subCommandOptionValue: Ctx.subCommandOptionValue,
-  subCommandOptionValueOptional: Ctx.subCommandOptionValueOptional as any,
   subCommands: Ctx.handleSubCommands,
 } as any
 

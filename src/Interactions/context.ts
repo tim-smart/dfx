@@ -96,7 +96,7 @@ export const handleSubCommands = <
     ),
   )
 
-export const getSubCommand = Effect.serviceWith(SubCommandContext)(
+export const currentSubCommand = Effect.serviceWith(SubCommandContext)(
   (a) => a.command,
 )
 
@@ -132,39 +132,6 @@ export const optionValue = (name: string) =>
 
 export const optionValueOptional = (name: string) =>
   findOption(name).map((o) => o.flatMapNullable((a) => a.value))
-
-export const subCommandOptionsMap = getSubCommand.map(IxHelpers.optionsMap)
-
-export const findSubCommandOption = (name: string) =>
-  Effect.serviceWith(SubCommandContext)(({ command }) =>
-    IxHelpers.getOption(name)(command),
-  )
-
-export const subCommandOptionValue = (name: string) =>
-  findSubCommandOption(name).flatMap((o) =>
-    o
-      .flatMapNullable((a) => a.value)
-      .match(
-        () =>
-          getSubCommand.flatMap((data) =>
-            Effect.fail(new RequiredOptionNotFound(data, name)),
-          ),
-        Effect.succeed,
-      ),
-  )
-
-export const subCommandOptionValueOptional = (name: string) =>
-  findSubCommandOption(name).flatMap((o) =>
-    o
-      .flatMapNullable((a) => a.value)
-      .match(
-        () =>
-          getSubCommand.flatMap((data) =>
-            Effect.fail(new RequiredOptionNotFound(data, name)),
-          ),
-        Effect.succeed,
-      ),
-  )
 
 export const modalValues = Effect.serviceWith(ModalSubmitContext)(
   IxHelpers.componentsMap,
