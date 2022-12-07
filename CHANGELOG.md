@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/tim-smart/dfx/compare/dfx@0.15.0...dfx@0.15.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* resolveValues ([66480dc](https://github.com/tim-smart/dfx/commit/66480dc34155727a230a4e8f08c8400b1edcd671))
+
+
+
+
+
 # [0.15.0](https://github.com/tim-smart/dfx/compare/dfx@0.14.0...dfx@0.15.0) (2022-12-07)
 
 
