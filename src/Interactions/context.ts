@@ -21,17 +21,24 @@ export const getCommand = Effect.service(ApplicationCommandContext)
 
 export class ResolvedDataNotFound {
   readonly _tag = "ResolvedDataNotFound"
-  constructor(
-    readonly data: Discord.ApplicationCommandDatum,
-    readonly name: string,
-  ) {}
+  constructor(readonly data: Discord.Interaction, readonly name?: string) {}
 }
+
+export const getResolvedValues = <A>(
+  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
+) =>
+  Effect.serviceWithEffect(InteractionContext)((a) =>
+    IxHelpers.resolveValues(f)(a).match(
+      () => Effect.fail(new ResolvedDataNotFound(a)),
+      Effect.succeed,
+    ),
+  )
 
 export const getResolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(ApplicationCommandContext)((a) =>
+  Effect.serviceWithEffect(InteractionContext)((a) =>
     IxHelpers.resolveOptionValue(
       name,
       f,

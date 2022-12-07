@@ -100,8 +100,10 @@ export const optionValue = (name: string) =>
 /**
  * Try extract resolved data
  */
-export const resolved = (data: Discord.ApplicationCommandDatum) =>
-  Maybe.fromNullable(data.resolved)
+export const resolved = (data: Discord.Interaction) =>
+  Maybe.fromNullable(data.data).flatMapNullable(
+    (a) => (a as Discord.ApplicationCommandDatum).resolved,
+  )
 
 /**
  * Try find a matching option value from the interaction.
@@ -111,15 +113,40 @@ export const resolveOptionValue =
     name: string,
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
-  (a: Discord.ApplicationCommandDatum): Maybe<T> =>
+  (a: Discord.Interaction): Maybe<T> =>
     Do(($) => {
+      const data = $(
+        Maybe.fromNullable(a.data as Discord.ApplicationCommandDatum),
+      )
       const id = $(
-        getOption(name)(a).flatMapNullable(
+        getOption(name)(data).flatMapNullable(
           ({ value }) => value as Discord.Snowflake,
         ),
       )
-      const data = $(resolved(a))
-      return $(Maybe.fromNullable(f(id, data)))
+      const r = $(resolved(a))
+      return $(Maybe.fromNullable(f(id, r)))
+    })
+
+/**
+ * Try find matching option values from the interaction.
+ */
+export const resolveValues =
+  <T>(
+    f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
+  ) =>
+  (a: Discord.Interaction): Maybe<readonly T[]> =>
+    Do(($) => {
+      const values = $(
+        Maybe.fromNullable(
+          a.data as Discord.MessageComponentDatum,
+        ).flatMapNullable((a) => a.values),
+      )
+      const r = $(resolved(a))
+      return $(
+        Maybe.productAll(
+          values.map((a) => Maybe.fromNullable(f(a.value as any, r))),
+        ),
+      )
     })
 
 const extractComponents = (c: Discord.Component): Discord.Component[] => {

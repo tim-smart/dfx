@@ -45,6 +45,6 @@ pipe(
   Effect.unsafeRunPromiseExit,
 ).then((exit) => {
   if (Exit.isFailure(exit)) {
-    console.error(pipe(exit.cause, Cause.pretty()))
+    console.error(Cause.pretty()(exit.cause))
   }
 })
