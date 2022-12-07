@@ -36,6 +36,11 @@ import type {
 /**
  * @tsplus global
  */
+import type { HashSet } from "@fp-ts/data/HashSet"
+
+/**
+ * @tsplus global
+ */
 import type { Gateway, WS, DWS, Shard, ShardStore } from "dfx/common-gateway"
 
 /**
