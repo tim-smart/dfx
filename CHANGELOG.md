@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.2](https://github.com/tim-smart/dfx/compare/dfx@0.13.1...dfx@0.13.2) (2022-12-07)
+
+
+### Bug Fixes
+
+* IxHelpers in context ([efa68b7](https://github.com/tim-smart/dfx/commit/efa68b792115ab5502c89a9b0229f897bb210069))
+
+
+
+
+
 ## [0.13.1](https://github.com/tim-smart/dfx/compare/dfx@0.13.0...dfx@0.13.1) (2022-12-07)
 
 **Note:** Version bump only for package dfx
