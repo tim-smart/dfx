@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.4](https://github.com/tim-smart/dfx/compare/dfx@0.15.3...dfx@0.15.4) (2022-12-07)
+
+
+### Bug Fixes
+
+* ts-toolbelt dependencies ([74c93bb](https://github.com/tim-smart/dfx/commit/74c93bbf599223f0d9c6dfe98435856cc7e88a51))
+
+
+
+
+
 ## [0.15.3](https://github.com/tim-smart/dfx/compare/dfx@0.15.2...dfx@0.15.3) (2022-12-07)
 
 **Note:** Version bump only for package dfx
