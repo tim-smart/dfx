@@ -2,7 +2,7 @@ import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
 import { pipe } from "@fp-ts/data/Function"
-import { Ix } from "dfx"
+import { Discord, Ix } from "dfx"
 import { make, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 
@@ -28,8 +28,46 @@ const hello = Ix.global(
   }),
 )
 
+// Optionally use the type safe helpers
+const greeting = Ix.global(
+  {
+    name: "greeting",
+    description: "A basic command",
+    options: [
+      {
+        type: Discord.ApplicationCommandOptionType.STRING,
+        name: "who",
+        description: "who to greet",
+        required: true,
+      },
+      {
+        type: Discord.ApplicationCommandOptionType.STRING,
+        name: "greeting",
+        description: "What kind of greeting?",
+      },
+    ],
+  },
+  (i) =>
+    pipe(
+      Effect.struct({
+        who: i.optionValue("who"),
+        greeting: pipe(
+          i.optionValueOptional("greeting"),
+          Effect.someOrElse(() => "Hello"),
+        ),
+        // fail: i.optionValue("fail"), // <- this would be a type error
+      }),
+      Effect.map(({ who, greeting }) => ({
+        type: 4,
+        data: {
+          content: `${greeting} ${who}!`,
+        },
+      })),
+    ),
+)
+
 // Build your program use `Ix.builder`
-const ix = Ix.builder.add(hello)
+const ix = Ix.builder.add(hello).add(greeting)
 
 // Run it
 pipe(

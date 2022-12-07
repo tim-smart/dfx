@@ -45,8 +45,7 @@ import type { Equal } from "@fp-ts/data/Equal"
 /**
  * @tsplus global
  */
-import type { Option as Maybe } from "@fp-ts/data/Option"
-export type { Option as Maybe } from "@fp-ts/data/Option"
+import type { Maybe } from "dfx"
 
 /**
  * @tsplus global

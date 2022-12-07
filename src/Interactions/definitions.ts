@@ -150,7 +150,7 @@ export interface CommandHelper<A> {
   >
 
   optionValue: (
-    name: CommandOptions<A>["name"],
+    name: RequiredCommandOptions<A>["name"],
   ) => Effect<Discord.ApplicationCommandDatum, RequiredOptionNotFound, string>
 
   optionValueOptional: (
@@ -166,7 +166,7 @@ export interface CommandHelper<A> {
   >
 
   subCommandOptionValue: (
-    name: SubCommandOptions<A>["name"],
+    name: RequiredSubCommandOptions<A>["name"],
   ) => Effect<SubCommandContext, RequiredOptionNotFound, string>
 
   subCommandOptionValueOptional: (
@@ -174,10 +174,12 @@ export interface CommandHelper<A> {
   ) => Effect<SubCommandContext, never, Maybe<string>>
 
   subCommands: <
-    NER extends Record<
-      SubCommands<A>["name"],
-      Effect<any, any, Discord.InteractionResponse>
-    >,
+    NER extends SubCommands<A> extends never
+      ? never
+      : Record<
+          SubCommands<A>["name"],
+          Effect<any, any, Discord.InteractionResponse>
+        >,
   >(
     commands: NER,
   ) => Effect<
@@ -207,24 +209,33 @@ type CommandHandlerFn<R, E, A> = (
 
 // Extract option names
 type ExtractOptions<A, T> = A extends {
-  name: string
   type: T
+  name: string
   options?: Discord.ApplicationCommandOption[]
 }
-  ?
-      | A
-      | (A extends {
-          options: Discord.ApplicationCommandOption[]
-        }
-          ? ExtractOptions<A["options"][number], T>
-          : never)
+  ? A
   : A extends {
       options: Discord.ApplicationCommandOption[]
     }
   ? ExtractOptions<A["options"][number], T>
   : never
 
+type RequiredOptions<A, T> = A extends {
+  options: Discord.ApplicationCommandOption[]
+}
+  ? Extract<A["options"][number], { type: T; required: true }>
+  : never
+
 type CommandOptions<A> = ExtractOptions<
+  A,
+  Exclude<
+    Discord.ApplicationCommandOptionType,
+    | Discord.ApplicationCommandOptionType.SUB_COMMAND
+    | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
+  >
+>
+
+type RequiredCommandOptions<A> = RequiredOptions<
   A,
   Exclude<
     Discord.ApplicationCommandOptionType,
@@ -242,6 +253,11 @@ type SubCommandOptions<A> = Exclude<
   SubCommands<A>["options"],
   undefined
 >[number]
+
+type RequiredSubCommandOptions<A> = Extract<
+  Exclude<SubCommands<A>["options"], undefined>[number],
+  { required: true }
+>
 
 type Resolvables<A> = ExtractOptions<
   A,
