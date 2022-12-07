@@ -8,4 +8,4 @@ export const fromRaw = <R, E>(
     Discord.GatewayOpcode.INVALID_SESSION,
   )
     .tap((p) => (p.d ? Effect.unit() : latestReady.set(Maybe.none)))
-    .map((): DWS.Message => WS.Reconnect)
+    .map((): DiscordWS.Message => WS.Reconnect)

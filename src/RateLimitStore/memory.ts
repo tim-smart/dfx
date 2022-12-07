@@ -3,8 +3,8 @@ interface Counter {
   expires: number
 }
 
-export const make = (): RateLimitStore.RateLimitStore => {
-  const buckets = new Map<string, RateLimitStore.BucketDetails>()
+export const make = (): RateLimit.RateLimitStore => {
+  const buckets = new Map<string, RateLimit.BucketDetails>()
   const routes = new Map<string, string>()
   const counters = new Map<string, Counter>()
 

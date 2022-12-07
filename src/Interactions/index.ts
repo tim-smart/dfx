@@ -11,16 +11,6 @@ export {
   InteractionDefinition,
 } from "./definitions.js"
 
-export {
-  makeConfigLayer as makeWebhookConfig,
-  makeHandler as makeWebhookHandler,
-  makeSimpleHandler as makeSimpleWebhookHandler,
-  MakeConfigOpts as MakeWebhookConfigOpts,
-  WebhookConfig,
-  WebhookParseError,
-  BadWebhookSignature,
-} from "./webhook.js"
-
 export { response as r } from "../Helpers/interactions.js"
 
 export class InteractionBuilder<R, E> {
@@ -41,11 +31,11 @@ export class InteractionBuilder<R, E> {
       )
       .map((c) => c.command)
 
-    return Rest.rest
+    return rest
       .getCurrentBotApplicationInformation()
       .flatMap((r) => r.json)
       .flatMap((app) =>
-        Rest.rest.bulkOverwriteGlobalApplicationCommands(app.id, {
+        rest.bulkOverwriteGlobalApplicationCommands(app.id, {
           body: JSON.stringify(commands),
         }),
       )
@@ -59,7 +49,7 @@ export class InteractionBuilder<R, E> {
       )
       .map((c) => c.command)
 
-    return Rest.rest.bulkOverwriteGuildApplicationCommands(
+    return rest.bulkOverwriteGuildApplicationCommands(
       appId,
       guildId,
       commands as any,

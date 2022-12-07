@@ -8,8 +8,8 @@ const make = Do(($) => {
   const { token, rest } = $(Effect.service(Config.DiscordConfig))
 
   const log = $(Effect.service(Log.Log))
-  const store = $(Effect.service(RateLimitStore.RateLimitStore))
-  const { maybeWait } = $(Effect.service(RateLimitStore.RateLimiter))
+  const store = $(Effect.service(RateLimit.RateLimitStore))
+  const { maybeWait } = $(Effect.service(RateLimit.RateLimiter))
 
   const globalRateLimit = maybeWait(
     "rest.global",

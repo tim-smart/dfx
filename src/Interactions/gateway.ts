@@ -10,7 +10,7 @@ export const run =
   <R, R2, E, E2>(
     postHandler: (
       effect: Effect<
-        R | Rest.DiscordREST | Discord.Interaction,
+        R | DiscordREST | Discord.Interaction,
         | E
         | Http.FetchError
         | Http.StatusCodeError
@@ -27,10 +27,10 @@ export const run =
         splitDefinitions(ix.definitions)
 
       const application = $(
-        Rest.rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),
+        rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),
       )
 
-      const globalSync = Rest.rest.bulkOverwriteGlobalApplicationCommands(
+      const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
         {
           body: JSON.stringify(GlobalApplicationCommand.map((a) => a.command)),
@@ -39,7 +39,7 @@ export const run =
 
       const guildSync = GuildApplicationCommand.length
         ? Gateway.handleDispatch("GUILD_CREATE", (a) =>
-            Rest.rest.bulkOverwriteGuildApplicationCommands(
+            rest.bulkOverwriteGuildApplicationCommands(
               application.id,
               a.id,
               GuildApplicationCommand.map((a) => a.command) as any,
@@ -52,7 +52,7 @@ export const run =
       const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
         pipe(
           handle[i.type](i).tap((r) =>
-            Rest.rest.createInteractionResponse(i.id, i.token, r),
+            rest.createInteractionResponse(i.id, i.token, r),
           ),
           postHandler,
           Effect.provideService(InteractionContext)(i),

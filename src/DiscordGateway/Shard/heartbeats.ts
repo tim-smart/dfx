@@ -9,7 +9,7 @@ const send = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
 
 const maybeSend = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   ref.get.flatMap(
-    (acked): Effect<never, never, DWS.Message> =>
+    (acked): Effect<never, never, DiscordWS.Message> =>
       acked ? send(ref, seqRef) : Effect.succeed(WS.Reconnect),
   )
 

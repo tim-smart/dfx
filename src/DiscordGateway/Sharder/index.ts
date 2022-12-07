@@ -42,7 +42,7 @@ const configs = (totalCount: number) =>
   })
 
 const spawnEffect = Effect.structPar({
-  gateway: Rest.rest
+  gateway: rest
     .getGatewayBot()
     .flatMap((r) => r.json)
     .catchAll(() =>
@@ -58,7 +58,7 @@ const spawnEffect = Effect.structPar({
       }),
     ),
   config: Config.gateway,
-  limiter: Effect.service(RateLimitStore.RateLimiter),
+  limiter: Effect.service(RateLimit.RateLimiter),
 })
   .bind("configs", ({ gateway, config }) =>
     configs(config.shardCount ?? gateway.shards),

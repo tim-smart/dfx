@@ -7,16 +7,19 @@ export const make = (shard: [id: number, count: number]) =>
   Do(($) => {
     const { token, gateway } = $(Effect.service(Config.DiscordConfig))
 
-    const socket = $(DWS.make())
+    const socket = $(DiscordWS.make())
 
-    const [emit, outgoing] = EffectSource.asyncEmitter<never, DWS.Message>()
-    const limiter = $(Effect.service(RateLimitStore.RateLimiter))
+    const [emit, outgoing] = EffectSource.asyncEmitter<
+      never,
+      DiscordWS.Message
+    >()
+    const limiter = $(Effect.service(RateLimit.RateLimiter))
     const sendEffect = outgoing
       .tap(() => limiter.maybeWait("shard.send", Duration.minutes(1), 120))
       .run(socket.sink)
 
     const raw = $(socket.source.share)
-    const sendMessage = (a: DWS.Message) =>
+    const sendMessage = (a: DiscordWS.Message) =>
       Effect.sync(() => {
         emit.data(a)
       })
@@ -81,7 +84,7 @@ export const make = (shard: [id: number, count: number]) =>
         .zipPar(heartbeatEffects)
         .zipPar(identifyEffects)
         .zipPar(invalidEffects)
-        .zipPar(sendEffect),
+        .zipPar(sendEffect).asUnit,
       raw,
       dispatch,
       send: (p: Discord.GatewayPayload) => emit.data(p),
