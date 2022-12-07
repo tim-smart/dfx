@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/tim-smart/dfx/compare/dfx@0.12.0...dfx@0.13.0) (2022-12-07)
+
+
+### Features
+
+* helpers to extract command options ([ae6cdd7](https://github.com/tim-smart/dfx/commit/ae6cdd72b0c8bf8640433410c9e268df3dd82137))
+
+
+
+
+
 # [0.12.0](https://github.com/tim-smart/dfx/compare/dfx@0.11.0...dfx@0.12.0) (2022-12-06)
 
 
