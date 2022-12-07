@@ -178,3 +178,29 @@ export const componentValue = (id: string) =>
   flow(getComponent(id), (o) =>
     o.flatMapNullable((o) => (o as Discord.TextInput).value),
   )
+
+export type InteractionResponse =
+  | {
+      type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE
+      data: Discord.InteractionCallbackMessage
+    }
+  | {
+      type: Discord.InteractionCallbackType.UPDATE_MESSAGE
+      data: Discord.InteractionCallbackMessage
+    }
+  | {
+      type: Discord.InteractionCallbackType.MODAL
+      data: Discord.InteractionCallbackModal
+    }
+  | {
+      type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
+    }
+  | {
+      type: Discord.InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+    }
+  | {
+      type: Discord.InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
+      data: Discord.InteractionCallbackAutocomplete
+    }
+
+export const response = (r: InteractionResponse) => r

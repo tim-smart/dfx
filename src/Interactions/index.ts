@@ -9,7 +9,6 @@ export {
   modalSubmit,
   autocomplete,
   InteractionDefinition,
-  InteractionResponse,
 } from "./definitions.js"
 
 export {
@@ -21,6 +20,8 @@ export {
   WebhookParseError,
   BadWebhookSignature,
 } from "./webhook.js"
+
+export { response as r } from "../Helpers/interactions.js"
 
 export class InteractionBuilder<R, E> {
   constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}

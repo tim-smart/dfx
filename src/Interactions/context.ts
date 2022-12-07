@@ -1,7 +1,6 @@
 import { Effect, EffectTypeId } from "@effect/io/Effect"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
 import * as IxHelpers from "../Helpers/interactions.js"
-import { InteractionResponse } from "./definitions.js"
 
 export const InteractionContext = Tag<Discord.Interaction>()
 export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
@@ -52,7 +51,7 @@ export class SubCommandNotFound {
 }
 
 export const handleSubCommands = <
-  NER extends Record<string, Effect<any, any, InteractionResponse>>,
+  NER extends Record<string, Effect<any, any, Discord.InteractionResponse>>,
 >(
   commands: NER,
 ): Effect<
@@ -72,7 +71,7 @@ export const handleSubCommands = <
       ? E
       : never)
   | SubCommandNotFound,
-  InteractionResponse
+  Discord.InteractionResponse
 > =>
   Effect.service(ApplicationCommandContext).flatMap((data) =>
     pipe(

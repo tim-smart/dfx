@@ -11,7 +11,7 @@ export class DefinitionNotFound {
 type Handler<R, E> = Effect<
   R | Discord.Interaction,
   E | DefinitionNotFound,
-  D.InteractionResponse
+  Discord.InteractionResponse
 >
 
 export const handlers = <R, E>(
