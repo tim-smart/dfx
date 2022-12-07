@@ -139,12 +139,12 @@ export const resolveValues =
       const values = $(
         Maybe.fromNullable(
           a.data as Discord.MessageComponentDatum,
-        ).flatMapNullable((a) => a.values),
+        ).flatMapNullable((a) => a.values as unknown as string[]),
       )
       const r = $(resolved(a))
       return $(
         Maybe.productAll(
-          values.map((a) => Maybe.fromNullable(f(a.value as any, r))),
+          values.map((a) => Maybe.fromNullable(f(a as any, r))),
         ),
       )
     })
