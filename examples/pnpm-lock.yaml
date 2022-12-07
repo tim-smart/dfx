@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@effect/io': ^0.0.30
   '@fp-ts/data': ^0.0.20
-  dfx: ^0.11.0
+  dfx: ^0.14.0
   dotenv: ^16.0.3
   esbuild: ^0.15.18
   fastify: ^4.10.2
@@ -13,7 +13,7 @@ specifiers:
 dependencies:
   '@effect/io': 0.0.30
   '@fp-ts/data': 0.0.20
-  dfx: 0.11.0_bonjnmg6oatqyr73vbdnw4brbi
+  dfx: 0.14.0_bonjnmg6oatqyr73vbdnw4brbi
   dotenv: 16.0.3
   fastify: 4.10.2
 
@@ -331,8 +331,8 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.11.0_bonjnmg6oatqyr73vbdnw4brbi:
-    resolution: {integrity: sha512-JcPyqXx583KkaDMW/ZSMfPSEOyzaT9m+ispxXSk7Uex43qcNLsNgRcmHFzp4fvT+HVkpEpgz1WHge/wU0NyhxQ==}
+  /dfx/0.14.0_bonjnmg6oatqyr73vbdnw4brbi:
+    resolution: {integrity: sha512-2wFLurofJHU2dWSpm3OhMjUnC/hcl12sNMiCyEhnulO7krC/amC+BNGwN3KqMNzcXb/kiksPmZhfuCD0pAuCHQ==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'

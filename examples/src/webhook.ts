@@ -1,14 +1,15 @@
 import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import { pipe } from "@fp-ts/data/Function"
-import { Ix, makeLayer } from "dfx/webhooks"
+import { Ix } from "dfx"
+import { make, makeHandler } from "dfx/webhooks"
 import Dotenv from "dotenv"
 import { fastify } from "fastify"
 
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = makeLayer({
+const LiveEnv = make({
   applicationId: process.env.DISCORD_APP_ID!,
   publicKey: process.env.DISCORD_PUBLIC_KEY!,
   token: process.env.DISCORD_BOT_TOKEN!,
@@ -39,7 +40,7 @@ pipe(ix.syncGlobal, Effect.provideLayer(LiveEnv), Effect.unsafeRunAsync)
 // You could replace this with another http server like express, or use edge
 // functions.
 //
-const handleRequest = Ix.makeWebhookHandler(ix)
+const handleRequest = makeHandler(ix)
 
 // Create a fastify server to handle http requests
 const server = fastify()

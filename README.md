@@ -10,10 +10,11 @@ A Discord library built on top of @effect/io
 ```typescript
 import * as Effect from "@effect/io/Effect"
 import { pipe } from "@fp-ts/data/Function"
-import { Ix, runIxGateway, makeLayer } from "dfx"
+import { Ix } from "dfx"
+import { runIx, make } from "dfx/gateway"
 
 // Create the dependencies layer
-const Dependencies = makeLayer({
+const Dependencies = make({
   token: "xxx",
 })
 
@@ -34,7 +35,7 @@ const hello = Ix.global(
 // Run it and handle errors
 pipe(
   Ix.builder.add(hello),
-  runIxGateway(
+  runIx(
     Effect.catchAll((e) =>
       Effect.sync(() => {
         console.error("CAUGHT ERROR", e)
