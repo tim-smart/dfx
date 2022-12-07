@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.5](https://github.com/tim-smart/dfx/compare/dfx@0.15.4...dfx@0.15.5) (2022-12-07)
+
+
+### Bug Fixes
+
+* FocusedOptionContext for autocomplete helper ([bc8e8e8](https://github.com/tim-smart/dfx/commit/bc8e8e84186c3db56b484b25980ee188e847b9eb))
+
+
+
+
+
 ## [0.15.4](https://github.com/tim-smart/dfx/compare/dfx@0.15.3...dfx@0.15.4) (2022-12-07)
 
 
