@@ -1,24 +1,24 @@
 export type InteractionResponse =
   | {
-      type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE
+      type: 4
       data: Discord.InteractionCallbackMessage
     }
   | {
-      type: Discord.InteractionCallbackType.UPDATE_MESSAGE
+      type: 7
       data: Discord.InteractionCallbackMessage
     }
   | {
-      type: Discord.InteractionCallbackType.MODAL
+      type: 9
       data: Discord.InteractionCallbackModal
     }
   | {
-      type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
+      type: 6
     }
   | {
-      type: Discord.InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+      type: 5
     }
   | {
-      type: Discord.InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
+      type: 8
       data: Discord.InteractionCallbackAutocomplete
     }
 
