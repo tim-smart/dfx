@@ -1,6 +1,5 @@
 import { InteractionResponse } from "./definitions.js"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
-import { optionsMap } from "dfx/Helpers/interactions"
 import { EffectTypeId, Effect } from "@effect/io/Effect"
 
 export const InteractionContext = Tag<Discord.Interaction>()
@@ -44,10 +43,6 @@ export const getResolved = <A>(
 
 export const focusedOptionValue = Effect.serviceWith(FocusedOptionContext)(
   (a) => a.focusedOption.value ?? "",
-)
-
-export const commandOptionsMap = Effect.serviceWith(ApplicationCommandContext)(
-  optionsMap,
 )
 
 export class SubCommandNotFound {
@@ -98,7 +93,55 @@ export const getSubCommand = Effect.serviceWith(SubCommandContext)(
   (a) => a.command,
 )
 
+export const optionsMap = Effect.serviceWith(ApplicationCommandContext)(
+  IxHelpers.optionsMap,
+)
+
+export class RequiredOptionNotFound {
+  readonly _tag = "RequiredOptionNotFound"
+  constructor(
+    readonly data:
+      | Discord.ApplicationCommandDatum
+      | Discord.ApplicationCommandInteractionDataOption,
+    readonly name: string,
+  ) {}
+}
+
+export const findOption = (name: string) =>
+  Effect.serviceWith(ApplicationCommandContext)(IxHelpers.getOption(name))
+
+export const requiredOptionValue = (name: string) =>
+  findOption(name).flatMap((o) =>
+    o
+      .flatMapNullable((a) => a.value)
+      .match(
+        () =>
+          getCommand.flatMap((data) =>
+            Effect.fail(new RequiredOptionNotFound(data, name)),
+          ),
+        Effect.succeed,
+      ),
+  )
+
 export const subCommandOptionsMap = getSubCommand.map(IxHelpers.optionsMap)
+
+export const findSubCommandOption = (name: string) =>
+  Effect.serviceWith(SubCommandContext)(({ command }) =>
+    IxHelpers.getOption(name)(command),
+  )
+
+export const requiredSubCommandOptionValue = (name: string) =>
+  findSubCommandOption(name).flatMap((o) =>
+    o
+      .flatMapNullable((a) => a.value)
+      .match(
+        () =>
+          getSubCommand.flatMap((data) =>
+            Effect.fail(new RequiredOptionNotFound(data, name)),
+          ),
+        Effect.succeed,
+      ),
+  )
 
 export const modalValues = Effect.serviceWith(ModalSubmitContext)(
   IxHelpers.componentsMap,
