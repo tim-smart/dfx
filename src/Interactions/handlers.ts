@@ -14,6 +14,17 @@ type Handler<R, E> = Effect<
   Discord.InteractionResponse
 >
 
+const context: D.CommandHelper<any> = {
+  resolve: Ctx.getResolved,
+  option: Ctx.findOption,
+  optionValue: Ctx.optionValue,
+  optionValueOptional: Ctx.optionValueOptional,
+  subCommandOption: Ctx.findSubCommandOption,
+  subCommandOptionValue: Ctx.subCommandOptionValue,
+  subCommandOptionValueOptional: Ctx.subCommandOptionValueOptional as any,
+  subCommands: Ctx.handleSubCommands,
+} as any
+
 export const handlers = <R, E>(
   definitions: D.InteractionDefinition<R, E>[],
 ): Record<
@@ -35,7 +46,10 @@ export const handlers = <R, E>(
       return pipe(
         Maybe.fromNullable(Commands[data.name]).match(
           () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-          (command) => command.handle,
+          (command) =>
+            Effect.isEffect(command.handle)
+              ? command.handle
+              : command.handle(context),
         ),
         (a) => a,
         Effect.provideService(Ctx.ApplicationCommandContext)(data),

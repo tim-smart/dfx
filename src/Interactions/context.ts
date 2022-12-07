@@ -117,7 +117,7 @@ export class RequiredOptionNotFound {
 export const findOption = (name: string) =>
   Effect.serviceWith(ApplicationCommandContext)(IxHelpers.getOption(name))
 
-export const requiredOptionValue = (name: string) =>
+export const optionValue = (name: string) =>
   findOption(name).flatMap((o) =>
     o
       .flatMapNullable((a) => a.value)
@@ -130,6 +130,9 @@ export const requiredOptionValue = (name: string) =>
       ),
   )
 
+export const optionValueOptional = (name: string) =>
+  findOption(name).map((o) => o.flatMapNullable((a) => a.value))
+
 export const subCommandOptionsMap = getSubCommand.map(IxHelpers.optionsMap)
 
 export const findSubCommandOption = (name: string) =>
@@ -137,7 +140,20 @@ export const findSubCommandOption = (name: string) =>
     IxHelpers.getOption(name)(command),
   )
 
-export const requiredSubCommandOptionValue = (name: string) =>
+export const subCommandOptionValue = (name: string) =>
+  findSubCommandOption(name).flatMap((o) =>
+    o
+      .flatMapNullable((a) => a.value)
+      .match(
+        () =>
+          getSubCommand.flatMap((data) =>
+            Effect.fail(new RequiredOptionNotFound(data, name)),
+          ),
+        Effect.succeed,
+      ),
+  )
+
+export const subCommandOptionValueOptional = (name: string) =>
   findSubCommandOption(name).flatMap((o) =>
     o
       .flatMapNullable((a) => a.value)

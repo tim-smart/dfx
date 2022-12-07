@@ -13,6 +13,7 @@ specifiers:
   callbag-effect-ts: 1.0.0-alpha.17
   isomorphic-ws: ^5.0.0
   lerna: ^6.1.0
+  ts-toolbelt: ^9.6.0
   tweetnacl: ^1.0.3
   typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz
   utf-8-validate: ^5.0.10
@@ -34,6 +35,7 @@ devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.4.1
   '@types/ws': 8.5.3
   lerna: 6.1.0
+  ts-toolbelt: 9.6.0
   typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz'
 
 packages:
@@ -4506,6 +4508,10 @@ packages:
   /trim-newlines/3.0.1:
     resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
     engines: {node: '>=8'}
+    dev: true
+
+  /ts-toolbelt/9.6.0:
+    resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
     dev: true
 
   /tsconfig-paths/3.14.1:
