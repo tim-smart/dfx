@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/tim-smart/dfx/compare/dfx@0.15.5...dfx@0.16.0) (2022-12-07)
+
+
+### Features
+
+* clean up ix context api ([4e02b6f](https://github.com/tim-smart/dfx/commit/4e02b6fa6960a772b86d36afd0389c4fbfa89e57))
+
+
+
+
+
 ## [0.15.5](https://github.com/tim-smart/dfx/compare/dfx@0.15.4...dfx@0.15.5) (2022-12-07)
 
 
