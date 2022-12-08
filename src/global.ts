@@ -13,6 +13,12 @@ export type { Layer } from "@effect/io/Layer"
 /**
  * @tsplus global
  */
+import type { Dequeue, Queue } from "@effect/io/Queue"
+export type {} from "@effect/io/Queue"
+
+/**
+ * @tsplus global
+ */
 import type { Schedule } from "@effect/io/Schedule"
 
 /**

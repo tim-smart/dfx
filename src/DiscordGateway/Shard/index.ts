@@ -6,23 +6,17 @@ import * as Utils from "./utils.js"
 export const make = (shard: [id: number, count: number]) =>
   Do(($) => {
     const { token, gateway } = $(Effect.service(Config.DiscordConfig))
-
-    const socket = $(DiscordWS.make())
-
-    const [emit, outgoing] = EffectSource.asyncEmitter<
-      never,
-      DiscordWS.Message
-    >()
     const limiter = $(Effect.service(RateLimit.RateLimiter))
-    const sendEffect = outgoing
+
+    const outboundQueue = $(Queue.unbounded<DiscordWS.Message>())
+    const outbound = outboundQueue
+      .take()
       .tap(() => limiter.maybeWait("shard.send", Duration.minutes(1), 120))
-      .run(socket.sink)
+    const send = (p: DiscordWS.Message) => outboundQueue.offer(p)
+
+    const socket = $(DiscordWS.make({ outbound }))
 
     const raw = $(socket.source.share)
-    const sendMessage = (a: DiscordWS.Message) =>
-      Effect.sync(() => {
-        emit.data(a)
-      })
 
     const [latestReady, updateLatestReady] = $(
       Utils.latest((p) =>
@@ -56,7 +50,7 @@ export const make = (shard: [id: number, count: number]) =>
 
     // heartbeats
     const heartbeatEffects = Heartbeats.fromRaw(raw, latestSequence).forEach(
-      sendMessage,
+      send,
     )
 
     const dispatch = raw.filter(
@@ -72,22 +66,24 @@ export const make = (shard: [id: number, count: number]) =>
       presence: gateway.presence,
       latestSequence,
       latestReady,
-    }).forEach(sendMessage)
+    }).forEach(send)
 
     // invalid session
     const invalidEffects = InvalidSession.fromRaw(raw, latestReady).forEach(
-      sendMessage,
+      send,
     )
+
+    const reconnectSoon = send(WS.Reconnect).delay(Duration.seconds(15))
 
     return {
       run: updateRefs
         .zipPar(heartbeatEffects)
         .zipPar(identifyEffects)
         .zipPar(invalidEffects)
-        .zipPar(sendEffect).asUnit,
+        .zipPar(reconnectSoon).asUnit,
       raw,
       dispatch,
-      send: (p: Discord.GatewayPayload) => emit.data(p),
-      reconnect: () => emit.data(WS.Reconnect),
+      send: (p: Discord.GatewayPayload) => send(p),
+      reconnect: send(WS.Reconnect),
     }
   })

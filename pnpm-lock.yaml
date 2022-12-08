@@ -10,7 +10,7 @@ specifiers:
   '@tim-smart/discord-api-docs-parser': ^0.4.1
   '@types/ws': ^8.5.3
   bufferutil: ^4.0.7
-  callbag-effect-ts: 1.0.0-alpha.17
+  callbag-effect-ts: 1.0.0-alpha.20
   isomorphic-ws: ^5.0.0
   lerna: ^6.1.0
   ts-toolbelt: ^9.6.0
@@ -20,7 +20,8 @@ specifiers:
   ws: ^8.11.0
 
 dependencies:
-  callbag-effect-ts: 1.0.0-alpha.17_bonjnmg6oatqyr73vbdnw4brbi
+  callbag-effect-ts: 1.0.0-alpha.20_bonjnmg6oatqyr73vbdnw4brbi
+  ts-toolbelt: 9.6.0
   tweetnacl: 1.0.3
 
 optionalDependencies:
@@ -35,7 +36,6 @@ devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.4.1
   '@types/ws': 8.5.3
   lerna: 6.1.0
-  ts-toolbelt: 9.6.0
   typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz'
 
 packages:
@@ -1522,8 +1522,8 @@ packages:
       callbag: 1.5.1
     dev: false
 
-  /callbag-effect-ts/1.0.0-alpha.17_bonjnmg6oatqyr73vbdnw4brbi:
-    resolution: {integrity: sha512-4unWOY/6m34/EXmzbCfQhC5x5Tca68cgd9kN4Fx4bzhEZTngV9XpCVWvhZg5ca4pdCsg4uOEngRsbRgc2M6dVg==}
+  /callbag-effect-ts/1.0.0-alpha.20_bonjnmg6oatqyr73vbdnw4brbi:
+    resolution: {integrity: sha512-1eUmh8nu11pzaIBAnGsreD/b/PKoiWp/+9dOVAURJNvwiqO7hvG1bmE6weOflYeNI6lwavpWpAdEJ0+as9OJjw==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'
@@ -4512,7 +4512,7 @@ packages:
 
   /ts-toolbelt/9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
-    dev: true
+    dev: false
 
   /tsconfig-paths/3.14.1:
     resolution: {integrity: sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==}

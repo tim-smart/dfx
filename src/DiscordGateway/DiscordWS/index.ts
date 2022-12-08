@@ -6,6 +6,7 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: DiscordWSCodec
+  outbound: Effect<never, never, Message>
 }
 
 export interface DiscordWSCodec {
@@ -23,17 +24,24 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec)({
 export const make = ({
   url = "wss://gateway.discord.gg/",
   version = 10,
-}: OpenOpts = {}) =>
+  outbound,
+}: OpenOpts) =>
   Do(($) => {
     const encoding = $(Effect.service(DiscordWSCodec))
     const urlRef = $(Ref.make(`${url}?v=${version}&encoding=${encoding.type}`))
     const setUrl = (url: string) =>
       urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
-
-    const ws = $(WS.make(urlRef, { perMessageDeflate: false }))
+    const take = outbound.map((a) =>
+      a === WS.Reconnect ? a : encoding.encode(a),
+    )
+    const ws = $(
+      WS.make(urlRef, take, {
+        perMessageDeflate: false,
+      }),
+    )
 
     const log = $(Effect.service(Log.Log))
-    const source = ws.source
+    const source = ws
       .tapError((e: any) => log.info("DiscordWS", "ERROR", e))
       .retry(Schedule.exponential(Duration.seconds(0.5)))
       .map(encoding.decode) as EffectSource<
@@ -42,9 +50,5 @@ export const make = ({
       Discord.GatewayPayload
     >
 
-    const sink = ws.sink.map((msg: Message) =>
-      msg === WS.Reconnect ? msg : encoding.encode(msg),
-    )
-
-    return { source, sink, setUrl }
+    return { source, setUrl }
   })
