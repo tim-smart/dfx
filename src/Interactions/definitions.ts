@@ -189,11 +189,29 @@ type CommandHandlerFn<R, E, A> = (
 ) => Effect<R, E, Discord.InteractionResponse>
 
 // Extract option names
-type ExtractOptions<A, T> = A extends {
-  type: T
-  name: string
-  options?: Discord.ApplicationCommandOption[]
+type StringLiteral<T> = T extends string
+  ? string extends T
+    ? never
+    : T
+  : never
+
+type OptionWithLiteral<A> = A extends {
+  name: infer N
 }
+  ? StringLiteral<N> extends never
+    ? never
+    : A
+  : never
+
+type AllOptions<A> = A extends {
+  options: Discord.ApplicationCommandOption[]
+}
+  ? A["options"][number] | AllOptions<A["options"][number]>
+  : never
+
+// type ExtractOptions<A, T> = Extract<AllOptions<A>, OptionWithLiteral<A, T>>
+
+type ExtractOptions<A, T> = A extends OptionWithLiteral<A> & T
   ? A
   : A extends {
       options: Discord.ApplicationCommandOption[]
