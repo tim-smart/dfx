@@ -57,7 +57,7 @@ export const guild = <
   E,
   A extends Discord.CreateGuildApplicationCommandParams,
 >(
-  command: A,
+  command: F.Narrow<A>,
   handle: DescriptionMissing<A> extends true
     ? "command description is missing"
     : CommandHandler<R, E, A>,
