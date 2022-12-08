@@ -73,14 +73,11 @@ export const make = (shard: [id: number, count: number]) =>
       send,
     )
 
-    const reconnectSoon = send(WS.Reconnect).delay(Duration.seconds(15))
-
     return {
       run: updateRefs
         .zipPar(heartbeatEffects)
         .zipPar(identifyEffects)
-        .zipPar(invalidEffects)
-        .zipPar(reconnectSoon).asUnit,
+        .zipPar(invalidEffects).asUnit,
       raw,
       dispatch,
       send: (p: Discord.GatewayPayload) => send(p),
