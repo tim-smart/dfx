@@ -11,8 +11,8 @@ export interface OpenOpts {
 
 export interface DiscordWSCodec {
   type: "json" | "etf"
-  encode: (p: Discord.GatewayPayload) => string | Buffer | ArrayBuffer
-  decode: (p: WebSocket.RawData) => Discord.GatewayPayload
+  encode: (p: Discord.GatewayPayload) => string
+  decode: (p: WebSocket.Data) => Discord.GatewayPayload
 }
 export const DiscordWSCodec = Tag<DiscordWSCodec>()
 export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec)({
@@ -34,11 +34,7 @@ export const make = ({
     const take = outbound.map((a) =>
       a === WS.Reconnect ? a : encoding.encode(a),
     )
-    const ws = $(
-      WS.make(urlRef, take, {
-        perMessageDeflate: false,
-      }),
-    )
+    const ws = $(WS.make(urlRef, take))
 
     const log = $(Effect.service(Log.Log))
     const source = ws
