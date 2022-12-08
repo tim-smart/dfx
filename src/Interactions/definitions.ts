@@ -137,7 +137,7 @@ type CommandHandler<R, E, A = any> =
 
 export interface CommandHelper<A> {
   resolve: <T>(
-    name: Resolvables<A>["name"],
+    name: AllResolvables<A>["name"],
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) => Effect<Discord.Interaction, ResolvedDataNotFound, T>
 
@@ -188,6 +188,76 @@ type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
 ) => Effect<R, E, Discord.InteractionResponse>
 
+// == Sub commands
+type SubCommands<A> = A extends {
+  type: Discord.ApplicationCommandOptionType.SUB_COMMAND
+  options?: Discord.ApplicationCommandOption[]
+}
+  ? A
+  : A extends { options: Discord.ApplicationCommandOption[] }
+  ? SubCommands<A["options"][number]>
+  : never
+
+type SubCommandNames<A> = Option<SubCommands<A>>["name"]
+
+// == Command options
+type CommandOptionType = Exclude<
+  Discord.ApplicationCommandOptionType,
+  | Discord.ApplicationCommandOptionType.SUB_COMMAND
+  | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
+>
+
+type CommandOptions<A> = OptionsWithLiteral<
+  A,
+  {
+    type: CommandOptionType
+  }
+>
+
+type SubCommandOptions<A> = Extract<
+  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
+  {
+    type: CommandOptionType
+  }
+>
+
+type AllCommandOptions<A> = CommandOptions<A> | SubCommandOptions<A>
+
+// == Required options
+type RequiredCommandOptions<A> = OptionsWithLiteral<
+  A,
+  {
+    type: CommandOptionType
+    required: true
+  }
+>
+
+type RequiredSubCommandOptions<A> = Extract<
+  SubCommandOptions<A>,
+  { required: true }
+>
+
+type AllRequiredCommandOptions<A> =
+  | RequiredCommandOptions<A>
+  | RequiredSubCommandOptions<A>
+
+// == Resolveables
+type ResolvableType =
+  | Discord.ApplicationCommandOptionType.ROLE
+  | Discord.ApplicationCommandOptionType.USER
+  | Discord.ApplicationCommandOptionType.MENTIONABLE
+  | Discord.ApplicationCommandOptionType.CHANNEL
+
+type Resolvables<A> = OptionsWithLiteral<A, { type: ResolvableType }>
+type SubCommandResolvables<A> = Extract<
+  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
+  {
+    type: ResolvableType
+  }
+>
+type AllResolvables<A> = Resolvables<A> | SubCommandResolvables<A>
+
+// == Utilities
 type StringLiteral<T> = T extends string
   ? string extends T
     ? never
@@ -200,79 +270,8 @@ type Option<A> = A extends { name: infer N }
     : never
   : never
 
-type Options<A, T> = A extends T
-  ? T
-  : A extends { options: Discord.ApplicationCommandOption[] }
-  ? Options<A["options"][number], T>
-  : never
-
 type OptionsWithLiteral<A, T> = A extends {
   options: Discord.ApplicationCommandOption[]
 }
   ? Extract<A["options"][number], Option<A["options"][number]> & T>
   : never
-
-type CommandOptionType = Exclude<
-  Discord.ApplicationCommandOptionType,
-  | Discord.ApplicationCommandOptionType.SUB_COMMAND
-  | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
->
-
-type CommandOptions<A> = OptionsWithLiteral<
-  A,
-  {
-    name: string
-    type: CommandOptionType
-  }
->
-
-type RequiredCommandOptions<A> = OptionsWithLiteral<
-  A,
-  {
-    type: CommandOptionType
-    name: string
-    required: true
-  }
->
-
-type SubCommands<A> = A extends {
-  name: string
-  type: Discord.ApplicationCommandOptionType.SUB_COMMAND
-  options?: Discord.ApplicationCommandOption[]
-}
-  ? A
-  : A extends { options: Discord.ApplicationCommandOption[] }
-  ? SubCommands<A["options"][number]>
-  : never
-
-type SubCommandNames<A> = Option<SubCommands<A>>["name"]
-
-type SubCommandOptions<A> = Extract<
-  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
-  {
-    type: CommandOptionType
-  }
->
-
-type AllCommandOptions<A> = CommandOptions<A> | SubCommandOptions<A>
-
-type RequiredSubCommandOptions<A> = Extract<
-  SubCommandOptions<A>,
-  { required: true }
->
-
-type AllRequiredCommandOptions<A> =
-  | RequiredCommandOptions<A>
-  | RequiredSubCommandOptions<A>
-
-type Resolvables<A> = Options<
-  A,
-  {
-    name: string
-    type:
-      | Discord.ApplicationCommandOptionType.ROLE
-      | Discord.ApplicationCommandOptionType.USER
-      | Discord.ApplicationCommandOptionType.MENTIONABLE
-      | Discord.ApplicationCommandOptionType.CHANNEL
-  }
->
