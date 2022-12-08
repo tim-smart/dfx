@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.5](https://github.com/tim-smart/dfx/compare/dfx@0.17.4...dfx@0.17.5) (2022-12-08)
+
+
+### Bug Fixes
+
+* tsc ([5511ec7](https://github.com/tim-smart/dfx/commit/5511ec7ca4ea5cb1b6c8eb48bbb092250faf05b8))
+
+
+
+
+
 ## [0.17.4](https://github.com/tim-smart/dfx/compare/dfx@0.17.3...dfx@0.17.4) (2022-12-08)
 
 **Note:** Version bump only for package dfx
