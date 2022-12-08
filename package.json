@@ -42,6 +42,7 @@
     "utf-8-validate": "^5.0.10",
     "ws": "^8.11.0"
   },
+  "sideEffects": false,
   "pnpm": {
     "overrides": {
       "@effect/io": "^0.0.30",
