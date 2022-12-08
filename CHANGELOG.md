@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.2](https://github.com/tim-smart/dfx/compare/dfx@0.16.1...dfx@0.16.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* remove reconnectSoon test ([a4a9910](https://github.com/tim-smart/dfx/commit/a4a991043aca5776f4ac4ed9a6b3448c9c225421))
+
+
+
+
+
 ## [0.16.1](https://github.com/tim-smart/dfx/compare/dfx@0.16.0...dfx@0.16.1) (2022-12-08)
 
 **Note:** Version bump only for package dfx
