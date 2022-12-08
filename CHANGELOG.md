@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.6](https://github.com/tim-smart/dfx/compare/dfx@0.17.5...dfx@0.17.6) (2022-12-08)
+
+
+### Bug Fixes
+
+* sub command option detection ([ef4af92](https://github.com/tim-smart/dfx/commit/ef4af92bfa3bfd71a0ba7512a67ce2271d1c33d0))
+
+
+
+
+
 ## [0.17.5](https://github.com/tim-smart/dfx/compare/dfx@0.17.4...dfx@0.17.5) (2022-12-08)
 
 
