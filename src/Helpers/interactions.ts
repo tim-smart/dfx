@@ -62,11 +62,8 @@ export const transformOptions = (
   options: Discord.ApplicationCommandInteractionDataOption[],
 ) =>
   options.reduce(
-    (map, option) => ({
-      ...map,
-      [option.name]: option.value,
-    }),
-    {} as Record<string, string | undefined>,
+    (map, option) => map.set(option.name, option.value),
+    HashMap.empty<string, string | undefined>(),
   )
 
 /**
@@ -143,9 +140,7 @@ export const resolveValues =
       )
       const r = $(resolved(a))
       return $(
-        Maybe.productAll(
-          values.map((a) => Maybe.fromNullable(f(a as any, r))),
-        ),
+        Maybe.productAll(values.map((a) => Maybe.fromNullable(f(a as any, r)))),
       )
     })
 
@@ -180,8 +175,8 @@ export const componentsWithValue = flow(
  */
 export const transformComponents = (options: Discord.Component[]) =>
   (options as Discord.TextInput[]).reduce(
-    (map, c) => (c.custom_id ? { ...map, [c.custom_id]: c.value } : map),
-    {} as Record<string, string | undefined>,
+    (map, c) => (c.custom_id ? map.set(c.custom_id, c.value) : map),
+    HashMap.empty<string, string | undefined>(),
   )
 
 /**

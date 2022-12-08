@@ -77,6 +77,7 @@ import type { EffectSink } from "callbag-effect-ts/Sink"
  * @tsplus global
  */
 import type { HashMap } from "@fp-ts/data/HashMap"
+export type { HashMap } from "@fp-ts/data/HashMap"
 
 /**
  * @tsplus global
