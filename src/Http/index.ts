@@ -12,21 +12,14 @@ export class StatusCodeError {
 }
 
 export const request = (url: URL | string, init: RequestInit = {}) =>
-  Effect.asyncInterrupt<never, FetchError, Response>((resume) => {
-    const controller = new AbortController()
-    fetch(url, {
-      ...init,
-      signal: controller.signal,
-    })
-      .then((a) => resume(Effect.succeed(a)))
-      .catch((e) => resume(Effect.fail(new FetchError(e))))
-
-    return Either.left(
-      Effect.sync(() => {
-        controller.abort()
+  Effect.tryCatchAbort(
+    (signal) =>
+      fetch(url, {
+        ...init,
+        signal,
       }),
-    )
-  }).filterOrElseWith(
+    (e) => new FetchError(e),
+  ).filterOrElseWith(
     (r) => r.status < 300,
     (r) => Effect.fail(new StatusCodeError(r)),
   )
