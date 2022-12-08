@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.17.0](https://github.com/tim-smart/dfx/compare/dfx@0.16.2...dfx@0.17.0) (2022-12-08)
+
+
+### Features
+
+* use HashMap for option values ([0f04218](https://github.com/tim-smart/dfx/commit/0f04218c6195fcd6accaf0a0147a6d68c1ad7bc4))
+
+
+
+
+
 ## [0.16.2](https://github.com/tim-smart/dfx/compare/dfx@0.16.1...dfx@0.16.2) (2022-12-08)
 
 
