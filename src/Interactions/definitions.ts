@@ -65,7 +65,7 @@ export const guild = <
   new GuildApplicationCommand<
     Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
     E
-  >(command, handle as any)
+  >(command as any, handle as any)
 
 export class MessageComponent<R, E> {
   readonly _tag = "MessageComponent"
