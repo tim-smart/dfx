@@ -149,13 +149,13 @@ export interface CommandHelper<A> {
     Maybe<Discord.ApplicationCommandInteractionDataOption>
   >
 
-  optionValue: (
-    name: AllRequiredCommandOptions<A>["name"],
-  ) => Effect<Discord.ApplicationCommandDatum, never, string>
+  optionValue: <N extends AllRequiredCommandOptions<A>["name"]>(
+    name: N,
+  ) => Effect<Discord.ApplicationCommandDatum, never, CommandValue<A, N>>
 
-  optionValueOptional: (
-    name: AllCommandOptions<A>["name"],
-  ) => Effect<Discord.ApplicationCommandDatum, never, Maybe<string>>
+  optionValueOptional: <N extends AllCommandOptions<A>["name"]>(
+    name: N,
+  ) => Effect<Discord.ApplicationCommandDatum, never, Maybe<CommandValue<A, N>>>
 
   subCommands: <
     NER extends SubCommandNames<A> extends never
@@ -222,6 +222,20 @@ type SubCommandOptions<A> = Extract<
 >
 
 type AllCommandOptions<A> = CommandOptions<A> | SubCommandOptions<A>
+
+type CommandWithName<A, N> = Extract<AllCommandOptions<A>, { name: N }>
+
+type OptionTypeValue = {
+  [Discord.ApplicationCommandOptionType.BOOLEAN]: boolean
+  [Discord.ApplicationCommandOptionType.INTEGER]: number
+  [Discord.ApplicationCommandOptionType.NUMBER]: number
+}
+type CommandValue<A, N> = CommandWithName<
+  A,
+  N
+>["type"] extends keyof OptionTypeValue
+  ? OptionTypeValue[CommandWithName<A, N>["type"]]
+  : string
 
 // == Required options
 type RequiredCommandOptions<A> = OptionsWithLiteral<
