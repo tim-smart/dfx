@@ -142,7 +142,7 @@ export interface CommandHelper<A> {
   ) => Effect<Discord.Interaction, ResolvedDataNotFound, T>
 
   option: (
-    name: CommandOptions<A>["name"],
+    name: AllCommandOptions<A>["name"],
   ) => Effect<
     Discord.ApplicationCommandDatum,
     never,
@@ -154,7 +154,7 @@ export interface CommandHelper<A> {
   ) => Effect<Discord.ApplicationCommandDatum, never, string>
 
   optionValueOptional: (
-    name: CommandOptions<A>["name"],
+    name: AllCommandOptions<A>["name"],
   ) => Effect<Discord.ApplicationCommandDatum, never, Maybe<string>>
 
   subCommands: <
@@ -248,11 +248,13 @@ type SubCommands<A> = A extends {
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 
 type SubCommandOptions<A> = Extract<
-  Option<SubCommands<A>["options"]>,
+  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
   {
     type: CommandOptionType
   }
 >
+
+type AllCommandOptions<A> = CommandOptions<A> | SubCommandOptions<A>
 
 type RequiredSubCommandOptions<A> = Extract<
   SubCommandOptions<A>,
