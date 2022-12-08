@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.1](https://github.com/tim-smart/dfx/compare/dfx@0.17.0...dfx@0.17.1) (2022-12-08)
+
+
+### Bug Fixes
+
+* narrow guild commands ([b1edf36](https://github.com/tim-smart/dfx/commit/b1edf36beb9976d3f2256c2ef5a8d02eb3ff5df1))
+
+
+
+
+
 # [0.17.0](https://github.com/tim-smart/dfx/compare/dfx@0.16.2...dfx@0.17.0) (2022-12-08)
 
 
