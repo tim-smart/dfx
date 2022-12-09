@@ -11,7 +11,7 @@ export const make = (shard: [id: number, count: number]) =>
     const outboundQueue = $(Queue.unbounded<DiscordWS.Message>())
     const outbound = outboundQueue
       .take()
-      .tap(() => limiter.maybeWait("shard.send", Duration.minutes(1), 120))
+      .tap(() => limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120))
     const send = (p: DiscordWS.Message) => outboundQueue.offer(p)
 
     const socket = $(DiscordWS.make({ outbound }))

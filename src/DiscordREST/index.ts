@@ -1,5 +1,4 @@
 import { millis } from "@fp-ts/data/Duration"
-import { BucketDetails } from "dfx/RateLimitStore/index"
 import { ResponseWithData } from "./types.js"
 import { rateLimitFromHeaders, routeFromConfig, retryAfter } from "./utils.js"
 import Pkg from "../package.json" assert { type: "json" }
@@ -12,7 +11,7 @@ const make = Do(($) => {
   const { maybeWait } = $(Effect.service(RateLimit.RateLimiter))
 
   const globalRateLimit = maybeWait(
-    "rest.global",
+    "dfx.rest.global",
     rest.globalRateLimit.window,
     rest.globalRateLimit.limit,
   )
@@ -24,7 +23,7 @@ const make = Do(($) => {
       log.info("DiscordREST", "addBadRoute", route),
       badRoutesRef.update((s) => s.add(route)),
       store.incrementCounter(
-        "rest.invalid",
+        "dfx.rest.invalid",
         Duration.minutes(10).millis,
         10000,
       ),
@@ -37,7 +36,7 @@ const make = Do(($) => {
   const invalidRateLimit = (route: string) =>
     isBadRoute(route).tap((invalid) =>
       invalid
-        ? maybeWait("rest.invalid", Duration.minutes(10), 10000)
+        ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
         : Effect.unit(),
     ).asUnit
 
@@ -47,7 +46,7 @@ const make = Do(($) => {
       const route = routeFromConfig(path, init)
       const maybeBucket = $(store.getBucketForRoute(route))
       const bucket = maybeBucket.getOrElse(
-        (): BucketDetails => ({
+        (): RateLimit.BucketDetails => ({
           key: `?.${route}`,
           resetAfter: 5000,
           limit: 1,
@@ -56,7 +55,7 @@ const make = Do(($) => {
       const resetAfter = millis(bucket.resetAfter)
 
       $(invalidRateLimit(route))
-      $(maybeWait(`rest.bucket.${bucket.key}`, resetAfter, bucket.limit))
+      $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
     })
 
   // Update rate limit buckets

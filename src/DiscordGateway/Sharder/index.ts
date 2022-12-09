@@ -80,7 +80,7 @@ const spawnEffect = Effect.structPar({
         shardConfig
           .tap(() =>
             limiter.maybeWait(
-              `gateway.sharder.${key}`,
+              `dfx.sharder.${key}`,
               millis(config.identifyRateLimit[0]),
               config.identifyRateLimit[1],
             ),
