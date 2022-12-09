@@ -136,9 +136,9 @@ export const create = <T>(opts: MemoryTTLOpts) =>
       sizeForParent: (parentId) =>
         Effect.sync(() => parentIds.get(parentId)?.size ?? 0),
 
-      refreshTTL: store.refreshTTL,
+      refreshTTL: (_, id) => store.refreshTTL(id),
 
-      get: store.get,
+      get: (_, id) => store.get(id),
 
       getForParent: (parentId) =>
         Do(($) => {
