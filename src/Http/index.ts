@@ -12,7 +12,7 @@ export class StatusCodeError {
 }
 
 export const request = (url: URL | string, init: RequestInit = {}) =>
-  Effect.tryCatchAbort(
+  Effect.tryCatchPromiseAbort(
     (signal) =>
       fetch(url, {
         ...init,

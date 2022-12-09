@@ -20,8 +20,8 @@
     "./*": "./*.js"
   },
   "devDependencies": {
-    "@effect/io": "^0.0.30",
-    "@fp-ts/data": "^0.0.20",
+    "@effect/io": "^0.0.33",
+    "@fp-ts/data": "^0.0.25",
     "@tim-smart/discord-api-docs-parser": "^0.4.1",
     "@types/ws": "^8.5.3",
     "lerna": "^6.1.0",
@@ -45,8 +45,8 @@
   "sideEffects": false,
   "pnpm": {
     "overrides": {
-      "@effect/io": "^0.0.30",
-      "@fp-ts/data": "^0.0.20"
+      "@effect/io": "^0.0.33",
+      "@fp-ts/data": "^0.0.25"
     }
   },
   "gitHead": "4839b91c2459c73010d4f04e8b540d5cf2e27568"

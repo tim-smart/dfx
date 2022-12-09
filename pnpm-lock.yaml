@@ -1,12 +1,12 @@
 lockfileVersion: 5.4
 
 overrides:
-  '@effect/io': ^0.0.30
-  '@fp-ts/data': ^0.0.20
+  '@effect/io': ^0.0.33
+  '@fp-ts/data': ^0.0.25
 
 specifiers:
-  '@effect/io': ^0.0.30
-  '@fp-ts/data': ^0.0.20
+  '@effect/io': ^0.0.33
+  '@fp-ts/data': ^0.0.25
   '@tim-smart/discord-api-docs-parser': ^0.4.1
   '@types/ws': ^8.5.3
   bufferutil: ^4.0.7
@@ -20,7 +20,7 @@ specifiers:
   ws: ^8.11.0
 
 dependencies:
-  callbag-effect-ts: 1.0.0-alpha.20_bonjnmg6oatqyr73vbdnw4brbi
+  callbag-effect-ts: 1.0.0-alpha.20_yesvqy6l7grkfudu64wwdyrn2u
   ts-toolbelt: 9.6.0
   tweetnacl: 1.0.3
 
@@ -31,8 +31,8 @@ optionalDependencies:
   ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
 
 devDependencies:
-  '@effect/io': 0.0.30
-  '@fp-ts/data': 0.0.20
+  '@effect/io': 0.0.33
+  '@fp-ts/data': 0.0.25
   '@tim-smart/discord-api-docs-parser': 0.4.1
   '@types/ws': 8.5.3
   lerna: 6.1.0
@@ -61,24 +61,17 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect/io/0.0.30:
-    resolution: {integrity: sha512-2f7DL01GSwNJbC3l9e1gIm4zSI4FfghFGPDdGbHTL//dUCamt7d8EK7VjB3IECv7xcu3a2edCJUqWHQPDmNoAg==}
-    dependencies:
-      '@effect/printer': 0.1.8
-      '@fp-ts/core': 0.0.9
-      '@fp-ts/data': 0.0.20
-
-  /@effect/printer/0.1.8:
-    resolution: {integrity: sha512-fNiWjMcDiIxJhEnC+hOKiuB53IpFpFcAY15o/EM7rc1sfoOWwBX5zFG7LbVPVxw3Q34u/ijbz+/vFBDM/J0oWA==}
+  /@effect/io/0.0.33:
+    resolution: {integrity: sha512-FUItwTnlian6JuhZQIayyjztL3CWX1mTBcNm8AyWU6LuwLzXfJPoZONGn/3vwthTAqC/wwO1z2+b7/v3fbNvsw==}
     dependencies:
       '@fp-ts/core': 0.0.9
-      '@fp-ts/data': 0.0.20
+      '@fp-ts/data': 0.0.25
 
   /@fp-ts/core/0.0.9:
     resolution: {integrity: sha512-FuXKPHTEvvgxV3LulGJXkSpAghovh7wLxux+Pm9LKefC0gtZZQ4OajTjTK5RsQtpyKIsAn26PwdG6W6zksF/UA==}
 
-  /@fp-ts/data/0.0.20:
-    resolution: {integrity: sha512-7nv25VxgZiJzintT1Bsl4mXOZlIOGag/GsI0Rov1r/RTfOzd4RePpnDYZzC9BFJ5Iru2/mHeXejRuxgBP2v8Qg==}
+  /@fp-ts/data/0.0.25:
+    resolution: {integrity: sha512-mlZhwRJxT03gVOEbSX/zyjMMJWM5MXM/FnK5o9QXKJTWojiSVVALYoLah+q3ZbnCmWqcmEKgTG8eYw45EESl/g==}
     dependencies:
       '@fp-ts/core': 0.0.9
 
@@ -1522,14 +1515,14 @@ packages:
       callbag: 1.5.1
     dev: false
 
-  /callbag-effect-ts/1.0.0-alpha.20_bonjnmg6oatqyr73vbdnw4brbi:
+  /callbag-effect-ts/1.0.0-alpha.20_yesvqy6l7grkfudu64wwdyrn2u:
     resolution: {integrity: sha512-1eUmh8nu11pzaIBAnGsreD/b/PKoiWp/+9dOVAURJNvwiqO7hvG1bmE6weOflYeNI6lwavpWpAdEJ0+as9OJjw==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'
     dependencies:
-      '@effect/io': 0.0.30
-      '@fp-ts/data': 0.0.20
+      '@effect/io': 0.0.33
+      '@fp-ts/data': 0.0.25
       strict-callbag-basics: 1.0.2
     dev: false
 

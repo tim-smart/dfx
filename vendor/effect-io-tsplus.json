@@ -2778,6 +2778,17 @@
       ]
     },
     {
+      "definitionName": "promiseAbort",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "promiseAbort"
+        }
+      ]
+    },
+    {
       "definitionName": "provideService",
       "definitionKind": "const",
       "extensions": [
@@ -3064,6 +3075,17 @@
       ]
     },
     {
+      "definitionName": "tryCatchPromiseAbort",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "tryCatchPromiseAbort"
+        }
+      ]
+    },
+    {
       "definitionName": "tryPromise",
       "definitionKind": "const",
       "extensions": [
@@ -3071,6 +3093,17 @@
           "kind": "static",
           "typeName": "effect/io/Effect.Ops",
           "name": "tryPromise"
+        }
+      ]
+    },
+    {
+      "definitionName": "tryPromiseAbort",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "tryPromiseAbort"
         }
       ]
     },
@@ -6339,6 +6372,17 @@
           "kind": "getter",
           "typeName": "effect/io/Effect",
           "name": "withParallelismUnbounded"
+        }
+      ]
+    },
+    {
+      "definitionName": "blocking",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "getter",
+          "typeName": "effect/io/Effect",
+          "name": "blocking"
         }
       ]
     }
@@ -11610,6 +11654,47 @@
           "kind": "getter",
           "typeName": "effect/io/Schedule",
           "name": "right"
+        }
+      ]
+    }
+  ],
+  "@effect/io/Scheduler": [
+    {
+      "definitionName": "Task",
+      "definitionKind": "interface",
+      "extensions": [
+        {
+          "kind": "type",
+          "typeName": "effect/io/Scheduler.Task"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/io/Scheduler.Task.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "Scheduler",
+      "definitionKind": "interface",
+      "extensions": [
+        {
+          "kind": "type",
+          "typeName": "effect/io/Scheduler"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/io/Scheduler.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "defaultScheduler",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Scheduler.Ops",
+          "name": "defaultScheduler"
         }
       ]
     }
