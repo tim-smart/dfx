@@ -41,6 +41,9 @@ export interface DiscordGateway extends Success<typeof make> {}
 export const DiscordGateway = Tag<DiscordGateway>()
 export const LiveDiscordGateway = Layer.fromEffect(DiscordGateway)(make)
 
+export const fromDispatch = <K extends keyof Discord.ReceiveEvents>(event: K) =>
+  Effect.serviceWith(DiscordGateway)((a) => a.fromDispatch(event)).unwrap
+
 export const handleDispatch = <
   K extends keyof Discord.ReceiveEvents,
   R1,

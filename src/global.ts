@@ -106,6 +106,7 @@ import {
   IxHelpers,
   Flags,
   Members,
+  Cache,
 } from "dfx"
 
 /**

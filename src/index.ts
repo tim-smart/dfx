@@ -6,6 +6,7 @@ export { DiscordREST, LiveDiscordREST, rest } from "./DiscordREST/index.js"
 export * as Ix from "./Interactions/index.js"
 export * as Log from "./Log/index.js"
 export * as RateLimit from "./RateLimit/index.js"
+export * as Cache from "./Cache/index.js"
 
 export * as Flags from "./Helpers/flags.js"
 export * as Intents from "./Helpers/intents.js"
