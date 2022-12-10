@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.18.0](https://github.com/tim-smart/dfx/compare/dfx@0.17.9...dfx@0.18.0) (2022-12-10)
+
+
+### Bug Fixes
+
+* parent ttl cache args ([0b1f691](https://github.com/tim-smart/dfx/commit/0b1f691ab53f8a3ec187d1b15a9c94d27c75e265))
+
+
+### Features
+
+* cache prelude ([6cf5237](https://github.com/tim-smart/dfx/commit/6cf5237d6b87a21fa00a3e941b681c36afdfb111))
+* caching ([832bd45](https://github.com/tim-smart/dfx/commit/832bd45c5666d0fcb22f26fbb42f79ac927a381b))
+
+
+
+
+
 ## [0.17.9](https://github.com/tim-smart/dfx/compare/dfx@0.17.8...dfx@0.17.9) (2022-12-08)
 
 **Note:** Version bump only for package dfx
