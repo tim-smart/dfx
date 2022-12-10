@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/tim-smart/dfx/compare/dfx@0.18.0...dfx@0.18.1) (2022-12-10)
+
+
+### Bug Fixes
+
+* getForParent in TTL cache ([72c4aa8](https://github.com/tim-smart/dfx/commit/72c4aa8f527fb5aa2db96c4c8caead1c51db40a2))
+
+
+
+
+
 # [0.18.0](https://github.com/tim-smart/dfx/compare/dfx@0.17.9...dfx@0.18.0) (2022-12-10)
 
 
