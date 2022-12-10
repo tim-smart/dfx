@@ -1,94 +1,32 @@
-export interface CacheStoreDriver<
-  T,
-  ESize = any,
-  EPSize = any,
-  EGet = any,
-  EGetP = any,
-  ESet = any,
-  EDelete = any,
-  EPDelete = any,
-  ERefresh = any,
-  ERun = any,
-> {
-  readonly size: Effect<never, ESize, number>
-  sizeForParent: (parentId: string) => Effect<never, EPSize, number>
-  get: (parentId: string, resourceId: string) => Effect<never, EGet, Maybe<T>>
+export interface ParentCacheStoreDriver<E, T> {
+  readonly size: Effect<never, E, number>
+  sizeForParent: (parentId: string) => Effect<never, E, number>
+  get: (parentId: string, resourceId: string) => Effect<never, E, Maybe<T>>
   getForParent: (
     parentId: string,
-  ) => Effect<never, EGetP, Maybe<ReadonlyMap<string, T>>>
+  ) => Effect<never, E, Maybe<ReadonlyMap<string, T>>>
   set: (
     parentId: string,
     resourceId: string,
     resource: T,
-  ) => Effect<never, ESet, void>
-  delete: (parentId: string, resourceId: string) => Effect<never, EDelete, void>
-  parentDelete: (parentId: string) => Effect<never, EPDelete, void>
-  refreshTTL: (
-    parentId: string,
-    resourceId: string,
-  ) => Effect<never, ERefresh, void>
-  readonly run: Effect<never, ERun, void>
+  ) => Effect<never, E, void>
+  delete: (parentId: string, resourceId: string) => Effect<never, E, void>
+  parentDelete: (parentId: string) => Effect<never, E, void>
+  refreshTTL: (parentId: string, resourceId: string) => Effect<never, E, void>
+  readonly run: Effect<never, E, void>
 }
 
-export const createDriver = <
-  T,
-  ESize,
-  EPSize,
-  EGet,
-  EGetP,
-  ESet,
-  EDelete,
-  EPDelete,
-  ERefresh,
-  ERun,
->(
-  driver: CacheStoreDriver<
-    T,
-    ESize,
-    EPSize,
-    EGet,
-    EGetP,
-    ESet,
-    EDelete,
-    EPDelete,
-    ERefresh,
-    ERun
-  >,
+export const createParentDriver = <E, T>(
+  driver: ParentCacheStoreDriver<E, T>,
 ) => driver
 
-export interface NonParentCacheStoreDriver<
-  T,
-  ESize = any,
-  EGet = any,
-  ESet = any,
-  EDelete = any,
-  ERefresh = any,
-  ERun = any,
-> {
-  readonly size: Effect<never, ESize, number>
-  get: (resourceId: string) => Effect<never, EGet, Maybe<T>>
-  set: (resourceId: string, resource: T) => Effect<never, ESet, void>
-  delete: (resourceId: string) => Effect<never, EDelete, void>
-  refreshTTL: (resourceId: string) => Effect<never, ERefresh, void>
-  readonly run: Effect<never, ERun, void>
+export interface CacheStoreDriver<E, T> {
+  readonly size: Effect<never, E, number>
+  get: (resourceId: string) => Effect<never, E, Maybe<T>>
+  set: (resourceId: string, resource: T) => Effect<never, E, void>
+  delete: (resourceId: string) => Effect<never, E, void>
+  refreshTTL: (resourceId: string) => Effect<never, E, void>
+  readonly run: Effect<never, E, void>
 }
 
-export const createNonParentDriver = <
-  T,
-  ESize,
-  EGet,
-  ESet,
-  EDelete,
-  ERefresh,
-  ERun,
->(
-  driver: NonParentCacheStoreDriver<
-    T,
-    ESize,
-    EGet,
-    ESet,
-    EDelete,
-    ERefresh,
-    ERun
-  >,
-) => driver
+export const createDriver = <E, T>(driver: CacheStoreDriver<E, T>) => driver

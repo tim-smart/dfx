@@ -1,12 +1,12 @@
 lockfileVersion: 5.4
 
 overrides:
-  '@effect/io': ^0.0.30
-  '@fp-ts/data': ^0.0.20
+  '@effect/io': ^0.0.33
+  '@fp-ts/data': ^0.0.25
 
 specifiers:
-  '@effect/io': ^0.0.30
-  '@fp-ts/data': ^0.0.20
+  '@effect/io': ^0.0.33
+  '@fp-ts/data': ^0.0.25
   dfx: ^0.17.4
   dotenv: ^16.0.3
   esbuild: ^0.15.18
@@ -15,9 +15,9 @@ specifiers:
   typescript: ^4.9.4
 
 dependencies:
-  '@effect/io': 0.0.30
-  '@fp-ts/data': 0.0.20
-  dfx: 0.17.4_bonjnmg6oatqyr73vbdnw4brbi
+  '@effect/io': 0.0.33
+  '@fp-ts/data': 0.0.25
+  dfx: 0.17.4_yesvqy6l7grkfudu64wwdyrn2u
   dotenv: 16.0.3
   fastify: 4.10.2
 
@@ -35,19 +35,11 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@effect/io/0.0.30:
-    resolution: {integrity: sha512-2f7DL01GSwNJbC3l9e1gIm4zSI4FfghFGPDdGbHTL//dUCamt7d8EK7VjB3IECv7xcu3a2edCJUqWHQPDmNoAg==}
-    dependencies:
-      '@effect/printer': 0.1.11
-      '@fp-ts/core': 0.0.9
-      '@fp-ts/data': 0.0.20
-    dev: false
-
-  /@effect/printer/0.1.11:
-    resolution: {integrity: sha512-95ha+/xFmDGG/FN0mZASJLBaU635IlhDcBxYO6sswqaheCz3s92Ouub+xTomjyPYtev5xAnVHQpZaaxcnjFaHQ==}
+  /@effect/io/0.0.33:
+    resolution: {integrity: sha512-FUItwTnlian6JuhZQIayyjztL3CWX1mTBcNm8AyWU6LuwLzXfJPoZONGn/3vwthTAqC/wwO1z2+b7/v3fbNvsw==}
     dependencies:
       '@fp-ts/core': 0.0.9
-      '@fp-ts/data': 0.0.20
+      '@fp-ts/data': 0.0.25
     dev: false
 
   /@esbuild/android-arm/0.15.18:
@@ -94,8 +86,8 @@ packages:
     resolution: {integrity: sha512-FuXKPHTEvvgxV3LulGJXkSpAghovh7wLxux+Pm9LKefC0gtZZQ4OajTjTK5RsQtpyKIsAn26PwdG6W6zksF/UA==}
     dev: false
 
-  /@fp-ts/data/0.0.20:
-    resolution: {integrity: sha512-7nv25VxgZiJzintT1Bsl4mXOZlIOGag/GsI0Rov1r/RTfOzd4RePpnDYZzC9BFJ5Iru2/mHeXejRuxgBP2v8Qg==}
+  /@fp-ts/data/0.0.25:
+    resolution: {integrity: sha512-mlZhwRJxT03gVOEbSX/zyjMMJWM5MXM/FnK5o9QXKJTWojiSVVALYoLah+q3ZbnCmWqcmEKgTG8eYw45EESl/g==}
     dependencies:
       '@fp-ts/core': 0.0.9
     dev: false
@@ -232,14 +224,14 @@ packages:
       callbag: 1.5.1
     dev: false
 
-  /callbag-effect-ts/1.0.0-alpha.20_bonjnmg6oatqyr73vbdnw4brbi:
+  /callbag-effect-ts/1.0.0-alpha.20_yesvqy6l7grkfudu64wwdyrn2u:
     resolution: {integrity: sha512-1eUmh8nu11pzaIBAnGsreD/b/PKoiWp/+9dOVAURJNvwiqO7hvG1bmE6weOflYeNI6lwavpWpAdEJ0+as9OJjw==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'
     dependencies:
-      '@effect/io': 0.0.30
-      '@fp-ts/data': 0.0.20
+      '@effect/io': 0.0.33
+      '@fp-ts/data': 0.0.25
       strict-callbag-basics: 1.0.2
     dev: false
 
@@ -335,15 +327,15 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.17.4_bonjnmg6oatqyr73vbdnw4brbi:
+  /dfx/0.17.4_yesvqy6l7grkfudu64wwdyrn2u:
     resolution: {integrity: sha512-B5kBJy477DJiUjnO3O8YJmevjxIRrCxhl7eZvxSBVxA424DL+jR1EGjD2cNbNjDp4QKVij/eDMSuyfS+sy2MJw==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'
     dependencies:
-      '@effect/io': 0.0.30
-      '@fp-ts/data': 0.0.20
-      callbag-effect-ts: 1.0.0-alpha.20_bonjnmg6oatqyr73vbdnw4brbi
+      '@effect/io': 0.0.33
+      '@fp-ts/data': 0.0.25
+      callbag-effect-ts: 1.0.0-alpha.20_yesvqy6l7grkfudu64wwdyrn2u
       ts-toolbelt: 9.6.0
       tweetnacl: 1.0.3
     optionalDependencies:

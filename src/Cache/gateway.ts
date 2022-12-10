@@ -1,26 +1,26 @@
-import { CacheOp, NonParentCacheOp } from "./index.js"
+import { ParentCacheOp, CacheOp } from "./index.js"
 
-export interface OpsSourceOpts<RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, A> {
+export interface OpsSourceOpts<R, E, A> {
   id: (a: A) => string
-  fromParent: EffectSource<RFP, EFP, [parentId: string, resources: A[]]>
-  create: EffectSource<RC, EC, [parentId: string, resource: A]>
-  update: EffectSource<RU, EU, [parentId: string, resource: A]>
-  remove: EffectSource<RD, ED, [parentId: string, id: string]>
-  parentRemove: EffectSource<RP, EP, string>
+  fromParent: EffectSource<R, E, [parentId: string, resources: A[]]>
+  create: EffectSource<R, E, [parentId: string, resource: A]>
+  update: EffectSource<R, E, [parentId: string, resource: A]>
+  remove: EffectSource<R, E, [parentId: string, id: string]>
+  parentRemove: EffectSource<R, E, string>
 }
 
-export const source = <RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>({
+export const source = <R, E, T>({
   id,
   fromParent,
   create,
   update,
   remove,
   parentRemove,
-}: OpsSourceOpts<RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>) => {
+}: OpsSourceOpts<R, E, T>) => {
   const fromParentOps = fromParent.chain(([parentId, a]) =>
     EffectSource.fromIterable(
       a.map(
-        (resource): CacheOp<T> => ({
+        (resource): ParentCacheOp<T> => ({
           op: "create",
           parentId,
           resourceId: id(resource),
@@ -31,7 +31,7 @@ export const source = <RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>({
   )
 
   const createOps = create.map(
-    ([parentId, resource]): CacheOp<T> => ({
+    ([parentId, resource]): ParentCacheOp<T> => ({
       op: "create",
       parentId,
       resourceId: id(resource),
@@ -40,7 +40,7 @@ export const source = <RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>({
   )
 
   const updateOps = update.map(
-    ([parentId, resource]): CacheOp<T> => ({
+    ([parentId, resource]): ParentCacheOp<T> => ({
       op: "update",
       parentId,
       resourceId: id(resource),
@@ -49,7 +49,7 @@ export const source = <RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>({
   )
 
   const removeOps = remove.map(
-    ([parentId, resourceId]): CacheOp<T> => ({
+    ([parentId, resourceId]): ParentCacheOp<T> => ({
       op: "delete",
       parentId,
       resourceId,
@@ -57,7 +57,7 @@ export const source = <RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>({
   )
 
   const parentRemoveOps = parentRemove.map(
-    (parentId): CacheOp<T> => ({
+    (parentId): ParentCacheOp<T> => ({
       op: "parentDelete",
       parentId,
     }),
@@ -70,21 +70,21 @@ export const source = <RFP, RC, RU, RD, RP, EFP, EC, EU, ED, EP, T>({
     .merge(parentRemoveOps)
 }
 
-export interface NonParentOpsSourceOpts<RC, RU, RD, EC, EU, ED, A> {
+export interface NonParentOpsSourceOpts<R, E, A> {
   id: (a: A) => string
-  create: EffectSource<RC, EC, A>
-  update: EffectSource<RU, EU, A>
-  remove: EffectSource<RD, ED, string>
+  create: EffectSource<R, E, A>
+  update: EffectSource<R, E, A>
+  remove: EffectSource<R, E, string>
 }
 
-export const nonParentSource = <RC, RU, RD, EC, EU, ED, T>({
+export const nonParentSource = <R, E, T>({
   id,
   create,
   update,
   remove,
-}: NonParentOpsSourceOpts<RC, RU, RD, EC, EU, ED, T>) => {
+}: NonParentOpsSourceOpts<R, E, T>) => {
   const createOps = create.map(
-    (resource): NonParentCacheOp<T> => ({
+    (resource): CacheOp<T> => ({
       op: "create",
       resourceId: id(resource),
       resource,
@@ -92,7 +92,7 @@ export const nonParentSource = <RC, RU, RD, EC, EU, ED, T>({
   )
 
   const updateOps = update.map(
-    (resource): NonParentCacheOp<T> => ({
+    (resource): CacheOp<T> => ({
       op: "update",
       resourceId: id(resource),
       resource,
@@ -100,7 +100,7 @@ export const nonParentSource = <RC, RU, RD, EC, EU, ED, T>({
   )
 
   const removeOps = remove.map(
-    (resourceId): NonParentCacheOp<T> => ({
+    (resourceId): CacheOp<T> => ({
       op: "delete",
       resourceId,
     }),

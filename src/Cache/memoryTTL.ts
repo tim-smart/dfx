@@ -1,4 +1,4 @@
-import { createDriver, createNonParentDriver } from "./driver.js"
+import { createParentDriver, createDriver } from "./driver.js"
 
 export interface MemoryTTLOpts {
   /** The approx. number of milliseconds to keep items */
@@ -31,7 +31,7 @@ interface TTLBucket<T> {
   items: CacheItem<T>[]
 }
 
-const makeNonParent = <T>({
+const make = <T>({
   ttl,
   resolution = Duration.minutes(1),
   strategy = "usage",
@@ -90,7 +90,7 @@ const makeNonParent = <T>({
     return item.resource
   }
 
-  return createNonParentDriver({
+  return createDriver({
     size: Effect.sync(() => items.size),
 
     get: (resourceId) =>
@@ -123,15 +123,15 @@ const makeNonParent = <T>({
   })
 }
 
-export const createNonParent = <T>(opts: MemoryTTLOpts) =>
-  Effect.sync(() => makeNonParent<T>(opts))
-
 export const create = <T>(opts: MemoryTTLOpts) =>
+  Effect.sync(() => make<T>(opts))
+
+export const createWithParent = <T>(opts: MemoryTTLOpts) =>
   Effect.sync(() => {
-    const store = makeNonParent<T>(opts)
+    const store = make<T>(opts)
     const parentIds = new Map<string, Set<string>>()
 
-    return createDriver({
+    return createParentDriver({
       size: store.size,
       sizeForParent: (parentId) =>
         Effect.sync(() => parentIds.get(parentId)?.size ?? 0),

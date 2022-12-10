@@ -2,8 +2,8 @@ import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
 import { pipe } from "@fp-ts/data/Function"
-import { Discord, Ix } from "dfx"
-import { make, runIx } from "dfx/gateway"
+import { Cache, Discord, Ix, rest } from "dfx"
+import { CacheOps, make, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 
 Dotenv.config()
@@ -11,6 +11,16 @@ Dotenv.config()
 // Create the dependencies layer
 const LiveEnv = make({
   token: process.env.DISCORD_BOT_TOKEN!,
+})
+
+const guilds = Cache.makeNonParent({
+  driver: Cache.nonParentMemoryDriver<Discord.Guild>(),
+  ops: CacheOps.guilds,
+  onMiss: (id) =>
+    pipe(
+      rest.getGuild(id),
+      Effect.flatMap((r) => r.json),
+    ),
 })
 
 // Create your interaction definitions.
@@ -79,7 +89,9 @@ pipe(
       }),
     ),
   ),
-  Effect.provideLayer(LiveEnv),
+  Effect.zipPar(guilds.run),
+  Effect.provideSomeLayer(LiveEnv),
+  Effect.provideSomeLayer(guilds.Layer),
   Effect.unsafeRunPromiseExit,
 ).then((exit) => {
   if (Exit.isFailure(exit)) {

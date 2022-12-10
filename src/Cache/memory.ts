@@ -1,10 +1,10 @@
-import { createDriver, createNonParentDriver } from "./driver.js"
+import { createParentDriver, createDriver } from "./driver.js"
 
-export const create = <T>() =>
+export const createWithParent = <T>() =>
   Effect.sync(() => {
     const map = new Map<string, Map<string, T>>()
 
-    return createDriver({
+    return createParentDriver({
       size: Effect.sync(() => {
         let count = 0
         for (const a of map.values()) {
@@ -49,11 +49,11 @@ export const create = <T>() =>
     })
   })
 
-export const nonParent = <T>() =>
+export const create = <T>() =>
   Effect.sync(() => {
     const map = new Map<string, T>()
 
-    return createNonParentDriver({
+    return createDriver({
       size: Effect.sync(() => map.size),
 
       get: (resourceId) =>
