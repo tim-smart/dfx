@@ -6,8 +6,6 @@ export interface MemoryTTLOpts {
 
   /**
    * How often items should be cleared.
-   *
-   * Defaults to 5 minutes
    */
   resolution?: Duration
 
@@ -146,17 +144,17 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
           if (!ids) return Maybe.none
 
           const toGet: Effect<never, never, readonly [string, Maybe<T>]>[] = []
-          for (const id in ids) {
+          ids.forEach((id) => {
             toGet.push(
               Do(($) => {
                 const item = $(store.get(id))
-                if (item._tag === "Some") {
+                if (item._tag === "None") {
                   parentIds.delete(id)
                 }
                 return [id, item] as const
               }),
             )
-          }
+          })
 
           const results = $(toGet.collectAllPar)
           const map = results.reduce(new Map<string, T>(), (map, [id, a]) =>
