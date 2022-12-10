@@ -17,14 +17,16 @@ export interface SubCommandContext {
 }
 export const SubCommandContext = Tag<SubCommandContext>()
 
-export const getCommand = Effect.service(ApplicationCommandContext)
+export const interaction = Effect.service(InteractionContext)
+
+export const command = Effect.service(ApplicationCommandContext)
 
 export class ResolvedDataNotFound {
   readonly _tag = "ResolvedDataNotFound"
   constructor(readonly data: Discord.Interaction, readonly name?: string) {}
 }
 
-export const getResolvedValues = <A>(
+export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
   Effect.serviceWithEffect(InteractionContext)((a) =>
@@ -34,7 +36,7 @@ export const getResolvedValues = <A>(
     ),
   )
 
-export const getResolved = <A>(
+export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
@@ -114,16 +116,16 @@ export class RequiredOptionNotFound {
   ) {}
 }
 
-export const findOption = (name: string) =>
+export const option = (name: string) =>
   Effect.serviceWith(ApplicationCommandContext)(IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
-  findOption(name).flatMap((o) =>
+  option(name).flatMap((o) =>
     o
       .flatMapNullable((a) => a.value)
       .match(
         () =>
-          getCommand.flatMap((data) =>
+          command.flatMap((data) =>
             Effect.fail(new RequiredOptionNotFound(data, name)),
           ),
         Effect.succeed,
@@ -131,7 +133,7 @@ export const optionValue = (name: string) =>
   )
 
 export const optionValueOptional = (name: string) =>
-  findOption(name).map((o) => o.flatMapNullable((a) => a.value))
+  option(name).map((o) => o.flatMapNullable((a) => a.value))
 
 export const modalValues = Effect.serviceWith(ModalSubmitContext)(
   IxHelpers.componentsMap,

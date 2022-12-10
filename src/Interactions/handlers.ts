@@ -15,8 +15,8 @@ type Handler<R, E> = Effect<
 >
 
 const context: D.CommandHelper<any> = {
-  resolve: Ctx.getResolved,
-  option: Ctx.findOption,
+  resolve: Ctx.resolved,
+  option: Ctx.option,
   optionValue: Ctx.optionValue,
   optionValueOptional: Ctx.optionValueOptional,
   subCommands: Ctx.handleSubCommands,

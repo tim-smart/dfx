@@ -4,6 +4,7 @@ export * as Shard from "./DiscordGateway/Shard/index.js"
 export * as ShardStore from "./DiscordGateway/ShardStore/index.js"
 export * as Gateway from "./DiscordGateway/index.js"
 export * as CacheOps from "./Cache/gateway.js"
+export * as CachePrelude from "./Cache/prelude.js"
 export { run as runIx } from "./Interactions/gateway.js"
 
 export const LiveRateLimit =

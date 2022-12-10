@@ -3,13 +3,13 @@ import { ParentCacheStoreDriver, CacheStoreDriver } from "./driver.js"
 export * from "./driver.js"
 
 export {
-  createWithParent as memoryDriver,
-  create as nonParentMemoryDriver,
+  createWithParent as memoryParentDriver,
+  create as memoryDriver,
 } from "./memory.js"
 
 export {
-  createWithParent as memoryTTLDriver,
-  create as nonParentMemoryTTLDriver,
+  createWithParent as memoryTTLParentDriver,
+  create as memoryTTLDriver,
 } from "./memoryTTL.js"
 
 export type ParentCacheOp<T> =
@@ -23,11 +23,7 @@ export type CacheOp<T> =
   | { op: "update"; resourceId: string; resource: T }
   | { op: "delete"; resourceId: string }
 
-export class CacheMissError {
-  readonly _tag = "CacheMissError"
-}
-
-export const make = <T, R, E, RMD, EMD, ED, RM, EM, RPM, EPM>({
+export const makeParent = <T, R, E, RMD, EMD, ED, RM, EM, RPM, EPM>({
   driver: makeDriver,
   ops = EffectSource.empty,
   onMiss,
@@ -81,7 +77,7 @@ export const make = <T, R, E, RMD, EMD, ED, RM, EM, RPM, EPM>({
     }
   })
 
-export const makeNonParent = <T, R, E, RMD, EMD, ED, RM, EM>({
+export const make = <T, R, E, RMD, EMD, ED, RM, EM>({
   driver: makeDriver,
   ops = EffectSource.empty,
   onMiss,
@@ -113,3 +109,8 @@ export const makeNonParent = <T, R, E, RMD, EMD, ED, RM, EM>({
       run: sync.zipPar(driver.run).asUnit,
     }
   })
+
+export class CacheMissError {
+  readonly _tag = "CacheMissError"
+  constructor(readonly cacheName: string, readonly id: string) {}
+}
