@@ -1,15 +1,13 @@
-import { ParentCacheStoreDriver, CacheStoreDriver } from "./driver.js"
+import { CacheDriver, ParentCacheDriver } from "./driver.js"
 
 export * from "./driver.js"
-
 export {
-  createWithParent as memoryParentDriver,
   create as memoryDriver,
+  createWithParent as memoryParentDriver,
 } from "./memory.js"
-
 export {
-  createWithParent as memoryTTLParentDriver,
   create as memoryTTLDriver,
+  createWithParent as memoryTTLParentDriver,
 } from "./memoryTTL.js"
 
 export type ParentCacheOp<T> =
@@ -23,23 +21,34 @@ export type CacheOp<T> =
   | { op: "update"; resourceId: string; resource: T }
   | { op: "delete"; resourceId: string }
 
-export const makeParent = <T, R, E, RMD, EMD, ED, RM, EM, RPM, EPM>({
+export const makeParent = <
+  ROps,
+  RMakeDriver,
+  RMiss,
+  RPMiss,
+  EOps,
+  EMakeDriver,
+  EDriver,
+  EMiss,
+  EPMiss,
+  A,
+>({
   driver: makeDriver,
   ops = EffectSource.empty,
   onMiss,
   onParentMiss,
 }: {
-  driver: Effect<RMD, EMD, ParentCacheStoreDriver<ED, T>>
-  ops?: EffectSource<R, E, ParentCacheOp<T>>
-  onMiss: (parentId: string, id: string) => Effect<RM, EM, T>
+  driver: Effect<RMakeDriver, EMakeDriver, ParentCacheDriver<EDriver, A>>
+  ops?: EffectSource<ROps, EOps, ParentCacheOp<A>>
+  onMiss: (parentId: string, id: string) => Effect<RMiss, EMiss, A>
   onParentMiss: (
     parentId: string,
-  ) => Effect<RPM, EPM, [id: string, resource: T][]>
+  ) => Effect<RPMiss, EPMiss, [id: string, resource: A][]>
 }) =>
   Do(($) => {
     const driver = $(makeDriver)
 
-    const sync = ops.tap((op): Effect<never, ED, void> => {
+    const sync = ops.tap((op): Effect<never, EDriver, void> => {
       switch (op.op) {
         case "create":
         case "update":
@@ -70,26 +79,35 @@ export const makeParent = <T, R, E, RMD, EMD, ED, RM, EM, RPM, EPM>({
                 entries.map(([id, a]) => driver.set(parentId, id, a))
                   .collectAllPar,
             )
-            .map((entries) => new Map(entries) as ReadonlyMap<string, T>),
+            .map((entries) => new Map(entries) as ReadonlyMap<string, A>),
         ),
 
       run: sync.zipPar(driver.run).asUnit,
     }
   })
 
-export const make = <T, R, E, RMD, EMD, ED, RM, EM>({
+export const make = <
+  ROps,
+  RMakeDriver,
+  RMiss,
+  EOps,
+  EMakeDriver,
+  EDriver,
+  EMiss,
+  A,
+>({
   driver: makeDriver,
   ops = EffectSource.empty,
   onMiss,
 }: {
-  driver: Effect<RMD, EMD, CacheStoreDriver<ED, T>>
-  ops?: EffectSource<R, E, CacheOp<T>>
-  onMiss: (id: string) => Effect<RM, EM, T>
+  driver: Effect<RMakeDriver, EMakeDriver, CacheDriver<EDriver, A>>
+  ops?: EffectSource<ROps, EOps, CacheOp<A>>
+  onMiss: (id: string) => Effect<RMiss, EMiss, A>
 }) =>
   Do(($) => {
     const driver = $(makeDriver)
 
-    const sync = ops.tap((op): Effect<never, ED, void> => {
+    const sync = ops.tap((op): Effect<never, EDriver, void> => {
       switch (op.op) {
         case "create":
         case "update":
