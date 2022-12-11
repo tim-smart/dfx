@@ -42,6 +42,7 @@ const makeLimiter = Do(($) => {
     multiplier = 1.05,
   ) => {
     const windowMs = window.millis * multiplier
+
     return store
       .incrementCounter(key, windowMs, limit)
       .map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl))

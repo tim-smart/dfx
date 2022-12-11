@@ -7,7 +7,7 @@ overrides:
 specifiers:
   '@effect/io': ^0.0.33
   '@fp-ts/data': ^0.0.25
-  dfx: ^0.17.4
+  dfx: ^0.20.1
   dotenv: ^16.0.3
   esbuild: ^0.15.18
   fastify: ^4.10.2
@@ -17,7 +17,7 @@ specifiers:
 dependencies:
   '@effect/io': 0.0.33
   '@fp-ts/data': 0.0.25
-  dfx: 0.17.4_yesvqy6l7grkfudu64wwdyrn2u
+  dfx: 0.20.1_yesvqy6l7grkfudu64wwdyrn2u
   dotenv: 16.0.3
   fastify: 4.10.2
 
@@ -327,8 +327,8 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.17.4_yesvqy6l7grkfudu64wwdyrn2u:
-    resolution: {integrity: sha512-B5kBJy477DJiUjnO3O8YJmevjxIRrCxhl7eZvxSBVxA424DL+jR1EGjD2cNbNjDp4QKVij/eDMSuyfS+sy2MJw==}
+  /dfx/0.20.1_yesvqy6l7grkfudu64wwdyrn2u:
+    resolution: {integrity: sha512-f8klcins0jjPoqBc4sL/v4XFyRpD/BLfV++OG6qd/bkvlcWJ/BxaBVDNkkDvLQg8ufdL9LQkuz68zwo12HjDrQ==}
     peerDependencies:
       '@effect/io': '*'
       '@fp-ts/data': '*'

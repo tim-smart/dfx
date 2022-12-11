@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": "src",
     "outDir": "dist",
     "resolveJsonModule": false,
     "skipLibCheck": true,
@@ -24,6 +23,5 @@
     },
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
   },
-  "exclude": ["node_modules/**/*"],
   "include": ["src/**/*"]
 }
