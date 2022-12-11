@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/tim-smart/dfx/compare/dfx@0.18.2...dfx@0.19.0) (2022-12-11)
+
+
+### Features
+
+* hasInChannel permissions helper ([f6c8913](https://github.com/tim-smart/dfx/commit/f6c8913ae48fdd3787f7350d8f929093df08602c))
+
+
+
+
+
 ## [0.18.2](https://github.com/tim-smart/dfx/compare/dfx@0.18.1...dfx@0.18.2) (2022-12-11)
 
 **Note:** Version bump only for package dfx
