@@ -1,11 +1,9 @@
 import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
-import { context } from "@fp-ts/data"
 import { pipe } from "@fp-ts/data/Function"
-import { Cache, Discord, Ix } from "dfx"
-import { CachePrelude, make, runIx } from "dfx/gateway"
-import { Success } from "dfx/utils/effect"
+import { Discord, Ix } from "dfx"
+import { make, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 
 Dotenv.config()
@@ -14,11 +12,6 @@ Dotenv.config()
 const LiveEnv = make({
   token: process.env.DISCORD_BOT_TOKEN!,
 })
-
-const makeGuildsCache = CachePrelude.guilds(Cache.memoryDriver())
-interface GuildsCache extends Success<typeof makeGuildsCache> {}
-const GuildsCache = context.Tag<GuildsCache>()
-const LiveGuildsCache = Effect.toLayer(GuildsCache)(makeGuildsCache)
 
 // Create your interaction definitions.
 // Here we are creating a global application command.
