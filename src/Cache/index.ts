@@ -21,101 +21,86 @@ export type CacheOp<T> =
   | { op: "update"; resourceId: string; resource: T }
   | { op: "delete"; resourceId: string }
 
-export const makeParent = <
-  RMakeDriver,
-  RPMiss,
-  EOps,
-  EMakeDriver,
-  EDriver,
-  EMiss,
-  EPMiss,
-  A,
->({
-  driver: makeDriver,
+export const makeWithParent = <RPMiss, EOps, EDriver, EMiss, EPMiss, A>({
+  driver,
   ops = EffectSource.empty,
   onMiss,
   onParentMiss,
 }: {
-  driver: Effect<RMakeDriver, EMakeDriver, ParentCacheDriver<EDriver, A>>
+  driver: ParentCacheDriver<EDriver, A>
   ops?: EffectSource<never, EOps, ParentCacheOp<A>>
   onMiss: (parentId: string, id: string) => Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
   ) => Effect<RPMiss, EPMiss, [id: string, resource: A][]>
-}) =>
-  Do(($) => {
-    const driver = $(makeDriver)
+}) => {
+  const sync = ops.tap((op): Effect<never, EDriver, void> => {
+    switch (op.op) {
+      case "create":
+      case "update":
+        return driver.set(op.parentId, op.resourceId, op.resource)
 
-    const sync = ops.tap((op): Effect<never, EDriver, void> => {
-      switch (op.op) {
-        case "create":
-        case "update":
-          return driver.set(op.parentId, op.resourceId, op.resource)
+      case "delete":
+        return driver.delete(op.parentId, op.resourceId)
 
-        case "delete":
-          return driver.delete(op.parentId, op.resourceId)
+      case "parentDelete":
+        return driver.parentDelete(op.parentId)
+    }
+  }).runDrain
 
-        case "parentDelete":
-          return driver.parentDelete(op.parentId)
-      }
-    }).runDrain
-
-    return {
-      ...driver,
-      get: (parentId: string, id: string) =>
-        driver
-          .get(parentId, id)
-          .someOrElseEffect(() =>
-            onMiss(parentId, id).tap((a) => driver.set(parentId, id, a)),
-          ),
-
-      getForParent: (parentId: string) =>
-        driver.getForParent(parentId).someOrElseEffect(() =>
-          onParentMiss(parentId)
-            .tap(
-              (entries) =>
-                entries.map(([id, a]) => driver.set(parentId, id, a))
-                  .collectAllPar,
-            )
-            .map((entries) => new Map(entries) as ReadonlyMap<string, A>),
+  return {
+    ...driver,
+    get: (parentId: string, id: string) =>
+      driver
+        .get(parentId, id)
+        .someOrElseEffect(() =>
+          onMiss(parentId, id).tap((a) => driver.set(parentId, id, a)),
         ),
 
-      run: sync.zipPar(driver.run).asUnit,
-    }
-  })
+    getForParent: (parentId: string) =>
+      driver.getForParent(parentId).someOrElseEffect(() =>
+        onParentMiss(parentId)
+          .tap(
+            (entries) =>
+              entries.map(([id, a]) => driver.set(parentId, id, a))
+                .collectAllPar,
+          )
+          .map((entries) => new Map(entries) as ReadonlyMap<string, A>),
+      ),
 
-export const make = <RMakeDriver, EOps, EMakeDriver, EDriver, EMiss, A>({
-  driver: makeDriver,
+    run: sync.zipPar(driver.run).asUnit,
+  }
+}
+
+export const make = <EOps, EDriver, EMiss, A>({
+  driver,
   ops = EffectSource.empty,
   onMiss,
 }: {
-  driver: Effect<RMakeDriver, EMakeDriver, CacheDriver<EDriver, A>>
+  driver: CacheDriver<EDriver, A>
   ops?: EffectSource<never, EOps, CacheOp<A>>
   onMiss: (id: string) => Effect<never, EMiss, A>
-}) =>
-  Do(($) => {
-    const driver = $(makeDriver)
+}) => {
+  const sync = ops.tap((op): Effect<never, EDriver, void> => {
+    switch (op.op) {
+      case "create":
+      case "update":
+        return driver.set(op.resourceId, op.resource)
 
-    const sync = ops.tap((op): Effect<never, EDriver, void> => {
-      switch (op.op) {
-        case "create":
-        case "update":
-          return driver.set(op.resourceId, op.resource)
-
-        case "delete":
-          return driver.delete(op.resourceId)
-      }
-    }).runDrain
-
-    return {
-      ...driver,
-      get: (id: string) =>
-        driver
-          .get(id)
-          .someOrElseEffect(() => onMiss(id).tap((a) => driver.set(id, a))),
-      run: sync.zipPar(driver.run).asUnit,
+      case "delete":
+        return driver.delete(op.resourceId)
     }
-  })
+  }).runDrain
+
+  return {
+    ...driver,
+    get: (id: string) =>
+      driver
+        .get(id)
+        .someOrElseEffect(() => onMiss(id).tap((a) => driver.set(id, a))),
+    run: sync.zipPar(driver.run).asUnit,
+  }
+}
 
 export class CacheMissError {
   readonly _tag = "CacheMissError"

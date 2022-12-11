@@ -11,11 +11,7 @@ export const run =
     postHandler: (
       effect: Effect<
         R | DiscordREST | Discord.Interaction,
-        | E
-        | Http.FetchError
-        | Http.StatusCodeError
-        | Http.JsonParseError
-        | DefinitionNotFound,
+        E | FetchError | StatusCodeError | JsonParseError | DefinitionNotFound,
         void
       >,
     ) => Effect<R2, E2, void>,
@@ -27,7 +23,7 @@ export const run =
         splitDefinitions(ix.definitions)
 
       const gateway = $(Effect.service(Gateway.DiscordGateway))
-      const { routes: rest } = $(Effect.service(DiscordREST))
+      const rest = $(Effect.service(DiscordREST))
 
       const application = $(
         rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),

@@ -10,8 +10,7 @@ export {
   BadWebhookSignature,
 } from "./Interactions/webhook.js"
 
-export const MemoryRateLimit =
-  RateLimit.LiveMemoryRateLimitStore > RateLimit.LiveRateLimiter
+export const MemoryRateLimit = LiveMemoryRateLimitStore > LiveRateLimiter
 
 export const MemoryREST = (MemoryRateLimit + LiveHttp) >> LiveDiscordREST
 

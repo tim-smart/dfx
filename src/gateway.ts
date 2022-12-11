@@ -8,12 +8,10 @@ export * as DiscordWS from "./DiscordGateway/DiscordWS/index.js"
 export * as Shard from "./DiscordGateway/Shard/index.js"
 export * as ShardStore from "./DiscordGateway/ShardStore/index.js"
 export * as Gateway from "./DiscordGateway/index.js"
-export * as CacheOps from "./Cache/gateway.js"
 export * as CachePrelude from "./Cache/prelude.js"
 export { run as runIx } from "./Interactions/gateway.js"
 
-export const MemoryRateLimit =
-  RateLimit.LiveMemoryRateLimitStore > RateLimit.LiveRateLimiter
+export const MemoryRateLimit = LiveMemoryRateLimitStore > LiveRateLimiter
 
 export const MemoryREST = (LiveHttp + MemoryRateLimit) >> LiveDiscordREST
 

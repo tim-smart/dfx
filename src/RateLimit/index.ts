@@ -63,6 +63,3 @@ const makeLimiter = Do(($) => {
 export interface RateLimiter extends Success<typeof makeLimiter> {}
 export const RateLimiter = Tag<RateLimiter>()
 export const LiveRateLimiter = Layer.fromEffect(RateLimiter)(makeLimiter)
-
-export const maybeWait = (key: string, window: Duration, limit: number) =>
-  Effect.serviceWithEffect(RateLimiter)((a) => a.maybeWait(key, window, limit))

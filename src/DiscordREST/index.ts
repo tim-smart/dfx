@@ -4,12 +4,12 @@ import { rateLimitFromHeaders, routeFromConfig, retryAfter } from "./utils.js"
 import Pkg from "../package.json" assert { type: "json" }
 
 const make = Do(($) => {
-  const http = $(Effect.service(Http.Http))
+  const http = $(Effect.service(Http))
   const { token, rest } = $(Effect.service(Config.DiscordConfig))
 
   const log = $(Effect.service(Log.Log))
-  const store = $(Effect.service(RateLimit.RateLimitStore))
-  const { maybeWait } = $(Effect.service(RateLimit.RateLimiter))
+  const store = $(Effect.service(RateLimitStore))
+  const { maybeWait } = $(Effect.service(RateLimiter))
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
@@ -47,7 +47,7 @@ const make = Do(($) => {
       const route = routeFromConfig(path, init)
       const maybeBucket = $(store.getBucketForRoute(route))
       const bucket = maybeBucket.getOrElse(
-        (): RateLimit.BucketDetails => ({
+        (): BucketDetails => ({
           key: `?.${route}`,
           resetAfter: 5000,
           limit: 1,
@@ -91,7 +91,7 @@ const make = Do(($) => {
     init: RequestInit = {},
   ): Effect<
     never,
-    Http.FetchError | Http.StatusCodeError | Http.JsonParseError,
+    FetchError | StatusCodeError | JsonParseError,
     ResponseWithData<A>
   > =>
     Do(($) => {
@@ -189,7 +189,7 @@ const make = Do(($) => {
     },
   )
 
-  return { request, routes }
+  return { request, ...routes }
 })
 
 export interface DiscordREST extends Success<typeof make> {}

@@ -6,7 +6,7 @@ import * as Utils from "./utils.js"
 export const make = (shard: [id: number, count: number]) =>
   Do(($) => {
     const { token, gateway } = $(Effect.service(Config.DiscordConfig))
-    const limiter = $(Effect.service(RateLimit.RateLimiter))
+    const limiter = $(Effect.service(RateLimiter))
 
     const outboundQueue = $(Queue.unbounded<DiscordWS.Message>())
     const outbound = outboundQueue

@@ -1,12 +1,12 @@
 export interface ResponseWithData<A> {
   response: Response
-  json: Effect<never, Http.JsonParseError, A>
+  json: Effect<never, JsonParseError, A>
   text: Effect<never, never, string>
-  blob: Effect<never, Http.BlobError, Blob>
+  blob: Effect<never, BlobError, Blob>
 }
 
 export type RestResponse<T> = Effect<
   never,
-  Http.FetchError | Http.StatusCodeError | Http.JsonParseError,
+  FetchError | StatusCodeError | JsonParseError,
   ResponseWithData<T>
 >

@@ -94,9 +94,18 @@ import type { HashSet } from "@fp-ts/data/HashSet"
  * @tsplus global
  */
 import {
-  RateLimit,
+  BucketDetails,
+  RateLimitStore,
+  LiveMemoryRateLimitStore,
+  RateLimiter,
+  LiveRateLimiter,
   Discord,
   Http,
+  LiveHttp,
+  FetchError,
+  StatusCodeError,
+  JsonParseError,
+  BlobError,
   DiscordREST,
   LiveDiscordREST,
   Ix,
