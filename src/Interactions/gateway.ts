@@ -6,6 +6,9 @@ export interface RunOpts {
   sync?: boolean
 }
 
+/**
+ * @tsplus pipeable dfx/InteractionBuilder runGateway
+ */
 export const run =
   <R, R2, E, E2>(
     postHandler: (

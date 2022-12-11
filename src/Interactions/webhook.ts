@@ -75,6 +75,9 @@ export interface HandleWebhookOpts<E> {
   error: (e: Cause<E>) => Effect<never, never, void>
 }
 
+/**
+ * @tsplus getter dfx/InteractionBuilder webhookHandler
+ */
 export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
   const handle = run(ix.definitions)
 
@@ -88,6 +91,9 @@ export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
   >) => handle(headers, body).flatMap(success).catchAllCause(error)
 }
 
+/**
+ * @tsplus getter dfx/InteractionBuilder simpleWebhookHandler
+ */
 export const makeSimpleHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
   const handle = run(ix.definitions)
 

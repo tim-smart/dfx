@@ -13,6 +13,9 @@ export {
 
 export { response as r } from "../Helpers/interactions.js"
 
+/**
+ * @tsplus type dfx/InteractionBuilder
+ */
 export class InteractionBuilder<R, E> {
   constructor(readonly definitions: D.InteractionDefinition<R, E>[]) {}
 
