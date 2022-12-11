@@ -21,7 +21,7 @@ export type CacheOp<T> =
   | { op: "update"; resourceId: string; resource: T }
   | { op: "delete"; resourceId: string }
 
-export const makeWithParent = <RPMiss, EOps, EDriver, EMiss, EPMiss, A>({
+export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   driver,
   ops = EffectSource.empty,
   onMiss,
@@ -32,7 +32,7 @@ export const makeWithParent = <RPMiss, EOps, EDriver, EMiss, EPMiss, A>({
   onMiss: (parentId: string, id: string) => Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
-  ) => Effect<RPMiss, EPMiss, [id: string, resource: A][]>
+  ) => Effect<never, EPMiss, [id: string, resource: A][]>
 }) => {
   const sync = ops.tap((op): Effect<never, EDriver, void> => {
     switch (op.op) {

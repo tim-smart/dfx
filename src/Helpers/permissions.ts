@@ -77,6 +77,7 @@ export const forChannel =
       )
     } else {
       const everyone = roles.find((role) => role.name === "@everyone")
+
       basePermissions =
         BigInt(everyone?.permissions || "0") | BigInt(memberOrRole.permissions)
       filteredOverwrites = overwrites.filter(
@@ -87,6 +88,7 @@ export const forChannel =
     if (hasAdmin(basePermissions)) {
       return ALL
     }
+
     return applyOverwrites(basePermissions)(filteredOverwrites)
   }
 
@@ -100,3 +102,23 @@ export const applyOverwrites =
         (permissions & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow),
       permissions,
     )
+
+interface RolesCache<E> {
+  getForParent: (
+    parentId: string,
+  ) => Effect<never, E, ReadonlyMap<string, Discord.Role>>
+}
+
+export const hasInChannel =
+  <E>(rolesCache: RolesCache<E>, permission: bigint) =>
+  (
+    channel: Discord.Channel,
+    memberOrRole: Discord.GuildMember | Discord.Role,
+  ) =>
+    Do(($) => {
+      const roles = $(rolesCache.getForParent(channel.guild_id!))
+      const channelPerms = forChannel([...roles.values()])(channel)(
+        memberOrRole,
+      )
+      return has(permission)(channelPerms)
+    })
