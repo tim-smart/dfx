@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.20.0](https://github.com/tim-smart/dfx/compare/dfx@0.19.0...dfx@0.20.0) (2022-12-11)
+
+
+### Features
+
+* add hasInGuild permissions helper ([a1472df](https://github.com/tim-smart/dfx/commit/a1472dff4f252f75883f201b90d85e5de9788bf8))
+
+
+
+
+
 # [0.19.0](https://github.com/tim-smart/dfx/compare/dfx@0.18.2...dfx@0.19.0) (2022-12-11)
 
 
