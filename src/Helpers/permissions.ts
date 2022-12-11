@@ -122,3 +122,16 @@ export const hasInChannel =
       )
       return has(permission)(channelPerms)
     })
+
+export const hasInGuild =
+  <E>(rolesCache: RolesCache<E>, permission: bigint) =>
+  (guildId: Discord.Snowflake, member: Discord.GuildMember) =>
+    Do(($) => {
+      const roles = $(rolesCache.getForParent(guildId))
+      const hasPerm = has(permission)
+
+      return member.roles.some((id) => {
+        const role = roles.get(id)
+        return role ? hasPerm(role.permissions) : false
+      })
+    })
