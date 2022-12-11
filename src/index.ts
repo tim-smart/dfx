@@ -2,7 +2,7 @@ export * as Discord from "./types.js"
 
 export * as Config from "./DiscordConfig/index.js"
 export * as Http from "./Http/index.js"
-export { DiscordREST, LiveDiscordREST, rest } from "./DiscordREST/index.js"
+export { DiscordREST, LiveDiscordREST } from "./DiscordREST/index.js"
 export * as Ix from "./Interactions/index.js"
 export * as Log from "./Log/index.js"
 export * as RateLimit from "./RateLimit/index.js"

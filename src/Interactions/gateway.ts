@@ -26,6 +26,9 @@ export const run =
       const { GlobalApplicationCommand, GuildApplicationCommand } =
         splitDefinitions(ix.definitions)
 
+      const gateway = $(Effect.service(Gateway.DiscordGateway))
+      const { routes: rest } = $(Effect.service(DiscordREST))
+
       const application = $(
         rest.getCurrentBotApplicationInformation().flatMap((a) => a.json),
       )
@@ -38,7 +41,7 @@ export const run =
       )
 
       const guildSync = GuildApplicationCommand.length
-        ? Gateway.handleDispatch("GUILD_CREATE", (a) =>
+        ? gateway.handleDispatch("GUILD_CREATE", (a) =>
             rest.bulkOverwriteGuildApplicationCommands(
               application.id,
               a.id,
@@ -49,7 +52,7 @@ export const run =
 
       const handle = handlers(ix.definitions)
 
-      const run = Gateway.handleDispatch("INTERACTION_CREATE", (i) =>
+      const run = gateway.handleDispatch("INTERACTION_CREATE", (i) =>
         pipe(
           handle[i.type](i).tap((r) =>
             rest.createInteractionResponse(i.id, i.token, r),

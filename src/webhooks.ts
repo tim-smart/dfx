@@ -1,3 +1,4 @@
+import { LiveHttp } from "./Http/index.js"
 import { makeConfigLayer, MakeConfigOpts } from "./Interactions/webhook.js"
 
 export {
@@ -9,10 +10,10 @@ export {
   BadWebhookSignature,
 } from "./Interactions/webhook.js"
 
-export const LiveRateLimit =
+export const MemoryRateLimit =
   RateLimit.LiveMemoryRateLimitStore > RateLimit.LiveRateLimiter
 
-export const LiveREST = LiveRateLimit > LiveDiscordREST
+export const MemoryREST = (MemoryRateLimit + LiveHttp) >> LiveDiscordREST
 
 export const make = (
   config: Config.MakeOpts & MakeConfigOpts,
@@ -21,7 +22,8 @@ export const make = (
   const LiveWebhook = makeConfigLayer(config)
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
   const LiveConfig = Config.makeLayer(config)
-  const LiveEnv = LiveLog + LiveConfig + LiveWebhook > LiveREST
+  const LiveEnv =
+    (LiveLog + LiveConfig) >> (MemoryREST + LiveWebhook + MemoryRateLimit)
 
   return LiveEnv
 }

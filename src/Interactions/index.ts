@@ -23,6 +23,13 @@ export class InteractionBuilder<R, E> {
     ])
   }
 
+  concat<R1, E1>(builder: InteractionBuilder<R1, E1>) {
+    return new InteractionBuilder<R | R1, E | E1>([
+      ...this.definitions,
+      ...builder.definitions,
+    ])
+  }
+
   get syncGlobal() {
     const commands = this.definitions
       .filter(
@@ -31,14 +38,16 @@ export class InteractionBuilder<R, E> {
       )
       .map((c) => c.command)
 
-    return rest
-      .getCurrentBotApplicationInformation()
-      .flatMap((r) => r.json)
-      .flatMap((app) =>
-        rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-          body: JSON.stringify(commands),
-        }),
-      )
+    return Effect.serviceWithEffect(DiscordREST)(({ routes }) =>
+      routes
+        .getCurrentBotApplicationInformation()
+        .flatMap((r) => r.json)
+        .flatMap((app) =>
+          routes.bulkOverwriteGlobalApplicationCommands(app.id, {
+            body: JSON.stringify(commands),
+          }),
+        ),
+    )
   }
 
   syncGuild(appId: Discord.Snowflake, guildId: Discord.Snowflake) {
@@ -49,10 +58,12 @@ export class InteractionBuilder<R, E> {
       )
       .map((c) => c.command)
 
-    return rest.bulkOverwriteGuildApplicationCommands(
-      appId,
-      guildId,
-      commands as any,
+    return Effect.serviceWithEffect(DiscordREST)(({ routes }) =>
+      routes.bulkOverwriteGuildApplicationCommands(
+        appId,
+        guildId,
+        commands as any,
+      ),
     )
   }
 }

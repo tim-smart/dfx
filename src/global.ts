@@ -95,7 +95,6 @@ import type { HashSet } from "@fp-ts/data/HashSet"
  */
 import {
   RateLimit,
-  rest,
   Discord,
   Http,
   DiscordREST,

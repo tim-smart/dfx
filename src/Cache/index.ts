@@ -22,9 +22,7 @@ export type CacheOp<T> =
   | { op: "delete"; resourceId: string }
 
 export const makeParent = <
-  ROps,
   RMakeDriver,
-  RMiss,
   RPMiss,
   EOps,
   EMakeDriver,
@@ -39,8 +37,8 @@ export const makeParent = <
   onParentMiss,
 }: {
   driver: Effect<RMakeDriver, EMakeDriver, ParentCacheDriver<EDriver, A>>
-  ops?: EffectSource<ROps, EOps, ParentCacheOp<A>>
-  onMiss: (parentId: string, id: string) => Effect<RMiss, EMiss, A>
+  ops?: EffectSource<never, EOps, ParentCacheOp<A>>
+  onMiss: (parentId: string, id: string) => Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
   ) => Effect<RPMiss, EPMiss, [id: string, resource: A][]>
@@ -86,23 +84,14 @@ export const makeParent = <
     }
   })
 
-export const make = <
-  ROps,
-  RMakeDriver,
-  RMiss,
-  EOps,
-  EMakeDriver,
-  EDriver,
-  EMiss,
-  A,
->({
+export const make = <RMakeDriver, EOps, EMakeDriver, EDriver, EMiss, A>({
   driver: makeDriver,
   ops = EffectSource.empty,
   onMiss,
 }: {
   driver: Effect<RMakeDriver, EMakeDriver, CacheDriver<EDriver, A>>
-  ops?: EffectSource<ROps, EOps, CacheOp<A>>
-  onMiss: (id: string) => Effect<RMiss, EMiss, A>
+  ops?: EffectSource<never, EOps, CacheOp<A>>
+  onMiss: (id: string) => Effect<never, EMiss, A>
 }) =>
   Do(($) => {
     const driver = $(makeDriver)

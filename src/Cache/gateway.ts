@@ -1,12 +1,12 @@
 import { ParentCacheOp, CacheOp } from "./index.js"
 
-export interface OpsSourceOpts<R, E, A> {
+export interface OpsSourceOpts<E, A> {
   id: (a: A) => string
-  fromParent: EffectSource<R, E, [parentId: string, resources: A[]]>
-  create: EffectSource<R, E, [parentId: string, resource: A]>
-  update: EffectSource<R, E, [parentId: string, resource: A]>
-  remove: EffectSource<R, E, [parentId: string, id: string]>
-  parentRemove: EffectSource<R, E, string>
+  fromParent: EffectSource<never, E, [parentId: string, resources: A[]]>
+  create: EffectSource<never, E, [parentId: string, resource: A]>
+  update: EffectSource<never, E, [parentId: string, resource: A]>
+  remove: EffectSource<never, E, [parentId: string, id: string]>
+  parentRemove: EffectSource<never, E, string>
 }
 
 export const source = <R, E, T>({
@@ -16,7 +16,7 @@ export const source = <R, E, T>({
   update,
   remove,
   parentRemove,
-}: OpsSourceOpts<R, E, T>) => {
+}: OpsSourceOpts<E, T>) => {
   const fromParentOps = fromParent.chain(([parentId, a]) =>
     EffectSource.fromIterable(
       a.map(
@@ -70,11 +70,11 @@ export const source = <R, E, T>({
     .merge(parentRemoveOps)
 }
 
-export interface NonParentOpsSourceOpts<R, E, A> {
+export interface NonParentOpsSourceOpts<E, A> {
   id: (a: A) => string
-  create: EffectSource<R, E, A>
-  update: EffectSource<R, E, A>
-  remove: EffectSource<R, E, string>
+  create: EffectSource<never, E, A>
+  update: EffectSource<never, E, A>
+  remove: EffectSource<never, E, string>
 }
 
 export const nonParentSource = <R, E, T>({
@@ -82,7 +82,7 @@ export const nonParentSource = <R, E, T>({
   create,
   update,
   remove,
-}: NonParentOpsSourceOpts<R, E, T>) => {
+}: NonParentOpsSourceOpts<E, T>) => {
   const createOps = create.map(
     (resource): CacheOp<T> => ({
       op: "create",
@@ -110,50 +110,57 @@ export const nonParentSource = <R, E, T>({
 }
 
 // Guilds
-export const guilds = nonParentSource({
-  id: (g: Discord.Guild) => g.id,
-  create: Gateway.fromDispatch("GUILD_CREATE").map((g) => ({
-    ...g,
-    channels: [],
-    roles: [],
-    emojis: [],
-    members: [],
-  })),
-  update: Gateway.fromDispatch("GUILD_UPDATE"),
-  remove: Gateway.fromDispatch("GUILD_DELETE").map((a) => a.id),
+export const guilds = Do(($) => {
+  const gateway = $(Effect.service(Gateway.DiscordGateway))
+
+  return nonParentSource({
+    id: (g: Discord.Guild) => g.id,
+    create: gateway.fromDispatch("GUILD_CREATE").map((g) => ({
+      ...g,
+      channels: [],
+      roles: [],
+      emojis: [],
+      members: [],
+    })),
+    update: gateway.fromDispatch("GUILD_UPDATE"),
+    remove: gateway.fromDispatch("GUILD_DELETE").map((a) => a.id),
+  })
 })
 
 // Channels
-export const channels = source({
-  id: (a: Discord.Channel) => a.id,
-  fromParent: Gateway.fromDispatch("GUILD_CREATE").map((g) => [
-    g.id,
-    g.channels,
-  ]),
-  create: Gateway.fromDispatch("CHANNEL_CREATE").map((c) => [c.guild_id!, c]),
-  update: Gateway.fromDispatch("CHANNEL_UPDATE").map((c) => [c.guild_id!, c]),
-  remove: Gateway.fromDispatch("CHANNEL_DELETE").map((a) => [
-    a.guild_id!,
-    a.id,
-  ]),
-  parentRemove: Gateway.fromDispatch("GUILD_DELETE").map((g) => g.id),
+export const channels = Do(($) => {
+  const gateway = $(Effect.service(Gateway.DiscordGateway))
+  return source({
+    id: (a: Discord.Channel) => a.id,
+    fromParent: gateway
+      .fromDispatch("GUILD_CREATE")
+      .map((g) => [g.id, g.channels]),
+    create: gateway.fromDispatch("CHANNEL_CREATE").map((c) => [c.guild_id!, c]),
+    update: gateway.fromDispatch("CHANNEL_UPDATE").map((c) => [c.guild_id!, c]),
+    remove: gateway
+      .fromDispatch("CHANNEL_DELETE")
+      .map((a) => [a.guild_id!, a.id]),
+    parentRemove: gateway.fromDispatch("GUILD_DELETE").map((g) => g.id),
+  })
 })
 
 // Roles
-export const roles = source({
-  id: (a: Discord.Role) => a.id,
-  fromParent: Gateway.fromDispatch("GUILD_CREATE").map((g) => [g.id, g.roles]),
-  create: Gateway.fromDispatch("GUILD_ROLE_CREATE").map((r) => [
-    r.guild_id,
-    r.role,
-  ]),
-  update: Gateway.fromDispatch("GUILD_ROLE_UPDATE").map((r) => [
-    r.guild_id,
-    r.role,
-  ]),
-  remove: Gateway.fromDispatch("GUILD_ROLE_DELETE").map((a) => [
-    a.guild_id,
-    a.role_id,
-  ]),
-  parentRemove: Gateway.fromDispatch("GUILD_DELETE").map((g) => g.id),
+export const roles = Do(($) => {
+  const gateway = $(Effect.service(Gateway.DiscordGateway))
+  return source({
+    id: (a: Discord.Role) => a.id,
+    fromParent: gateway
+      .fromDispatch("GUILD_CREATE")
+      .map((g) => [g.id, g.roles]),
+    create: gateway
+      .fromDispatch("GUILD_ROLE_CREATE")
+      .map((r) => [r.guild_id, r.role]),
+    update: gateway
+      .fromDispatch("GUILD_ROLE_UPDATE")
+      .map((r) => [r.guild_id, r.role]),
+    remove: gateway
+      .fromDispatch("GUILD_ROLE_DELETE")
+      .map((a) => [a.guild_id, a.role_id]),
+    parentRemove: gateway.fromDispatch("GUILD_DELETE").map((g) => g.id),
+  })
 })

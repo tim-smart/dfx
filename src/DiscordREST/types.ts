@@ -1,5 +1,3 @@
-import { DiscordREST } from "./index.js"
-
 export interface ResponseWithData<A> {
   response: Response
   json: Effect<never, Http.JsonParseError, A>
@@ -8,7 +6,7 @@ export interface ResponseWithData<A> {
 }
 
 export type RestResponse<T> = Effect<
-  DiscordREST,
+  never,
   Http.FetchError | Http.StatusCodeError | Http.JsonParseError,
   ResponseWithData<T>
 >

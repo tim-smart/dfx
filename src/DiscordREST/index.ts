@@ -1,9 +1,10 @@
 import { millis } from "@fp-ts/data/Duration"
-import { ResponseWithData } from "./types.js"
+import { ResponseWithData, RestResponse } from "./types.js"
 import { rateLimitFromHeaders, routeFromConfig, retryAfter } from "./utils.js"
 import Pkg from "../package.json" assert { type: "json" }
 
 const make = Do(($) => {
+  const http = $(Effect.service(Http.Http))
   const { token, rest } = $(Effect.service(Config.DiscordConfig))
 
   const log = $(Effect.service(Log.Log))
@@ -98,7 +99,7 @@ const make = Do(($) => {
       $(globalRateLimit)
 
       const response = $(
-        Http.requestWithJson<A>(`${rest.baseUrl}${path}`, {
+        http.requestWithJson<A>(`${rest.baseUrl}${path}`, {
           ...init,
           headers: {
             ...(init?.headers ?? {}),
@@ -146,16 +147,13 @@ const make = Do(($) => {
       return Effect.fail(e)
     })
 
-  return { request }
-})
-
-export interface DiscordREST extends Success<typeof make> {}
-export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST = Layer.fromEffect(DiscordREST)(make)
-
-export const rest = Discord.createRoutes<RequestInit>(
-  ({ method, url, params, options = {} }) =>
-    Effect.serviceWithEffect(DiscordREST)(({ request }) => {
+  const routes = Discord.createRoutes<RequestInit>(
+    <R, P>({
+      method,
+      url,
+      params,
+      options = {},
+    }: Discord.Route<P, RequestInit>): RestResponse<R> => {
       const hasBody = method !== "GET" && method !== "DELETE"
       let hasFormData = typeof (options?.body as any)?.append === "function"
       let body: BodyInit | undefined = undefined
@@ -188,5 +186,12 @@ export const rest = Discord.createRoutes<RequestInit>(
         headers,
         body,
       })
-    }),
-)
+    },
+  )
+
+  return { request, routes }
+})
+
+export interface DiscordREST extends Success<typeof make> {}
+export const DiscordREST = Tag<DiscordREST>()
+export const LiveDiscordREST = Layer.fromEffect(DiscordREST)(make)

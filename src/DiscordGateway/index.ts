@@ -1,4 +1,4 @@
-import { spawn } from "./Sharder/index.js"
+import { Sharder } from "./Sharder/index.js"
 
 const fromDispatchFactory =
   <R, E>(
@@ -22,14 +22,13 @@ const handleDispatchFactory =
       .chainPar((a) => EffectSource.fromEffect(handle(a.d as any))).runDrain
 
 export const make = Do(($) => {
-  const shards = $(spawn.share)
-  const raw = $(shards.chainPar((s) => s.raw).share)
-  const dispatch = $(shards.chainPar((s) => s.dispatch).share)
+  const sharder = $(Effect.service(Sharder))
+  const raw = $(sharder.shards.chainPar((s) => s.raw).share)
+  const dispatch = $(sharder.shards.chainPar((s) => s.dispatch).share)
   const fromDispatch = fromDispatchFactory(dispatch)
   const handleDispatch = handleDispatchFactory(dispatch)
 
   return {
-    shards,
     raw,
     dispatch,
     fromDispatch,
@@ -40,19 +39,3 @@ export const make = Do(($) => {
 export interface DiscordGateway extends Success<typeof make> {}
 export const DiscordGateway = Tag<DiscordGateway>()
 export const LiveDiscordGateway = Layer.fromEffect(DiscordGateway)(make)
-
-export const fromDispatch = <K extends keyof Discord.ReceiveEvents>(event: K) =>
-  Effect.serviceWith(DiscordGateway)((a) => a.fromDispatch(event)).unwrap
-
-export const handleDispatch = <
-  K extends keyof Discord.ReceiveEvents,
-  R1,
-  E1,
-  A,
->(
-  event: K,
-  handle: (event: Discord.ReceiveEvents[K]) => Effect<R1, E1, A>,
-) =>
-  Effect.serviceWithEffect(DiscordGateway)((a) =>
-    a.handleDispatch(event, handle),
-  )
