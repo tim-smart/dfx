@@ -28,7 +28,7 @@
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer/compiler/typescript.tgz"
   },
   "dependencies": {
-    "callbag-effect-ts": "1.0.0-alpha.20",
+    "callbag-effect-ts": "1.0.0-alpha.22",
     "ts-toolbelt": "^9.6.0",
     "tweetnacl": "^1.0.3"
   },
