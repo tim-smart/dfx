@@ -1,4 +1,4 @@
-const VERSION = 9
+const VERSION = 10
 
 export interface DiscordConfig {
   token: string
