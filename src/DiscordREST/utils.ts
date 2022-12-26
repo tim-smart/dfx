@@ -1,3 +1,5 @@
+import { Duration, Option } from "dfx/_common"
+
 const majorResources = ["channels", "guilds", "webhooks"] as const
 
 export const routeFromConfig = (path: string, init: RequestInit) => {
@@ -16,7 +18,7 @@ export const routeFromConfig = (path: string, init: RequestInit) => {
 }
 
 export const numberHeader = (headers: Headers) => (key: string) =>
-  Maybe.fromNullable(headers.get(key))
+  Option.fromNullable(headers.get(key))
     .map(parseFloat)
     .filter((n) => !isNaN(n))
 
@@ -26,8 +28,8 @@ export const retryAfter = (headers: Headers) =>
     .map(Duration.seconds)
 
 export const rateLimitFromHeaders = (headers: Headers) =>
-  Maybe.struct({
-    bucket: Maybe.fromNullable(headers.get("x-ratelimit-bucket")),
+  Option.struct({
+    bucket: Option.fromNullable(headers.get("x-ratelimit-bucket")),
     retryAfter: retryAfter(headers),
     limit: numberHeader(headers)("x-ratelimit-limit"),
     remaining: numberHeader(headers)("x-ratelimit-remaining"),

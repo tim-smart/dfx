@@ -1,16 +1,12 @@
 lockfileVersion: 5.4
 
-overrides:
-  '@effect/io': ^0.0.33
-  '@fp-ts/data': ^0.0.25
-
 specifiers:
-  '@effect/io': ^0.0.33
-  '@fp-ts/data': ^0.0.25
+  '@effect/io': ~0.0.41
+  '@effect/stream': ~0.0.3
+  '@fp-ts/data': ~0.0.30
   '@tim-smart/discord-api-docs-parser': ^0.4.1
   '@types/ws': ^8.5.3
   bufferutil: ^4.0.7
-  callbag-effect-ts: 1.0.0-alpha.22
   isomorphic-ws: ^5.0.0
   lerna: ^6.1.0
   ts-toolbelt: ^9.6.0
@@ -20,7 +16,9 @@ specifiers:
   ws: ^8.11.0
 
 dependencies:
-  callbag-effect-ts: 1.0.0-alpha.22_yesvqy6l7grkfudu64wwdyrn2u
+  '@effect/io': 0.0.42
+  '@effect/stream': 0.0.3
+  '@fp-ts/data': 0.0.30
   ts-toolbelt: 9.6.0
   tweetnacl: 1.0.3
 
@@ -31,8 +29,6 @@ optionalDependencies:
   ws: 8.11.0_3cxu5zja4e2r5wmvge7mdcljwq
 
 devDependencies:
-  '@effect/io': 0.0.33
-  '@fp-ts/data': 0.0.25
   '@tim-smart/discord-api-docs-parser': 0.4.1
   '@types/ws': 8.5.3
   lerna: 6.1.0
@@ -61,19 +57,39 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect/io/0.0.33:
-    resolution: {integrity: sha512-FUItwTnlian6JuhZQIayyjztL3CWX1mTBcNm8AyWU6LuwLzXfJPoZONGn/3vwthTAqC/wwO1z2+b7/v3fbNvsw==}
+  /@effect/io/0.0.42:
+    resolution: {integrity: sha512-l6Mtm8KadL1pbV9BmyO7q0sz2oZn1mmSdLOYLtKe3A74t8h6+zEVB7XcUvTFa3U6wqtbg+sjxTT+FMM9k3o4rw==}
     dependencies:
-      '@fp-ts/core': 0.0.9
-      '@fp-ts/data': 0.0.25
+      '@fp-ts/core': 0.0.11
+      '@fp-ts/data': 0.0.30
+    dev: false
 
-  /@fp-ts/core/0.0.9:
-    resolution: {integrity: sha512-FuXKPHTEvvgxV3LulGJXkSpAghovh7wLxux+Pm9LKefC0gtZZQ4OajTjTK5RsQtpyKIsAn26PwdG6W6zksF/UA==}
-
-  /@fp-ts/data/0.0.25:
-    resolution: {integrity: sha512-mlZhwRJxT03gVOEbSX/zyjMMJWM5MXM/FnK5o9QXKJTWojiSVVALYoLah+q3ZbnCmWqcmEKgTG8eYw45EESl/g==}
+  /@effect/stm/0.0.6:
+    resolution: {integrity: sha512-E0rgPfA4BX87xizZAoqPqTp7ctxqIB/ti9Emg/uQslkZY/knVVv6VXlM+OZbg3DmmjgxC80+T9fhgBfdDf3DgQ==}
     dependencies:
-      '@fp-ts/core': 0.0.9
+      '@effect/io': 0.0.42
+      '@fp-ts/core': 0.0.11
+      '@fp-ts/data': 0.0.30
+    dev: false
+
+  /@effect/stream/0.0.3:
+    resolution: {integrity: sha512-7uX5ViddHimNMfyNsCWK73cuX5t528uCIPrygreLc8Fd5vlawhj8bAVQ8N2YzHznXuV29KYSVNoNi7bUSmdsAg==}
+    dependencies:
+      '@effect/io': 0.0.42
+      '@effect/stm': 0.0.6
+      '@fp-ts/core': 0.0.11
+      '@fp-ts/data': 0.0.30
+    dev: false
+
+  /@fp-ts/core/0.0.11:
+    resolution: {integrity: sha512-BCAJBYzghwoJpcUOARJ1tui50HoYJFlV2pJlVMlsEkDFhD8MTtq8xQVpZCRF66RmtkxtGBYINCQ+5H1lRaL35Q==}
+    dev: false
+
+  /@fp-ts/data/0.0.30:
+    resolution: {integrity: sha512-nMRNrNDn6ebleNtWI8YKf7+VzkLjaSedeU84KMttBrX5MlFIcbrLzn+OzspY8q46kkqBJTnmc3tVXxpU0p70Tw==}
+    dependencies:
+      '@fp-ts/core': 0.0.11
+    dev: false
 
   /@gar/promisify/1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -1497,100 +1513,6 @@ packages:
     transitivePeerDependencies:
       - bluebird
     dev: true
-
-  /callbag-buffer-time/1.0.0:
-    resolution: {integrity: sha512-Y9XqJWqs0M9gTvn8jQit+pXDYxrzh7KqIgN9MhwT5NzQGgEACSCzYKQpjT6p9ejfnimFjHWQC9+bifjIKnKxDQ==}
-    dependencies:
-      callbag-buffer: 1.0.0
-      callbag-interval: 1.2.0
-    dev: false
-
-  /callbag-buffer/1.0.0:
-    resolution: {integrity: sha512-o2QIDeWbwSoBxI7oC9WABNRX38J4N+oCH9vbAvte1jssbie/kaRG/X4fBeGoMsocR4wYNk23NTn3DMqY+C5fgA==}
-    dev: false
-
-  /callbag-concat/1.2.1:
-    resolution: {integrity: sha512-iIC4FCUF7sKnt4gDKHNjMRHekebdaA1/udjON/mCLg31EzzTO/dE9nfxpcj+G/63KopFXVQdZKQDsu7UOYGpPg==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-effect-ts/1.0.0-alpha.22_yesvqy6l7grkfudu64wwdyrn2u:
-    resolution: {integrity: sha512-qRSTXzKHrj0MZp1hwhrZUredmFGVhwLCzvT3rXDLMFeGRZcEPaDbsp0SFIwqjwzPIsD73RrNbHCpjZ8uDmhv/A==}
-    peerDependencies:
-      '@effect/io': '*'
-      '@fp-ts/data': '*'
-    dependencies:
-      '@effect/io': 0.0.33
-      '@fp-ts/data': 0.0.25
-      strict-callbag-basics: 1.0.2
-    dev: false
-
-  /callbag-filter/1.1.0:
-    resolution: {integrity: sha512-m6ZHEd9JYHBAYJAdeqgt3gIKSoZOizfJTxIPd8EvDwY8Dr44+slm090WvCrrlz2SZoU8mCqpmZ8TFrGKXHo/yw==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-flatten/1.7.0:
-    resolution: {integrity: sha512-1nekVS5GwI38CRcIzmLFRFmXeoHkLG/SkUAwwvarwL4srmHW994UzFAcwwQbZjI9gudqfVDvY+LnopNb4Dtc4w==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-from-iter/1.3.0:
-    resolution: {integrity: sha512-iBc6O6DYDWQBjlOZzdU/SbJofK0pN3TjNWC4fDIQePBk5FWCZKVll/coXiVU6gpwbBaS0Om/d/PVbVK8Ki17Ew==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-from-obs/1.2.0:
-    resolution: {integrity: sha512-InhdPC6P4Gdpg7nuXSkocDFlb+//sbwCrVCYhxOHhSVm1gDcw/zSA+IF1gHdYtk4RQKKaCymUFCkVVUVSRThVQ==}
-    dependencies:
-      symbol-observable: 1.2.0
-    dev: false
-
-  /callbag-interval/1.2.0:
-    resolution: {integrity: sha512-jo2UQZ+vvGWvCCykqKzL7ixSoTmvzDysQGTQkI3qQF28weRSMSmH5k86qmm7ddfPW1yNczcL93uhGnWC5e34Og==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-scan/1.1.0:
-    resolution: {integrity: sha512-5Aw9LR8b4Fg/gC++lWrq9sXEqgO0c5Gk+HWaFhFoVqgujSUVRxFw+c4bLw1eExWrBX6OeBDbVZ/2rMr/E0q9cQ==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-share/1.3.0:
-    resolution: {integrity: sha512-KqM16UzlvK3DcYRsT6Myabm4GqvsMQIoGLWmawVVoMAw3534O0XCa+6Sai0mjFKenC3tqTacyChlusoZoZmdsg==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-start-with/3.1.0:
-    resolution: {integrity: sha512-jeEvUoZqZj8ZVMgST7ci9wCH33e9vaARQCFrPy/8et0HYL6RNzgwi3BmfcIy63d6vpqGbciYex/3T4TiFxGgyA==}
-    dev: false
-
-  /callbag-take-while/2.0.0:
-    resolution: {integrity: sha512-c6nnV14Xh/QEzkD6dgFSitMs0moh4ejF0zSf5SyHxNZdOjJtO+B9G9FKH7GCKPI9q485sjJ51/WcZLCloY1RdA==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-take/1.5.0:
-    resolution: {integrity: sha512-8aOxp+gzfVQtDe+tk9PhKbC9QR9Vap4KFA0xccUiXFK9VjIS0fSt/Yi454viPpMhJkhRcx1BsjyF34Cj57W89A==}
-    dependencies:
-      callbag: 1.5.1
-    dev: false
-
-  /callbag-to-async-iterable/1.0.0:
-    resolution: {integrity: sha512-+N53OaDKIq/LfZf20IkoiltbYx/8RI6d+j8A9vaYP5/VsoxXFKscz9Mz6JaBprb1I/PVq1b9CKOrTe7ESxiPVw==}
-    dev: false
-
-  /callbag/1.5.1:
-    resolution: {integrity: sha512-FGpkXYZ018Wpeevhsp7R2iABZuDamg54TaObKI48JBNGzMlkb9bRwS54eR0sgFksQpspsCan4iaaVbAbxm9MIg==}
-    dev: false
 
   /callsites/3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
@@ -4300,31 +4222,6 @@ packages:
       minipass: 3.3.6
     dev: true
 
-  /strict-callbag-basics/1.0.2:
-    resolution: {integrity: sha512-bJKwgmG6j8+8pTXJj0mVcuaalZsvuQ9EPvXVyzBjqwciHl0NBW2tJSqt/9xhJKYfzgbQbq/3aKbrG1FNvSh4Cg==}
-    dependencies:
-      callbag-buffer: 1.0.0
-      callbag-buffer-time: 1.0.0
-      callbag-concat: 1.2.1
-      callbag-filter: 1.1.0
-      callbag-flatten: 1.7.0
-      callbag-from-iter: 1.3.0
-      callbag-from-obs: 1.2.0
-      callbag-interval: 1.2.0
-      callbag-scan: 1.1.0
-      callbag-share: 1.3.0
-      callbag-start-with: 3.1.0
-      callbag-take: 1.5.0
-      callbag-take-while: 2.0.0
-      callbag-to-async-iterable: 1.0.0
-      strict-callbag: 1.0.0
-      symbol-observable: 4.0.0
-    dev: false
-
-  /strict-callbag/1.0.0:
-    resolution: {integrity: sha512-V0ysCDVSM1Q5UVuTRNpkUnKzdRnv0vFb5H1ByZROtc+Iou/yCss4yK4wvUlI4wxXTzmUCFzU6fS0cZDGY2ypiQ==}
-    dev: false
-
   /string-width/4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
@@ -4407,16 +4304,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
-
-  /symbol-observable/1.2.0:
-    resolution: {integrity: sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==}
-    engines: {node: '>=0.10.0'}
-    dev: false
-
-  /symbol-observable/4.0.0:
-    resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}
-    engines: {node: '>=0.10'}
-    dev: false
 
   /tar-stream/2.2.0:
     resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}

@@ -1,3 +1,5 @@
+import { Discord } from "dfx/_common"
+
 export const heartbeat = (d: Discord.Heartbeat): Discord.GatewayPayload => ({
   op: Discord.GatewayOpcode.HEARTBEAT,
   d,

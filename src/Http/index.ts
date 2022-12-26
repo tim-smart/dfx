@@ -1,6 +1,20 @@
+import {
+  Context,
+  Discord,
+  Duration,
+  Effect,
+  Layer,
+  Option,
+  Ref,
+  Schedule,
+  Stream,
+  pipe,
+  flow,
+} from "dfx/_common"
+
 const make = () => {
   const request = (url: URL | string, init: RequestInit = {}) =>
-    Effect.tryCatchPromiseAbort(
+    Effect.tryCatchPromiseInterrupt(
       (signal) =>
         fetch(url, {
           ...init,
@@ -27,7 +41,7 @@ const make = () => {
 }
 
 export interface Http extends ReturnType<typeof make> {}
-export const Http = Tag<Http>()
+export const Http = Context.Tag<Http>()
 export const LiveHttp = Layer.sync(Http)(make)
 
 export class FetchError {

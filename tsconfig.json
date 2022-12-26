@@ -15,6 +15,7 @@
     "tsPlusConfig": "./tsplus.config.json",
     "tsPlusTypes": [
       "./vendor/effect-io-tsplus.json",
+      "./vendor/effect-stream-tsplus.json",
       "./vendor/fp-ts-data-tsplus.json"
     ],
     "paths": {

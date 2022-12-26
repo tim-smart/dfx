@@ -1,13 +1,14 @@
-import { createParentDriver, createDriver } from "./driver.js"
+import { Duration, Effect, Option } from "dfx/_common"
+import { createDriver, createParentDriver } from "./driver.js"
 
 export interface MemoryTTLOpts {
   /** The approx. number of milliseconds to keep items */
-  ttl: Duration
+  ttl: Duration.Duration
 
   /**
    * How often items should be cleared.
    */
-  resolution?: Duration
+  resolution?: Duration.Duration
 
   /**
    * What sweep strategy to use.
@@ -92,7 +93,9 @@ const make = <T>({
     size: Effect.sync(() => items.size),
 
     get: (resourceId) =>
-      Effect.sync((): Maybe<T> => Maybe.fromNullable(getSync(resourceId))),
+      Effect.sync(
+        (): Option.Option<T> => Option.fromNullable(getSync(resourceId)),
+      ),
 
     refreshTTL: (id) =>
       Effect.sync(() => {
@@ -141,9 +144,13 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
       getForParent: (parentId) =>
         Do(($) => {
           const ids = parentIds.get(parentId)
-          if (!ids) return Maybe.none
+          if (!ids) return Option.none
 
-          const toGet: Effect<never, never, readonly [string, Maybe<T>]>[] = []
+          const toGet: Effect.Effect<
+            never,
+            never,
+            readonly [string, Option.Option<T>]
+          >[] = []
           ids.forEach((id) => {
             toGet.push(
               Do(($) => {
@@ -161,7 +168,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             a._tag === "Some" ? map.set(id, a.value) : map,
           )
 
-          return Maybe.some(map)
+          return Option.some(map)
         }),
 
       set: (parentId, resourceId, resource) =>
@@ -185,7 +192,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
           const ids = parentIds.get(parentId)
           parentIds.delete(parentId)
 
-          const effects: Effect<never, never, void>[] = []
+          const effects: Effect.Effect<never, never, void>[] = []
           if (ids) {
             ids.forEach((id) => {
               effects.push(store.delete(id))

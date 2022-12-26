@@ -1,3 +1,5 @@
+import { Context, Discord, Duration, Effect, flow, Layer } from "dfx/_common"
+
 const VERSION = 10
 
 export interface DiscordConfig {
@@ -6,7 +8,7 @@ export interface DiscordConfig {
     baseUrl: string
     globalRateLimit: {
       limit: number
-      window: Duration
+      window: Duration.Duration
     }
   }
   gateway: {
@@ -17,7 +19,7 @@ export interface DiscordConfig {
     identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export const DiscordConfig = Tag<DiscordConfig>()
+export const DiscordConfig = Context.Tag<DiscordConfig>()
 
 export interface MakeOpts {
   token: string
@@ -44,9 +46,3 @@ export const make = ({ token, rest, gateway }: MakeOpts): DiscordConfig => ({
 })
 
 export const makeLayer = flow(make, Layer.succeed(DiscordConfig))
-
-export const token = Effect.serviceWith(DiscordConfig)(({ token }) => token)
-export const rest = Effect.serviceWith(DiscordConfig)(({ rest }) => rest)
-export const gateway = Effect.serviceWith(DiscordConfig)(
-  ({ gateway }) => gateway,
-)

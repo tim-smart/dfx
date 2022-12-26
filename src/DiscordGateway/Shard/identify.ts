@@ -1,6 +1,8 @@
 import * as SendEvents from "./sendEvents.js"
 import * as OS from "os"
 import { opCode } from "./utils.js"
+import { Discord } from "dfx"
+import { Option, Ref, Stream } from "dfx/_common"
 
 export interface Options {
   token: string
@@ -10,8 +12,8 @@ export interface Options {
 }
 
 export interface Requirements {
-  latestReady: Ref<Maybe<Discord.ReadyEvent>>
-  latestSequence: Ref<Maybe<number>>
+  latestReady: Ref.Ref<Option.Option<Discord.ReadyEvent>>
+  latestSequence: Ref.Ref<Option.Option<number>>
 }
 
 const identify = ({ token, intents, shard, presence }: Options) =>
@@ -36,14 +38,14 @@ const resume = (token: string, ready: Discord.ReadyEvent, seq: number) =>
 
 const identifyOrResume = (
   opts: Options,
-  ready: Ref<Maybe<Discord.ReadyEvent>>,
-  seq: Ref<Maybe<number>>,
+  ready: Ref.Ref<Option.Option<Discord.ReadyEvent>>,
+  seq: Ref.Ref<Option.Option<number>>,
 ) =>
   Do(($) => {
     const readyEvent = $(ready.get)
     const seqNumber = $(seq.get)
 
-    return Maybe.struct({
+    return Option.struct({
       readyEvent,
       seqNumber,
     }).match(
@@ -53,7 +55,7 @@ const identifyOrResume = (
   })
 
 export const fromRaw = <R, E>(
-  source: EffectSource<R, E, Discord.GatewayPayload>,
+  source: Stream.Stream<R, E, Discord.GatewayPayload>,
   { latestReady, latestSequence, ...opts }: Options & Requirements,
 ) =>
   opCode(source)<Discord.HelloEvent>(Discord.GatewayOpcode.HELLO).mapEffect(

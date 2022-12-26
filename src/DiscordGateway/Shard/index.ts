@@ -1,7 +1,21 @@
+import { Config, RateLimiter } from "dfx"
+import { DiscordWS, WS } from "dfx/gateway"
+import {
+  Discord,
+  Duration,
+  Effect,
+  Option,
+  Queue,
+  Scope,
+  Stream,
+} from "dfx/_common"
 import * as Heartbeats from "./heartbeats.js"
 import * as Identify from "./identify.js"
 import * as InvalidSession from "./invalidSession.js"
 import * as Utils from "./utils.js"
+
+const _scope = Scope.Tag
+const _stream = Stream.StreamTypeId
 
 export const make = (shard: [id: number, count: number]) =>
   Do(($) => {
@@ -16,11 +30,11 @@ export const make = (shard: [id: number, count: number]) =>
 
     const socket = $(DiscordWS.make({ outbound }))
 
-    const raw = $(socket.source.share)
+    const raw = $(socket.source.broadcastDynamic(1))
 
     const [latestReady, updateLatestReady] = $(
       Utils.latest((p) =>
-        Maybe.some(p)
+        Option.some(p)
           .filter(
             (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
               p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
@@ -29,10 +43,10 @@ export const make = (shard: [id: number, count: number]) =>
       ),
     )
     const [latestSequence, updateLatestSequence] = $(
-      Utils.latest((p) => Maybe.fromNullable(p.s)),
+      Utils.latest((p) => Option.fromNullable(p.s)),
     )
     const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
-      Maybe.some(p)
+      Option.some(p)
         .filter(
           (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
             p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
@@ -49,7 +63,7 @@ export const make = (shard: [id: number, count: number]) =>
       .tap(maybeUpdateUrl).runDrain
 
     // heartbeats
-    const heartbeatEffects = Heartbeats.fromRaw(raw, latestSequence).forEach(
+    const heartbeatEffects = Heartbeats.fromRaw(raw, latestSequence).runForEach(
       send,
     )
 
@@ -66,10 +80,10 @@ export const make = (shard: [id: number, count: number]) =>
       presence: gateway.presence,
       latestSequence,
       latestReady,
-    }).forEach(send)
+    }).runForEach(send)
 
     // invalid session
-    const invalidEffects = InvalidSession.fromRaw(raw, latestReady).forEach(
+    const invalidEffects = InvalidSession.fromRaw(raw, latestReady).runForEach(
       send,
     )
 

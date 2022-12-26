@@ -1,3 +1,5 @@
+import { Discord, Flags } from "dfx"
+
 /**
  * All the intents
  */

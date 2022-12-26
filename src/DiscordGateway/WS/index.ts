@@ -1,18 +1,10 @@
+import { Log } from "dfx/Log/index"
+import { Effect, pipe, Ref, Schedule, Stream } from "dfx/_common"
 import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
 export type Message = string | Buffer | ArrayBuffer | Reconnect
-
-const socket = (urlRef: Ref<string>) =>
-  Do(($) => {
-    const url = $(urlRef.get)
-    return new WebSocket(url) as any as globalThis.WebSocket
-  }).acquireRelease((ws) =>
-    Effect.sync(() => {
-      ws.close()
-    }),
-  )
 
 export class WebSocketError {
   readonly _tag = "WebSocketError"
@@ -24,11 +16,36 @@ export class WebSocketCloseError {
   constructor(readonly code: number, readonly reason: string) {}
 }
 
+const socket = (urlRef: Ref.Ref<string>) =>
+  Do(($) => {
+    const url = $(urlRef.get)
+    const ws = new WebSocket(url) as any as globalThis.WebSocket
+
+    $(
+      Effect.async<never, never, void>((resume) => {
+        ws.addEventListener("open", () => resume(Effect.unit()), {
+          once: true,
+        })
+      }),
+    )
+
+    return ws
+  }).acquireRelease((ws) =>
+    Effect.sync(() => {
+      ;(ws as any).removeAllListeners?.()
+      ws.close()
+    }),
+  )
+
 const recv = (ws: globalThis.WebSocket) =>
-  EffectSource.async<WebSocketError | WebSocketCloseError, WebSocket.Data>(
-    (emit) => {
+  Stream.asyncEffect<
+    never,
+    WebSocketError | WebSocketCloseError,
+    WebSocket.Data
+  >((emit) =>
+    Effect.sync(() => {
       ws.addEventListener("message", (message) => {
-        emit.data(message.data)
+        emit.single(message.data)
       })
 
       ws.addEventListener("error", (cause) => {
@@ -38,59 +55,46 @@ const recv = (ws: globalThis.WebSocket) =>
       ws.addEventListener("close", (e) => {
         emit.fail(new WebSocketCloseError(e.code, e.reason))
       })
-
-      return () => {
-        ;(ws as any).removeAllListeners?.()
-      }
-    },
+    }),
   )
 
-const send = (ws: globalThis.WebSocket, take: Effect<never, never, Message>) =>
-  Do(($) => {
-    const log = $(Effect.service(Log.Log))
-    return Effect.async<never, never, void>((resume) => {
-      if (ws.readyState & ws.OPEN) {
-        resume(Effect.unit())
-      } else {
-        ws.addEventListener(
-          "open",
-          () => {
-            resume(Effect.unit())
-          },
-          { once: true },
-        )
+const send = (
+  ws: globalThis.WebSocket,
+  take: Effect.Effect<never, never, Message>,
+  log: Log,
+) =>
+  take
+    .tap((data) => log.debug("WS", "send", data))
+    .tap((data): Effect.Effect<never, WebSocketCloseError, void> => {
+      if (data === Reconnect) {
+        return Effect.failSync(() => {
+          ws.close(1012, "reconnecting")
+          return new WebSocketCloseError(1012, "reconnecting")
+        })
       }
-    })
-      .map(() => take.repeatEffectOption as EffectSource<never, never, Message>)
-      .unwrap.tap((p) => log.debug("WS", "send", p))
-      .tap((data) =>
-        Effect.async<never, WebSocketCloseError, void>((resume) => {
-          if (data === Reconnect) {
-            ws.close(1012, "reconnecting")
-            resume(Effect.fail(new WebSocketCloseError(1012, "reconnecting")))
-          } else {
-            ws.send(data)
-            resume(Effect.unit())
-          }
-        }),
-      ).drain
-  })
+
+      return Effect.sync(() => {
+        ws.send(data)
+      })
+    }).forever
 
 export const make = (
-  url: Ref<string>,
-  takeOutbound: Effect<never, never, Message>,
+  url: Ref.Ref<string>,
+  takeOutbound: Effect.Effect<never, never, Message>,
 ) =>
-  Do(($) => {
-    const log = $(Effect.service(Log.Log))
-    const withLog = Effect.provideService(Log.Log)(log)
-
-    return Do(($) => {
+  pipe(
+    Do(($) => {
+      const log = $(Effect.service(Log))
       const ws = $(socket(url))
-      const sendEffect = $(withLog(send(ws, takeOutbound)))
-      return recv(ws).merge(sendEffect)
-    }).unwrapScope.retry(
-      Schedule.recurWhile(
-        (e) => e._tag === "WebSocketCloseError" && e.code === 1012,
-      ),
-    )
-  })
+      const sendEffect = send(ws, takeOutbound, log)
+
+      return recv(ws)
+        .merge(Stream.fromEffect(sendEffect))
+        .retry(
+          Schedule.recurWhile(
+            (e) => e._tag === "WebSocketCloseError" && e.code === 1012,
+          ),
+        )
+    }),
+    Stream.unwrapScoped,
+  )

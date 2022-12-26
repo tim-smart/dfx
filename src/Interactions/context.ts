@@ -1,21 +1,23 @@
-import { Effect, EffectTypeId } from "@effect/io/Effect"
 import * as Arr from "@fp-ts/data/ReadonlyArray"
+import { Context, Discord, Effect, HashMap, pipe } from "dfx/_common"
 import * as IxHelpers from "../Helpers/interactions.js"
 
-export const InteractionContext = Tag<Discord.Interaction>()
-export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
-export const MessageComponentContext = Tag<Discord.MessageComponentDatum>()
-export const ModalSubmitContext = Tag<Discord.ModalSubmitDatum>()
+export const InteractionContext = Context.Tag<Discord.Interaction>()
+export const ApplicationCommandContext =
+  Context.Tag<Discord.ApplicationCommandDatum>()
+export const MessageComponentContext =
+  Context.Tag<Discord.MessageComponentDatum>()
+export const ModalSubmitContext = Context.Tag<Discord.ModalSubmitDatum>()
 
 export interface FocusedOptionContext {
   readonly focusedOption: Discord.ApplicationCommandInteractionDataOption
 }
-export const FocusedOptionContext = Tag<FocusedOptionContext>()
+export const FocusedOptionContext = Context.Tag<FocusedOptionContext>()
 
 export interface SubCommandContext {
   readonly command: Discord.ApplicationCommandInteractionDataOption
 }
-export const SubCommandContext = Tag<SubCommandContext>()
+export const SubCommandContext = Context.Tag<SubCommandContext>()
 
 export const interaction = Effect.service(InteractionContext)
 
@@ -60,13 +62,16 @@ export class SubCommandNotFound {
 }
 
 export const handleSubCommands = <
-  NER extends Record<string, Effect<any, any, Discord.InteractionResponse>>,
+  NER extends Record<
+    string,
+    Effect.Effect<any, any, Discord.InteractionResponse>
+  >,
 >(
   commands: NER,
-): Effect<
+): Effect.Effect<
   | Exclude<
       [NER[keyof NER]] extends [
-        { [EffectTypeId]: { _R: (_: never) => infer R } },
+        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
       ]
         ? R
         : never,
@@ -75,7 +80,7 @@ export const handleSubCommands = <
   | Discord.Interaction
   | Discord.ApplicationCommandDatum,
   | ([NER[keyof NER]] extends [
-      { [EffectTypeId]: { _E: (_: never) => infer E } },
+      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
     ]
       ? E
       : never)
@@ -101,6 +106,8 @@ export const handleSubCommands = <
 export const currentSubCommand = Effect.serviceWith(SubCommandContext)(
   (a) => a.command,
 )
+
+const _hashmap = HashMap.empty
 
 export const optionsMap = Effect.serviceWith(ApplicationCommandContext)(
   IxHelpers.optionsMap,

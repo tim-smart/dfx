@@ -1,11 +1,12 @@
 import { millis, zero } from "@fp-ts/data/Duration"
+import { Duration } from "dfx/_common"
 
 export const delayFrom = (
   window: number,
   limit: number,
   count: number,
   ttl: number,
-): Duration => {
+): Duration.Duration => {
   const perRequest = Math.ceil(window / limit)
 
   const totalTime = count * perRequest

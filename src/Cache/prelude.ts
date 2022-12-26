@@ -1,21 +1,23 @@
-import { Effect } from "@effect/io/Effect"
+import { DiscordREST } from "dfx"
+import { Gateway } from "dfx/gateway"
+import { Discord, Effect, Stream } from "dfx/_common"
 import {
-  ParentCacheOp,
+  CacheDriver,
+  CacheMissError,
   CacheOp,
   make,
   makeWithParent,
-  CacheDriver,
   ParentCacheDriver,
-  CacheMissError,
+  ParentCacheOp,
 } from "./index.js"
 
 export interface OptsWithParentOptions<E, A> {
   id: (a: A) => string
-  fromParent: EffectSource<never, E, [parentId: string, resources: A[]]>
-  create: EffectSource<never, E, [parentId: string, resource: A]>
-  update: EffectSource<never, E, [parentId: string, resource: A]>
-  remove: EffectSource<never, E, [parentId: string, id: string]>
-  parentRemove: EffectSource<never, E, string>
+  fromParent: Stream.Stream<never, E, [parentId: string, resources: A[]]>
+  create: Stream.Stream<never, E, [parentId: string, resource: A]>
+  update: Stream.Stream<never, E, [parentId: string, resource: A]>
+  remove: Stream.Stream<never, E, [parentId: string, id: string]>
+  parentRemove: Stream.Stream<never, E, string>
 }
 
 export const opsWithParent = <E, T>({
@@ -26,8 +28,8 @@ export const opsWithParent = <E, T>({
   remove,
   parentRemove,
 }: OptsWithParentOptions<E, T>) => {
-  const fromParentOps = fromParent.chain(([parentId, a]) =>
-    EffectSource.fromIterable(
+  const fromParentOps = fromParent.flatMap(([parentId, a]) =>
+    Stream.fromIterable(
       a.map(
         (resource): ParentCacheOp<T> => ({
           op: "create",
@@ -81,9 +83,9 @@ export const opsWithParent = <E, T>({
 
 export interface OpsOptions<E, A> {
   id: (a: A) => string
-  create: EffectSource<never, E, A>
-  update: EffectSource<never, E, A>
-  remove: EffectSource<never, E, string>
+  create: Stream.Stream<never, E, A>
+  update: Stream.Stream<never, E, A>
+  remove: Stream.Stream<never, E, string>
 }
 
 export const ops = <E, T>({ id, create, update, remove }: OpsOptions<E, T>) => {
@@ -114,7 +116,7 @@ export const ops = <E, T>({ id, create, update, remove }: OpsOptions<E, T>) => {
 }
 
 export const guilds = <RM, EM, E>(
-  makeDriver: Effect<RM, EM, CacheDriver<E, Discord.Guild>>,
+  makeDriver: Effect.Effect<RM, EM, CacheDriver<E, Discord.Guild>>,
 ) =>
   Do(($) => {
     const driver = $(makeDriver)
@@ -140,7 +142,7 @@ export const guilds = <RM, EM, E>(
   })
 
 export const channels = <RM, EM, E>(
-  makeDriver: Effect<RM, EM, ParentCacheDriver<E, Discord.Channel>>,
+  makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Channel>>,
 ) =>
   Do(($) => {
     const driver = $(makeDriver)
@@ -175,7 +177,7 @@ export const channels = <RM, EM, E>(
   })
 
 export const roles = <RM, EM, E>(
-  makeDriver: Effect<RM, EM, ParentCacheDriver<E, Discord.Role>>,
+  makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Role>>,
 ) =>
   Do(($) => {
     const driver = $(makeDriver)

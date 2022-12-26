@@ -1,6 +1,8 @@
+import * as Arr from "@fp-ts/data/ReadonlyArray"
+import { IxHelpers } from "dfx"
+import { Discord, Effect, Option, pipe } from "dfx/_common"
 import * as Ctx from "./context.js"
 import * as D from "./definitions.js"
-import * as Arr from "@fp-ts/data/ReadonlyArray"
 import { splitDefinitions } from "./utils.js"
 
 export class DefinitionNotFound {
@@ -8,7 +10,7 @@ export class DefinitionNotFound {
   constructor(readonly interaction: Discord.Interaction) {}
 }
 
-type Handler<R, E> = Effect<
+type Handler<R, E> = Effect.Effect<
   R | Discord.Interaction,
   E | DefinitionNotFound,
   Discord.InteractionResponse
@@ -41,7 +43,7 @@ export const handlers = <R, E>(
       const data = i.data as Discord.ApplicationCommandDatum
 
       return pipe(
-        Maybe.fromNullable(Commands[data.name]).match(
+        Option.fromNullable(Commands[data.name]).match(
           () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
           (command) =>
             Effect.isEffect(command.handle)

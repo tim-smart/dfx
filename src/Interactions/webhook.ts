@@ -1,3 +1,12 @@
+import {
+  Cause,
+  Context,
+  Discord,
+  Effect,
+  flow,
+  Layer,
+  Option,
+} from "dfx/_common"
 import Nacl from "tweetnacl"
 import * as D from "./definitions.js"
 import { DefinitionNotFound, handlers } from "./handlers.js"
@@ -15,9 +24,9 @@ const checkSignature = (
   headers: Headers,
   body: string,
 ) =>
-  Maybe.struct({
-    signature: Maybe.fromNullable(headers["x-signature-ed25519"]),
-    timestamp: Maybe.fromNullable(headers["x-signature-timestamp"]),
+  Option.struct({
+    signature: Option.fromNullable(headers["x-signature-ed25519"]),
+    timestamp: Option.fromNullable(headers["x-signature-timestamp"]),
   })
     .filter((a) => {
       const enc = new TextEncoder()
@@ -38,7 +47,7 @@ const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
   publicKey: fromHex(publicKey),
 })
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
-export const WebhookConfig = Tag<WebhookConfig>()
+export const WebhookConfig = Context.Tag<WebhookConfig>()
 export const makeConfigLayer = flow(makeConfig, Layer.succeed(WebhookConfig))
 
 export class WebhookParseError {
@@ -71,8 +80,8 @@ const run = <R, E>(definitions: D.InteractionDefinition<R, E>[]) => {
 export interface HandleWebhookOpts<E> {
   headers: Headers
   body: string
-  success: (a: Discord.InteractionResponse) => Effect<never, never, void>
-  error: (e: Cause<E>) => Effect<never, never, void>
+  success: (a: Discord.InteractionResponse) => Effect.Effect<never, never, void>
+  error: (e: Cause.Cause<E>) => Effect.Effect<never, never, void>
 }
 
 /**

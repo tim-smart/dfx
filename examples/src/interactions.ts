@@ -9,9 +9,12 @@ import Dotenv from "dotenv"
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = make({
-  token: process.env.DISCORD_BOT_TOKEN!,
-})
+const LiveEnv = make(
+  {
+    token: process.env.DISCORD_BOT_TOKEN!,
+  },
+  true,
+)
 
 // Create your interaction definitions.
 // Here we are creating a global application command.

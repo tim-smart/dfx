@@ -1,3 +1,5 @@
+import { Context, Effect, Layer } from "dfx/_common"
+
 const make = (debug = false) => ({
   info: (...args: any[]) =>
     Effect.sync(() => {
@@ -12,7 +14,7 @@ const make = (debug = false) => ({
 })
 
 export interface Log extends ReturnType<typeof make> {}
-export const Log = Tag<Log>()
+export const Log = Context.Tag<Log>()
 export const LiveLog = Layer.succeed(Log)(make(false))
 export const LiveLogDebug = Layer.succeed(Log)(make(true))
 
