@@ -108,7 +108,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Id",
           "name": "isNone"
         }
@@ -119,7 +119,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Id",
           "name": "isRuntime"
         }
@@ -130,7 +130,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Id",
           "name": "isComposite"
         }
@@ -454,7 +454,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Exit",
           "name": "isFailure"
         },
@@ -470,7 +470,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Exit",
           "name": "isSuccess"
         },
@@ -478,6 +478,17 @@
           "typeName": "effect/io/Exit.Ops",
           "kind": "static",
           "name": "isSuccess"
+        }
+      ]
+    },
+    {
+      "definitionName": "isInterrupted",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Exit",
+          "name": "isInterrupted"
         }
       ]
     },
@@ -500,17 +511,6 @@
           "kind": "getter",
           "typeName": "effect/io/Fiber/Id",
           "name": "interrupt"
-        }
-      ]
-    },
-    {
-      "definitionName": "isInterrupted",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Exit",
-          "name": "isInterrupted"
         }
       ]
     },
@@ -838,7 +838,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/ExecutionStrategy",
           "name": "isSequential"
         }
@@ -849,7 +849,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/ExecutionStrategy",
           "name": "isParallel"
         }
@@ -860,7 +860,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/ExecutionStrategy",
           "name": "isParallelN"
         }
@@ -1018,7 +1018,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Config/Error",
           "name": "isAnd"
         }
@@ -1029,7 +1029,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Config/Error",
           "name": "isOr"
         }
@@ -1040,7 +1040,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Config/Error",
           "name": "isInvalidData"
         }
@@ -1051,7 +1051,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Config/Error",
           "name": "isMissingData"
         }
@@ -1062,7 +1062,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Config/Error",
           "name": "isSourceUnavailable"
         }
@@ -1073,7 +1073,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Config/Error",
           "name": "isUnsupported"
         }
@@ -1599,22 +1599,11 @@
       ]
     },
     {
-      "definitionName": "running",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Fiber/Runtime/Flags",
-          "name": "running"
-        }
-      ]
-    },
-    {
       "definitionName": "isDone",
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Status",
           "name": "isDone"
         }
@@ -1625,7 +1614,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Status",
           "name": "isRunning"
         }
@@ -1636,9 +1625,20 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Status",
           "name": "isSuspended"
+        }
+      ]
+    },
+    {
+      "definitionName": "running",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "getter",
+          "typeName": "effect/io/Fiber/Runtime/Flags",
+          "name": "running"
         }
       ]
     }
@@ -3031,7 +3031,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Schedule/Interval",
           "name": "isEmpty"
         }
@@ -3042,7 +3042,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Schedule/Interval",
           "name": "isNonEmpty"
         }
@@ -3149,6 +3149,17 @@
       ]
     },
     {
+      "definitionName": "isNonEmpty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Schedule/Intervals",
+          "name": "isNonEmpty"
+        }
+      ]
+    },
+    {
       "definitionName": "start",
       "definitionKind": "const",
       "extensions": [
@@ -3167,17 +3178,6 @@
           "kind": "getter",
           "typeName": "effect/io/Schedule/Intervals",
           "name": "end"
-        }
-      ]
-    },
-    {
-      "definitionName": "isNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Schedule/Intervals",
-          "name": "isNonEmpty"
         }
       ]
     }
@@ -3226,22 +3226,11 @@
       ]
     },
     {
-      "definitionName": "continueWith",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Schedule/Interval",
-          "name": "continueWith"
-        }
-      ]
-    },
-    {
       "definitionName": "isContinue",
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Schedule/Decision",
           "name": "isContinue"
         }
@@ -3252,9 +3241,20 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Schedule/Decision",
           "name": "isDone"
+        }
+      ]
+    },
+    {
+      "definitionName": "continueWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "getter",
+          "typeName": "effect/io/Schedule/Interval",
+          "name": "continueWith"
         }
       ]
     }
@@ -4689,7 +4689,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Layer",
           "name": "isFresh"
         }
@@ -5462,7 +5462,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber",
           "name": "isRuntimeFiber"
         }
@@ -6156,6 +6156,138 @@
       ]
     },
     {
+      "definitionName": "isEmptyType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isEmptyType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isFailType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isFailType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isDieType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isDieType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isInterruptType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isInterruptType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isAnnotatedType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isAnnotatedType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isSequentialType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isSequentialType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isParallelType",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isParallelType"
+        }
+      ]
+    },
+    {
+      "definitionName": "isEmpty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isEmpty"
+        }
+      ]
+    },
+    {
+      "definitionName": "isFailure",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isFailure"
+        }
+      ]
+    },
+    {
+      "definitionName": "isDie",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isDie"
+        }
+      ]
+    },
+    {
+      "definitionName": "isInterrupted",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isInterrupted"
+        }
+      ]
+    },
+    {
+      "definitionName": "isInterruptedOnly",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Cause",
+          "name": "isInterruptedOnly"
+        }
+      ]
+    },
+    {
       "definitionName": "interrupt",
       "definitionKind": "const",
       "extensions": [
@@ -6167,83 +6299,6 @@
       ]
     },
     {
-      "definitionName": "isEmptyType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isEmptyType"
-        }
-      ]
-    },
-    {
-      "definitionName": "isFailType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isFailType"
-        }
-      ]
-    },
-    {
-      "definitionName": "isDieType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isDieType"
-        }
-      ]
-    },
-    {
-      "definitionName": "isInterruptType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isInterruptType"
-        }
-      ]
-    },
-    {
-      "definitionName": "isAnnotatedType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isAnnotatedType"
-        }
-      ]
-    },
-    {
-      "definitionName": "isSequentialType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isSequentialType"
-        }
-      ]
-    },
-    {
-      "definitionName": "isParallelType",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isParallelType"
-        }
-      ]
-    },
-    {
       "definitionName": "size",
       "definitionKind": "const",
       "extensions": [
@@ -6251,61 +6306,6 @@
           "kind": "getter",
           "typeName": "effect/io/Cause",
           "name": "size"
-        }
-      ]
-    },
-    {
-      "definitionName": "isEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "isFailure",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isFailure"
-        }
-      ]
-    },
-    {
-      "definitionName": "isDie",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isDie"
-        }
-      ]
-    },
-    {
-      "definitionName": "isInterrupted",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isInterrupted"
-        }
-      ]
-    },
-    {
-      "definitionName": "isInterruptedOnly",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Cause",
-          "name": "isInterruptedOnly"
         }
       ]
     },
@@ -10274,6 +10274,17 @@
       ]
     },
     {
+      "definitionName": "isEmpty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Fiber/Runtime/Flags/Patch",
+          "name": "isEmpty"
+        }
+      ]
+    },
+    {
       "definitionName": "enable",
       "definitionKind": "const",
       "extensions": [
@@ -10292,17 +10303,6 @@
           "kind": "getter",
           "typeName": "effect/io/Fiber/Runtime/Flags.RuntimeFlag",
           "name": "disable"
-        }
-      ]
-    },
-    {
-      "definitionName": "isEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Fiber/Runtime/Flags/Patch",
-          "name": "isEmpty"
         }
       ]
     },
@@ -10489,7 +10489,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Runtime/Flags",
           "name": "cooperativeYielding"
         }
@@ -10500,7 +10500,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Runtime/Flags",
           "name": "interruptible"
         }
@@ -10511,7 +10511,7 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Runtime/Flags",
           "name": "interruption"
         }
@@ -10522,9 +10522,31 @@
       "definitionKind": "const",
       "extensions": [
         {
-          "kind": "getter",
+          "kind": "fluent",
           "typeName": "effect/io/Fiber/Runtime/Flags",
           "name": "opSupervision"
+        }
+      ]
+    },
+    {
+      "definitionName": "runtimeMetrics",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Fiber/Runtime/Flags",
+          "name": "runtimeMetrics"
+        }
+      ]
+    },
+    {
+      "definitionName": "windDown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "fluent",
+          "typeName": "effect/io/Fiber/Runtime/Flags",
+          "name": "windDown"
         }
       ]
     },
@@ -10540,17 +10562,6 @@
       ]
     },
     {
-      "definitionName": "runtimeMetrics",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Fiber/Runtime/Flags",
-          "name": "runtimeMetrics"
-        }
-      ]
-    },
-    {
       "definitionName": "toSet",
       "definitionKind": "const",
       "extensions": [
@@ -10558,17 +10569,6 @@
           "kind": "getter",
           "typeName": "effect/io/Fiber/Runtime/Flags",
           "name": "toSet"
-        }
-      ]
-    },
-    {
-      "definitionName": "windDown",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Fiber/Runtime/Flags",
-          "name": "windDown"
         }
       ]
     }

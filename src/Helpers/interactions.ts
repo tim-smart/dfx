@@ -30,7 +30,7 @@ export const findSubCommand =
  * If the sub-command exists return `true`, else `false`.
  */
 export const isSubCommand = (name: string) =>
-  flow(findSubCommand(name), (o) => o.isSome)
+  flow(findSubCommand(name), (o) => o.isSome())
 
 /**
  * Maybe get the options for a sub-command
