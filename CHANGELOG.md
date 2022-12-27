@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.5](https://github.com/tim-smart/dfx/compare/dfx@0.21.4...dfx@0.21.5) (2022-12-27)
+
+
+### Bug Fixes
+
+* remove name conflict in Ix definitions ([3657960](https://github.com/tim-smart/dfx/commit/3657960502f20cd7eb01676a27a9d33712ba6637))
+
+
+
+
+
 ## [0.21.4](https://github.com/tim-smart/dfx/compare/dfx@0.21.3...dfx@0.21.4) (2022-12-27)
 
 **Note:** Version bump only for package dfx
