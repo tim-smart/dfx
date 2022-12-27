@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "rootDir": ".",
     "outDir": "dist",
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext"],
     "sourceMap": true,
     "strict": true,
+    "strictNullChecks": true,
     "target": "ES2022",
     "incremental": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo"

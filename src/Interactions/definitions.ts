@@ -1,4 +1,4 @@
-import { Discord, Effect, Option } from "dfx/_common"
+import { Discord, Effect, Option as Maybe } from "dfx/_common"
 import {
   FocusedOptionContext,
   ResolvedDataNotFound,
@@ -158,7 +158,7 @@ export interface CommandHelper<A> {
   ) => Effect.Effect<
     Discord.ApplicationCommandDatum,
     never,
-    Option.Option<Discord.ApplicationCommandInteractionDataOption>
+    Maybe.Option<Discord.ApplicationCommandInteractionDataOption>
   >
 
   optionValue: <N extends AllRequiredCommandOptions<A>["name"]>(
@@ -170,7 +170,7 @@ export interface CommandHelper<A> {
   ) => Effect.Effect<
     Discord.ApplicationCommandDatum,
     never,
-    Option.Option<CommandValue<A, N>>
+    Maybe.Option<CommandValue<A, N>>
   >
 
   subCommands: <
