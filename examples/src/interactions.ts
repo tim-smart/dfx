@@ -49,7 +49,7 @@ const greeting = Ix.global(
         description: "What kind of greeting?",
       },
     ],
-  },
+  } as const,
   (i) =>
     pipe(
       Effect.struct({

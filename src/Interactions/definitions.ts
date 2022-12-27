@@ -1,5 +1,4 @@
 import { Discord, Effect, Option } from "dfx/_common"
-import tb from "ts-toolbelt"
 import {
   FocusedOptionContext,
   ResolvedDataNotFound,
@@ -10,7 +9,7 @@ type DescriptionMissing<A> = A extends {
   type: Exclude<Discord.ApplicationCommandType, 1>
 }
   ? false
-  : A extends { description: string }
+  : A extends { readonly description: string }
   ? false
   : true
 
@@ -32,9 +31,9 @@ export class GlobalApplicationCommand<R, E> {
 export const global = <
   R,
   E,
-  A extends Discord.CreateGlobalApplicationCommandParams,
+  A extends DeepReadonly<Discord.CreateGlobalApplicationCommandParams>,
 >(
-  command: tb.F.Narrow<A>,
+  command: A,
   handle: DescriptionMissing<A> extends true
     ? "command description is missing"
     : CommandHandler<R, E, A>,
@@ -55,9 +54,9 @@ export class GuildApplicationCommand<R, E> {
 export const guild = <
   R,
   E,
-  A extends Discord.CreateGuildApplicationCommandParams,
+  A extends DeepReadonly<Discord.CreateGuildApplicationCommandParams>,
 >(
-  command: tb.F.Narrow<A>,
+  command: A,
   handle: DescriptionMissing<A> extends true
     ? "command description is missing"
     : CommandHandler<R, E, A>,
@@ -130,6 +129,19 @@ export const autocomplete = <R1, R2, E1, E2>(
   >(pred as any, handle as any)
 
 // ==== Command handler helpers
+type DeepReadonly<T> = T extends (infer R)[]
+  ? DeepReadonlyArray<R>
+  : T extends Function
+  ? T
+  : T extends object
+  ? DeepReadonlyObject<T>
+  : T
+
+interface DeepReadonlyArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
+
+type DeepReadonlyObject<T> = {
+  readonly [P in keyof T]: DeepReadonly<T[P]>
+}
 
 type CommandHandler<R, E, A = any> =
   | Effect.Effect<R, E, Discord.InteractionResponse>
@@ -195,12 +207,12 @@ type CommandHandlerFn<R, E, A> = (
 ) => Effect.Effect<R, E, Discord.InteractionResponse>
 
 // == Sub commands
-type SubCommands<A> = A extends {
+type SubCommands<A> = A extends DeepReadonly<{
   type: Discord.ApplicationCommandOptionType.SUB_COMMAND
   options?: Discord.ApplicationCommandOption[]
-}
+}>
   ? A
-  : A extends { options: Discord.ApplicationCommandOption[] }
+  : A extends DeepReadonly<{ options: Discord.ApplicationCommandOption[] }>
   ? SubCommands<A["options"][number]>
   : never
 
@@ -216,20 +228,20 @@ type CommandOptionType = Exclude<
 type CommandOptions<A> = OptionsWithLiteral<
   A,
   {
-    type: CommandOptionType
+    readonly type: CommandOptionType
   }
 >
 
 type SubCommandOptions<A> = Extract<
   Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
   {
-    type: CommandOptionType
+    readonly type: CommandOptionType
   }
 >
 
 type AllCommandOptions<A> = CommandOptions<A> | SubCommandOptions<A>
 
-type CommandWithName<A, N> = Extract<AllCommandOptions<A>, { name: N }>
+type CommandWithName<A, N> = Extract<AllCommandOptions<A>, { readonly name: N }>
 
 type OptionTypeValue = {
   [Discord.ApplicationCommandOptionType.BOOLEAN]: boolean
@@ -247,14 +259,14 @@ type CommandValue<A, N> = CommandWithName<
 type RequiredCommandOptions<A> = OptionsWithLiteral<
   A,
   {
-    type: CommandOptionType
-    required: true
+    readonly type: CommandOptionType
+    readonly required: true
   }
 >
 
 type RequiredSubCommandOptions<A> = Extract<
   SubCommandOptions<A>,
-  { required: true }
+  { readonly required: true }
 >
 
 type AllRequiredCommandOptions<A> =
@@ -268,11 +280,11 @@ type ResolvableType =
   | Discord.ApplicationCommandOptionType.MENTIONABLE
   | Discord.ApplicationCommandOptionType.CHANNEL
 
-type Resolvables<A> = OptionsWithLiteral<A, { type: ResolvableType }>
+type Resolvables<A> = OptionsWithLiteral<A, { readonly type: ResolvableType }>
 type SubCommandResolvables<A> = Extract<
   Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
   {
-    type: ResolvableType
+    readonly type: ResolvableType
   }
 >
 type AllResolvables<A> = Resolvables<A> | SubCommandResolvables<A>
@@ -284,14 +296,14 @@ type StringLiteral<T> = T extends string
     : T
   : never
 
-type Option<A> = A extends { name: infer N }
+type Option<A> = A extends { readonly name: infer N }
   ? N extends StringLiteral<N>
     ? A
     : never
   : never
 
-type OptionsWithLiteral<A, T> = A extends {
+type OptionsWithLiteral<A, T> = A extends DeepReadonly<{
   options: Discord.ApplicationCommandOption[]
-}
+}>
   ? Extract<A["options"][number], Option<A["options"][number]> & T>
   : never
