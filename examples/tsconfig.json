@@ -8,8 +8,6 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
     "strict": true,
     "target": "ES2022",
     "incremental": true,

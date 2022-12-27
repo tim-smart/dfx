@@ -206,13 +206,19 @@ type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
 ) => Effect.Effect<R, E, Discord.InteractionResponse>
 
+interface CommandOption {
+  readonly type: any
+  readonly name: string
+  readonly options?: ReadonlyArray<CommandOption>
+}
+
 // == Sub commands
-type SubCommands<A> = A extends DeepReadonly<{
-  type: Discord.ApplicationCommandOptionType.SUB_COMMAND
-  options?: Discord.ApplicationCommandOption[]
-}>
+type SubCommands<A> = A extends {
+  readonly type: Discord.ApplicationCommandOptionType.SUB_COMMAND
+  readonly options?: ReadonlyArray<CommandOption>
+}
   ? A
-  : A extends DeepReadonly<{ options: Discord.ApplicationCommandOption[] }>
+  : A extends { readonly options: ReadonlyArray<CommandOption> }
   ? SubCommands<A["options"][number]>
   : never
 
@@ -302,8 +308,8 @@ type Option<A> = A extends { readonly name: infer N }
     : never
   : never
 
-type OptionsWithLiteral<A, T> = A extends DeepReadonly<{
-  options: Discord.ApplicationCommandOption[]
-}>
+type OptionsWithLiteral<A, T> = A extends {
+  readonly options: ReadonlyArray<CommandOption>
+}
   ? Extract<A["options"][number], Option<A["options"][number]> & T>
   : never
