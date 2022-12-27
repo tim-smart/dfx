@@ -11,7 +11,7 @@ export interface ActionRow {
   /** a list of child components */
   components: Component[]
 }
-export enum ActionType {
+export const enum ActionType {
   /** blocks the content of a message according to the rule */
   BLOCK_MESSAGE = 1,
   /** logs user content to a specified channel */
@@ -106,7 +106,7 @@ export interface ActivityTimestamp {
   /** Unix time (in milliseconds) of when the activity ends */
   end?: number
 }
-export enum ActivityType {
+export const enum ActivityType {
   GAME = 0,
   STREAMING = 1,
   LISTENING = 2,
@@ -136,7 +136,7 @@ export interface AllowedMention {
   /** For replies, whether to mention the author of the message being replied to (default false) */
   replied_user: boolean
 }
-export enum AllowedMentionType {
+export const enum AllowedMentionType {
   /** Controls role mentions */
   ROLE_MENTIONS = "roles",
   /** Controls user mentions */
@@ -187,6 +187,8 @@ export interface Application {
   install_params?: InstallParam
   /** the application's default custom authorization link, if enabled */
   custom_install_url?: string
+  /** the application's role connection verification entry point, which when configured will render the app as a verification method in the guild role verification configuration */
+  role_connections_verification_url?: string
 }
 export interface ApplicationCommand {
   /** Unique ID of command */
@@ -195,7 +197,7 @@ export interface ApplicationCommand {
   type?: ApplicationCommandType
   /** ID of the parent application */
   application_id: Snowflake
-  /** guild id of the command, if not global */
+  /** Guild ID of the command, if not global */
   guild_id?: Snowflake
   /** Name of command, 1-32 characters */
   name: string
@@ -213,6 +215,8 @@ export interface ApplicationCommand {
   dm_permission?: boolean
   /** Not recommended for use as field will soon be deprecated. Indicates whether the command is enabled by default when the app is added to a guild, defaults to true */
   default_permission?: boolean | null
+  /** Indicates whether the command is age-restricted, defaults to false */
+  nsfw?: boolean
   /** Autoincrementing version identifier updated during substantial record changes */
   version: Snowflake
 }
@@ -282,7 +286,7 @@ export interface ApplicationCommandOptionChoice {
   /** Value for the choice, up to 100 characters if string */
   value: string
 }
-export enum ApplicationCommandOptionType {
+export const enum ApplicationCommandOptionType {
   SUB_COMMAND = 1,
   SUB_COMMAND_GROUP = 2,
   STRING = 3,
@@ -305,12 +309,12 @@ export interface ApplicationCommandPermission {
 }
 export type ApplicationCommandPermissionsUpdateEvent =
   GuildApplicationCommandPermission
-export enum ApplicationCommandPermissionType {
+export const enum ApplicationCommandPermissionType {
   ROLE = 1,
   USER = 2,
   CHANNEL = 3,
 }
-export enum ApplicationCommandType {
+export const enum ApplicationCommandType {
   /** Slash commands; a text-based command that shows up when a user types / */
   CHAT_INPUT = 1,
   /** A UI-based command that shows up when you right click or tap on a user */
@@ -338,6 +342,46 @@ export const ApplicationFlag = {
   /** Indicates if an app has registered global application commands */
   APPLICATION_COMMAND_BADGE: 1 << 23,
 } as const
+export interface ApplicationRoleConnection {
+  /** the vanity name of the platform a bot has connected (max 50 characters) */
+  platform_name?: string | null
+  /** the username on the platform a bot has connected (max 100 characters) */
+  platform_username?: string | null
+  /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
+  metadata: ApplicationRoleConnectionMetadatum
+}
+export const enum ApplicationRoleConnectionMetadataType {
+  /** the metadata value (integer) is less than or equal to the guild's configured value (integer) */
+  INTEGER_LESS_THAN_OR_EQUAL = 1,
+  /** the metadata value (integer) is greater than or equal to the guild's configured value (integer) */
+  INTEGER_GREATER_THAN_OR_EQUAL = 2,
+  /** the metadata value (integer) is equal to the guild's configured value (integer) */
+  INTEGER_EQUAL = 3,
+  /** the metadata value (integer) is not equal to the guild's configured value (integer) */
+  INTEGER_NOT_EQUAL = 4,
+  /** the metadata value (ISO8601 string) is less than or equal to the guild's configured value (integer; days before current date) */
+  DATETIME_LESS_THAN_OR_EQUAL = 5,
+  /** the metadata value (ISO8601 string) is greater than or equal to the guild's configured value (integer; days before current date) */
+  DATETIME_GREATER_THAN_OR_EQUAL = 6,
+  /** the metadata value (integer) is equal to the guild's configured value (integer; 1) */
+  BOOLEAN_EQUAL = 7,
+  /** the metadata value (integer) is not equal to the guild's configured value (integer; 1) */
+  BOOLEAN_NOT_EQUAL = 8,
+}
+export interface ApplicationRoleConnectionMetadatum {
+  /** type of metadata value */
+  type: ApplicationRoleConnectionMetadataType
+  /** dictionary key for the metadata field (must be a-z, 0-9, or _ characters; max 50 characters) */
+  key: string
+  /** name of the metadata field (max 100 characters) */
+  name: string
+  /** translations of the name */
+  name_localizations?: Locale
+  /** description of the metadata field (max 200 characters) */
+  description: string
+  /** translations of the description */
+  description_localizations?: Locale
+}
 export interface Attachment {
   /** attachment id */
   id: Snowflake
@@ -426,7 +470,7 @@ export interface AuditLogEntry {
   /** Reason for the change (1-512 characters) */
   reason?: string
 }
-export enum AuditLogEvent {
+export const enum AuditLogEvent {
   /** Server settings were updated */
   GUILD_UPDATE = 1,
   /** Channel was created */
@@ -630,10 +674,12 @@ export interface BulkOverwriteGuildApplicationCommandParams {
   default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   dm_permission?: boolean | null
-  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. */
+  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   default_permission?: boolean
   /** Type of command, defaults 1 if not set */
   type?: ApplicationCommandType
+  /** Indicates whether the command is age-restricted */
+  nsfw?: boolean
 }
 export interface Button {
   /** 2 for a button */
@@ -651,7 +697,7 @@ export interface Button {
   /** Whether the button is disabled (defaults to false) */
   disabled?: boolean
 }
-export enum ButtonStyle {
+export const enum ButtonStyle {
   PRIMARY = 1,
   SECONDARY = 2,
   SUCCESS = 3,
@@ -725,6 +771,8 @@ export interface Channel {
   default_thread_rate_limit_per_user?: number
   /** the default sort order type used to order posts in GUILD_FORUM channels. Defaults to null, which indicates a preferred sort order hasn't been set by a channel admin */
   default_sort_order?: SortOrderType | null
+  /** the default forum layout view used to display posts in GUILD_FORUM channels. Defaults to 0, which indicates a layout view has not been set by a channel admin */
+  default_forum_layout?: ForumLayoutType
 }
 export type ChannelCreateEvent = Channel
 export type ChannelDeleteEvent = Channel
@@ -752,7 +800,7 @@ export interface ChannelPinsUpdateEvent {
   /** Time at which the most recent pinned message was pinned */
   last_pin_timestamp?: string | null
 }
-export enum ChannelType {
+export const enum ChannelType {
   /** a text channel within a server */
   GUILD_TEXT = 0,
   /** a direct message between users */
@@ -788,7 +836,7 @@ export interface ClientStatus {
   web?: string
 }
 export type Component = ActionRow | Button | TextInput | SelectMenu
-export enum ComponentType {
+export const enum ComponentType {
   /** Container for other components */
   ACTION_ROW = 1,
   /** Button object */
@@ -881,10 +929,12 @@ export interface CreateGlobalApplicationCommandParams {
   default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   dm_permission?: boolean | null
-  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. */
+  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   default_permission?: boolean
   /** Type of command, defaults 1 if not set */
   type?: ApplicationCommandType
+  /** Indicates whether the command is age-restricted */
+  nsfw?: boolean
 }
 export interface CreateGroupDmParams {
   /** access tokens of users that have granted your app the gdm.join scope */
@@ -905,10 +955,12 @@ export interface CreateGuildApplicationCommandParams {
   options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
   default_member_permissions?: string | null
-  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. */
+  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   default_permission?: boolean
   /** Type of command, defaults 1 if not set */
   type?: ApplicationCommandType
+  /** Indicates whether the command is age-restricted */
+  nsfw?: boolean
 }
 export interface CreateGuildBanParams {
   /** number of days to delete messages for (0-7) (deprecated) */
@@ -1562,6 +1614,12 @@ export function createRoutes<O = any>(
         url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
         options,
       }),
+    getApplicationRoleConnectionMetadataRecords: (applicationId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/role-connections/metadata`,
+        options,
+      }),
     getAutoModerationRule: (guildId, autoModerationRuleId, options) =>
       fetch({
         method: "GET",
@@ -1888,6 +1946,12 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/users/${userId}`,
+        options,
+      }),
+    getUserApplicationRoleConnection: (applicationId, options) =>
+      fetch({
+        method: "GET",
+        url: `/users/@me/applications/${applicationId}/role-connection`,
         options,
       }),
     getUserConnections: (options) =>
@@ -2261,6 +2325,19 @@ export function createRoutes<O = any>(
         url: `/channels/${channelId}/pins/${messageId}`,
         options,
       }),
+    updateApplicationRoleConnectionMetadataRecords: (applicationId, options) =>
+      fetch({
+        method: "PUT",
+        url: `/applications/${applicationId}/role-connections/metadata`,
+        options,
+      }),
+    updateUserApplicationRoleConnection: (applicationId, params, options) =>
+      fetch({
+        method: "PUT",
+        url: `/users/@me/applications/${applicationId}/role-connection`,
+        params,
+        options,
+      }),
   }
 }
 export interface CreateStageInstanceParams {
@@ -2279,7 +2356,7 @@ export interface CreateWebhookParams {
   /** image for the default webhook avatar */
   avatar?: string | null
 }
-export enum DefaultMessageNotificationLevel {
+export const enum DefaultMessageNotificationLevel {
   /** members will receive notifications for all messages by default */
   ALL_MESSAGES = 0,
   /** members will receive notifications only for messages that @mention them by default */
@@ -2322,8 +2399,10 @@ export interface EditGlobalApplicationCommandParams {
   default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   dm_permission?: boolean | null
-  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. */
+  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   default_permission?: boolean
+  /** Indicates whether the command is age-restricted */
+  nsfw?: boolean
 }
 export interface EditGuildApplicationCommandParams {
   /** Name of command, 1-32 characters */
@@ -2338,8 +2417,10 @@ export interface EditGuildApplicationCommandParams {
   options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
   default_member_permissions?: string | null
-  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. */
+  /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   default_permission?: boolean
+  /** Indicates whether the command is age-restricted */
+  nsfw?: boolean
 }
 export interface EditMessageParams {
   /** Message contents (up to 2000 characters) */
@@ -2455,7 +2536,7 @@ export interface EmbedThumbnail {
   /** width of thumbnail */
   width?: number
 }
-export enum EmbedType {
+export const enum EmbedType {
   /** generic embed rendered from embed attributes */
   RICH = "rich",
   /** image embed */
@@ -2559,7 +2640,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateChannelInviteParams>,
     options?: O,
   ) => RestResponse<Invite>
-  /** Create a new DM channel with a user. Returns a DM channel object. */
+  /** Create a new DM channel with a user. Returns a DM channel object (if one already exists, it will be returned instead). */
   createDm: (
     params?: Partial<CreateDmParams>,
     options?: O,
@@ -2575,7 +2656,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGlobalApplicationCommandParams>,
     options?: O,
   ) => RestResponse<ApplicationCommand>
-  /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. DMs created with this endpoint will not be shown in the Discord client */
+  /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. DMs created with this endpoint will not be shown in the Discord client. */
   createGroupDm: (
     params?: Partial<CreateGroupDmParams>,
     options?: O,
@@ -2899,6 +2980,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     commandId: string,
     options?: O,
   ) => RestResponse<GuildApplicationCommandPermission>
+  /** Returns a list of application role connection metadata objects for the given application. */
+  getApplicationRoleConnectionMetadataRecords: (
+    applicationId: string,
+    options?: O,
+  ) => RestResponse<ApplicationRoleConnectionMetadatum[]>
   /** Get a single rule. Returns an auto moderation rule object. */
   getAutoModerationRule: (
     guildId: string,
@@ -3132,6 +3218,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<ThreadMember>
   /** Returns a user object for a given user ID. */
   getUser: (userId: string, options?: O) => RestResponse<User>
+  /** Returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
+  getUserApplicationRoleConnection: (
+    applicationId: string,
+    options?: O,
+  ) => RestResponse<ApplicationRoleConnection>
   /** Returns a list of connection objects. Requires the connections OAuth2 scope. */
   getUserConnections: (options?: O) => RestResponse<Connection[]>
   /** Returns the new webhook object for the given id. */
@@ -3429,8 +3520,19 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     messageId: string,
     options?: O,
   ) => RestResponse<any>
+  /** Updates and returns a list of application role connection metadata objects for the given application. */
+  updateApplicationRoleConnectionMetadataRecords: (
+    applicationId: string,
+    options?: O,
+  ) => RestResponse<ApplicationRoleConnectionMetadatum[]>
+  /** Updates and returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
+  updateUserApplicationRoleConnection: (
+    applicationId: string,
+    params?: Partial<UpdateUserApplicationRoleConnectionParams>,
+    options?: O,
+  ) => RestResponse<ApplicationRoleConnection>
 }
-export enum EventType {
+export const enum EventType {
   /** when a member sends or edits a message in the guild */
   MESSAGE_SEND = 1,
 }
@@ -3460,7 +3562,7 @@ export interface ExecuteWebhookParams {
   /** name of thread to create (requires the webhook channel to be a forum channel) */
   thread_name: string
 }
-export enum ExplicitContentFilterLevel {
+export const enum ExplicitContentFilterLevel {
   /** media content will not be scanned */
   DISABLED = 0,
   /** media content sent by members without roles will be scanned */
@@ -3477,6 +3579,14 @@ export interface FollowedChannel {
   channel_id: Snowflake
   /** created target webhook id */
   webhook_id: Snowflake
+}
+export const enum ForumLayoutType {
+  /** No default has been set for forum channel */
+  NOT_SET = 0,
+  /** Display posts as a list */
+  LIST_VIEW = 1,
+  /** Display posts as a collection of tiles */
+  GALLERY_VIEW = 2,
 }
 export interface ForumTag {
   /** the id of the tag */
@@ -3531,7 +3641,7 @@ export const GatewayIntents = {
   AUTO_MODERATION_CONFIGURATION: 1 << 20,
   AUTO_MODERATION_EXECUTION: 1 << 21,
 } as const
-export enum GatewayOpcode {
+export const enum GatewayOpcode {
   /** An event was dispatched. */
   DISPATCH = 0,
   /** Fired periodically by the client to keep the connection alive. */
@@ -3825,7 +3935,7 @@ export interface GuildEmojisUpdateEvent {
   /** Array of emojis */
   emojis: Emoji[]
 }
-export enum GuildFeature {
+export const enum GuildFeature {
   /** guild has access to set an animated guild banner image */
   ANIMATED_BANNER = "ANIMATED_BANNER",
   /** guild has access to set an animated guild icon */
@@ -3952,7 +4062,7 @@ export interface GuildMemberUpdateEvent {
   /** When the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
   communication_disabled_until?: string | null
 }
-export enum GuildNsfwLevel {
+export const enum GuildNsfwLevel {
   DEFAULT = 0,
   EXPLICIT = 1,
   SAFE = 2,
@@ -4040,16 +4150,16 @@ export interface GuildScheduledEventEntityMetadatum {
   /** location of the event (1-100 characters) */
   location?: string
 }
-export enum GuildScheduledEventEntityType {
+export const enum GuildScheduledEventEntityType {
   STAGE_INSTANCE = 1,
   VOICE = 2,
   EXTERNAL = 3,
 }
-export enum GuildScheduledEventPrivacyLevel {
+export const enum GuildScheduledEventPrivacyLevel {
   /** the scheduled event is only accessible to guild members */
   GUILD_ONLY = 2,
 }
-export enum GuildScheduledEventStatus {
+export const enum GuildScheduledEventStatus {
   SCHEDULED = 1,
   ACTIVE = 2,
   COMPLETED = 3,
@@ -4232,7 +4342,7 @@ export interface IntegrationDeleteEvent {
   /** ID of the bot/OAuth2 application for this discord integration */
   application_id?: Snowflake
 }
-export enum IntegrationExpireBehavior {
+export const enum IntegrationExpireBehavior {
   REMOVE_ROLE = 0,
   KICK = 1,
 }
@@ -4297,14 +4407,14 @@ export interface InteractionCallbackMessage {
   attachments?: Attachment[]
 }
 export interface InteractionCallbackModal {
-  /** a developer-defined identifier for the component, max 100 characters */
+  /** a developer-defined identifier for the modal, max 100 characters */
   custom_id: string
   /** the title of the popup modal, max 45 characters */
   title: string
   /** between 1 and 5 (inclusive) components that make up the modal */
   components: Component[]
 }
-export enum InteractionCallbackType {
+export const enum InteractionCallbackType {
   /** ACK a Ping */
   PONG = 1,
   /** respond to an interaction with a message */
@@ -4331,7 +4441,7 @@ export interface InteractionResponse {
   /** an optional response message */
   data?: InteractionCallbackDatum
 }
-export enum InteractionType {
+export const enum InteractionType {
   PING = 1,
   APPLICATION_COMMAND = 2,
   MESSAGE_COMPONENT = 3,
@@ -4421,11 +4531,11 @@ export interface InviteStageInstance {
   /** the topic of the Stage instance (1-120 characters) */
   topic: string
 }
-export enum InviteTargetType {
+export const enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
 }
-export enum KeywordPresetType {
+export const enum KeywordPresetType {
   /** Words that may be considered forms of swearing or cursing */
   PROFANITY = 1,
   /** Words that refer to sexually explicit behavior or activity */
@@ -4553,7 +4663,7 @@ export interface Locale {
   /** Korean */
   ko?: string
 }
-export enum MembershipState {
+export const enum MembershipState {
   INVITED = 1,
   ACCEPTED = 2,
 }
@@ -4625,7 +4735,7 @@ export interface MessageActivity {
   /** party_id from a Rich Presence event */
   party_id?: string
 }
-export enum MessageActivityType {
+export const enum MessageActivityType {
   JOIN = 1,
   SPECTATE = 2,
   LISTEN = 3,
@@ -4750,7 +4860,7 @@ export interface MessageReference {
   /** when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true */
   fail_if_not_exists?: boolean
 }
-export enum MessageType {
+export const enum MessageType {
   DEFAULT = 0,
   RECIPIENT_ADD = 1,
   RECIPIENT_REMOVE = 2,
@@ -4777,7 +4887,7 @@ export enum MessageType {
   AUTO_MODERATION_ACTION = 24,
 }
 export type MessageUpdateEvent = MessageCreateEvent
-export enum MfaLevel {
+export const enum MfaLevel {
   /** guild has no MFA/2FA requirement for moderation actions */
   NONE = 0,
   /** guild has a 2FA requirement for moderation actions */
@@ -4848,6 +4958,8 @@ export interface ModifyChannelGuildChannelParams {
   default_thread_rate_limit_per_user?: number
   /** the default sort order type used to order posts in GUILD_FORUM channels */
   default_sort_order?: SortOrderType | null
+  /** the default forum layout type used to display posts in GUILD_FORUM channels */
+  default_forum_layout?: ForumLayoutType
 }
 export type ModifyChannelParams =
   | ModifyChannelGroupDmParams
@@ -5055,12 +5167,12 @@ export interface ModifyWebhookParams {
   /** the new channel id this webhook should be moved to */
   channel_id: Snowflake
 }
-export enum MutableGuildFeature {
+export const enum MutableGuildFeature {
   COMMUNITY = "COMMUNITY",
   INVITES_DISABLED = "INVITES_DISABLED",
   DISCOVERABLE = "DISCOVERABLE",
 }
-export enum OAuth2Scope {
+export const enum OAuth2Scope {
   /** allows your app to fetch data from a user's "Now Playing/Recently Played" list - requires Discord approval */
   ACTIVITIES_READ = "activities.read",
   /** allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER) */
@@ -5101,6 +5213,8 @@ export enum OAuth2Scope {
   MESSAGES_READ = "messages.read",
   /** allows your app to know a user's friends and implicit relationships - requires Discord approval */
   RELATIONSHIPS_READ = "relationships.read",
+  /** allows your app to update a user's connection and metadata for the app */
+  ROLE_CONNECTIONS_WRITE = "role_connections.write",
   /** for local rpc server access, this allows you to control a user's local Discord client - requires Discord approval */
   RPC = "rpc",
   /** for local rpc server access, this allows you to update a user's activity - requires Discord approval */
@@ -5210,7 +5324,7 @@ export const PermissionFlag = {
   /** Allows for timing out users to prevent them from sending or reacting to messages in chat and threads, and from speaking in voice and stage channels */
   MODERATE_MEMBERS: BigInt(1) << BigInt(40),
 } as const
-export enum PremiumTier {
+export const enum PremiumTier {
   /** guild has not unlocked any Server Boost perks */
   NONE = 0,
   /** guild has unlocked Server Boost level 1 perks */
@@ -5220,7 +5334,7 @@ export enum PremiumTier {
   /** guild has unlocked Server Boost level 3 perks */
   TIER_3 = 3,
 }
-export enum PremiumType {
+export const enum PremiumType {
   NONE = 0,
   NITRO_CLASSIC = 1,
   NITRO = 2,
@@ -5238,7 +5352,7 @@ export interface PresenceUpdateEvent {
   /** User's platform-dependent status */
   client_status: ClientStatus
 }
-export enum PrivacyLevel {
+export const enum PrivacyLevel {
   /** The Stage instance is visible publicly. (deprecated) */
   PUBLIC = 1,
   /** The Stage instance is visible to only guild members. */
@@ -5553,7 +5667,7 @@ export interface SessionStartLimit {
   max_concurrency: number
 }
 export type Snowflake = `${bigint}`
-export enum SortOrderType {
+export const enum SortOrderType {
   /** Sort forum posts by activity */
   LATEST_ACTIVITY = 0,
   /** Sort forum posts by creation time (from most recent to oldest) */
@@ -5630,7 +5744,7 @@ export interface StartThreadWithoutMessageParams {
   /** amount of seconds a user has to wait before sending another message (0-21600) */
   rate_limit_per_user?: number | null
 }
-export enum StatusType {
+export const enum StatusType {
   /** Online */
   ONLINE = "online",
   /** Do Not Disturb */
@@ -5668,7 +5782,7 @@ export interface Sticker {
   /** the standard sticker's sort order within its pack */
   sort_value?: number
 }
-export enum StickerFormatType {
+export const enum StickerFormatType {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
@@ -5697,7 +5811,7 @@ export interface StickerPack {
   /** id of the sticker pack's banner image */
   banner_asset_id?: Snowflake
 }
-export enum StickerType {
+export const enum StickerType {
   /** an official sticker in a pack, part of Nitro or in a removed purchasable pack */
   STANDARD = 1,
   /** a sticker uploaded to a guild for the guild's members */
@@ -5755,7 +5869,7 @@ export interface TextInput {
   /** Custom placeholder text if the input is empty; max 100 characters */
   placeholder?: string
 }
-export enum TextInputStyle {
+export const enum TextInputStyle {
   /** Single-line input */
   SHORT = 1,
   /** Multi-line input */
@@ -5827,7 +5941,7 @@ export interface TriggerMetadatum {
   /** MENTION_SPAM */
   mention_total_limit: number
 }
-export enum TriggerType {
+export const enum TriggerType {
   /** check if content contains words from a user defined list of keywords */
   KEYWORD = 1,
   /** check if content represents generic spam */
@@ -5864,6 +5978,14 @@ export interface UpdatePresence {
   status: StatusType
   /** Whether or not the client is afk */
   afk: boolean
+}
+export interface UpdateUserApplicationRoleConnectionParams {
+  /** the vanity name of the platform a bot has connected (max 50 characters) */
+  platform_name?: string
+  /** the username on the platform a bot has connected (max 100 characters) */
+  platform_username?: string
+  /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
+  metadata?: ApplicationRoleConnectionMetadatum
 }
 export interface UpdateVoiceState {
   /** ID of the guild */
@@ -5932,7 +6054,7 @@ export const UserFlag = {
   VERIFIED_BOT: 1 << 16,
   /** Early Verified Bot Developer */
   VERIFIED_DEVELOPER: 1 << 17,
-  /** Discord Certified Moderator */
+  /** Moderator Programs Alumni */
   CERTIFIED_MODERATOR: 1 << 18,
   /** Bot uses only HTTP interactions and is shown in the online member list */
   BOT_HTTP_INTERACTIONS: 1 << 19,
@@ -5940,7 +6062,7 @@ export const UserFlag = {
   ACTIVE_DEVELOPER: 1 << 22,
 } as const
 export type UserUpdateEvent = User
-export enum VerificationLevel {
+export const enum VerificationLevel {
   /** unrestricted */
   NONE = 0,
   /** must have verified email on account */
@@ -5952,19 +6074,19 @@ export enum VerificationLevel {
   /** must have a verified phone number */
   VERY_HIGH = 4,
 }
-export enum VideoQualityMode {
+export const enum VideoQualityMode {
   /** Discord chooses the quality for optimal performance */
   AUTO = 1,
   /** 720p */
   FULL = 2,
 }
-export enum VisibilityType {
+export const enum VisibilityType {
   /** invisible to everyone except the user themselves */
   NONE = 0,
   /** visible to everyone */
   EVERYONE = 1,
 }
-export enum VoiceOpcode {
+export const enum VoiceOpcode {
   /** Begin a voice websocket connection. */
   IDENTIFY = 0,
   /** Select the voice protocol. */
@@ -6069,7 +6191,7 @@ export interface WebhooksUpdateEvent {
   /** ID of the channel */
   channel_id: Snowflake
 }
-export enum WebhookType {
+export const enum WebhookType {
   /** Incoming Webhooks can post messages to channels with a generated token */
   INCOMING = 1,
   /** Channel Follower Webhooks are internal webhooks used with Channel Following to post new messages into channels */

@@ -24,7 +24,7 @@
     "./*": "./*.js"
   },
   "devDependencies": {
-    "@tim-smart/discord-api-docs-parser": "^0.4.1",
+    "@tim-smart/discord-api-docs-parser": "^0.5.0",
     "@types/ws": "^8.5.3",
     "lerna": "^6.1.0",
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.161/compiler/typescript.tgz"
