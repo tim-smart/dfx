@@ -3,3 +3,4 @@ node_modules/
 dist/
 _old/
 tsconfig.tsbuildinfo
+.DS_Store

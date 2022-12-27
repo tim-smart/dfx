@@ -1,5 +1,5 @@
 import { Discord, Effect, Option } from "dfx/_common"
-import type { F } from "ts-toolbelt"
+import tb from "ts-toolbelt"
 import {
   FocusedOptionContext,
   ResolvedDataNotFound,
@@ -34,7 +34,7 @@ export const global = <
   E,
   A extends Discord.CreateGlobalApplicationCommandParams,
 >(
-  command: F.Narrow<A>,
+  command: tb.F.Narrow<A>,
   handle: DescriptionMissing<A> extends true
     ? "command description is missing"
     : CommandHandler<R, E, A>,
@@ -57,7 +57,7 @@ export const guild = <
   E,
   A extends Discord.CreateGuildApplicationCommandParams,
 >(
-  command: F.Narrow<A>,
+  command: tb.F.Narrow<A>,
   handle: DescriptionMissing<A> extends true
     ? "command description is missing"
     : CommandHandler<R, E, A>,
