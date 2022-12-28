@@ -1,7 +1,7 @@
 /**
  * @tsplus global
  */
-import type {
+import {
   Cause,
   Effect,
   Exit,

@@ -10,7 +10,7 @@ export type { Scope } from "@effect/io/Scope"
 export type { Stream } from "@effect/stream/Stream"
 
 export type { Chunk } from "@fp-ts/data/Chunk"
-export type { Context, Tag } from "@fp-ts/data/Context"
+export { Context, Tag } from "@fp-ts/data/Context"
 export type { Duration } from "@fp-ts/data/Duration"
 export type { Equal } from "@fp-ts/data/Equal"
 export type { Either } from "@fp-ts/data/Either"
