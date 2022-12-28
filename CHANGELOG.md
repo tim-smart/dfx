@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.8](https://github.com/tim-smart/dfx/compare/dfx@0.21.7...dfx@0.21.8) (2022-12-28)
+
+
+### Bug Fixes
+
+* Tag is a function ([2319e08](https://github.com/tim-smart/dfx/commit/2319e0860c719b10a8566399e27013e27ae35bb3))
+
+
+
+
+
 ## [0.21.7](https://github.com/tim-smart/dfx/compare/dfx@0.21.6...dfx@0.21.7) (2022-12-28)
 
 
