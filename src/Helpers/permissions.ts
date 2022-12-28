@@ -1,6 +1,3 @@
-import { Discord, Flags, Members } from "dfx"
-import { Effect, pipe } from "dfx/_common"
-
 /**
  * A constant of all the permissions
  */
@@ -109,7 +106,7 @@ export const applyOverwrites =
 interface RolesCache<E> {
   getForParent: (
     parentId: string,
-  ) => Effect.Effect<never, E, ReadonlyMap<string, Discord.Role>>
+  ) => Effect<never, E, ReadonlyMap<string, Discord.Role>>
 }
 
 export const hasInChannel =

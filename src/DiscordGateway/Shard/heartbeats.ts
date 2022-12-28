@@ -1,35 +1,21 @@
-import {
-  Discord,
-  Duration,
-  Effect,
-  Option,
-  pipe,
-  Ref,
-  Schedule,
-  Stream,
-} from "dfx/_common"
-import * as DiscordWS from "../DiscordWS/index.js"
-import * as WS from "../WS/index.js"
 import * as SendEvents from "./sendEvents.js"
 import * as Utils from "./utils.js"
+import { millis } from "@fp-ts/data/Duration"
 
-const send = (ref: Ref.Ref<boolean>, seqRef: Ref.Ref<Option.Option<number>>) =>
+const send = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   seqRef.get
     .map((a) => SendEvents.heartbeat(a.getOrNull))
     .tap(() => ref.set(false))
 
-const maybeSend = (
-  ref: Ref.Ref<boolean>,
-  seqRef: Ref.Ref<Option.Option<number>>,
-) =>
+const maybeSend = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   ref.get.flatMap(
-    (acked): Effect.Effect<never, never, DiscordWS.Message> =>
+    (acked): Effect<never, never, DiscordWS.Message> =>
       acked ? send(ref, seqRef) : Effect.succeed(WS.Reconnect),
   )
 
 export const fromRaw = <R, E>(
-  source: Stream.Stream<R, E, Discord.GatewayPayload>,
-  seqRef: Ref.Ref<Option.Option<number>>,
+  source: Stream<R, E, Discord.GatewayPayload>,
+  seqRef: Ref<Maybe<number>>,
 ) =>
   pipe(
     Ref.make(true).map((ackedRef) => {
@@ -40,10 +26,8 @@ export const fromRaw = <R, E>(
         Stream.flatMapParSwitch(1)((p) =>
           Stream.fromSchedule(
             Schedule.duration(
-              Duration.millis(p.d!.heartbeat_interval * Math.random()),
-            ).andThen(
-              Schedule.spaced(Duration.millis(p.d!.heartbeat_interval)),
-            ),
+              millis(p.d!.heartbeat_interval * Math.random()),
+            ).andThen(Schedule.spaced(millis(p.d!.heartbeat_interval))),
           ),
         ),
       ).mapEffect(() => maybeSend(ackedRef, seqRef))

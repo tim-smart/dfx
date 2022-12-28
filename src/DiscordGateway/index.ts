@@ -1,34 +1,18 @@
-import { Success } from "dfx/utils/effect"
-import {
-  Context,
-  Discord,
-  Effect,
-  Layer,
-  pipe,
-  Scope,
-  Stream,
-} from "dfx/_common"
 import { Sharder } from "./Sharder/index.js"
 
-const _scope = Scope.ScopeTypeId
-
 const fromDispatchFactory =
-  <R, E>(
-    source: Stream.Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
-  ) =>
+  <R, E>(source: Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
   <K extends keyof Discord.ReceiveEvents>(
     event: K,
-  ): Stream.Stream<R, E, Discord.ReceiveEvents[K]> =>
+  ): Stream<R, E, Discord.ReceiveEvents[K]> =>
     source.filter((p) => p.t === event).map((p) => p.d! as any)
 
 const handleDispatchFactory =
-  <R, E>(
-    source: Stream.Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
-  ) =>
+  <R, E>(source: Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
   <K extends keyof Discord.ReceiveEvents, R1, E1, A>(
     event: K,
-    handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<R1, E1, A>,
-  ): Effect.Effect<R | R1, E | E1, void> =>
+    handle: (event: Discord.ReceiveEvents[K]) => Effect<R1, E1, A>,
+  ): Effect<R | R1, E | E1, void> =>
     pipe(
       source.filter((p) => p.t === event),
       Stream.flatMapPar(128)((a) => Stream.fromEffect(handle(a.d as any))),
@@ -60,5 +44,5 @@ export const make = Do(($) => {
 })
 
 export interface DiscordGateway extends Success<typeof make> {}
-export const DiscordGateway = Context.Tag<DiscordGateway>()
-export const LiveDiscordGateway = Layer.scoped(DiscordGateway)(make)
+export const DiscordGateway = Tag<DiscordGateway>()
+export const LiveDiscordGateway = make.scoped(DiscordGateway)

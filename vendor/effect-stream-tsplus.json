@@ -7,6 +7,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/ChildExecutorDecision.Continue"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Continue.Ops"
         }
       ]
     },
@@ -17,6 +21,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/ChildExecutorDecision.Close"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Close.Ops"
         }
       ]
     },
@@ -27,6 +35,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/ChildExecutorDecision.Yield"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Yield.Ops"
         }
       ]
     },
@@ -37,6 +49,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/ChildExecutorDecision.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.TypeId.Ops"
         }
       ]
     },
@@ -47,6 +63,65 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/ChildExecutorDecision"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "Close",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Ops",
+          "name": "Close"
+        }
+      ]
+    },
+    {
+      "definitionName": "isChildExecutorDecision",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Ops",
+          "name": "isChildExecutorDecision"
+        }
+      ]
+    },
+    {
+      "definitionName": "ChildExecutorDecisionTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.TypeId.Ops",
+          "name": "ChildExecutorDecisionTypeId"
+        }
+      ]
+    },
+    {
+      "definitionName": "Continue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Ops",
+          "name": "Continue"
+        }
+      ]
+    },
+    {
+      "definitionName": "Yield",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Ops",
+          "name": "Yield"
         }
       ]
     },
@@ -103,6 +178,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeDecision"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeDecision.Ops"
         }
       ]
     },
@@ -113,6 +192,65 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeDecision.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeDecision.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "Done",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeDecision.Ops",
+          "name": "Done"
+        }
+      ]
+    },
+    {
+      "definitionName": "Await",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeDecision.Ops",
+          "name": "Await"
+        }
+      ]
+    },
+    {
+      "definitionName": "AwaitConst",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeDecision.Ops",
+          "name": "AwaitConst"
+        }
+      ]
+    },
+    {
+      "definitionName": "isMergeDecision",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeDecision.Ops",
+          "name": "isMergeDecision"
+        }
+      ]
+    },
+    {
+      "definitionName": "MergeDecisionTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeDecision.TypeId.Ops",
+          "name": "MergeDecisionTypeId"
         }
       ]
     },
@@ -136,6 +274,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeStrategy.BackPressure"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeStrategy.BackPressure.Ops"
         }
       ]
     },
@@ -146,6 +288,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeStrategy.BufferSliding"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeStrategy.BufferSliding.Ops"
         }
       ]
     },
@@ -156,6 +302,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeStrategy.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeStrategy.TypeId.Ops"
         }
       ]
     },
@@ -166,6 +316,54 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeStrategy"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeStrategy.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "isMergeStrategy",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.Ops",
+          "name": "isMergeStrategy"
+        }
+      ]
+    },
+    {
+      "definitionName": "MergeStrategyTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.TypeId.Ops",
+          "name": "MergeStrategyTypeId"
+        }
+      ]
+    },
+    {
+      "definitionName": "BackPressure",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.Ops",
+          "name": "BackPressure"
+        }
+      ]
+    },
+    {
+      "definitionName": "BufferSliding",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.Ops",
+          "name": "BufferSliding"
         }
       ]
     },
@@ -211,6 +409,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/SingleProducerAsyncInput"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/SingleProducerAsyncInput.Ops"
         }
       ]
     },
@@ -221,6 +423,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/SingleProducerAsyncInput.AsyncInputProducer"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/SingleProducerAsyncInput.AsyncInputProducer.Ops"
         }
       ]
     },
@@ -231,6 +437,21 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/SingleProducerAsyncInput.AsyncInputConsumer"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/SingleProducerAsyncInput.AsyncInputConsumer.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "make",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/SingleProducerAsyncInput.Ops",
+          "name": "make"
         }
       ]
     }
@@ -243,6 +464,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullRequest.Pulled"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Pulled.Ops"
         }
       ]
     },
@@ -253,6 +478,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullRequest.NoUpstream"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.NoUpstream.Ops"
         }
       ]
     },
@@ -263,6 +492,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullRequest.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.TypeId.Ops"
         }
       ]
     },
@@ -273,6 +506,54 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullRequest"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "Pulled",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Ops",
+          "name": "Pulled"
+        }
+      ]
+    },
+    {
+      "definitionName": "NoUpstream",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Ops",
+          "name": "NoUpstream"
+        }
+      ]
+    },
+    {
+      "definitionName": "isUpstreamPullRequest",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Ops",
+          "name": "isUpstreamPullRequest"
+        }
+      ]
+    },
+    {
+      "definitionName": "UpstreamPullRequestTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.TypeId.Ops",
+          "name": "UpstreamPullRequestTypeId"
         }
       ]
     },
@@ -318,6 +599,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy.PullAfterNext"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.PullAfterNext.Ops"
         }
       ]
     },
@@ -328,6 +613,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy.PullAfterAllEnqueued"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.PullAfterAllEnqueued.Ops"
         }
       ]
     },
@@ -338,6 +627,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.TypeId.Ops"
         }
       ]
     },
@@ -348,6 +641,54 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "PullAfterNext",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Ops",
+          "name": "PullAfterNext"
+        }
+      ]
+    },
+    {
+      "definitionName": "PullAfterAllEnqueued",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Ops",
+          "name": "PullAfterAllEnqueued"
+        }
+      ]
+    },
+    {
+      "definitionName": "isUpstreamPullStrategy",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Ops",
+          "name": "isUpstreamPullStrategy"
+        }
+      ]
+    },
+    {
+      "definitionName": "UpstreamPullStrategyTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.TypeId.Ops",
+          "name": "UpstreamPullStrategyTypeId"
         }
       ]
     },
@@ -393,6 +734,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeState.BothRunning"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeState.BothRunning.Ops"
         }
       ]
     },
@@ -403,6 +748,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeState.LeftDone"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeState.LeftDone.Ops"
         }
       ]
     },
@@ -413,6 +762,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeState.RightDone"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeState.RightDone.Ops"
         }
       ]
     },
@@ -423,6 +776,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeState.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeState.TypeId.Ops"
         }
       ]
     },
@@ -433,6 +790,65 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel/MergeState"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel/MergeState.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "BothRunning",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Ops",
+          "name": "BothRunning"
+        }
+      ]
+    },
+    {
+      "definitionName": "LeftDone",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Ops",
+          "name": "LeftDone"
+        }
+      ]
+    },
+    {
+      "definitionName": "RightDone",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Ops",
+          "name": "RightDone"
+        }
+      ]
+    },
+    {
+      "definitionName": "isMergeState",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Ops",
+          "name": "isMergeState"
+        }
+      ]
+    },
+    {
+      "definitionName": "MergeStateTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.TypeId.Ops",
+          "name": "MergeStateTypeId"
         }
       ]
     },
@@ -489,6 +905,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Sink"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Sink.Ops"
         }
       ]
     },
@@ -499,6 +919,1022 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Sink.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Sink.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChannel",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromChannel"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHub",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromHub"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHubWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromHubWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromPush",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromPush"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromQueue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromQueue"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromQueueWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fromQueueWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAll"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllN",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllN"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllToMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllToMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllToMapN",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllToMapN"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllToSet",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllToSet"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllToSetN",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllToSetN"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllUntil",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllUntil"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllUntilEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllUntilEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllWhile",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllWhile"
+        }
+      ]
+    },
+    {
+      "definitionName": "collectAllWhileEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "collectAllWhileEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "count",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "count"
+        }
+      ]
+    },
+    {
+      "definitionName": "die",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "die"
+        }
+      ]
+    },
+    {
+      "definitionName": "dieMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "dieMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "dieSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "dieSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "drain",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "drain"
+        }
+      ]
+    },
+    {
+      "definitionName": "drop",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "drop"
+        }
+      ]
+    },
+    {
+      "definitionName": "dropUntil",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "dropUntil"
+        }
+      ]
+    },
+    {
+      "definitionName": "dropUntilEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "dropUntilEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "dropWhile",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "dropWhile"
+        }
+      ]
+    },
+    {
+      "definitionName": "dropWhileEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "dropWhileEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "environment",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "environment"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "environmentWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWithEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "environmentWithEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWithSink",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "environmentWithSink"
+        }
+      ]
+    },
+    {
+      "definitionName": "every",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "every"
+        }
+      ]
+    },
+    {
+      "definitionName": "fail",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fail"
+        }
+      ]
+    },
+    {
+      "definitionName": "failSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "failSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "failCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCauseSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "failCauseSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "fold",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "fold"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldChunks",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldChunks"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldChunksEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldChunksEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldLeft",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldLeft"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldLeftChunks",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldLeftChunks"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldLeftChunksEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldLeftChunksEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldLeftEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldLeftEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldUntil",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldUntil"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldUntilEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldUntilEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldWeighted",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldWeighted"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldWeightedDecompose",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldWeightedDecompose"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldWeightedDecomposeEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldWeightedDecomposeEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "foldWeightedEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "foldWeightedEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "forEach",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "forEach"
+        }
+      ]
+    },
+    {
+      "definitionName": "forEachChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "forEachChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "forEachChunkWhile",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "forEachChunkWhile"
+        }
+      ]
+    },
+    {
+      "definitionName": "forEachWhile",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "forEachWhile"
+        }
+      ]
+    },
+    {
+      "definitionName": "head",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "head"
+        }
+      ]
+    },
+    {
+      "definitionName": "last",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "last"
+        }
+      ]
+    },
+    {
+      "definitionName": "leftover",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "leftover"
+        }
+      ]
+    },
+    {
+      "definitionName": "log",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "log"
+        }
+      ]
+    },
+    {
+      "definitionName": "logDebug",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logDebug"
+        }
+      ]
+    },
+    {
+      "definitionName": "logDebugCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logDebugCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logDebugCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logDebugCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logError",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logError"
+        }
+      ]
+    },
+    {
+      "definitionName": "logErrorCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logErrorCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logErrorCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logErrorCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logFatal",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logFatal"
+        }
+      ]
+    },
+    {
+      "definitionName": "logFatalCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logFatalCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logFatalCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logFatalCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logInfo",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logInfo"
+        }
+      ]
+    },
+    {
+      "definitionName": "logInfoCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logInfoCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logInfoCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logInfoCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logWarning",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logWarning"
+        }
+      ]
+    },
+    {
+      "definitionName": "logWarningCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logWarningCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logWarningCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logWarningCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logTrace",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logTrace"
+        }
+      ]
+    },
+    {
+      "definitionName": "logTraceCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logTraceCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logTraceCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "logTraceCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "mkString",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "mkString"
+        }
+      ]
+    },
+    {
+      "definitionName": "never",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "never"
+        }
+      ]
+    },
+    {
+      "definitionName": "service",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "service"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "serviceWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWithEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "serviceWithEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWithSink",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "serviceWithSink"
+        }
+      ]
+    },
+    {
+      "definitionName": "some",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "some"
+        }
+      ]
+    },
+    {
+      "definitionName": "succeed",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "succeed"
+        }
+      ]
+    },
+    {
+      "definitionName": "sum",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "sum"
+        }
+      ]
+    },
+    {
+      "definitionName": "suspend",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "suspend"
+        }
+      ]
+    },
+    {
+      "definitionName": "sync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "sync"
+        }
+      ]
+    },
+    {
+      "definitionName": "take",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "take"
+        }
+      ]
+    },
+    {
+      "definitionName": "timed",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "timed"
+        }
+      ]
+    },
+    {
+      "definitionName": "unwrap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "unwrap"
+        }
+      ]
+    },
+    {
+      "definitionName": "unwrapScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Ops",
+          "name": "unwrapScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "SinkTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.TypeId.Ops",
+          "name": "SinkTypeId"
         }
       ]
     },
@@ -984,6 +2420,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/Emit"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/Emit.Ops"
         }
       ]
     },
@@ -994,6 +2434,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/Emit.Ops"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/Emit.Ops.Ops"
         }
       ]
     }
@@ -1006,6 +2450,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/HaltStrategy.Left"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/HaltStrategy.Left.Ops"
         }
       ]
     },
@@ -1016,6 +2464,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/HaltStrategy.Right"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/HaltStrategy.Right.Ops"
         }
       ]
     },
@@ -1026,6 +2478,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/HaltStrategy.Both"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/HaltStrategy.Both.Ops"
         }
       ]
     },
@@ -1036,6 +2492,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/HaltStrategy.Either"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/HaltStrategy.Either.Ops"
         }
       ]
     },
@@ -1046,6 +2506,54 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream/HaltStrategy"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream/HaltStrategy.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "Left",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Ops",
+          "name": "Left"
+        }
+      ]
+    },
+    {
+      "definitionName": "Right",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Ops",
+          "name": "Right"
+        }
+      ]
+    },
+    {
+      "definitionName": "Both",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Ops",
+          "name": "Both"
+        }
+      ]
+    },
+    {
+      "definitionName": "Either",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Ops",
+          "name": "Either"
         }
       ]
     },
@@ -1113,6 +2621,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Take"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Take.Ops"
         }
       ]
     },
@@ -1123,6 +2635,142 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Take.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Take.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "fromEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromExit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "fromExit"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromPull",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "fromPull"
+        }
+      ]
+    },
+    {
+      "definitionName": "make",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "make"
+        }
+      ]
+    },
+    {
+      "definitionName": "chunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "chunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "die",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "die"
+        }
+      ]
+    },
+    {
+      "definitionName": "dieMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "dieMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "fail",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "fail"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "failCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "singleton",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "singleton"
+        }
+      ]
+    },
+    {
+      "definitionName": "TakeTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.TypeId.Ops",
+          "name": "TakeTypeId"
+        }
+      ]
+    },
+    {
+      "definitionName": "end",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Ops",
+          "name": "end"
         }
       ]
     },
@@ -1223,6 +2871,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/GroupBy"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/GroupBy.Ops"
         }
       ]
     },
@@ -1233,6 +2885,32 @@
         {
           "kind": "type",
           "typeName": "effect/stream/GroupBy.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/GroupBy.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "make",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/GroupBy.Ops",
+          "name": "make"
+        }
+      ]
+    },
+    {
+      "definitionName": "GroupByTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/GroupBy.TypeId.Ops",
+          "name": "GroupByTypeId"
         }
       ]
     },
@@ -1278,6 +2956,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream.Ops"
         }
       ]
     },
@@ -1288,6 +2970,1275 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Stream.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Stream.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChannel",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChannel"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunkHub",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunkHub"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunkHubScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunkHubScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunkHubWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunkHubWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunkHubScopedWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunkHubScopedWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunkQueue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunkQueue"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunkQueueWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunkQueueWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromChunks",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromChunks"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromEffectOption",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromEffectOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHub",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromHub"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHubScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromHubScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHubWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromHubWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHubScopedWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromHubScopedWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromIterable",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromIterable"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromIterableEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromIterableEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromPull",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromPull"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromQueue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromQueue"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromQueueWithShutdown",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromQueueWithShutdown"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromSchedule",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fromSchedule"
+        }
+      ]
+    },
+    {
+      "definitionName": "make",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "make"
+        }
+      ]
+    },
+    {
+      "definitionName": "acquireRelease",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "acquireRelease"
+        }
+      ]
+    },
+    {
+      "definitionName": "asyncEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "asyncEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "asyncInterrupt",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "asyncInterrupt"
+        }
+      ]
+    },
+    {
+      "definitionName": "asyncOption",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "asyncOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "asyncScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "asyncScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "concatAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "concatAll"
+        }
+      ]
+    },
+    {
+      "definitionName": "die",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "die"
+        }
+      ]
+    },
+    {
+      "definitionName": "dieSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "dieSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "dieMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "dieMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "done",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "done"
+        }
+      ]
+    },
+    {
+      "definitionName": "environment",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "environment"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "environmentWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWithEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "environmentWithEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWithStream",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "environmentWithStream"
+        }
+      ]
+    },
+    {
+      "definitionName": "execute",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "execute"
+        }
+      ]
+    },
+    {
+      "definitionName": "fail",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "fail"
+        }
+      ]
+    },
+    {
+      "definitionName": "failSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "failSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "failCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCauseSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "failCauseSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "finalizer",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "finalizer"
+        }
+      ]
+    },
+    {
+      "definitionName": "flatMapPar",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "flatMapPar"
+        }
+      ]
+    },
+    {
+      "definitionName": "flatMapParSwitch",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "flatMapParSwitch"
+        }
+      ]
+    },
+    {
+      "definitionName": "identity",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "identity"
+        }
+      ]
+    },
+    {
+      "definitionName": "iterate",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "iterate"
+        }
+      ]
+    },
+    {
+      "definitionName": "log",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "log"
+        }
+      ]
+    },
+    {
+      "definitionName": "logDebug",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logDebug"
+        }
+      ]
+    },
+    {
+      "definitionName": "logDebugCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logDebugCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logDebugCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logDebugCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logError",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logError"
+        }
+      ]
+    },
+    {
+      "definitionName": "logErrorCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logErrorCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logErrorCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logErrorCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logFatal",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logFatal"
+        }
+      ]
+    },
+    {
+      "definitionName": "logFatalCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logFatalCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logFatalCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logFatalCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logInfo",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logInfo"
+        }
+      ]
+    },
+    {
+      "definitionName": "logInfoCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logInfoCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logInfoCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logInfoCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logWarning",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logWarning"
+        }
+      ]
+    },
+    {
+      "definitionName": "logWarningCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logWarningCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logWarningCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logWarningCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "logTrace",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logTrace"
+        }
+      ]
+    },
+    {
+      "definitionName": "logTraceCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logTraceCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "logTraceCauseMessage",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "logTraceCauseMessage"
+        }
+      ]
+    },
+    {
+      "definitionName": "mapEffectPar",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "mapEffectPar"
+        }
+      ]
+    },
+    {
+      "definitionName": "mapEffectParByKey",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "mapEffectParByKey"
+        }
+      ]
+    },
+    {
+      "definitionName": "mapEffectParUnordered",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "mapEffectParUnordered"
+        }
+      ]
+    },
+    {
+      "definitionName": "mergeAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "mergeAll"
+        }
+      ]
+    },
+    {
+      "definitionName": "mergeAllUnbounded",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "mergeAllUnbounded"
+        }
+      ]
+    },
+    {
+      "definitionName": "never",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "never"
+        }
+      ]
+    },
+    {
+      "definitionName": "paginate",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "paginate"
+        }
+      ]
+    },
+    {
+      "definitionName": "paginateChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "paginateChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "paginateChunkEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "paginateChunkEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "paginateEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "paginateEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "prepend",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "prepend"
+        }
+      ]
+    },
+    {
+      "definitionName": "provideService",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "provideService"
+        }
+      ]
+    },
+    {
+      "definitionName": "provideServiceEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "provideServiceEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "provideServiceStream",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "provideServiceStream"
+        }
+      ]
+    },
+    {
+      "definitionName": "range",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "range"
+        }
+      ]
+    },
+    {
+      "definitionName": "repeatEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "repeatEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "repeatEffectChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "repeatEffectChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "repeatEffectChunkOption",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "repeatEffectChunkOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "repeatEffectOption",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "repeatEffectOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "repeatEffectWithSchedule",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "repeatEffectWithSchedule"
+        }
+      ]
+    },
+    {
+      "definitionName": "repeatForever",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "repeatForever"
+        }
+      ]
+    },
+    {
+      "definitionName": "scoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "scoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "service",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "service"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "serviceWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWithEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "serviceWithEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWithStream",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "serviceWithStream"
+        }
+      ]
+    },
+    {
+      "definitionName": "succeed",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "succeed"
+        }
+      ]
+    },
+    {
+      "definitionName": "sync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "sync"
+        }
+      ]
+    },
+    {
+      "definitionName": "suspend",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "suspend"
+        }
+      ]
+    },
+    {
+      "definitionName": "throttleEnforce",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "throttleEnforce"
+        }
+      ]
+    },
+    {
+      "definitionName": "throttleEnforceEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "throttleEnforceEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "throttleShape",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "throttleShape"
+        }
+      ]
+    },
+    {
+      "definitionName": "throttleShapeEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "throttleShapeEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "tick",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "tick"
+        }
+      ]
+    },
+    {
+      "definitionName": "unfold",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unfold"
+        }
+      ]
+    },
+    {
+      "definitionName": "unfoldChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unfoldChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "unfoldChunkEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unfoldChunkEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "unfoldEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unfoldEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "unit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unit"
+        }
+      ]
+    },
+    {
+      "definitionName": "unwrap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unwrap"
+        }
+      ]
+    },
+    {
+      "definitionName": "unwrapScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "unwrapScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "updateService",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "updateService"
+        }
+      ]
+    },
+    {
+      "definitionName": "whenCase",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "whenCase"
+        }
+      ]
+    },
+    {
+      "definitionName": "whenCaseEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "whenCaseEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "zipAllSortedByKey",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "zipAllSortedByKey"
+        }
+      ]
+    },
+    {
+      "definitionName": "zipAllSortedByKeyLeft",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "zipAllSortedByKeyLeft"
+        }
+      ]
+    },
+    {
+      "definitionName": "zipAllSortedByKeyRight",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "zipAllSortedByKeyRight"
+        }
+      ]
+    },
+    {
+      "definitionName": "zipAllSortedByKeyWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "zipAllSortedByKeyWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "StreamTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.TypeId.Ops",
+          "name": "StreamTypeId"
+        }
+      ]
+    },
+    {
+      "definitionName": "empty",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Ops",
+          "name": "empty"
         }
       ]
     },
@@ -3709,6 +6660,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel.Ops"
         }
       ]
     },
@@ -3719,6 +6674,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel.Exception"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel.Exception.Ops"
         }
       ]
     },
@@ -3729,6 +6688,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel.TypeId.Ops"
         }
       ]
     },
@@ -3739,6 +6702,549 @@
         {
           "kind": "type",
           "typeName": "effect/stream/Channel.ExceptionTypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/Channel.ExceptionTypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromEither",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromEither"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromInput",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromInput"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHub",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromHub"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromHubScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromHubScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromOption",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "fromQueue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fromQueue"
+        }
+      ]
+    },
+    {
+      "definitionName": "ChannelException",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Exception.Ops",
+          "name": "ChannelException"
+        }
+      ]
+    },
+    {
+      "definitionName": "acquireUseRelease",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "acquireUseRelease"
+        }
+      ]
+    },
+    {
+      "definitionName": "acquireReleaseOut",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "acquireReleaseOut"
+        }
+      ]
+    },
+    {
+      "definitionName": "buffer",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "buffer"
+        }
+      ]
+    },
+    {
+      "definitionName": "bufferChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "bufferChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "environment",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "environment"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "environmentWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWithChannel",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "environmentWithChannel"
+        }
+      ]
+    },
+    {
+      "definitionName": "environmentWithEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "environmentWithEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "fail",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "fail"
+        }
+      ]
+    },
+    {
+      "definitionName": "failSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "failSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "failCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "failCauseSync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "failCauseSync"
+        }
+      ]
+    },
+    {
+      "definitionName": "identity",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "identity"
+        }
+      ]
+    },
+    {
+      "definitionName": "mapOutEffectPar",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "mapOutEffectPar"
+        }
+      ]
+    },
+    {
+      "definitionName": "mergeAllWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "mergeAllWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "mergeMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "mergeMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "never",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "never"
+        }
+      ]
+    },
+    {
+      "definitionName": "provideService",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "provideService"
+        }
+      ]
+    },
+    {
+      "definitionName": "read",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "read"
+        }
+      ]
+    },
+    {
+      "definitionName": "readOrFail",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "readOrFail"
+        }
+      ]
+    },
+    {
+      "definitionName": "readWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "readWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "readWithCause",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "readWithCause"
+        }
+      ]
+    },
+    {
+      "definitionName": "scoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "scoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "service",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "service"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWith",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "serviceWith"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWithChannel",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "serviceWithChannel"
+        }
+      ]
+    },
+    {
+      "definitionName": "serviceWithEffect",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "serviceWithEffect"
+        }
+      ]
+    },
+    {
+      "definitionName": "succeed",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "succeed"
+        }
+      ]
+    },
+    {
+      "definitionName": "sync",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "sync"
+        }
+      ]
+    },
+    {
+      "definitionName": "toHub",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "toHub"
+        }
+      ]
+    },
+    {
+      "definitionName": "toQueue",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "toQueue"
+        }
+      ]
+    },
+    {
+      "definitionName": "unit",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "unit"
+        }
+      ]
+    },
+    {
+      "definitionName": "unwrap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "unwrap"
+        }
+      ]
+    },
+    {
+      "definitionName": "unwrapScoped",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "unwrapScoped"
+        }
+      ]
+    },
+    {
+      "definitionName": "updateService",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "updateService"
+        }
+      ]
+    },
+    {
+      "definitionName": "write",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "write"
+        }
+      ]
+    },
+    {
+      "definitionName": "writeAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "writeAll"
+        }
+      ]
+    },
+    {
+      "definitionName": "writeChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "writeChunk"
+        }
+      ]
+    },
+    {
+      "definitionName": "isChannelException",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Ops",
+          "name": "isChannelException"
+        }
+      ]
+    },
+    {
+      "definitionName": "ChannelTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.TypeId.Ops",
+          "name": "ChannelTypeId"
+        }
+      ]
+    },
+    {
+      "definitionName": "ChannelExceptionTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.ExceptionTypeId.Ops",
+          "name": "ChannelExceptionTypeId"
         }
       ]
     },
@@ -4444,6 +7950,10 @@
         {
           "kind": "type",
           "typeName": "effect/stream/SubscriptionRef"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/SubscriptionRef.Ops"
         }
       ]
     },
@@ -4454,6 +7964,32 @@
         {
           "kind": "type",
           "typeName": "effect/stream/SubscriptionRef.TypeId"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/stream/SubscriptionRef.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "make",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/SubscriptionRef.Ops",
+          "name": "make"
+        }
+      ]
+    },
+    {
+      "definitionName": "SubscriptionRefTypeId",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/stream/SubscriptionRef.TypeId.Ops",
+          "name": "SubscriptionRefTypeId"
         }
       ]
     },

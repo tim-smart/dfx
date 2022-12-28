@@ -10,7 +10,7 @@ specifiers:
   isomorphic-ws: ^5.0.0
   lerna: ^6.1.0
   tweetnacl: ^1.0.3
-  typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.161/compiler/typescript.tgz
+  typescript: https://github.com/0x706b/typescript/raw/043313ca8f/typescript-5.0.0-tsplus.20221227.tgz
   utf-8-validate: ^5.0.10
   ws: ^8.11.0
 
@@ -30,7 +30,7 @@ devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
   '@types/ws': 8.5.3
   lerna: 6.1.0
-  typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.161/compiler/typescript.tgz'
+  typescript: '@github.com/0x706b/typescript/raw/043313ca8f/typescript-5.0.0-tsplus.20221227.tgz'
 
 packages:
 
@@ -4708,10 +4708,10 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.161/compiler/typescript.tgz':
-    resolution: {tarball: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.161/compiler/typescript.tgz}
+  '@github.com/0x706b/typescript/raw/043313ca8f/typescript-5.0.0-tsplus.20221227.tgz':
+    resolution: {tarball: https://github.com/0x706b/typescript/raw/043313ca8f/typescript-5.0.0-tsplus.20221227.tgz}
     name: typescript
-    version: 5.0.0-tsplus.20221217
+    version: 5.0.0-tsplus.20221227
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true

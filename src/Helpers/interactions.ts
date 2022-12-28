@@ -1,5 +1,4 @@
 import * as Arr from "@fp-ts/data/ReadonlyArray"
-import { Discord, flow, HashMap, identity, Option, pipe } from "dfx/_common"
 
 /**
  * Maybe find a sub-command within the interaction options.
@@ -47,11 +46,11 @@ export const optionsWithNested = (
   const optsFromOption = (
     opt: Discord.ApplicationCommandInteractionDataOption,
   ): Discord.ApplicationCommandInteractionDataOption[] =>
-    Option.fromNullable(opt.options)
+    Maybe.fromNullable(opt.options)
       .map((opts) => [...opts, ...opts.flatMap(optsFromOption)])
       .match(() => [], identity)
 
-  return Option.fromNullable(data.options)
+  return Maybe.fromNullable(data.options)
     .map((opts) => [...opts, ...opts.flatMap(optsFromOption)])
     .getOrElse(() => [])
 }
@@ -99,7 +98,7 @@ export const optionValue = (name: string) =>
  * Try extract resolved data
  */
 export const resolved = (data: Discord.Interaction) =>
-  Option.fromNullable(data.data).flatMapNullable(
+  Maybe.fromNullable(data.data).flatMapNullable(
     (a) => (a as Discord.ApplicationCommandDatum).resolved,
   )
 
@@ -111,10 +110,10 @@ export const resolveOptionValue =
     name: string,
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
-  (a: Discord.Interaction): Option.Option<T> =>
+  (a: Discord.Interaction): Maybe<T> =>
     Do(($) => {
       const data = $(
-        Option.fromNullable(a.data as Discord.ApplicationCommandDatum),
+        Maybe.fromNullable(a.data as Discord.ApplicationCommandDatum),
       )
       const id = $(
         getOption(name)(data).flatMapNullable(
@@ -122,7 +121,7 @@ export const resolveOptionValue =
         ),
       )
       const r = $(resolved(a))
-      return $(Option.fromNullable(f(id, r)))
+      return $(Maybe.fromNullable(f(id, r)))
     })
 
 /**
@@ -132,18 +131,16 @@ export const resolveValues =
   <T>(
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
-  (a: Discord.Interaction): Option.Option<readonly T[]> =>
+  (a: Discord.Interaction): Maybe<readonly T[]> =>
     Do(($) => {
       const values = $(
-        Option.fromNullable(
+        Maybe.fromNullable(
           a.data as Discord.MessageComponentDatum,
         ).flatMapNullable((a) => a.values as unknown as string[]),
       )
       const r = $(resolved(a))
       return $(
-        Option.productAll(
-          values.map((a) => Option.fromNullable(f(a as any, r))),
-        ),
+        Maybe.productAll(values.map((a) => Maybe.fromNullable(f(a as any, r)))),
       )
     })
 

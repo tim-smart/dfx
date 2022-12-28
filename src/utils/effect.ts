@@ -1,15 +1,20 @@
 import { Context, Effect } from "dfx/_common"
 
-export type Success<A extends Effect.Effect<any, any, any>> =
-  A extends Effect.Effect<any, any, infer R> ? R : never
+export type Success<A extends Effect<any, any, any>> = A extends Effect<
+  any,
+  any,
+  infer R
+>
+  ? R
+  : never
 
 export type ShapeFn<T> = Pick<
   T,
   {
     [k in keyof T]: T[k] extends (
       ...args: infer ARGS
-    ) => Effect.Effect<infer R, infer E, infer A>
-      ? ((...args: ARGS) => Effect.Effect<R, E, A>) extends T[k]
+    ) => Effect<infer R, infer E, infer A>
+      ? ((...args: ARGS) => Effect<R, E, A>) extends T[k]
         ? k
         : never
       : never
@@ -19,7 +24,7 @@ export type ShapeFn<T> = Pick<
 export type ShapeCn<T> = Pick<
   T,
   {
-    [k in keyof T]: T[k] extends Effect.Effect<any, any, any> ? k : never
+    [k in keyof T]: T[k] extends Effect<any, any, any> ? k : never
   }[keyof T]
 >
 
@@ -31,22 +36,22 @@ export type DerivedLifted<
 > = {
   [k in Fns]: T[k] extends (
     ...args: infer ARGS
-  ) => Effect.Effect<infer R, infer E, infer A>
-    ? (...args: ARGS) => Effect.Effect<R | T, E, A>
+  ) => Effect<infer R, infer E, infer A>
+    ? (...args: ARGS) => Effect<R | T, E, A>
     : never
 } & {
-  [k in Cns]: T[k] extends Effect.Effect<infer R, infer E, infer A>
-    ? Effect.Effect<R | T, E, A>
+  [k in Cns]: T[k] extends Effect<infer R, infer E, infer A>
+    ? Effect<R | T, E, A>
     : never
 } & {
-  [k in Values]: Effect.Effect<T, never, T[k]>
+  [k in Values]: Effect<T, never, T[k]>
 }
 
 /**
  * @tsplus static effect/io/Effect.Ops deriveLifted
  */
 export function deriveLifted<T>(
-  S: Context.Tag<T>,
+  S: Tag<T>,
 ): <
   Fns extends keyof ShapeFn<T> = never,
   Cns extends keyof ShapeCn<T> = never,

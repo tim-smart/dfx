@@ -1,24 +1,4 @@
-import {
-  BucketDetails,
-  Config,
-  FetchError,
-  Http,
-  JsonParseError,
-  Log,
-  RateLimiter,
-  RateLimitStore,
-  StatusCodeError,
-} from "dfx"
-import { Success } from "dfx/utils/effect"
-import {
-  Context,
-  Discord,
-  Duration,
-  Effect,
-  HashSet,
-  Layer,
-  Ref,
-} from "dfx/_common"
+import { millis } from "node_modules/@fp-ts/data/Duration.js"
 import Pkg from "../package.json" assert { type: "json" }
 import { ResponseWithData, RestResponse } from "./types.js"
 import { rateLimitFromHeaders, retryAfter, routeFromConfig } from "./utils.js"
@@ -73,7 +53,7 @@ const make = Do(($) => {
           limit: 1,
         }),
       )
-      const resetAfter = Duration.millis(bucket.resetAfter)
+      const resetAfter = millis(bucket.resetAfter)
 
       $(invalidRateLimit(route))
       $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
@@ -109,7 +89,7 @@ const make = Do(($) => {
   const request = <A = unknown>(
     path: string,
     init: RequestInit = {},
-  ): Effect.Effect<
+  ): Effect<
     never,
     FetchError | StatusCodeError | JsonParseError,
     ResponseWithData<A>
@@ -213,5 +193,5 @@ const make = Do(($) => {
 })
 
 export interface DiscordREST extends Success<typeof make> {}
-export const DiscordREST = Context.Tag<DiscordREST>()
+export const DiscordREST = Tag<DiscordREST>()
 export const LiveDiscordREST = Layer.fromEffect(DiscordREST)(make)

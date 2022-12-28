@@ -1,4 +1,3 @@
-import { Effect, Option } from "dfx/_common"
 import { createDriver, createParentDriver } from "./driver.js"
 
 export const createWithParent = <T>() =>
@@ -19,12 +18,12 @@ export const createWithParent = <T>() =>
 
       get: (parentId, resourceId) =>
         Effect.sync(
-          (): Option.Option<T> =>
-            Option.fromNullable(map.get(parentId)?.get(resourceId)),
+          (): Maybe<T> =>
+            Maybe.fromNullable(map.get(parentId)?.get(resourceId)),
         ),
 
       getForParent: (parentId) =>
-        Effect.sync(() => Option.fromNullable(map.get(parentId))),
+        Effect.sync(() => Maybe.fromNullable(map.get(parentId))),
 
       set: (parentId, resourceId, resource) =>
         Effect.sync(() => {
@@ -58,9 +57,7 @@ export const create = <T>() =>
       size: Effect.sync(() => map.size),
 
       get: (resourceId) =>
-        Effect.sync(
-          (): Option.Option<T> => Option.fromNullable(map.get(resourceId)),
-        ),
+        Effect.sync((): Maybe<T> => Maybe.fromNullable(map.get(resourceId))),
 
       set: (resourceId, resource) =>
         Effect.sync(() => {

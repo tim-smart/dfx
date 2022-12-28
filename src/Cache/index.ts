@@ -1,17 +1,4 @@
 import { CacheDriver, ParentCacheDriver } from "./driver.js"
-import {
-  Context,
-  Discord,
-  Duration,
-  Effect,
-  Layer,
-  Option,
-  Ref,
-  Schedule,
-  Stream,
-  pipe,
-  flow,
-} from "dfx/_common"
 
 export * from "./driver.js"
 export {
@@ -41,13 +28,13 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   onParentMiss,
 }: {
   driver: ParentCacheDriver<EDriver, A>
-  ops?: Stream.Stream<never, EOps, ParentCacheOp<A>>
-  onMiss: (parentId: string, id: string) => Effect.Effect<never, EMiss, A>
+  ops?: Stream<never, EOps, ParentCacheOp<A>>
+  onMiss: (parentId: string, id: string) => Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
-  ) => Effect.Effect<never, EPMiss, [id: string, resource: A][]>
+  ) => Effect<never, EPMiss, [id: string, resource: A][]>
 }) => {
-  const sync = ops.tap((op): Effect.Effect<never, EDriver, void> => {
+  const sync = ops.tap((op): Effect<never, EDriver, void> => {
     switch (op.op) {
       case "create":
       case "update":
@@ -91,10 +78,10 @@ export const make = <EOps, EDriver, EMiss, A>({
   onMiss,
 }: {
   driver: CacheDriver<EDriver, A>
-  ops?: Stream.Stream<never, EOps, CacheOp<A>>
-  onMiss: (id: string) => Effect.Effect<never, EMiss, A>
+  ops?: Stream<never, EOps, CacheOp<A>>
+  onMiss: (id: string) => Effect<never, EMiss, A>
 }) => {
-  const sync = ops.tap((op): Effect.Effect<never, EDriver, void> => {
+  const sync = ops.tap((op): Effect<never, EDriver, void> => {
     switch (op.op) {
       case "create":
       case "update":

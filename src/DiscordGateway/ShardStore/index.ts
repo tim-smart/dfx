@@ -1,18 +1,14 @@
-import { Context, Effect, Layer, Option } from "dfx/_common"
-
 export interface ClaimIdContext {
   sharderCount: number
   totalCount: number
 }
 
 export interface ShardStore {
-  claimId: (
-    ctx: ClaimIdContext,
-  ) => Effect.Effect<never, never, Option.Option<number>>
-  allClaimed: (totalCount: number) => Effect.Effect<never, never, boolean>
-  heartbeat?: (shardId: number) => Effect.Effect<never, never, void>
+  claimId: (ctx: ClaimIdContext) => Effect<never, never, Maybe<number>>
+  allClaimed: (totalCount: number) => Effect<never, never, boolean>
+  heartbeat?: (shardId: number) => Effect<never, never, void>
 }
-export const ShardStore = Context.Tag<ShardStore>()
+export const ShardStore = Tag<ShardStore>()
 
 // Very basic shard id store, that does no health checks
 const memoryStore = (): ShardStore => {
@@ -22,12 +18,12 @@ const memoryStore = (): ShardStore => {
     claimId: ({ totalCount }) =>
       Effect.sync(() => {
         if (currentId >= totalCount) {
-          return Option.none
+          return Maybe.none
         }
 
         const id = currentId
         currentId++
-        return Option.some(id)
+        return Maybe.some(id)
       }),
 
     allClaimed: (totalCount) => Effect.sync(() => currentId >= totalCount),

@@ -1,21 +1,6 @@
 import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder, InteractionContext } from "./index.js"
 import { splitDefinitions } from "./utils.js"
-import {
-  Context,
-  Discord,
-  Duration,
-  Effect,
-  Layer,
-  Option,
-  Ref,
-  Schedule,
-  Stream,
-  pipe,
-  flow,
-} from "dfx/_common"
-import { DiscordREST, FetchError, JsonParseError, StatusCodeError } from "dfx"
-import { Gateway } from "dfx/gateway"
 
 export interface RunOpts {
   sync?: boolean
@@ -27,12 +12,12 @@ export interface RunOpts {
 export const run =
   <R, R2, E, E2>(
     postHandler: (
-      effect: Effect.Effect<
+      effect: Effect<
         R | DiscordREST | Discord.Interaction,
         E | FetchError | StatusCodeError | JsonParseError | DefinitionNotFound,
         void
       >,
-    ) => Effect.Effect<R2, E2, void>,
+    ) => Effect<R2, E2, void>,
     { sync = true }: RunOpts = {},
   ) =>
   (ix: InteractionBuilder<R, E>) =>

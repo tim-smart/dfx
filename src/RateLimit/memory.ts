@@ -1,4 +1,3 @@
-import { Effect, Option } from "dfx/_common"
 import { BucketDetails, RateLimitStore } from "./index.js"
 
 interface Counter {
@@ -12,7 +11,7 @@ export const make = (): RateLimitStore => {
   const counters = new Map<string, Counter>()
 
   const getCounter = (key: string) =>
-    Option.fromNullable(counters.get(key)).filter((c) => c.expires > Date.now())
+    Maybe.fromNullable(counters.get(key)).filter((c) => c.expires > Date.now())
 
   return {
     hasBucket: (key) => Effect.sync(() => buckets.has(key)),
@@ -23,7 +22,7 @@ export const make = (): RateLimitStore => {
       }),
 
     getBucketForRoute: (route) =>
-      Effect.sync(() => Option.fromNullable(buckets.get(routes.get(route)!))),
+      Effect.sync(() => Maybe.fromNullable(buckets.get(routes.get(route)!))),
 
     putBucketRoute: (route, bucket) =>
       Effect.sync(() => {

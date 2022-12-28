@@ -1,5 +1,3 @@
-import { Discord } from "dfx"
-
 /**
  * From a list of roles, filter out the ones the guild member has.
  */

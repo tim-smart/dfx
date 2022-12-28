@@ -1,14 +1,13 @@
-import { Duration, Effect, Option } from "dfx/_common"
 import { createDriver, createParentDriver } from "./driver.js"
 
 export interface MemoryTTLOpts {
   /** The approx. number of milliseconds to keep items */
-  ttl: Duration.Duration
+  ttl: Duration
 
   /**
    * How often items should be cleared.
    */
-  resolution?: Duration.Duration
+  resolution?: Duration
 
   /**
    * What sweep strategy to use.
@@ -93,9 +92,7 @@ const make = <T>({
     size: Effect.sync(() => items.size),
 
     get: (resourceId) =>
-      Effect.sync(
-        (): Option.Option<T> => Option.fromNullable(getSync(resourceId)),
-      ),
+      Effect.sync((): Maybe<T> => Maybe.fromNullable(getSync(resourceId))),
 
     refreshTTL: (id) =>
       Effect.sync(() => {
@@ -144,13 +141,9 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
       getForParent: (parentId) =>
         Do(($) => {
           const ids = parentIds.get(parentId)
-          if (!ids) return Option.none
+          if (!ids) return Maybe.none
 
-          const toGet: Effect.Effect<
-            never,
-            never,
-            readonly [string, Option.Option<T>]
-          >[] = []
+          const toGet: Effect<never, never, readonly [string, Maybe<T>]>[] = []
           ids.forEach((id) => {
             toGet.push(
               Do(($) => {
@@ -168,7 +161,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             a._tag === "Some" ? map.set(id, a.value) : map,
           )
 
-          return Option.some(map)
+          return Maybe.some(map)
         }),
 
       set: (parentId, resourceId, resource) =>
@@ -192,7 +185,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
           const ids = parentIds.get(parentId)
           parentIds.delete(parentId)
 
-          const effects: Effect.Effect<never, never, void>[] = []
+          const effects: Effect<never, never, void>[] = []
           if (ids) {
             ids.forEach((id) => {
               effects.push(store.delete(id))

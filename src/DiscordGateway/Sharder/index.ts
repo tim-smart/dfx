@@ -1,30 +1,13 @@
-import { Config, DiscordREST, RateLimiter } from "dfx"
-import { Shard } from "dfx/gateway"
-import { Success } from "dfx/utils/effect"
-import {
-  Context,
-  Discord,
-  Duration,
-  Effect,
-  Layer,
-  Option,
-  Scope,
-  Stream,
-} from "dfx/_common"
-import { ShardStore } from "../ShardStore/index.js"
-
-const _scope = Scope.ScopeTypeId
+import { millis } from "@fp-ts/data/Duration"
 
 const make = Do(($) => {
-  const store = $(Effect.service(ShardStore))
+  const store = $(Effect.service(ShardStore.ShardStore))
   const rest = $(Effect.service(DiscordREST))
   const { gateway: config } = $(Effect.service(Config.DiscordConfig))
   const limiter = $(Effect.service(RateLimiter))
 
   const configs = (totalCount: number) => {
-    const claimId = (
-      sharderCount: number,
-    ): Effect.Effect<never, never, number> =>
+    const claimId = (sharderCount: number): Effect<never, never, number> =>
       store
         .claimId({
           totalCount,
@@ -39,7 +22,7 @@ const make = Do(($) => {
 
     return Stream.unfoldEffect(0, (sharderCount) =>
       claimId(sharderCount).map((id) =>
-        Option.some([id, sharderCount + 1] as const),
+        Maybe.some([id, sharderCount + 1] as const),
       ),
     ).map((id) => ({
       id,
@@ -78,7 +61,7 @@ const make = Do(($) => {
           .tap(() =>
             limiter.maybeWait(
               `dfx.sharder.${key}`,
-              Duration.millis(config.identifyRateLimit[0]),
+              millis(config.identifyRateLimit[0]),
               config.identifyRateLimit[1],
             ),
           )
@@ -94,5 +77,5 @@ const make = Do(($) => {
 })
 
 export interface Sharder extends Success<typeof make> {}
-export const Sharder = Context.Tag<Sharder>()
-export const LiveSharder = Layer.scoped(Sharder)(make)
+export const Sharder = Tag<Sharder>()
+export const LiveSharder = make.scoped(Sharder)

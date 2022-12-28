@@ -1,5 +1,3 @@
-import { Context, Discord, Duration, Effect, flow, Layer } from "dfx/_common"
-
 const VERSION = 10
 
 export interface DiscordConfig {
@@ -8,7 +6,7 @@ export interface DiscordConfig {
     baseUrl: string
     globalRateLimit: {
       limit: number
-      window: Duration.Duration
+      window: Duration
     }
   }
   gateway: {
@@ -19,7 +17,7 @@ export interface DiscordConfig {
     identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export const DiscordConfig = Context.Tag<DiscordConfig>()
+export const DiscordConfig = Tag<DiscordConfig>()
 
 export interface MakeOpts {
   token: string

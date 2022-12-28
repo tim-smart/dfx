@@ -1,21 +1,7 @@
-import { Config, RateLimiter } from "dfx"
-import { DiscordWS, WS } from "dfx/gateway"
-import {
-  Discord,
-  Duration,
-  Effect,
-  Option,
-  Queue,
-  Scope,
-  Stream,
-} from "dfx/_common"
 import * as Heartbeats from "./heartbeats.js"
 import * as Identify from "./identify.js"
 import * as InvalidSession from "./invalidSession.js"
 import * as Utils from "./utils.js"
-
-const _scope = Scope.Tag
-const _stream = Stream.StreamTypeId
 
 export const make = (shard: [id: number, count: number]) =>
   Do(($) => {
@@ -34,7 +20,7 @@ export const make = (shard: [id: number, count: number]) =>
 
     const [latestReady, updateLatestReady] = $(
       Utils.latest((p) =>
-        Option.some(p)
+        Maybe.some(p)
           .filter(
             (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
               p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
@@ -43,10 +29,10 @@ export const make = (shard: [id: number, count: number]) =>
       ),
     )
     const [latestSequence, updateLatestSequence] = $(
-      Utils.latest((p) => Option.fromNullable(p.s)),
+      Utils.latest((p) => Maybe.fromNullable(p.s)),
     )
     const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
-      Option.some(p)
+      Maybe.some(p)
         .filter(
           (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
             p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",

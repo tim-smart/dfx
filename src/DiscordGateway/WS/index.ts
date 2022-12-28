@@ -1,5 +1,3 @@
-import { Log } from "dfx/Log/index"
-import { Effect, pipe, Ref, Schedule, Stream } from "dfx/_common"
 import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
@@ -16,7 +14,7 @@ export class WebSocketCloseError {
   constructor(readonly code: number, readonly reason: string) {}
 }
 
-const socket = (urlRef: Ref.Ref<string>) =>
+const socket = (urlRef: Ref<string>) =>
   Do(($) => {
     const url = $(urlRef.get)
     const ws = new WebSocket(url) as any as globalThis.WebSocket
@@ -60,12 +58,12 @@ const recv = (ws: globalThis.WebSocket) =>
 
 const send = (
   ws: globalThis.WebSocket,
-  take: Effect.Effect<never, never, Message>,
-  log: Log,
+  take: Effect<never, never, Message>,
+  log: Log.Log,
 ) =>
   take
     .tap((data) => log.debug("WS", "send", data))
-    .tap((data): Effect.Effect<never, WebSocketCloseError, void> => {
+    .tap((data): Effect<never, WebSocketCloseError, void> => {
       if (data === Reconnect) {
         return Effect.failSync(() => {
           ws.close(1012, "reconnecting")
@@ -79,12 +77,12 @@ const send = (
     }).forever
 
 export const make = (
-  url: Ref.Ref<string>,
-  takeOutbound: Effect.Effect<never, never, Message>,
+  url: Ref<string>,
+  takeOutbound: Effect<never, never, Message>,
 ) =>
   pipe(
     Do(($) => {
-      const log = $(Effect.service(Log))
+      const log = $(Effect.service(Log.Log))
       const ws = $(socket(url))
       const sendEffect = send(ws, takeOutbound, log)
 
