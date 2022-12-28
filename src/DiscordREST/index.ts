@@ -1,4 +1,4 @@
-import { millis } from "node_modules/@fp-ts/data/Duration.js"
+import { millis } from "@fp-ts/data/Duration"
 import Pkg from "../package.json" assert { type: "json" }
 import { ResponseWithData, RestResponse } from "./types.js"
 import { rateLimitFromHeaders, retryAfter, routeFromConfig } from "./utils.js"
