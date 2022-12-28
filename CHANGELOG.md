@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.9](https://github.com/tim-smart/dfx/compare/dfx@0.21.8...dfx@0.21.9) (2022-12-28)
+
+
+### Bug Fixes
+
+* ShardStore import ([b76c013](https://github.com/tim-smart/dfx/commit/b76c013a7b2eca3f0aad3b1eb219add9ebb481df))
+
+
+
+
+
 ## [0.21.8](https://github.com/tim-smart/dfx/compare/dfx@0.21.7...dfx@0.21.8) (2022-12-28)
 
 
