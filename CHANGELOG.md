@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.7](https://github.com/tim-smart/dfx/compare/dfx@0.21.6...dfx@0.21.7) (2022-12-28)
+
+
+### Bug Fixes
+
+* Duration import ([c70a4da](https://github.com/tim-smart/dfx/commit/c70a4dacf2a36cb3b03eaadf20ca2d73eb9e4ad8))
+
+
+
+
+
 ## [0.21.6](https://github.com/tim-smart/dfx/compare/dfx@0.21.5...dfx@0.21.6) (2022-12-28)
 
 **Note:** Version bump only for package dfx
