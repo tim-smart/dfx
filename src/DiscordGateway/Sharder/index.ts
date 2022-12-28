@@ -1,7 +1,8 @@
 import { millis } from "@fp-ts/data/Duration"
+import { ShardStore } from "../ShardStore/index.js"
 
 const make = Do(($) => {
-  const store = $(Effect.service(ShardStore.ShardStore))
+  const store = $(Effect.service(ShardStore))
   const rest = $(Effect.service(DiscordREST))
   const { gateway: config } = $(Effect.service(Config.DiscordConfig))
   const limiter = $(Effect.service(RateLimiter))
