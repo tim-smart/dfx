@@ -5888,24 +5888,24 @@
       ]
     },
     {
-      "definitionName": "fold",
+      "definitionName": "reduce",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Schedule",
-          "name": "fold"
+          "name": "reduce"
         }
       ]
     },
     {
-      "definitionName": "foldEffect",
+      "definitionName": "reduceEffect",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Schedule",
-          "name": "foldEffect"
+          "name": "reduceEffect"
         }
       ]
     },
@@ -7156,24 +7156,24 @@
       ]
     },
     {
-      "definitionName": "foldLayer",
+      "definitionName": "matchLayer",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Layer",
-          "name": "foldLayer"
+          "name": "matchLayer"
         }
       ]
     },
     {
-      "definitionName": "foldCauseLayer",
+      "definitionName": "matchCauseLayer",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Layer",
-          "name": "foldCauseLayer"
+          "name": "matchCauseLayer"
         }
       ]
     },
@@ -9956,6 +9956,20 @@
       ]
     },
     {
+      "definitionName": "Semaphore",
+      "definitionKind": "interface",
+      "extensions": [
+        {
+          "kind": "type",
+          "typeName": "effect/io/Effect.Semaphore"
+        },
+        {
+          "kind": "companion",
+          "typeName": "effect/io/Effect.Semaphore.Ops"
+        }
+      ]
+    },
+    {
       "definitionName": "EffectTypeId",
       "definitionKind": "type",
       "extensions": [
@@ -10021,6 +10035,28 @@
           "kind": "static",
           "typeName": "effect/io/Effect.Ops",
           "name": "fromOption"
+        }
+      ]
+    },
+    {
+      "definitionName": "unsafeMakeSemaphore",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Semaphore.Ops",
+          "name": "unsafeMakeSemaphore"
+        }
+      ]
+    },
+    {
+      "definitionName": "makeSemaphore",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "effect/io/Effect.Ops",
+          "name": "makeSemaphore"
         }
       ]
     },
@@ -11689,46 +11725,46 @@
       ]
     },
     {
-      "definitionName": "fold",
+      "definitionName": "match",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Effect",
-          "name": "fold"
+          "name": "match"
         }
       ]
     },
     {
-      "definitionName": "foldCause",
+      "definitionName": "matchCause",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Effect",
-          "name": "foldCause"
+          "name": "matchCause"
         }
       ]
     },
     {
-      "definitionName": "foldCauseEffect",
+      "definitionName": "matchCauseEffect",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Effect",
-          "name": "foldCauseEffect"
+          "name": "matchCauseEffect"
         }
       ]
     },
     {
-      "definitionName": "foldEffect",
+      "definitionName": "matchEffect",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "pipeable",
           "typeName": "effect/io/Effect",
-          "name": "foldEffect"
+          "name": "matchEffect"
         }
       ]
     },
@@ -13396,24 +13432,13 @@
       ]
     },
     {
-      "definitionName": "unsafeRunAsyncWith",
+      "definitionName": "unsafeRun",
       "definitionKind": "const",
       "extensions": [
         {
           "kind": "fluent",
           "typeName": "effect/io/Effect",
-          "name": "unsafeRunAsyncWith"
-        }
-      ]
-    },
-    {
-      "definitionName": "unsafeRunWith",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "effect/io/Effect",
-          "name": "unsafeRunWith"
+          "name": "unsafeRun"
         }
       ]
     },
@@ -14304,17 +14329,6 @@
       ]
     },
     {
-      "definitionName": "unsafeRunAsync",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "effect/io/Effect",
-          "name": "unsafeRunAsync"
-        }
-      ]
-    },
-    {
       "definitionName": "unsafeFork",
       "definitionKind": "const",
       "extensions": [
@@ -14322,6 +14336,17 @@
           "kind": "getter",
           "typeName": "effect/io/Effect",
           "name": "unsafeFork"
+        }
+      ]
+    },
+    {
+      "definitionName": "unsafeRunPromiseEither",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "getter",
+          "typeName": "effect/io/Effect",
+          "name": "unsafeRunPromiseEither"
         }
       ]
     },
@@ -14366,6 +14391,17 @@
           "kind": "getter",
           "typeName": "effect/io/Effect",
           "name": "unsafeRunSyncExit"
+        }
+      ]
+    },
+    {
+      "definitionName": "unsafeRunSyncEither",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "getter",
+          "typeName": "effect/io/Effect",
+          "name": "unsafeRunSyncEither"
         }
       ]
     },

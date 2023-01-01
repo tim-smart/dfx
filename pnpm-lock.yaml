@@ -1,9 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@effect/io': ~0.0.41
-  '@effect/stream': ~0.0.3
-  '@fp-ts/data': ~0.0.30
+  '@effect/io': ~0.0.45
+  '@effect/stream': ~0.0.5
+  '@fp-ts/data': ~0.0.31
   '@tim-smart/discord-api-docs-parser': ^0.5.0
   '@types/ws': ^8.5.3
   bufferutil: ^4.0.7
@@ -15,9 +15,9 @@ specifiers:
   ws: ^8.11.0
 
 dependencies:
-  '@effect/io': 0.0.42
-  '@effect/stream': 0.0.3
-  '@fp-ts/data': 0.0.30
+  '@effect/io': 0.0.45
+  '@effect/stream': 0.0.5
+  '@fp-ts/data': 0.0.31
   tweetnacl: 1.0.3
 
 optionalDependencies:
@@ -55,36 +55,27 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect/io/0.0.42:
-    resolution: {integrity: sha512-l6Mtm8KadL1pbV9BmyO7q0sz2oZn1mmSdLOYLtKe3A74t8h6+zEVB7XcUvTFa3U6wqtbg+sjxTT+FMM9k3o4rw==}
+  /@effect/io/0.0.45:
+    resolution: {integrity: sha512-wWNX1mgkbIQe8nFlBIgx84Mj6HagiFtgpDTXeeRn1UXmZLFGAf3EmxgDo3UWTjQA2EJNZH4mf38uuwPQwgoXjQ==}
     dependencies:
       '@fp-ts/core': 0.0.11
-      '@fp-ts/data': 0.0.30
+      '@fp-ts/data': 0.0.31
     dev: false
 
-  /@effect/stm/0.0.6:
-    resolution: {integrity: sha512-E0rgPfA4BX87xizZAoqPqTp7ctxqIB/ti9Emg/uQslkZY/knVVv6VXlM+OZbg3DmmjgxC80+T9fhgBfdDf3DgQ==}
+  /@effect/stream/0.0.5:
+    resolution: {integrity: sha512-hDjxMaMkYz9zfqpjhUeP9fEq5S9nfZJgyhwNnvcEKJAoU6ZLDQPoaPtCZrBARUC01VmmbqRX05BagCphdApo3g==}
     dependencies:
-      '@effect/io': 0.0.42
+      '@effect/io': 0.0.45
       '@fp-ts/core': 0.0.11
-      '@fp-ts/data': 0.0.30
-    dev: false
-
-  /@effect/stream/0.0.3:
-    resolution: {integrity: sha512-7uX5ViddHimNMfyNsCWK73cuX5t528uCIPrygreLc8Fd5vlawhj8bAVQ8N2YzHznXuV29KYSVNoNi7bUSmdsAg==}
-    dependencies:
-      '@effect/io': 0.0.42
-      '@effect/stm': 0.0.6
-      '@fp-ts/core': 0.0.11
-      '@fp-ts/data': 0.0.30
+      '@fp-ts/data': 0.0.31
     dev: false
 
   /@fp-ts/core/0.0.11:
     resolution: {integrity: sha512-BCAJBYzghwoJpcUOARJ1tui50HoYJFlV2pJlVMlsEkDFhD8MTtq8xQVpZCRF66RmtkxtGBYINCQ+5H1lRaL35Q==}
     dev: false
 
-  /@fp-ts/data/0.0.30:
-    resolution: {integrity: sha512-nMRNrNDn6ebleNtWI8YKf7+VzkLjaSedeU84KMttBrX5MlFIcbrLzn+OzspY8q46kkqBJTnmc3tVXxpU0p70Tw==}
+  /@fp-ts/data/0.0.31:
+    resolution: {integrity: sha512-slC6xqd/t+GmWkgNSW/UdPvtLKnBbIW6ra1E8G8E0aF2NFcjLeNHABL/+FMpQBMP+Q3ySOvm/oUSc8TCA4cC+A==}
     dependencies:
       '@fp-ts/core': 0.0.11
     dev: false

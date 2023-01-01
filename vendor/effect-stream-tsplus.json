@@ -5211,6 +5211,17 @@
       ]
     },
     {
+      "definitionName": "onDone",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "pipeable",
+          "typeName": "effect/stream/Stream",
+          "name": "onDone"
+        }
+      ]
+    },
+    {
       "definitionName": "orDieWith",
       "definitionKind": "const",
       "extensions": [
