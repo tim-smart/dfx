@@ -1,4 +1,4 @@
-import { Config, LiveDiscordREST, Log } from "dfx"
+import { DiscordConfig, LiveDiscordREST, Log } from "dfx"
 import { LiveJsonDiscordWSCodec } from "./DiscordGateway/DiscordWS/index.js"
 import { LiveDiscordGateway } from "./DiscordGateway/index.js"
 import { LiveSharder } from "./DiscordGateway/Sharder/index.js"
@@ -29,9 +29,9 @@ export const MemoryGateway = MemorySharder >> LiveDiscordGateway
 
 export const MemoryBot = MemoryREST > MemoryGateway + MemoryRateLimit
 
-export const make = (config: Config.MakeOpts, debug = false) => {
+export const make = (config: Config<DiscordConfig.MakeOpts>, debug = false) => {
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = Config.makeLayer(config)
+  const LiveConfig = DiscordConfig.makeFrom(config)
   const LiveEnv = LiveLog + LiveConfig > MemoryBot
 
   return LiveEnv

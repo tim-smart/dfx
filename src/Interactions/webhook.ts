@@ -40,6 +40,8 @@ const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
 export const makeConfigLayer = flow(makeConfig, Layer.succeed(WebhookConfig))
+export const makeFromConfig = (a: Config<MakeConfigOpts>) =>
+  a.config.map(makeConfig).toLayer(WebhookConfig)
 
 export class WebhookParseError {
   readonly _tag = "WebhookParseError"

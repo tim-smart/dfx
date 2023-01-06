@@ -4,7 +4,7 @@ import { ShardStore } from "../ShardStore/index.js"
 const make = Do(($) => {
   const store = $(Effect.service(ShardStore))
   const rest = $(Effect.service(DiscordREST))
-  const { gateway: config } = $(Effect.service(Config.DiscordConfig))
+  const { gateway: config } = $(Effect.service(DiscordConfig.DiscordConfig))
   const limiter = $(Effect.service(RateLimiter))
 
   const configs = (totalCount: number) => {

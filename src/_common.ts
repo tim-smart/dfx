@@ -1,6 +1,8 @@
 import type { Schedule as _Schedule } from "@effect/io/Schedule"
 
 export type { Cause } from "@effect/io/Cause"
+export type { Config } from "@effect/io/Config"
+export type { ConfigError } from "@effect/io/Config/Error"
 export type { Effect } from "@effect/io/Effect"
 export type { Exit } from "@effect/io/Exit"
 export type { Layer } from "@effect/io/Layer"

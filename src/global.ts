@@ -3,6 +3,8 @@
  */
 import {
   Cause,
+  Config,
+  ConfigError,
   Effect,
   Exit,
   Layer,
@@ -32,7 +34,7 @@ import { pipe, flow, identity } from "@fp-ts/data/Function"
  * @tsplus global
  */
 import {
-  Config,
+  DiscordConfig,
   RateLimiter,
   Log,
   DiscordREST,

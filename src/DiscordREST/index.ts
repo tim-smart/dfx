@@ -5,7 +5,7 @@ import { rateLimitFromHeaders, retryAfter, routeFromConfig } from "./utils.js"
 
 const make = Do(($) => {
   const http = $(Effect.service(Http))
-  const { token, rest } = $(Effect.service(Config.DiscordConfig))
+  const { token, rest } = $(Effect.service(DiscordConfig.DiscordConfig))
 
   const log = $(Effect.service(Log.Log))
   const store = $(Effect.service(RateLimitStore))

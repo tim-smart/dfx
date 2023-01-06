@@ -1,5 +1,5 @@
 export * as Discord from "./types.js"
-export * as Config from "./DiscordConfig/index.js"
+export * as DiscordConfig from "./DiscordConfig/index.js"
 export {
   Http,
   LiveHttp,
