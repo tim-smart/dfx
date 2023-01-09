@@ -1,3 +1,4 @@
+import * as Config from "@effect/io/Config"
 import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import { pipe } from "@fp-ts/data/Function"
@@ -9,11 +10,13 @@ import { fastify } from "fastify"
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = make({
-  applicationId: process.env.DISCORD_APP_ID!,
-  publicKey: process.env.DISCORD_PUBLIC_KEY!,
-  token: process.env.DISCORD_BOT_TOKEN!,
-})
+const LiveEnv = make(
+  Config.struct({
+    applicationId: Config.string("DISCORD_APP_ID"),
+    publicKey: Config.string("DISCORD_PUBLIC_KEY"),
+    token: Config.string("DISCORD_BOT_TOKEN"),
+  }),
+)
 
 // Create your interaction definitions.
 // Here we are creating a global application command.
@@ -34,7 +37,7 @@ const hello = Ix.global(
 const ix = Ix.builder.add(hello)
 
 // Optionally sync the commands
-pipe(ix.syncGlobal, Effect.provideLayer(LiveEnv), Effect.unsafeRunAsync)
+pipe(ix.syncGlobal, Effect.provideLayer(LiveEnv), Effect.unsafeRun)
 
 // ==== HTTP handling
 // You could replace this with another http server like express, or use edge
@@ -73,7 +76,7 @@ server.post("/", (req, reply) => {
         }),
     }),
     Effect.provideLayer(LiveEnv),
-    Effect.unsafeRunAsync,
+    Effect.unsafeRun,
   )
 })
 

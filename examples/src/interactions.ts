@@ -1,3 +1,4 @@
+import * as Config from "@effect/io/Config"
 import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
@@ -10,9 +11,9 @@ Dotenv.config()
 
 // Create the dependencies layer
 const LiveEnv = make(
-  {
-    token: process.env.DISCORD_BOT_TOKEN!,
-  },
+  Config.struct({
+    token: Config.string("DISCORD_BOT_TOKEN"),
+  }),
   true,
 )
 
