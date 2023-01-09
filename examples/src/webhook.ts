@@ -1,9 +1,4 @@
-import * as Config from "@effect/io/Config"
-import * as Cause from "@effect/io/Cause"
-import * as Effect from "@effect/io/Effect"
-import { pipe } from "@fp-ts/data/Function"
-import { Ix } from "dfx"
-import { make, makeFromConfig, makeHandler } from "dfx/webhooks"
+import { makeFromConfig } from "dfx/webhooks"
 import Dotenv from "dotenv"
 import { fastify } from "fastify"
 
@@ -37,13 +32,13 @@ const hello = Ix.global(
 const ix = Ix.builder.add(hello)
 
 // Optionally sync the commands
-pipe(ix.syncGlobal, Effect.provideLayer(LiveEnv), Effect.unsafeRun)
+ix.syncGlobal.provideLayer(LiveEnv).unsafeRun()
 
 // ==== HTTP handling
 // You could replace this with another http server like express, or use edge
 // functions.
 //
-const handleRequest = makeHandler(ix)
+const handleRequest = ix.webhookHandler
 
 // Create a fastify server to handle http requests
 const server = fastify()
@@ -61,23 +56,21 @@ server.addContentTypeParser(
 server.post("/", (req, reply) => {
   // Here we pass in the request headers, raw http body as a string, and how we
   // want to handle the results.
-  pipe(
-    handleRequest({
-      headers: req.headers,
-      body: req.body as string,
-      success: (a) =>
-        Effect.sync(() => {
-          reply.send(a)
-        }),
-      error: (e) =>
-        Effect.sync(() => {
-          console.error("FAILURE", Cause.pretty()(e))
-          reply.code(500).send()
-        }),
-    }),
-    Effect.provideLayer(LiveEnv),
-    Effect.unsafeRun,
-  )
+  handleRequest({
+    headers: req.headers,
+    body: req.body as string,
+    success: (a) =>
+      Effect.sync(() => {
+        reply.send(a)
+      }),
+    error: (e) =>
+      Effect.sync(() => {
+        console.error("FAILURE", e.pretty())
+        reply.code(500).send()
+      }),
+  })
+    .provideLayer(LiveEnv)
+    .unsafeRun()
 })
 
 // Start the server
