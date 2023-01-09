@@ -1,5 +1,7 @@
 # dfx
 
+[![Discord](https://img.shields.io/discord/887189613389705256?style=for-the-badge)](https://discord.gg/dtR2Mtu66Q)
+
 A Discord library built on top of @effect/io
 
 - Supports both the gateway and webhooks
