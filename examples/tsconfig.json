@@ -11,7 +11,11 @@
     "strictNullChecks": true,
     "target": "ES2022",
     "incremental": true,
-    "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+    "tsPlusTypes": [
+      "./vendor/effect-io-tsplus.json",
+      "./vendor/fp-ts-data-tsplus.json"
+    ]
   },
   "exclude": ["node_modules/**/*"],
   "include": ["src/**/*"]

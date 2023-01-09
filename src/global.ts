@@ -41,12 +41,15 @@ import {
   BucketDetails,
   FetchError,
   Http,
+  Intents,
+  Ix,
   JsonParseError,
   RateLimitStore,
   StatusCodeError,
   Flags,
   Members,
   IxHelpers,
+  Perms,
 } from "dfx"
 
 /**

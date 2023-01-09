@@ -1,10 +1,4 @@
-import * as Config from "@effect/io/Config"
-import * as Cause from "@effect/io/Cause"
-import * as Effect from "@effect/io/Effect"
-import * as Exit from "@effect/io/Exit"
-import { pipe } from "@fp-ts/data/Function"
-import { Discord, Ix } from "dfx"
-import { make, runIx } from "dfx/gateway"
+import { make } from "dfx/gateway"
 import Dotenv from "dotenv"
 
 Dotenv.config()
@@ -52,43 +46,32 @@ const greeting = Ix.global(
     ],
   } as const,
   (i) =>
-    pipe(
-      Effect.struct({
-        who: i.optionValue("who"),
-        greeting: pipe(
-          i.optionValueOptional("greeting"),
-          Effect.someOrElse(() => "Hello"),
-        ),
-        // fail: i.optionValue("fail"), // <- this would be a type error
-      }),
-      Effect.map(({ who, greeting }) => ({
-        type: 4,
-        data: {
-          content: `${greeting} ${who}!`,
-        },
-      })),
-    ),
+    Effect.struct({
+      who: i.optionValue("who"),
+      greeting: i.optionValueOptional("greeting").someOrElse(() => "Hello"),
+      // fail: i.optionValue("fail"), // <- this would be a type error
+    }).map(({ who, greeting }) => ({
+      type: 4,
+      data: {
+        content: `${greeting} ${who}!`,
+      },
+    })),
 )
 
 // Build your program use `Ix.builder`
 const ix = Ix.builder.add(hello).add(greeting)
 
-const program = pipe(
-  ix,
-  runIx(
-    Effect.catchAll((e) =>
-      Effect.sync(() => {
-        console.error("CAUGHT ERROR", e)
-      }),
-    ),
+const program = ix.runGateway((a) =>
+  a.catchAll((e) =>
+    Effect.sync(() => {
+      console.error("CAUGHT ERROR", e)
+    }),
   ),
 )
 
 // Run it
-pipe(program, Effect.provideLayer(LiveEnv), Effect.unsafeRunPromiseExit).then(
-  (exit) => {
-    if (Exit.isFailure(exit)) {
-      console.error(Cause.pretty()(exit.cause))
-    }
-  },
-)
+program.provideLayer(LiveEnv).unsafeRun((exit) => {
+  if (exit.isFailure()) {
+    console.error(exit.cause.pretty())
+  }
+})
