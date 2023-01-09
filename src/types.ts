@@ -2487,7 +2487,7 @@ export interface Embed {
 export interface EmbedAuthor {
   /** name of author */
   name: string
-  /** url of author */
+  /** url of author (only supports http(s)) */
   url?: string
   /** url of author icon (only supports http(s) and attachments) */
   icon_url?: string
@@ -2656,7 +2656,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGlobalApplicationCommandParams>,
     options?: O,
   ) => RestResponse<ApplicationCommand>
-  /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. DMs created with this endpoint will not be shown in the Discord client. */
+  /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. DMs created with this endpoint will not be shown in the Discord client. Fires a Channel Create Gateway event. */
   createGroupDm: (
     params?: Partial<CreateGroupDmParams>,
     options?: O,
@@ -3254,9 +3254,9 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     userId: string,
     options?: O,
   ) => RestResponse<any>
-  /** Adds the current user to a thread. Also requires the thread is not archived. Returns a 204 empty response on success. Fires a Thread Members Update Gateway event. */
+  /** Adds the current user to a thread. Also requires the thread is not archived. Returns a 204 empty response on success. Fires a Thread Members Update and a Thread Create Gateway event. */
   joinThread: (channelId: string, options?: O) => RestResponse<any>
-  /** Leave a guild. Returns a 204 empty response on success. */
+  /** Leave a guild. Returns a 204 empty response on success. Fires a Guild Delete Gateway event and a Guild Member Remove Gateway event. */
   leaveGuild: (guildId: string, options?: O) => RestResponse<any>
   /** Removes the current user from a thread. Also requires the thread is not archived. Returns a 204 empty response on success. Fires a Thread Members Update Gateway event. */
   leaveThread: (channelId: string, options?: O) => RestResponse<any>
@@ -3414,7 +3414,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildTemplateParams>,
     options?: O,
   ) => RestResponse<GuildTemplate>
-  /** Modify the guild's Welcome Screen. Requires the MANAGE_GUILD permission. Returns the updated Welcome Screen object. */
+  /** Modify the guild's Welcome Screen. Requires the MANAGE_GUILD permission. Returns the updated Welcome Screen object. May fire a Guild Update Gateway event. */
   modifyGuildWelcomeScreen: (
     guildId: string,
     params?: Partial<ModifyGuildWelcomeScreenParams>,
@@ -3487,7 +3487,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<SearchGuildMemberParams>,
     options?: O,
   ) => RestResponse<GuildMember[]>
-  /** Creates a new thread from an existing message. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create Gateway event. */
+  /** Creates a new thread from an existing message. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create and a Message Update Gateway event. */
   startThreadFromMessage: (
     channelId: string,
     messageId: string,
@@ -3596,7 +3596,7 @@ export interface ForumTag {
   /** whether this tag can only be added to or removed from threads by a member with the MANAGE_THREADS permission */
   moderated: boolean
   /** the id of a guild's custom emoji * */
-  emoji_id: Snowflake
+  emoji_id?: Snowflake | null
   /** the unicode character of the emoji * */
   emoji_name?: string | null
 }
@@ -3734,6 +3734,8 @@ export interface GetGuildAuditLogParams {
   action_type?: AuditLogEvent
   /** Entries that preceded a specific audit log entry ID */
   before?: Snowflake
+  /** Entries that succeeded a specific audit log entry ID */
+  after?: Snowflake
   /** Maximum number of entries (between 1-100) to return, defaults to 50 */
   limit?: number
 }
@@ -3948,6 +3950,10 @@ export const enum GuildFeature {
   BANNER = "BANNER",
   /** guild can enable welcome screen, Membership Screening, stage channels and discovery, and receives community updates */
   COMMUNITY = "COMMUNITY",
+  /** guild has enabled monetization */
+  CREATOR_MONETIZABLE_PROVISIONAL = "CREATOR_MONETIZABLE_PROVISIONAL",
+  /** guild has enabled the role subscription promo page */
+  CREATOR_STORE_PAGE = "CREATOR_STORE_PAGE",
   /** guild has been set as a support server on the App Directory */
   DEVELOPER_SUPPORT_SERVER = "DEVELOPER_SUPPORT_SERVER",
   /** guild is able to be discovered in the directory */
@@ -3960,8 +3966,6 @@ export const enum GuildFeature {
   INVITE_SPLASH = "INVITE_SPLASH",
   /** guild has enabled Membership Screening */
   MEMBER_VERIFICATION_GATE_ENABLED = "MEMBER_VERIFICATION_GATE_ENABLED",
-  /** guild has enabled monetization */
-  MONETIZATION_ENABLED = "MONETIZATION_ENABLED",
   /** guild has increased custom sticker slots */
   MORE_STICKERS = "MORE_STICKERS",
   /** guild has access to create announcement channels */
@@ -3972,6 +3976,10 @@ export const enum GuildFeature {
   PREVIEW_ENABLED = "PREVIEW_ENABLED",
   /** guild is able to set role icons */
   ROLE_ICONS = "ROLE_ICONS",
+  /** guild has role subscriptions that can be purchased */
+  ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE = "ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE",
+  /** guild has enabled role subscriptions */
+  ROLE_SUBSCRIPTIONS_ENABLED = "ROLE_SUBSCRIPTIONS_ENABLED",
   /** guild has enabled ticketed events */
   TICKETED_EVENTS_ENABLED = "TICKETED_EVENTS_ENABLED",
   /** guild has access to set a vanity URL */
@@ -4281,10 +4289,10 @@ export interface Integration {
   id: Snowflake
   /** integration name */
   name: string
-  /** integration type (twitch, youtube, or discord) */
+  /** integration type (twitch, youtube, discord, or guild_subscription) */
   type: string
   /** is this integration enabled */
-  enabled?: boolean
+  enabled: boolean
   /** is this integration syncing */
   syncing?: boolean
   /** id that this integration uses for "subscribers" */
@@ -4885,6 +4893,9 @@ export const enum MessageType {
   GUILD_INVITE_REMINDER = 22,
   CONTEXT_MENU_COMMAND = 23,
   AUTO_MODERATION_ACTION = 24,
+  ROLE_SUBSCRIPTION_PURCHASE = 25,
+  INTERACTION_PREMIUM_UPSELL = 26,
+  GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32,
 }
 export type MessageUpdateEvent = MessageCreateEvent
 export const enum MfaLevel {
@@ -5596,8 +5607,14 @@ export interface RoleTag {
   bot_id?: Snowflake
   /** the id of the integration this role belongs to */
   integration_id?: Snowflake
-  /** whether this is the guild's premium subscriber role */
+  /** whether this is the guild's Booster role */
   premium_subscriber?: null
+  /** the id of this role's subscription sku and listing */
+  subscription_listing_id?: Snowflake
+  /** whether this role is available for purchase */
+  available_for_purchase?: null
+  /** whether this role is a guild's linked role */
+  guild_connections?: null
 }
 export type Route<P, O> = {
   method: string
