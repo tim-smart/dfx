@@ -8,15 +8,18 @@ A Discord library built on top of @effect/io
 ## Example
 
 ```typescript
+import * as Config from "@effect/io/Config"
 import * as Effect from "@effect/io/Effect"
 import { pipe } from "@fp-ts/data/Function"
 import { Ix } from "dfx"
 import { runIx, make } from "dfx/gateway"
 
 // Create the dependencies layer
-const Dependencies = make({
-  token: "xxx",
-})
+const Dependencies = make(
+  Config.struct({
+    token: Config.string("DISCORD_BOT_TOKEN"),
+  }),
+)
 
 // Create hello command that responds with "Hello!"
 const hello = Ix.global(
