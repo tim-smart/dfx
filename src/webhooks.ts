@@ -22,7 +22,7 @@ export const make = (
 ) => {
   const LiveWebhook = makeFromConfig(config)
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = DiscordConfig.makeFrom(config)
+  const LiveConfig = DiscordConfig.makeFromConfig(config)
   const LiveEnv =
     (LiveLog + LiveConfig) >> (MemoryREST + LiveWebhook + MemoryRateLimit)
 

@@ -31,7 +31,7 @@ export const MemoryBot = MemoryREST > MemoryGateway + MemoryRateLimit
 
 export const make = (config: Config<DiscordConfig.MakeOpts>, debug = false) => {
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = DiscordConfig.makeFrom(config)
+  const LiveConfig = DiscordConfig.makeFromConfig(config)
   const LiveEnv = LiveLog + LiveConfig > MemoryBot
 
   return LiveEnv
