@@ -21,6 +21,8 @@
   },
   "exports": {
     ".": "./index.js",
+    "./gateway": "./gateway.js",
+    "./webhooks": "./webhooks.js",
     "./*": "./*.js"
   },
   "devDependencies": {
