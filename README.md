@@ -14,12 +14,12 @@ import * as Config from "@effect/io/Config"
 import * as Effect from "@effect/io/Effect"
 import { pipe } from "@fp-ts/data/Function"
 import { Ix } from "dfx"
-import { runIx, make } from "dfx/gateway"
+import { runIx, makeFromConfig } from "dfx/gateway"
 
 // Create the dependencies layer
-const Dependencies = make(
+const Dependencies = makeFromConfig(
   Config.struct({
-    token: Config.string("DISCORD_BOT_TOKEN"),
+    token: Config.secret("DISCORD_BOT_TOKEN"),
   }),
 )
 

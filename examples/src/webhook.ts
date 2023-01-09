@@ -3,18 +3,18 @@ import * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import { pipe } from "@fp-ts/data/Function"
 import { Ix } from "dfx"
-import { make, makeHandler } from "dfx/webhooks"
+import { make, makeFromConfig, makeHandler } from "dfx/webhooks"
 import Dotenv from "dotenv"
 import { fastify } from "fastify"
 
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = make(
+const LiveEnv = makeFromConfig(
   Config.struct({
     applicationId: Config.string("DISCORD_APP_ID"),
-    publicKey: Config.string("DISCORD_PUBLIC_KEY"),
-    token: Config.string("DISCORD_BOT_TOKEN"),
+    publicKey: Config.secret("DISCORD_PUBLIC_KEY"),
+    token: Config.secret("DISCORD_BOT_TOKEN"),
   }),
 )
 

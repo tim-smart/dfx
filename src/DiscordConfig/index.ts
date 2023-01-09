@@ -1,7 +1,7 @@
 const VERSION = 10
 
 export interface DiscordConfig {
-  token: string
+  token: ConfigSecret
   rest: {
     baseUrl: string
     globalRateLimit: {
@@ -20,7 +20,7 @@ export interface DiscordConfig {
 export const DiscordConfig = Tag<DiscordConfig>()
 
 export interface MakeOpts {
-  token: string
+  token: ConfigSecret
   rest?: Partial<DiscordConfig["rest"]>
   gateway?: Partial<DiscordConfig["gateway"]>
 }

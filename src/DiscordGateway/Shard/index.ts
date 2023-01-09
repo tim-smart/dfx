@@ -60,7 +60,7 @@ export const make = (shard: [id: number, count: number]) =>
 
     // identify
     const identifyEffects = Identify.fromRaw(raw, {
-      token,
+      token: token.value,
       shard,
       intents: gateway.intents,
       presence: gateway.presence,

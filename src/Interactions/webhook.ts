@@ -31,11 +31,11 @@ const checkSignature = (
 
 export interface MakeConfigOpts {
   applicationId: string
-  publicKey: string
+  publicKey: ConfigSecret
 }
 const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
   applicationId,
-  publicKey: fromHex(publicKey),
+  publicKey: fromHex(publicKey.value),
 })
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()

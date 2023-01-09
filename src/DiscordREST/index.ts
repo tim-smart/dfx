@@ -103,7 +103,7 @@ const make = Do(($) => {
           ...init,
           headers: {
             ...(init?.headers ?? {}),
-            Authorization: `Bot ${token}`,
+            Authorization: `Bot ${token.value}`,
             "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
           },
         }),

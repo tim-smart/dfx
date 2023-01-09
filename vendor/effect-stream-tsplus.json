@@ -133,6 +133,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel/ChildExecutorDecision",
           "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Aspects",
+          "name": "match"
         }
       ]
     },
@@ -143,6 +148,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/ChildExecutorDecision",
+          "name": "isContinue"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Aspects",
           "name": "isContinue"
         }
       ]
@@ -155,6 +165,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Channel/ChildExecutorDecision",
           "name": "isClose"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Aspects",
+          "name": "isClose"
         }
       ]
     },
@@ -165,6 +180,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/ChildExecutorDecision",
+          "name": "isYield"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/ChildExecutorDecision.Aspects",
           "name": "isYield"
         }
       ]
@@ -261,6 +281,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel/MergeDecision",
+          "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeDecision.Aspects",
           "name": "match"
         }
       ]
@@ -375,6 +400,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel/MergeStrategy",
           "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.Aspects",
+          "name": "match"
         }
       ]
     },
@@ -386,6 +416,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Channel/MergeStrategy",
           "name": "isBackPressure"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.Aspects",
+          "name": "isBackPressure"
         }
       ]
     },
@@ -396,6 +431,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/MergeStrategy",
+          "name": "isBufferSliding"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeStrategy.Aspects",
           "name": "isBufferSliding"
         }
       ]
@@ -565,6 +605,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel/UpstreamPullRequest",
           "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Aspects",
+          "name": "match"
         }
       ]
     },
@@ -576,6 +621,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Channel/UpstreamPullRequest",
           "name": "isPulled"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Aspects",
+          "name": "isPulled"
         }
       ]
     },
@@ -586,6 +636,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/UpstreamPullRequest",
+          "name": "isNoUpstream"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullRequest.Aspects",
           "name": "isNoUpstream"
         }
       ]
@@ -700,6 +755,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy",
           "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Aspects",
+          "name": "match"
         }
       ]
     },
@@ -711,6 +771,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy",
           "name": "isPullAfterNext"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Aspects",
+          "name": "isPullAfterNext"
         }
       ]
     },
@@ -721,6 +786,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/UpstreamPullStrategy",
+          "name": "isPullAfterAllEnqueued"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/UpstreamPullStrategy.Aspects",
           "name": "isPullAfterAllEnqueued"
         }
       ]
@@ -860,6 +930,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel/MergeState",
           "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Aspects",
+          "name": "match"
         }
       ]
     },
@@ -870,6 +945,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/MergeState",
+          "name": "isBothRunning"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Aspects",
           "name": "isBothRunning"
         }
       ]
@@ -882,6 +962,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Channel/MergeState",
           "name": "isLeftDone"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Aspects",
+          "name": "isLeftDone"
         }
       ]
     },
@@ -892,6 +977,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel/MergeState",
+          "name": "isRightDone"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel/MergeState.Aspects",
           "name": "isRightDone"
         }
       ]
@@ -1946,6 +2036,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "as"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "as"
         }
       ]
     },
@@ -1956,6 +2051,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "collectAllWhileWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "collectAllWhileWith"
         }
       ]
@@ -1968,6 +2068,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "contramap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "contramap"
         }
       ]
     },
@@ -1978,6 +2083,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "contramapEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "contramapEffect"
         }
       ]
@@ -1990,6 +2100,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "contramapChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "contramapChunks"
         }
       ]
     },
@@ -2000,6 +2115,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "contramapChunksEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "contramapChunksEffect"
         }
       ]
@@ -2012,6 +2132,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "dimap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "dimap"
         }
       ]
     },
@@ -2022,6 +2147,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "dimapEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "dimapEffect"
         }
       ]
@@ -2034,6 +2164,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "dimapChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "dimapChunks"
         }
       ]
     },
@@ -2044,6 +2179,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "dimapChunksEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "dimapChunksEffect"
         }
       ]
@@ -2056,6 +2196,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "ensuring"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "ensuring"
         }
       ]
     },
@@ -2066,6 +2211,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "ensuringWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "ensuringWith"
         }
       ]
@@ -2078,6 +2228,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "filterInput"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "filterInput"
         }
       ]
     },
@@ -2088,6 +2243,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "filterInputEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "filterInputEffect"
         }
       ]
@@ -2100,6 +2260,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "findEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "findEffect"
         }
       ]
     },
@@ -2110,6 +2275,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "foldSink"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "foldSink"
         }
       ]
@@ -2122,6 +2292,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "flatMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "flatMap"
         }
       ]
     },
@@ -2132,6 +2307,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "map"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "map"
         }
       ]
@@ -2144,6 +2324,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "mapEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "mapEffect"
         }
       ]
     },
@@ -2154,6 +2339,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "mapError"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "mapError"
         }
       ]
@@ -2166,6 +2356,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "mapLeftover"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "mapLeftover"
         }
       ]
     },
@@ -2176,6 +2371,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "orElse"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "orElse"
         }
       ]
@@ -2188,6 +2388,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "provideEnvironment"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "provideEnvironment"
         }
       ]
     },
@@ -2198,6 +2403,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "race"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "race"
         }
       ]
@@ -2210,6 +2420,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "raceBoth"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "raceBoth"
         }
       ]
     },
@@ -2220,6 +2435,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "raceWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "raceWith"
         }
       ]
@@ -2232,6 +2452,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "refineOrDie"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "refineOrDie"
         }
       ]
     },
@@ -2242,6 +2467,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "refineOrDieWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "refineOrDieWith"
         }
       ]
@@ -2254,6 +2484,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "splitWhere"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "splitWhere"
         }
       ]
     },
@@ -2264,6 +2499,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "summarized"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "summarized"
         }
       ]
@@ -2276,6 +2516,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "zip"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "zip"
         }
       ]
     },
@@ -2286,6 +2531,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "zipLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "zipLeft"
         }
       ]
@@ -2298,6 +2548,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "zipRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "zipRight"
         }
       ]
     },
@@ -2308,6 +2563,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "zipWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "zipWith"
         }
       ]
@@ -2320,6 +2580,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "zipPar"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "zipPar"
         }
       ]
     },
@@ -2330,6 +2595,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "zipParLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "zipParLeft"
         }
       ]
@@ -2342,6 +2612,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
           "name": "zipParRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "zipParRight"
         }
       ]
     },
@@ -2352,6 +2627,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Sink",
+          "name": "zipWithPar"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "zipWithPar"
         }
       ]
@@ -2364,6 +2644,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Sink",
           "name": "collectAllFrom"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "collectAllFrom"
         }
       ]
     },
@@ -2374,6 +2659,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Sink",
+          "name": "collectLeftover"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "collectLeftover"
         }
       ]
@@ -2386,6 +2676,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Sink",
           "name": "ignoreLeftover"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "ignoreLeftover"
         }
       ]
     },
@@ -2397,6 +2692,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Sink",
           "name": "toChannel"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "toChannel"
         }
       ]
     },
@@ -2407,6 +2707,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Sink",
+          "name": "withDuration"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "withDuration"
         }
       ]
@@ -2565,6 +2870,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream/HaltStrategy",
           "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Aspects",
+          "name": "match"
         }
       ]
     },
@@ -2575,6 +2885,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Stream/HaltStrategy",
+          "name": "isLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Aspects",
           "name": "isLeft"
         }
       ]
@@ -2587,6 +2902,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Stream/HaltStrategy",
           "name": "isRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Aspects",
+          "name": "isRight"
         }
       ]
     },
@@ -2598,6 +2918,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Stream/HaltStrategy",
           "name": "isBoth"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Aspects",
+          "name": "isBoth"
         }
       ]
     },
@@ -2608,6 +2933,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Stream/HaltStrategy",
+          "name": "isEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream/HaltStrategy.Aspects",
           "name": "isEither"
         }
       ]
@@ -2782,6 +3112,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Take",
           "name": "map"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Aspects",
+          "name": "map"
         }
       ]
     },
@@ -2792,6 +3127,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Take",
+          "name": "match"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Aspects",
           "name": "match"
         }
       ]
@@ -2804,6 +3144,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Take",
           "name": "matchEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "matchEffect"
         }
       ]
     },
@@ -2814,6 +3159,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Take",
+          "name": "tap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "tap"
         }
       ]
@@ -2826,6 +3176,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Take",
           "name": "isDone"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Aspects",
+          "name": "isDone"
         }
       ]
     },
@@ -2836,6 +3191,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Take",
+          "name": "isFailure"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Aspects",
           "name": "isFailure"
         }
       ]
@@ -2848,6 +3208,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Take",
           "name": "isSuccess"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Take.Aspects",
+          "name": "isSuccess"
         }
       ]
     },
@@ -2858,6 +3223,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Take",
+          "name": "done"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "done"
         }
       ]
@@ -2922,6 +3292,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/GroupBy",
           "name": "evaluate"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "evaluate"
         }
       ]
     },
@@ -2933,6 +3308,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/GroupBy",
           "name": "filter"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/GroupBy.Aspects",
+          "name": "filter"
         }
       ]
     },
@@ -2943,6 +3323,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/GroupBy",
+          "name": "first"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/GroupBy.Aspects",
           "name": "first"
         }
       ]
@@ -4261,6 +4646,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "aggregate"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "aggregate"
         }
       ]
     },
@@ -4271,6 +4661,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "aggregateWithin"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "aggregateWithin"
         }
       ]
@@ -4283,6 +4678,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "aggregateWithinEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "aggregateWithinEither"
         }
       ]
     },
@@ -4293,6 +4693,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "as"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "as"
         }
       ]
@@ -4305,6 +4710,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "branchAfter"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "branchAfter"
         }
       ]
     },
@@ -4315,6 +4725,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "broadcast"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "broadcast"
         }
       ]
@@ -4327,6 +4742,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "broadcastDynamic"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "broadcastDynamic"
         }
       ]
     },
@@ -4337,6 +4757,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "broadcastedQueues"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "broadcastedQueues"
         }
       ]
@@ -4349,6 +4774,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "broadcastedQueuesDynamic"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "broadcastedQueuesDynamic"
         }
       ]
     },
@@ -4359,6 +4789,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "buffer"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "buffer"
         }
       ]
@@ -4371,6 +4806,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "bufferChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "bufferChunks"
         }
       ]
     },
@@ -4381,6 +4821,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "bufferChunksDropping"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "bufferChunksDropping"
         }
       ]
@@ -4393,6 +4838,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "bufferChunksSliding"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "bufferChunksSliding"
         }
       ]
     },
@@ -4403,6 +4853,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "bufferDropping"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "bufferDropping"
         }
       ]
@@ -4415,6 +4870,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "bufferSliding"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "bufferSliding"
         }
       ]
     },
@@ -4425,6 +4885,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "catchAll"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "catchAll"
         }
       ]
@@ -4437,6 +4902,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "catchAllCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "catchAllCause"
         }
       ]
     },
@@ -4447,6 +4917,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "catchSome"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "catchSome"
         }
       ]
@@ -4459,6 +4934,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "catchSomeCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "catchSomeCause"
         }
       ]
     },
@@ -4469,6 +4949,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "changesWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "changesWith"
         }
       ]
@@ -4481,6 +4966,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "changesWithEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "changesWithEffect"
         }
       ]
     },
@@ -4491,6 +4981,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "chunksWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "chunksWith"
         }
       ]
@@ -4503,6 +4998,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "collect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "collect"
         }
       ]
     },
@@ -4513,6 +5013,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "collectEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "collectEffect"
         }
       ]
@@ -4525,6 +5030,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "collectWhile"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "collectWhile"
         }
       ]
     },
@@ -4535,6 +5045,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "collectWhileEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "collectWhileEffect"
         }
       ]
@@ -4547,6 +5062,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "combine"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "combine"
         }
       ]
     },
@@ -4557,6 +5077,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "combineChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "combineChunks"
         }
       ]
@@ -4569,6 +5094,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "concat"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "concat"
         }
       ]
     },
@@ -4579,6 +5109,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "cross"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "cross"
         }
       ]
@@ -4591,6 +5126,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "crossLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "crossLeft"
         }
       ]
     },
@@ -4601,6 +5141,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "crossRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "crossRight"
         }
       ]
@@ -4613,6 +5158,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "crossWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "crossWith"
         }
       ]
     },
@@ -4623,6 +5173,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "debounce"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "debounce"
         }
       ]
@@ -4635,6 +5190,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "distributedWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "distributedWith"
         }
       ]
     },
@@ -4645,6 +5205,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "distributedWithDynamic"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "distributedWithDynamic"
         }
       ]
@@ -4657,6 +5222,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "drainFork"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "drainFork"
         }
       ]
     },
@@ -4667,6 +5237,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "drop"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "drop"
         }
       ]
@@ -4679,6 +5254,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "dropRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "dropRight"
         }
       ]
     },
@@ -4689,6 +5269,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "dropUntil"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "dropUntil"
         }
       ]
@@ -4701,6 +5286,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "dropUntilEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "dropUntilEffect"
         }
       ]
     },
@@ -4711,6 +5301,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "dropWhile"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "dropWhile"
         }
       ]
@@ -4723,6 +5318,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "dropWhileEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "dropWhileEffect"
         }
       ]
     },
@@ -4733,6 +5333,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "ensuring"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "ensuring"
         }
       ]
@@ -4745,6 +5350,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "filter"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "filter"
         }
       ]
     },
@@ -4755,6 +5365,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "filterEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "filterEffect"
         }
       ]
@@ -4767,6 +5382,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "find"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "find"
         }
       ]
     },
@@ -4777,6 +5397,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "findEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "findEffect"
         }
       ]
@@ -4789,6 +5414,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "flatMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "flatMap"
         }
       ]
     },
@@ -4799,6 +5429,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "flattenPar"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "flattenPar"
         }
       ]
@@ -4811,6 +5446,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "flattenParUnbounded"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "flattenParUnbounded"
         }
       ]
     },
@@ -4821,6 +5461,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "groupAdjacentBy"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "groupAdjacentBy"
         }
       ]
@@ -4833,6 +5478,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "groupBy"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/GroupBy.Aspects",
+          "name": "groupBy"
         }
       ]
     },
@@ -4843,6 +5493,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "groupByKey"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/GroupBy.Aspects",
           "name": "groupByKey"
         }
       ]
@@ -4855,6 +5510,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "grouped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "grouped"
         }
       ]
     },
@@ -4865,6 +5525,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "groupedWithin"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "groupedWithin"
         }
       ]
@@ -4877,6 +5542,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "haltAfter"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "haltAfter"
         }
       ]
     },
@@ -4887,6 +5557,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "haltWhen"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "haltWhen"
         }
       ]
@@ -4899,6 +5574,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "haltWhenDeferred"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "haltWhenDeferred"
         }
       ]
     },
@@ -4909,6 +5589,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "interleave"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "interleave"
         }
       ]
@@ -4921,6 +5606,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "interleaveWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "interleaveWith"
         }
       ]
     },
@@ -4931,6 +5621,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "intersperse"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "intersperse"
         }
       ]
@@ -4943,6 +5638,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "intersperseAffixes"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "intersperseAffixes"
         }
       ]
     },
@@ -4953,6 +5653,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "interruptAfter"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "interruptAfter"
         }
       ]
@@ -4965,6 +5670,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "interruptWhen"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "interruptWhen"
         }
       ]
     },
@@ -4975,6 +5685,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "interruptWhenDeferred"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "interruptWhenDeferred"
         }
       ]
@@ -4987,6 +5702,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "map"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "map"
         }
       ]
     },
@@ -4997,6 +5717,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mapAccum"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mapAccum"
         }
       ]
@@ -5009,6 +5734,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mapAccumEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mapAccumEffect"
         }
       ]
     },
@@ -5019,6 +5749,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mapBoth"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mapBoth"
         }
       ]
@@ -5031,6 +5766,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mapChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mapChunks"
         }
       ]
     },
@@ -5041,6 +5781,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mapChunksEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mapChunksEffect"
         }
       ]
@@ -5053,6 +5798,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mapConcat"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mapConcat"
         }
       ]
     },
@@ -5063,6 +5813,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mapConcatChunk"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mapConcatChunk"
         }
       ]
@@ -5075,6 +5830,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mapConcatChunkEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mapConcatChunkEffect"
         }
       ]
     },
@@ -5085,6 +5845,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mapConcatEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mapConcatEffect"
         }
       ]
@@ -5097,6 +5862,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mapEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mapEffect"
         }
       ]
     },
@@ -5107,6 +5877,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mapError"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mapError"
         }
       ]
@@ -5119,6 +5894,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mapErrorCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mapErrorCause"
         }
       ]
     },
@@ -5129,6 +5909,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "merge"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "merge"
         }
       ]
@@ -5141,6 +5926,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mergeWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mergeWith"
         }
       ]
     },
@@ -5151,6 +5941,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mergeHaltEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mergeHaltEither"
         }
       ]
@@ -5163,6 +5958,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mergeHaltLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mergeHaltLeft"
         }
       ]
     },
@@ -5173,6 +5973,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mergeHaltRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mergeHaltRight"
         }
       ]
@@ -5185,6 +5990,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mergeEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mergeEither"
         }
       ]
     },
@@ -5195,6 +6005,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "mergeLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mergeLeft"
         }
       ]
@@ -5207,6 +6022,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "mergeRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "mergeRight"
         }
       ]
     },
@@ -5217,6 +6037,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "onError"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "onError"
         }
       ]
@@ -5229,6 +6054,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "onDone"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "onDone"
         }
       ]
     },
@@ -5239,6 +6069,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "orDieWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "orDieWith"
         }
       ]
@@ -5251,6 +6086,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "orElse"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "orElse"
         }
       ]
     },
@@ -5261,6 +6101,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "orElseEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "orElseEither"
         }
       ]
@@ -5273,6 +6118,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "orElseFail"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "orElseFail"
         }
       ]
     },
@@ -5283,6 +6133,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "orElseIfEmpty"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "orElseIfEmpty"
         }
       ]
@@ -5295,6 +6150,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "orElseIfEmptyChunk"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "orElseIfEmptyChunk"
         }
       ]
     },
@@ -5305,6 +6165,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "orElseIfEmptyStream"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "orElseIfEmptyStream"
         }
       ]
@@ -5317,6 +6182,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "orElseOptional"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "orElseOptional"
         }
       ]
     },
@@ -5327,6 +6197,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "orElseSucceed"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "orElseSucceed"
         }
       ]
@@ -5339,6 +6214,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "partition"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "partition"
         }
       ]
     },
@@ -5349,6 +6229,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "partitionEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "partitionEither"
         }
       ]
@@ -5361,6 +6246,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "peel"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "peel"
         }
       ]
     },
@@ -5371,6 +6261,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "pipeThrough"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "pipeThrough"
         }
       ]
@@ -5383,6 +6278,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "pipeThroughChannel"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "pipeThroughChannel"
         }
       ]
     },
@@ -5393,6 +6293,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "pipeThroughChannelOrFail"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "pipeThroughChannelOrFail"
         }
       ]
@@ -5405,6 +6310,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "provideEnvironment"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "provideEnvironment"
         }
       ]
     },
@@ -5415,6 +6325,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "provideLayer"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "provideLayer"
         }
       ]
@@ -5427,6 +6342,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "provideSomeEnvironment"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "provideSomeEnvironment"
         }
       ]
     },
@@ -5437,6 +6357,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "provideSomeLayer"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "provideSomeLayer"
         }
       ]
@@ -5449,6 +6374,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "rechunk"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "rechunk"
         }
       ]
     },
@@ -5459,6 +6389,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "refineOrDie"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "refineOrDie"
         }
       ]
@@ -5471,6 +6406,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "refineOrDieWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "refineOrDieWith"
         }
       ]
     },
@@ -5481,6 +6421,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "repeat"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "repeat"
         }
       ]
@@ -5493,6 +6438,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "repeatEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "repeatEither"
         }
       ]
     },
@@ -5503,6 +6453,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "repeatElements"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "repeatElements"
         }
       ]
@@ -5515,6 +6470,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "repeatElementsEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "repeatElementsEither"
         }
       ]
     },
@@ -5525,6 +6485,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "repeatElementsWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "repeatElementsWith"
         }
       ]
@@ -5537,6 +6502,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "repeatWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "repeatWith"
         }
       ]
     },
@@ -5547,6 +6517,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "retry"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "retry"
         }
       ]
@@ -5559,6 +6534,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "rightOrFail"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "rightOrFail"
         }
       ]
     },
@@ -5569,6 +6549,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "run"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "run"
         }
       ]
@@ -5581,6 +6566,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runFold"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runFold"
         }
       ]
     },
@@ -5591,6 +6581,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runFoldEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runFoldEffect"
         }
       ]
@@ -5603,6 +6598,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runFoldScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runFoldScoped"
         }
       ]
     },
@@ -5613,6 +6613,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runFoldScopedEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runFoldScopedEffect"
         }
       ]
@@ -5625,6 +6630,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runFoldWhile"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runFoldWhile"
         }
       ]
     },
@@ -5635,6 +6645,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runFoldWhileEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runFoldWhileEffect"
         }
       ]
@@ -5647,6 +6662,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runFoldWhileScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runFoldWhileScoped"
         }
       ]
     },
@@ -5657,6 +6677,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runFoldWhileScopedEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runFoldWhileScopedEffect"
         }
       ]
@@ -5669,6 +6694,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runForEach"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runForEach"
         }
       ]
     },
@@ -5679,6 +6709,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runForEachChunk"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runForEachChunk"
         }
       ]
@@ -5691,6 +6726,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runForEachChunkScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runForEachChunkScoped"
         }
       ]
     },
@@ -5701,6 +6741,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runForEachScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runForEachScoped"
         }
       ]
@@ -5713,6 +6758,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runForEachWhile"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runForEachWhile"
         }
       ]
     },
@@ -5723,6 +6773,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runForEachWhileScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runForEachWhileScoped"
         }
       ]
@@ -5735,6 +6790,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runIntoHub"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runIntoHub"
         }
       ]
     },
@@ -5745,6 +6805,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runIntoHubScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runIntoHubScoped"
         }
       ]
@@ -5757,6 +6822,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runIntoQueue"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runIntoQueue"
         }
       ]
     },
@@ -5767,6 +6837,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runIntoQueueElementsScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runIntoQueueElementsScoped"
         }
       ]
@@ -5779,6 +6854,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "runIntoQueueScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runIntoQueueScoped"
         }
       ]
     },
@@ -5789,6 +6869,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "runScoped"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runScoped"
         }
       ]
@@ -5801,6 +6886,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "scan"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "scan"
         }
       ]
     },
@@ -5811,6 +6901,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "scanEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "scanEffect"
         }
       ]
@@ -5823,6 +6918,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "scanReduce"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "scanReduce"
         }
       ]
     },
@@ -5833,6 +6933,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "scanReduceEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "scanReduceEffect"
         }
       ]
@@ -5845,6 +6950,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "schedule"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "schedule"
         }
       ]
     },
@@ -5855,6 +6965,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "scheduleEither"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "scheduleEither"
         }
       ]
@@ -5867,6 +6982,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "scheduleWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "scheduleWith"
         }
       ]
     },
@@ -5877,6 +6997,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "sliding"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "sliding"
         }
       ]
@@ -5889,6 +7014,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "someOrElse"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "someOrElse"
         }
       ]
     },
@@ -5899,6 +7029,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "someOrFail"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "someOrFail"
         }
       ]
@@ -5911,6 +7046,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "split"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "split"
         }
       ]
     },
@@ -5921,6 +7061,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "splitOnChunk"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "splitOnChunk"
         }
       ]
@@ -5933,6 +7078,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "take"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "take"
         }
       ]
     },
@@ -5943,6 +7093,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "takeRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "takeRight"
         }
       ]
@@ -5955,6 +7110,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "takeUntil"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "takeUntil"
         }
       ]
     },
@@ -5965,6 +7125,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "takeUntilEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "takeUntilEffect"
         }
       ]
@@ -5977,6 +7142,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "takeWhile"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "takeWhile"
         }
       ]
     },
@@ -5987,6 +7157,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "tap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "tap"
         }
       ]
@@ -5999,6 +7174,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "tapError"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "tapError"
         }
       ]
     },
@@ -6009,6 +7189,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "tapErrorCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "tapErrorCause"
         }
       ]
@@ -6021,6 +7206,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "tapSink"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "tapSink"
         }
       ]
     },
@@ -6031,6 +7221,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "timeout"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "timeout"
         }
       ]
@@ -6043,6 +7238,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "timeoutFail"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "timeoutFail"
         }
       ]
     },
@@ -6053,6 +7253,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "timeoutFailCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "timeoutFailCause"
         }
       ]
@@ -6065,6 +7270,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "timeoutTo"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "timeoutTo"
         }
       ]
     },
@@ -6075,6 +7285,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "toHub"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "toHub"
         }
       ]
@@ -6087,6 +7302,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "toQueue"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "toQueue"
         }
       ]
     },
@@ -6097,6 +7317,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "toQueueDropping"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "toQueueDropping"
         }
       ]
@@ -6109,6 +7334,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "toQueueOfElements"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "toQueueOfElements"
         }
       ]
     },
@@ -6119,6 +7349,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "toQueueSliding"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "toQueueSliding"
         }
       ]
@@ -6131,6 +7366,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "transduce"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "transduce"
         }
       ]
     },
@@ -6141,6 +7381,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "when"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "when"
         }
       ]
@@ -6153,6 +7398,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "whenEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "whenEffect"
         }
       ]
     },
@@ -6163,6 +7413,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "zip"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zip"
         }
       ]
@@ -6175,6 +7430,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "zipFlatten"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipFlatten"
         }
       ]
     },
@@ -6185,6 +7445,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "zipAll"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipAll"
         }
       ]
@@ -6197,6 +7462,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "zipAllLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipAllLeft"
         }
       ]
     },
@@ -6207,6 +7477,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "zipAllRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipAllRight"
         }
       ]
@@ -6219,6 +7494,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "zipAllWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipAllWith"
         }
       ]
     },
@@ -6229,6 +7509,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "zipLatest"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipLatest"
         }
       ]
@@ -6241,6 +7526,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "zipLatestWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipLatestWith"
         }
       ]
     },
@@ -6251,6 +7541,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "zipLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipLeft"
         }
       ]
@@ -6263,6 +7558,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "zipRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipRight"
         }
       ]
     },
@@ -6273,6 +7573,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
+          "name": "zipWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipWith"
         }
       ]
@@ -6285,6 +7590,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Stream",
           "name": "zipWithChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipWithChunks"
         }
       ]
     },
@@ -6295,6 +7605,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "absolve"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "absolve"
         }
       ]
@@ -6307,6 +7622,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "bufferUnbounded"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "bufferUnbounded"
         }
       ]
     },
@@ -6317,6 +7637,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "changes"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "changes"
         }
       ]
@@ -6329,6 +7654,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "chunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "chunks"
         }
       ]
     },
@@ -6339,6 +7669,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "collectLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "collectLeft"
         }
       ]
@@ -6351,6 +7686,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "collectRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "collectRight"
         }
       ]
     },
@@ -6361,6 +7701,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "collectSome"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "collectSome"
         }
       ]
@@ -6373,6 +7718,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "collectSuccess"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "collectSuccess"
         }
       ]
     },
@@ -6383,6 +7733,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "collectWhileLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "collectWhileLeft"
         }
       ]
@@ -6395,6 +7750,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "collectWhileSome"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "collectWhileSome"
         }
       ]
     },
@@ -6405,6 +7765,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "collectWhileRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "collectWhileRight"
         }
       ]
@@ -6417,6 +7782,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "collectWhileSuccess"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "collectWhileSuccess"
         }
       ]
     },
@@ -6427,6 +7797,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "drain"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "drain"
         }
       ]
@@ -6439,6 +7814,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "either"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "either"
         }
       ]
     },
@@ -6449,6 +7829,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "flatten"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "flatten"
         }
       ]
@@ -6461,6 +7846,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "flattenChunks"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "flattenChunks"
         }
       ]
     },
@@ -6471,6 +7861,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "flattenEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "flattenEffect"
         }
       ]
@@ -6483,6 +7878,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "flattenExit"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "flattenExit"
         }
       ]
     },
@@ -6493,6 +7893,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "flattenExitOption"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "flattenExitOption"
         }
       ]
@@ -6505,6 +7910,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "flattenIterables"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "flattenIterables"
         }
       ]
     },
@@ -6515,6 +7925,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "flattenTake"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "flattenTake"
         }
       ]
@@ -6527,6 +7942,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "forever"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "forever"
         }
       ]
     },
@@ -6537,6 +7957,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "mkString"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "mkString"
         }
       ]
@@ -6549,6 +7974,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "orDie"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "orDie"
         }
       ]
     },
@@ -6559,6 +7989,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "right"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "right"
         }
       ]
@@ -6571,6 +8006,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "runCollect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runCollect"
         }
       ]
     },
@@ -6581,6 +8021,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "runCount"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runCount"
         }
       ]
@@ -6593,6 +8038,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "runDrain"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runDrain"
         }
       ]
     },
@@ -6603,6 +8053,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "runHead"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runHead"
         }
       ]
@@ -6615,6 +8070,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "runLast"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runLast"
         }
       ]
     },
@@ -6625,6 +8085,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "runSum"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runSum"
         }
       ]
@@ -6637,6 +8102,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "some"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "some"
         }
       ]
     },
@@ -6647,6 +8117,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "toPull"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "toPull"
         }
       ]
@@ -6659,6 +8134,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "toQueueUnbounded"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "toQueueUnbounded"
         }
       ]
     },
@@ -6669,6 +8149,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "zipWithNext"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipWithNext"
         }
       ]
@@ -6681,6 +8166,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "zipWithPrevious"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipWithPrevious"
         }
       ]
     },
@@ -6692,6 +8182,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Stream",
           "name": "zipWithPreviousAndNext"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
+          "name": "zipWithPreviousAndNext"
         }
       ]
     },
@@ -6702,6 +8197,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Stream",
+          "name": "zipWithIndex"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "zipWithIndex"
         }
       ]
@@ -7311,6 +8811,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "as"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "as"
         }
       ]
     },
@@ -7321,6 +8826,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "catchAll"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "catchAll"
         }
       ]
@@ -7333,6 +8843,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "catchAllCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "catchAllCause"
         }
       ]
     },
@@ -7343,6 +8858,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "concatMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "concatMap"
         }
       ]
@@ -7355,6 +8875,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "concatMapWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "concatMapWith"
         }
       ]
     },
@@ -7365,6 +8890,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "concatMapWithCustom"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "concatMapWithCustom"
         }
       ]
@@ -7377,6 +8907,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "collect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "collect"
         }
       ]
     },
@@ -7387,6 +8922,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "contramap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "contramap"
         }
       ]
@@ -7399,6 +8939,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "contramapEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "contramapEffect"
         }
       ]
     },
@@ -7409,6 +8954,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "contramapError"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "contramapError"
         }
       ]
@@ -7421,6 +8971,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "contramapErrorEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "contramapErrorEffect"
         }
       ]
     },
@@ -7431,6 +8986,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "contramapIn"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "contramapIn"
         }
       ]
@@ -7443,6 +9003,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "contramapInEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "contramapInEffect"
         }
       ]
     },
@@ -7453,6 +9018,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "embedInput"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "embedInput"
         }
       ]
@@ -7465,6 +9035,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "ensuring"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "ensuring"
         }
       ]
     },
@@ -7475,6 +9050,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "ensuringWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "ensuringWith"
         }
       ]
@@ -7487,6 +9067,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "flatMap"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "flatMap"
         }
       ]
     },
@@ -7497,6 +9082,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "foldChannel"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "foldChannel"
         }
       ]
@@ -7509,6 +9099,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "foldCauseChannel"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "foldCauseChannel"
         }
       ]
     },
@@ -7519,6 +9114,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "interruptWhen"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "interruptWhen"
         }
       ]
@@ -7531,6 +9131,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "interruptWhenDeferred"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "interruptWhenDeferred"
         }
       ]
     },
@@ -7541,6 +9146,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "map"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "map"
         }
       ]
@@ -7553,6 +9163,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "mapEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "mapEffect"
         }
       ]
     },
@@ -7563,6 +9178,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "mapError"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "mapError"
         }
       ]
@@ -7575,6 +9195,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "mapErrorCause"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "mapErrorCause"
         }
       ]
     },
@@ -7585,6 +9210,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "mapOut"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "mapOut"
         }
       ]
@@ -7597,6 +9227,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "mapOutEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "mapOutEffect"
         }
       ]
     },
@@ -7607,6 +9242,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "mergeAll"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "mergeAll"
         }
       ]
@@ -7619,6 +9259,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "mergeOut"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "mergeOut"
         }
       ]
     },
@@ -7629,6 +9274,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "mergeOutWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "mergeOutWith"
         }
       ]
@@ -7641,6 +9291,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "mergeWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "mergeWith"
         }
       ]
     },
@@ -7651,6 +9306,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "orDie"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "orDie"
         }
       ]
@@ -7663,6 +9323,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "orDieWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "orDieWith"
         }
       ]
     },
@@ -7673,6 +9338,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "orElse"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "orElse"
         }
       ]
@@ -7685,6 +9355,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "pipeTo"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "pipeTo"
         }
       ]
     },
@@ -7695,6 +9370,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "pipeToOrFail"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "pipeToOrFail"
         }
       ]
@@ -7707,6 +9387,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "provideEnvironment"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "provideEnvironment"
         }
       ]
     },
@@ -7717,6 +9402,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "provideLayer"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "provideLayer"
         }
       ]
@@ -7729,6 +9419,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "provideSomeEnvironment"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "provideSomeEnvironment"
         }
       ]
     },
@@ -7739,6 +9434,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "provideSomeLayer"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "provideSomeLayer"
         }
       ]
@@ -7751,6 +9451,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "zip"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "zip"
         }
       ]
     },
@@ -7761,6 +9466,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "zipLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "zipLeft"
         }
       ]
@@ -7773,6 +9483,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "zipRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "zipRight"
         }
       ]
     },
@@ -7783,6 +9498,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "zipPar"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "zipPar"
         }
       ]
@@ -7795,6 +9515,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
           "name": "zipParLeft"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "zipParLeft"
         }
       ]
     },
@@ -7805,6 +9530,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/Channel",
+          "name": "zipParRight"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "zipParRight"
         }
       ]
@@ -7817,6 +9547,11 @@
           "kind": "fluent",
           "typeName": "effect/stream/Channel",
           "name": "concatAllWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "concatAllWith"
         }
       ]
     },
@@ -7827,6 +9562,11 @@
         {
           "kind": "fluent",
           "typeName": "effect/stream/Channel",
+          "name": "mergeAllUnboundedWith"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "mergeAllUnboundedWith"
         }
       ]
@@ -7839,6 +9579,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "asUnit"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "asUnit"
         }
       ]
     },
@@ -7849,6 +9594,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "concatAll"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "concatAll"
         }
       ]
@@ -7861,6 +9611,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "concatOut"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "concatOut"
         }
       ]
     },
@@ -7871,6 +9626,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "doneCollect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "doneCollect"
         }
       ]
@@ -7883,6 +9643,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "drain"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "drain"
         }
       ]
     },
@@ -7893,6 +9658,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "emitCollect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "emitCollect"
         }
       ]
@@ -7905,6 +9675,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "flatten"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "flatten"
         }
       ]
     },
@@ -7915,6 +9690,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "mergeAllUnbounded"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "mergeAllUnbounded"
         }
       ]
@@ -7927,6 +9707,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "repeated"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Channel.Aspects",
+          "name": "repeated"
         }
       ]
     },
@@ -7937,6 +9722,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "run"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "run"
         }
       ]
@@ -7949,6 +9739,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "runCollect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "runCollect"
         }
       ]
     },
@@ -7959,6 +9754,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "runDrain"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "runDrain"
         }
       ]
@@ -7971,6 +9771,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "toPull"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "toPull"
         }
       ]
     },
@@ -7982,6 +9787,11 @@
           "kind": "getter",
           "typeName": "effect/stream/Channel",
           "name": "toSink"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Sink.Aspects",
+          "name": "toSink"
         }
       ]
     },
@@ -7992,6 +9802,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/Channel",
+          "name": "toStream"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toStream"
         }
       ]
@@ -8056,6 +9871,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "getAndSet"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "getAndSet"
         }
       ]
     },
@@ -8066,6 +9886,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "getAndUpdate"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "getAndUpdate"
         }
       ]
@@ -8078,6 +9903,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "getAndUpdateEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "getAndUpdateEffect"
         }
       ]
     },
@@ -8088,6 +9918,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "getAndUpdateSome"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "getAndUpdateSome"
         }
       ]
@@ -8100,6 +9935,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "getAndUpdateSomeEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "getAndUpdateSomeEffect"
         }
       ]
     },
@@ -8110,6 +9950,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "modify"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "modify"
         }
       ]
@@ -8122,6 +9967,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "modifyEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "modifyEffect"
         }
       ]
     },
@@ -8132,6 +9982,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "modifySome"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "modifySome"
         }
       ]
@@ -8144,6 +9999,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "modifySomeEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "modifySomeEffect"
         }
       ]
     },
@@ -8154,6 +10014,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "set"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "set"
         }
       ]
@@ -8166,6 +10031,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "setAndGet"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "setAndGet"
         }
       ]
     },
@@ -8176,6 +10046,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "update"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "update"
         }
       ]
@@ -8188,6 +10063,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "updateEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "updateEffect"
         }
       ]
     },
@@ -8198,6 +10078,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "updateAndGet"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "updateAndGet"
         }
       ]
@@ -8210,6 +10095,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "updateAndGetEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "updateAndGetEffect"
         }
       ]
     },
@@ -8220,6 +10110,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "updateSome"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "updateSome"
         }
       ]
@@ -8232,6 +10127,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "updateSomeEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "updateSomeEffect"
         }
       ]
     },
@@ -8242,6 +10142,11 @@
         {
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "updateSomeAndGet"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "updateSomeAndGet"
         }
       ]
@@ -8254,6 +10159,11 @@
           "kind": "pipeable",
           "typeName": "effect/stream/SubscriptionRef",
           "name": "updateSomeAndGetEffect"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
+          "name": "updateSomeAndGetEffect"
         }
       ]
     },
@@ -8264,6 +10174,11 @@
         {
           "kind": "getter",
           "typeName": "effect/stream/SubscriptionRef",
+          "name": "get"
+        },
+        {
+          "kind": "static",
+          "typeName": "effect/io/src/Effect.Aspects",
           "name": "get"
         }
       ]

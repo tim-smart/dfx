@@ -1,9 +1,10 @@
 /**
  * @tsplus global
  */
-import {
+import type {
   Cause,
   Config,
+  ConfigSecret,
   ConfigError,
   Effect,
   Exit,
@@ -14,7 +15,6 @@ import {
   Stream,
   Chunk,
   Context,
-  Tag,
   Duration,
   Equal,
   Either,
@@ -22,8 +22,12 @@ import {
   Maybe,
   Ref,
   HashSet,
-  Discord,
 } from "dfx/_common"
+
+/**
+ * @tsplus global
+ */
+import { Tag, Discord } from "dfx/_common"
 
 /**
  * @tsplus global
