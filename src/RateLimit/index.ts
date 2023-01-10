@@ -27,6 +27,8 @@ export interface RateLimitStore {
     window: number,
     limit: number,
   ) => Effect<never, never, readonly [count: number, ttl: number]>
+
+  removeCounter: (key: string) => Effect<never, never, void>
 }
 
 export const RateLimitStore = Tag<RateLimitStore>()

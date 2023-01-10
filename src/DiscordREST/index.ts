@@ -75,6 +75,7 @@ const make = Do(($) => {
       const hasBucket = $(store.hasBucket(bucket))
       if (!hasBucket || limit - 1 === remaining) {
         effectsToRun.push(
+          store.removeCounter(`dfx.rest.?.${route}`),
           store.putBucket({
             key: bucket,
             resetAfter: retryAfter.millis,

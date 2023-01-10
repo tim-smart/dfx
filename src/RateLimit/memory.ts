@@ -13,6 +13,9 @@ export const make = (): RateLimitStore => {
   const getCounter = (key: string) =>
     Maybe.fromNullable(counters.get(key)).filter((c) => c.expires > Date.now())
 
+  const getBucketForRoute = (route: string) =>
+    Effect.sync(() => Maybe.fromNullable(buckets.get(routes.get(route)!)))
+
   return {
     hasBucket: (key) => Effect.sync(() => buckets.has(key)),
 
@@ -21,12 +24,16 @@ export const make = (): RateLimitStore => {
         buckets.set(bucket.key, bucket)
       }),
 
-    getBucketForRoute: (route) =>
-      Effect.sync(() => Maybe.fromNullable(buckets.get(routes.get(route)!))),
+    getBucketForRoute,
 
     putBucketRoute: (route, bucket) =>
       Effect.sync(() => {
         routes.set(route, bucket)
+      }),
+
+    removeCounter: (key) =>
+      Effect.sync(() => {
+        counters.delete(key)
       }),
 
     incrementCounter: (key, window, limit) =>
