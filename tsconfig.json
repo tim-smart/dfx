@@ -15,9 +15,9 @@
     "incremental": true,
     "tsPlusConfig": "./tsplus.config.json",
     "tsPlusTypes": [
-      "./vendor/effect-io-tsplus.json",
-      "./vendor/effect-stream-tsplus.json",
-      "./vendor/fp-ts-data-tsplus.json"
+      "./node_modules/@tsplus-json/effect-io/annotations.json",
+      "./node_modules/@tsplus-json/effect-stream/annotations.json",
+      "./node_modules/@tsplus-json/fp-ts-data/annotations.json"
     ],
     "paths": {
       "dfx": ["./src/index.js"],
