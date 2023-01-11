@@ -5,9 +5,9 @@ specifiers:
   '@effect/stream': ~0.0.12
   '@fp-ts/data': ~0.0.38
   '@tim-smart/discord-api-docs-parser': ^0.5.0
-  '@tsplus-json/effect-io': 0.0.62-dd0f807
-  '@tsplus-json/effect-stream': 0.0.12-dd0f807
-  '@tsplus-json/fp-ts-data': 0.0.38-dd0f807
+  '@tsplus-types/effect__io': 0.0.62-a7577f9
+  '@tsplus-types/effect__stream': 0.0.12-a7577f9
+  '@tsplus-types/fp-ts__data': 0.0.38-a7577f9
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   isomorphic-ws: ^5.0.0
@@ -31,9 +31,9 @@ optionalDependencies:
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
-  '@tsplus-json/effect-io': 0.0.62-dd0f807_@effect+io@0.0.62
-  '@tsplus-json/effect-stream': 0.0.12-dd0f807_@effect+stream@0.0.12
-  '@tsplus-json/fp-ts-data': 0.0.38-dd0f807_@fp-ts+data@0.0.38
+  '@tsplus-types/effect__io': 0.0.62-a7577f9_@effect+io@0.0.62
+  '@tsplus-types/effect__stream': 0.0.12-a7577f9_@effect+stream@0.0.12
+  '@tsplus-types/fp-ts__data': 0.0.38-a7577f9_@fp-ts+data@0.0.38
   '@types/ws': 8.5.4
   lerna: 6.4.0
   typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.163/compiler/typescript.tgz'
@@ -1183,24 +1183,24 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@tsplus-json/effect-io/0.0.62-dd0f807_@effect+io@0.0.62:
-    resolution: {integrity: sha512-RLZg9v87GNxLk7FY/dde71fJwjSzHiVr2bLXg/gcBYG0BhyKcinoTbLzFKuUuuFVyGkp95mr9m0V23iJUpaXrA==}
+  /@tsplus-types/effect__io/0.0.62-a7577f9_@effect+io@0.0.62:
+    resolution: {integrity: sha512-AtKxneHJiAHzABv/Ck15RwpX+Ipv3ljw33m3GrgjHSf+D0VfhDqBzSrM/LBHPPP57DgL7D4uip3fXjtnJBxT4Q==}
     peerDependencies:
       '@effect/io': 0.0.62
     dependencies:
       '@effect/io': 0.0.62
     dev: true
 
-  /@tsplus-json/effect-stream/0.0.12-dd0f807_@effect+stream@0.0.12:
-    resolution: {integrity: sha512-JiKr1lqaRNtWtLYITKPSItImuaQehApvV2n+WVcy20hj5g0KClrL3LkUppAsFYIDqqDEAy5g5o6Cggrl8voVQQ==}
+  /@tsplus-types/effect__stream/0.0.12-a7577f9_@effect+stream@0.0.12:
+    resolution: {integrity: sha512-nUtJIncj0k+aNLn1D4Wxk2gufT2Uzqjk8zHAbelZzxF3RY3NRwE6IVT7W4BRt7a6+Wqgdls91BZrEG905KTMXw==}
     peerDependencies:
       '@effect/stream': 0.0.12
     dependencies:
       '@effect/stream': 0.0.12
     dev: true
 
-  /@tsplus-json/fp-ts-data/0.0.38-dd0f807_@fp-ts+data@0.0.38:
-    resolution: {integrity: sha512-djN+VdlJyxsIaLRZ1YvDzaS2WHqqOxB8x53CEcig+EER9XkrJM3oiRC5vCRAQb9cu5m3syOomedj0lJUKnxUqA==}
+  /@tsplus-types/fp-ts__data/0.0.38-a7577f9_@fp-ts+data@0.0.38:
+    resolution: {integrity: sha512-9feF23n/tGgXw2bRo/pJ9jlkmohXuSUOl6gZT5WLNYynX1EW0w2h3DSiedlrK5+lvqb/UVcdT35jWOYNHGRrGQ==}
     peerDependencies:
       '@fp-ts/data': 0.0.38
     dependencies:
