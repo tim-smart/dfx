@@ -1,4 +1,17 @@
 {
+  "@fp-ts/data/ReadonlyArray": [
+    {
+      "definitionName": "make",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/ReadonlyArray.Ops",
+          "name": "make"
+        }
+      ]
+    }
+  ],
   "@fp-ts/data/Random": [
     {
       "definitionName": "PCGRandom",
@@ -889,6 +902,17 @@
       ]
     },
     {
+      "definitionName": "productAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Option.Ops",
+          "name": "productAll"
+        }
+      ]
+    },
+    {
       "definitionName": "tuple",
       "definitionKind": "const",
       "extensions": [
@@ -973,6 +997,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/Option.Ops",
           "name": "getFirstSomeSemigroup"
+        }
+      ]
+    },
+    {
+      "definitionName": "coproductAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Option.Ops",
+          "name": "coproductAll"
         }
       ]
     },
@@ -1760,38 +1795,6 @@
       ]
     },
     {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "productAll"
-        }
-      ]
-    },
-    {
-      "definitionName": "coproductAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "coproductAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "coproductAll"
-        }
-      ]
-    },
-    {
       "definitionName": "compact",
       "definitionKind": "const",
       "extensions": [
@@ -2009,6 +2012,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/Either.Ops",
           "name": "composeKleisliArrow"
+        }
+      ]
+    },
+    {
+      "definitionName": "productAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Either.Ops",
+          "name": "productAll"
         }
       ]
     },
@@ -2872,22 +2886,6 @@
       ]
     },
     {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Either.Ops",
-          "name": "productAll"
-        }
-      ]
-    },
-    {
       "definitionName": "merge",
       "definitionKind": "const",
       "extensions": [
@@ -3044,2192 +3042,6 @@
       ]
     }
   ],
-  "@fp-ts/data/ReadonlyArray": [
-    {
-      "definitionName": "ReadonlyArrayTypeLambda",
-      "definitionKind": "interface",
-      "extensions": [
-        {
-          "kind": "type",
-          "typeName": "fp-ts/data/ReadonlyArray.TypeLambda"
-        },
-        {
-          "kind": "companion",
-          "typeName": "fp-ts/data/ReadonlyArray.TypeLambda.Ops"
-        }
-      ]
-    },
-    {
-      "definitionName": "NonEmptyReadonlyArray",
-      "definitionKind": "type",
-      "extensions": [
-        {
-          "kind": "type",
-          "typeName": "fp-ts/data/ReadonlyArray.NonEmptyReadonlyArray"
-        },
-        {
-          "kind": "companion",
-          "typeName": "fp-ts/data/ReadonlyArray.NonEmptyReadonlyArray.Ops"
-        }
-      ]
-    },
-    {
-      "definitionName": "NonEmptyArray",
-      "definitionKind": "type",
-      "extensions": [
-        {
-          "kind": "type",
-          "typeName": "fp-ts/data/ReadonlyArray.NonEmptyArray"
-        },
-        {
-          "kind": "companion",
-          "typeName": "fp-ts/data/ReadonlyArray.NonEmptyArray.Ops"
-        }
-      ]
-    },
-    {
-      "definitionName": "make",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "make"
-        }
-      ]
-    },
-    {
-      "definitionName": "makeBy",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "makeBy"
-        }
-      ]
-    },
-    {
-      "definitionName": "fromIterable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "fromIterable"
-        }
-      ]
-    },
-    {
-      "definitionName": "fromOption",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "fromOption"
-        }
-      ]
-    },
-    {
-      "definitionName": "fromEither",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "fromEither"
-        }
-      ]
-    },
-    {
-      "definitionName": "fromNullable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "fromNullable"
-        }
-      ]
-    },
-    {
-      "definitionName": "range",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "range"
-        }
-      ]
-    },
-    {
-      "definitionName": "replicate",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "replicate"
-        }
-      ]
-    },
-    {
-      "definitionName": "unprepend",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "unprepend"
-        }
-      ]
-    },
-    {
-      "definitionName": "unappend",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "unappend"
-        }
-      ]
-    },
-    {
-      "definitionName": "headNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "headNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "lastNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "lastNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "tailNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "tailNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "initNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "initNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "reverseNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "reverseNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "sortNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "sortNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "zipNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "zipNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "zipNonEmptyWith",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "zipNonEmptyWith"
-        }
-      ]
-    },
-    {
-      "definitionName": "unzipNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "unzipNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "intersperseNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "intersperseNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "modifyNonEmptyHead",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "modifyNonEmptyHead"
-        }
-      ]
-    },
-    {
-      "definitionName": "setNonEmptyHead",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "setNonEmptyHead"
-        }
-      ]
-    },
-    {
-      "definitionName": "modifyNonEmptyLast",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "modifyNonEmptyLast"
-        }
-      ]
-    },
-    {
-      "definitionName": "setNonEmptyLast",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "setNonEmptyLast"
-        }
-      ]
-    },
-    {
-      "definitionName": "rotateNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "rotateNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "uniqNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "uniqNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "chopNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "chopNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "splitNonEmptyAt",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "splitNonEmptyAt"
-        }
-      ]
-    },
-    {
-      "definitionName": "chunksOfNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "chunksOfNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "group",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "group"
-        }
-      ]
-    },
-    {
-      "definitionName": "of",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "of"
-        }
-      ]
-    },
-    {
-      "definitionName": "empty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "empty"
-        }
-      ]
-    },
-    {
-      "definitionName": "mapNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "mapNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "mapNonEmptyWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "mapNonEmptyWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "flatMapNonEmptyWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "flatMapNonEmptyWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "flatMapNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "flatMapNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "flattenNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "flattenNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "composeKleisliArrow",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "composeKleisliArrow"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverse"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseNonEmptyWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseNonEmptyWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseTap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseTap"
-        }
-      ]
-    },
-    {
-      "definitionName": "sequenceNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "sequenceNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "lift2",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "lift2"
-        }
-      ]
-    },
-    {
-      "definitionName": "lift3",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "lift3"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftSemigroup",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftSemigroup"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftMonoid",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftMonoid"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMapNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapNonEmptyWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMapNonEmptyWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "reduceKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceRightKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "reduceRightKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "foldMapKind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "foldMapKind"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseFilterMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseFilterMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traversePartitionMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traversePartitionMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "traverseFilter",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traverseFilter"
-        }
-      ]
-    },
-    {
-      "definitionName": "traversePartition",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "traversePartition"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftPredicate",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftPredicate"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftOption",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftOption"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftNullable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftNullable"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftEither",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftEither"
-        }
-      ]
-    },
-    {
-      "definitionName": "intercalate",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "intercalate"
-        }
-      ]
-    },
-    {
-      "definitionName": "intercalateNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "intercalateNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "min",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "min"
-        }
-      ]
-    },
-    {
-      "definitionName": "max",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "max"
-        }
-      ]
-    },
-    {
-      "definitionName": "unfold",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "unfold"
-        }
-      ]
-    },
-    {
-      "definitionName": "getUnionSemigroup",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "getUnionSemigroup"
-        }
-      ]
-    },
-    {
-      "definitionName": "getUnionMonoid",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "getUnionMonoid"
-        }
-      ]
-    },
-    {
-      "definitionName": "getIntersectionSemigroup",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "getIntersectionSemigroup"
-        }
-      ]
-    },
-    {
-      "definitionName": "getSemigroup",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "getSemigroup"
-        }
-      ]
-    },
-    {
-      "definitionName": "getMonoid",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "getMonoid"
-        }
-      ]
-    },
-    {
-      "definitionName": "liftOrder",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "liftOrder"
-        }
-      ]
-    },
-    {
-      "definitionName": "slice",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/ReadonlyArray.Ops",
-          "name": "slice"
-        }
-      ]
-    },
-    {
-      "definitionName": "Do",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "ReadonlyArray",
-          "name": "Do"
-        }
-      ]
-    },
-    {
-      "definitionName": "Compactable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/typeclass/Compactable.Ops",
-          "name": "Compactable"
-        }
-      ]
-    },
-    {
-      "definitionName": "Filterable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/typeclass/Filterable.Ops",
-          "name": "Filterable"
-        }
-      ]
-    },
-    {
-      "definitionName": "TraversableFilterable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/typeclass/TraversableFilterable.Ops",
-          "name": "TraversableFilterable"
-        }
-      ]
-    },
-    {
-      "definitionName": "match",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "match"
-        }
-      ]
-    },
-    {
-      "definitionName": "matchRight",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "matchRight"
-        }
-      ]
-    },
-    {
-      "definitionName": "prepend",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "prepend"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "prepend"
-        }
-      ]
-    },
-    {
-      "definitionName": "prependAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "prependAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "prependAll"
-        }
-      ]
-    },
-    {
-      "definitionName": "append",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "append"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "append"
-        }
-      ]
-    },
-    {
-      "definitionName": "appendAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "appendAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "appendAll"
-        }
-      ]
-    },
-    {
-      "definitionName": "scan",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "scan"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "scan"
-        }
-      ]
-    },
-    {
-      "definitionName": "scanRight",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "scanRight"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "scanRight"
-        }
-      ]
-    },
-    {
-      "definitionName": "get",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "get"
-        }
-      ]
-    },
-    {
-      "definitionName": "unsafeGet",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "unsafeGet"
-        }
-      ]
-    },
-    {
-      "definitionName": "take",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "take"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "take"
-        }
-      ]
-    },
-    {
-      "definitionName": "takeRight",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "takeRight"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "takeRight"
-        }
-      ]
-    },
-    {
-      "definitionName": "drop",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "drop"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "drop"
-        }
-      ]
-    },
-    {
-      "definitionName": "dropRight",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "dropRight"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "dropRight"
-        }
-      ]
-    },
-    {
-      "definitionName": "findFirstIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "findFirstIndex"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "findFirstIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "findLastIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "findLastIndex"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "findLastIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "insertAt",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "insertAt"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "insertAt"
-        }
-      ]
-    },
-    {
-      "definitionName": "replace",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "replace"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "replace"
-        }
-      ]
-    },
-    {
-      "definitionName": "replaceOption",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "replaceOption"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "replaceOption"
-        }
-      ]
-    },
-    {
-      "definitionName": "modify",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "modify"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "modify"
-        }
-      ]
-    },
-    {
-      "definitionName": "modifyOption",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "modifyOption"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "modifyOption"
-        }
-      ]
-    },
-    {
-      "definitionName": "remove",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "remove"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "remove"
-        }
-      ]
-    },
-    {
-      "definitionName": "sort",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "sort"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "sort"
-        }
-      ]
-    },
-    {
-      "definitionName": "sortBy",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "sortBy"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "sortBy"
-        }
-      ]
-    },
-    {
-      "definitionName": "zip",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "zip"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "zip"
-        }
-      ]
-    },
-    {
-      "definitionName": "zipWith",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "zipWith"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "zipWith"
-        }
-      ]
-    },
-    {
-      "definitionName": "intersperse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "intersperse"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "intersperse"
-        }
-      ]
-    },
-    {
-      "definitionName": "rotate",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "rotate"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "rotate"
-        }
-      ]
-    },
-    {
-      "definitionName": "elem",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "elem"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "elem"
-        }
-      ]
-    },
-    {
-      "definitionName": "chop",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "chop"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "chop"
-        }
-      ]
-    },
-    {
-      "definitionName": "splitAt",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "splitAt"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "splitAt"
-        }
-      ]
-    },
-    {
-      "definitionName": "chunksOf",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "chunksOf"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "chunksOf"
-        }
-      ]
-    },
-    {
-      "definitionName": "groupBy",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "groupBy"
-        },
-        {
-          "kind": "static",
-          "typeName": "Record.Ops",
-          "name": "groupBy"
-        }
-      ]
-    },
-    {
-      "definitionName": "union",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "union"
-        }
-      ]
-    },
-    {
-      "definitionName": "intersection",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "intersection"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "intersection"
-        }
-      ]
-    },
-    {
-      "definitionName": "difference",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "difference"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "difference"
-        }
-      ]
-    },
-    {
-      "definitionName": "map",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "map"
-        }
-      ]
-    },
-    {
-      "definitionName": "mapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "mapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "imap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "imap"
-        }
-      ]
-    },
-    {
-      "definitionName": "flap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "flap"
-        }
-      ]
-    },
-    {
-      "definitionName": "as",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "as"
-        }
-      ]
-    },
-    {
-      "definitionName": "flatMapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "flatMapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "flatMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "flatMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "bind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "bind"
-        }
-      ]
-    },
-    {
-      "definitionName": "filterMapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "filterMapWithIndex"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "filterMapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "filterMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "filterMap"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "filterMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "filter",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "filter"
-        }
-      ]
-    },
-    {
-      "definitionName": "filterWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "filterWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "partition",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "partition"
-        }
-      ]
-    },
-    {
-      "definitionName": "partitionWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "partitionWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "partitionMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "partitionMap"
-        }
-      ]
-    },
-    {
-      "definitionName": "partitionMapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "partitionMapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "sequence",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "sequence"
-        }
-      ]
-    },
-    {
-      "definitionName": "product",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "product"
-        }
-      ]
-    },
-    {
-      "definitionName": "productMany",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "productMany"
-        }
-      ]
-    },
-    {
-      "definitionName": "andThenBind",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "andThenBind"
-        }
-      ]
-    },
-    {
-      "definitionName": "ap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "ap"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduce",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "reduce"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "reduceWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceRight",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "reduceRight"
-        }
-      ]
-    },
-    {
-      "definitionName": "reduceRightWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "reduceRightWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "flatMapNullable",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "flatMapNullable"
-        }
-      ]
-    },
-    {
-      "definitionName": "some",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "some"
-        }
-      ]
-    },
-    {
-      "definitionName": "has",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "has"
-        }
-      ]
-    },
-    {
-      "definitionName": "join",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "join"
-        }
-      ]
-    },
-    {
-      "definitionName": "productFlatten",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "productFlatten"
-        }
-      ]
-    },
-    {
-      "definitionName": "extend",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "extend"
-        }
-      ]
-    },
-    {
-      "definitionName": "prependAllNonEmpty",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "prependAllNonEmpty"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "prependAllNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "appendAllNonEmpty",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "appendAllNonEmpty"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "appendAllNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "takeWhile",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "takeWhile"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "takeWhile"
-        }
-      ]
-    },
-    {
-      "definitionName": "span",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "span"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "span"
-        }
-      ]
-    },
-    {
-      "definitionName": "dropWhile",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "dropWhile"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "dropWhile"
-        }
-      ]
-    },
-    {
-      "definitionName": "findFirst",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "findFirst"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "findFirst"
-        }
-      ]
-    },
-    {
-      "definitionName": "findLast",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "findLast"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "findLast"
-        }
-      ]
-    },
-    {
-      "definitionName": "unionNonEmpty",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "ReadonlyArray",
-          "name": "unionNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "isEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "ReadonlyArray",
-          "name": "isEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "isNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "ReadonlyArray",
-          "name": "isNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "sortByNonEmpty",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "ReadonlyArray",
-          "name": "sortByNonEmpty"
-        }
-      ]
-    },
-    {
-      "definitionName": "size",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "ReadonlyArray",
-          "name": "size"
-        }
-      ]
-    },
-    {
-      "definitionName": "head",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "ReadonlyArray",
-          "name": "head"
-        }
-      ]
-    },
-    {
-      "definitionName": "last",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "ReadonlyArray",
-          "name": "last"
-        }
-      ]
-    },
-    {
-      "definitionName": "tail",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "tail"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "tail"
-        }
-      ]
-    },
-    {
-      "definitionName": "init",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "init"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Option.Ops",
-          "name": "init"
-        }
-      ]
-    },
-    {
-      "definitionName": "reverse",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "reverse"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "reverse"
-        }
-      ]
-    },
-    {
-      "definitionName": "rights",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "rights"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "rights"
-        }
-      ]
-    },
-    {
-      "definitionName": "lefts",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "lefts"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "lefts"
-        }
-      ]
-    },
-    {
-      "definitionName": "unzip",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "unzip"
-        },
-        {
-          "kind": "static",
-          "typeName": "Iterable.Ops",
-          "name": "unzip"
-        }
-      ]
-    },
-    {
-      "definitionName": "uniq",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "uniq"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "uniq"
-        }
-      ]
-    },
-    {
-      "definitionName": "flatten",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "ReadonlyArray",
-          "name": "flatten"
-        }
-      ]
-    },
-    {
-      "definitionName": "compact",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "compact"
-        },
-        {
-          "kind": "static",
-          "typeName": "Array.Ops",
-          "name": "compact"
-        }
-      ]
-    },
-    {
-      "definitionName": "separate",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "ReadonlyArray",
-          "name": "separate"
-        }
-      ]
-    },
-    {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "ReadonlyArray.Ops",
-          "name": "productAll"
-        }
-      ]
-    },
-    {
-      "definitionName": "every",
-      "definitionKind": "function",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "fp-ts/data/Predicate.Refinement",
-          "name": "every"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Predicate.Refinement.Aspects",
-          "name": "every"
-        }
-      ]
-    }
-  ],
   "@fp-ts/data/Predicate": [
     {
       "definitionName": "Predicate",
@@ -5296,6 +3108,17 @@
       ]
     },
     {
+      "definitionName": "productAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Predicate.Ops",
+          "name": "productAll"
+        }
+      ]
+    },
+    {
       "definitionName": "tuple",
       "definitionKind": "const",
       "extensions": [
@@ -5358,6 +3181,28 @@
           "kind": "static",
           "typeName": "fp-ts/data/Predicate.Ops",
           "name": "getMonoidAll"
+        }
+      ]
+    },
+    {
+      "definitionName": "all",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Predicate.Ops",
+          "name": "all"
+        }
+      ]
+    },
+    {
+      "definitionName": "any",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Predicate.Ops",
+          "name": "any"
         }
       ]
     },
@@ -5544,22 +3389,6 @@
       ]
     },
     {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Predicate.Ops",
-          "name": "productAll"
-        }
-      ]
-    },
-    {
       "definitionName": "not",
       "definitionKind": "const",
       "extensions": [
@@ -5572,38 +3401,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/Predicate.Aspects",
           "name": "not"
-        }
-      ]
-    },
-    {
-      "definitionName": "all",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "all"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Predicate.Ops",
-          "name": "all"
-        }
-      ]
-    },
-    {
-      "definitionName": "any",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "any"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Predicate.Ops",
-          "name": "any"
         }
       ]
     }
@@ -5753,6 +3550,17 @@
       ]
     },
     {
+      "definitionName": "isChunk",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Chunk.Ops",
+          "name": "isChunk"
+        }
+      ]
+    },
+    {
       "definitionName": "empty",
       "definitionKind": "const",
       "extensions": [
@@ -5760,6 +3568,50 @@
           "kind": "static",
           "typeName": "fp-ts/data/Chunk.Ops",
           "name": "empty"
+        }
+      ]
+    },
+    {
+      "definitionName": "filterMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Chunk.Ops",
+          "name": "filterMap"
+        }
+      ]
+    },
+    {
+      "definitionName": "filterMapWithIndex",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Chunk.Ops",
+          "name": "filterMapWithIndex"
+        }
+      ]
+    },
+    {
+      "definitionName": "filterMapWhile",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Chunk.Ops",
+          "name": "filterMapWhile"
+        }
+      ]
+    },
+    {
+      "definitionName": "compact",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Chunk.Ops",
+          "name": "compact"
         }
       ]
     },
@@ -5972,22 +3824,6 @@
       ]
     },
     {
-      "definitionName": "filterMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "filterMap"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Chunk.Ops",
-          "name": "filterMap"
-        }
-      ]
-    },
-    {
       "definitionName": "filter",
       "definitionKind": "const",
       "extensions": [
@@ -6000,38 +3836,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/Chunk.Aspects",
           "name": "filter"
-        }
-      ]
-    },
-    {
-      "definitionName": "filterMapWithIndex",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "filterMapWithIndex"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Chunk.Ops",
-          "name": "filterMapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "filterMapWhile",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "pipeable",
-          "typeName": "Iterable",
-          "name": "filterMapWhile"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Chunk.Ops",
-          "name": "filterMapWhile"
         }
       ]
     },
@@ -6708,17 +4512,6 @@
       ]
     },
     {
-      "definitionName": "isChunk",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "isChunk"
-        }
-      ]
-    },
-    {
       "definitionName": "isEmpty",
       "definitionKind": "const",
       "extensions": [
@@ -6763,22 +4556,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/Chunk.Aspects",
           "name": "toReadonlyArray"
-        }
-      ]
-    },
-    {
-      "definitionName": "compact",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "compact"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/Chunk.Ops",
-          "name": "compact"
         }
       ]
     },
@@ -7461,6 +5238,17 @@
       ]
     },
     {
+      "definitionName": "isHashSet",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/HashSet.Ops",
+          "name": "isHashSet"
+        }
+      ]
+    },
+    {
       "definitionName": "empty",
       "definitionKind": "const",
       "extensions": [
@@ -7744,17 +5532,6 @@
       ]
     },
     {
-      "definitionName": "isHashSet",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "isHashSet"
-        }
-      ]
-    },
-    {
       "definitionName": "values",
       "definitionKind": "const",
       "extensions": [
@@ -7867,6 +5644,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/HashMap.Ops",
           "name": "from"
+        }
+      ]
+    },
+    {
+      "definitionName": "isHashMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/HashMap.Ops",
+          "name": "isHashMap"
         }
       ]
     },
@@ -8278,17 +6066,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/HashMap.Aspects",
           "name": "filterMapWithIndex"
-        }
-      ]
-    },
-    {
-      "definitionName": "isHashMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "isHashMap"
         }
       ]
     },
@@ -9414,6 +7191,17 @@
       ]
     },
     {
+      "definitionName": "productMany",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Identity.Ops",
+          "name": "productMany"
+        }
+      ]
+    },
+    {
       "definitionName": "andThenBind",
       "definitionKind": "const",
       "extensions": [
@@ -9432,6 +7220,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/Identity.Ops",
           "name": "productFlatten"
+        }
+      ]
+    },
+    {
+      "definitionName": "productAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/Identity.Ops",
+          "name": "productAll"
         }
       ]
     },
@@ -9663,33 +7462,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/typeclass/Gen.Ops",
           "name": "gen"
-        }
-      ]
-    },
-    {
-      "definitionName": "productMany",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "productMany"
-        }
-      ]
-    },
-    {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "ReadonlyArray.Ops",
-          "name": "productAll"
         }
       ]
     }
@@ -10727,6 +8499,17 @@
       ]
     },
     {
+      "definitionName": "isRedBlackTree",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/RedBlackTree.Ops",
+          "name": "isRedBlackTree"
+        }
+      ]
+    },
+    {
       "definitionName": "empty",
       "definitionKind": "const",
       "extensions": [
@@ -11042,17 +8825,6 @@
       ]
     },
     {
-      "definitionName": "isRedBlackTree",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "isRedBlackTree"
-        }
-      ]
-    },
-    {
       "definitionName": "getOrder",
       "definitionKind": "const",
       "extensions": [
@@ -11181,6 +8953,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/SortedMap.Ops",
           "name": "make"
+        }
+      ]
+    },
+    {
+      "definitionName": "isSortedMap",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/SortedMap.Ops",
+          "name": "isSortedMap"
         }
       ]
     },
@@ -11320,17 +9103,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/SortedMap.Aspects",
           "name": "map"
-        }
-      ]
-    },
-    {
-      "definitionName": "isSortedMap",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "isSortedMap"
         }
       ]
     },
@@ -11489,6 +9261,17 @@
         {
           "kind": "companion",
           "typeName": "fp-ts/data/SortedSet.TypeId.Ops"
+        }
+      ]
+    },
+    {
+      "definitionName": "isSortedSet",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/SortedSet.Ops",
+          "name": "isSortedSet"
         }
       ]
     },
@@ -11730,17 +9513,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/SortedSet.Aspects",
           "name": "partition"
-        }
-      ]
-    },
-    {
-      "definitionName": "isSortedSet",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "fluent",
-          "typeName": "Iterable",
-          "name": "isSortedSet"
         }
       ]
     },
@@ -12142,6 +9914,17 @@
           "kind": "static",
           "typeName": "fp-ts/data/These.Ops",
           "name": "getFirstLeftSemigroup"
+        }
+      ]
+    },
+    {
+      "definitionName": "productAll",
+      "definitionKind": "const",
+      "extensions": [
+        {
+          "kind": "static",
+          "typeName": "fp-ts/data/These.Validated.Ops",
+          "name": "productAll"
         }
       ]
     },
@@ -13275,22 +11058,6 @@
           "kind": "static",
           "typeName": "fp-ts/data/These.Aspects",
           "name": "asUnit"
-        }
-      ]
-    },
-    {
-      "definitionName": "productAll",
-      "definitionKind": "const",
-      "extensions": [
-        {
-          "kind": "getter",
-          "typeName": "Iterable",
-          "name": "productAll"
-        },
-        {
-          "kind": "static",
-          "typeName": "fp-ts/data/These.Validated.Ops",
-          "name": "productAll"
         }
       ]
     },

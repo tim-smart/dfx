@@ -1,5 +1,4 @@
 declare global {
-  /** @tsplus type ReadonlyArray */
   /** @tsplus type Iterable */
   interface ReadonlyArray<T> {}
 

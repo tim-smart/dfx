@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@effect/io': ~0.0.60
+  '@effect/io': ~0.0.61
   '@effect/stream': ~0.0.10
   '@fp-ts/data': ~0.0.36
   '@tim-smart/discord-api-docs-parser': ^0.5.0
@@ -15,7 +15,7 @@ specifiers:
   ws: ^8.12.0
 
 dependencies:
-  '@effect/io': 0.0.60
+  '@effect/io': 0.0.61
   '@effect/stream': 0.0.10
   '@fp-ts/data': 0.0.36
   tweetnacl: 1.0.3
@@ -55,8 +55,8 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect/io/0.0.60:
-    resolution: {integrity: sha512-5rJzjOiXV3b/Njezyyi1SQiu25NyocD20hT716ha86o+zBonYleArxbrD7Olls+SRjKaHpL4itaxlzNOHB45rQ==}
+  /@effect/io/0.0.61:
+    resolution: {integrity: sha512-Ji7B0ekd7BM+oDjRAHlJyZOK/j3QJaGfgnCoDJ/K4nwqAWoDu+apMKNLUIKqszPvLMWPs7XOPx1zQ/z0tWsv0A==}
     dependencies:
       '@fp-ts/core': 0.0.11
       '@fp-ts/data': 0.0.36
@@ -65,7 +65,7 @@ packages:
   /@effect/stream/0.0.10:
     resolution: {integrity: sha512-TcDscpJ4lTCtwKhqhTcDRlcUX7S3838Ibtr2hQylrL5gTEZfORd5sQT3kSkT8VxvdItl2kmwDsXHbY5TXUM9Jg==}
     dependencies:
-      '@effect/io': 0.0.60
+      '@effect/io': 0.0.61
       '@fp-ts/core': 0.0.11
       '@fp-ts/data': 0.0.36
     dev: false

@@ -195,4 +195,4 @@ const make = Do(($) => {
 
 export interface DiscordREST extends Success<typeof make> {}
 export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST = Layer.fromEffect(DiscordREST)(make)
+export const LiveDiscordREST = Layer.effect(DiscordREST)(make)

@@ -66,4 +66,4 @@ const makeLimiter = Do(($) => {
 
 export interface RateLimiter extends Success<typeof makeLimiter> {}
 export const RateLimiter = Tag<RateLimiter>()
-export const LiveRateLimiter = Layer.fromEffect(RateLimiter)(makeLimiter)
+export const LiveRateLimiter = Layer.effect(RateLimiter)(makeLimiter)

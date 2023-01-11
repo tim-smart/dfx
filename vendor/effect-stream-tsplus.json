@@ -2695,7 +2695,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/stream/Channel.Aspects",
+          "typeName": "effect/stream/Sink.Aspects",
           "name": "toChannel"
         }
       ]
@@ -3147,7 +3147,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Take.Aspects",
           "name": "matchEffect"
         }
       ]
@@ -3163,7 +3163,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Take.Aspects",
           "name": "tap"
         }
       ]
@@ -3227,7 +3227,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Take.Aspects",
           "name": "done"
         }
       ]
@@ -3295,7 +3295,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/stream/Stream.Aspects",
+          "typeName": "effect/stream/GroupBy.Aspects",
           "name": "evaluate"
         }
       ]
@@ -4729,7 +4729,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "broadcast"
         }
       ]
@@ -4745,7 +4745,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "broadcastDynamic"
         }
       ]
@@ -4761,7 +4761,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "broadcastedQueues"
         }
       ]
@@ -4777,7 +4777,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "broadcastedQueuesDynamic"
         }
       ]
@@ -5193,7 +5193,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "distributedWith"
         }
       ]
@@ -5209,7 +5209,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "distributedWithDynamic"
         }
       ]
@@ -5481,7 +5481,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/stream/GroupBy.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "groupBy"
         }
       ]
@@ -5497,7 +5497,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/stream/GroupBy.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "groupByKey"
         }
       ]
@@ -6217,7 +6217,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "partition"
         }
       ]
@@ -6233,7 +6233,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "partitionEither"
         }
       ]
@@ -6249,7 +6249,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "peel"
         }
       ]
@@ -6553,7 +6553,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "run"
         }
       ]
@@ -6569,7 +6569,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFold"
         }
       ]
@@ -6585,7 +6585,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldEffect"
         }
       ]
@@ -6601,7 +6601,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldScoped"
         }
       ]
@@ -6617,7 +6617,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldScopedEffect"
         }
       ]
@@ -6633,7 +6633,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldWhile"
         }
       ]
@@ -6649,7 +6649,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldWhileEffect"
         }
       ]
@@ -6665,7 +6665,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldWhileScoped"
         }
       ]
@@ -6681,7 +6681,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runFoldWhileScopedEffect"
         }
       ]
@@ -6697,7 +6697,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runForEach"
         }
       ]
@@ -6713,7 +6713,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runForEachChunk"
         }
       ]
@@ -6729,7 +6729,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runForEachChunkScoped"
         }
       ]
@@ -6745,7 +6745,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runForEachScoped"
         }
       ]
@@ -6761,7 +6761,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runForEachWhile"
         }
       ]
@@ -6777,7 +6777,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runForEachWhileScoped"
         }
       ]
@@ -6793,7 +6793,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runIntoHub"
         }
       ]
@@ -6809,7 +6809,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runIntoHubScoped"
         }
       ]
@@ -6825,7 +6825,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runIntoQueue"
         }
       ]
@@ -6841,7 +6841,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runIntoQueueElementsScoped"
         }
       ]
@@ -6857,7 +6857,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runIntoQueueScoped"
         }
       ]
@@ -6873,7 +6873,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runScoped"
         }
       ]
@@ -7289,7 +7289,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toHub"
         }
       ]
@@ -7305,7 +7305,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toQueue"
         }
       ]
@@ -7321,7 +7321,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toQueueDropping"
         }
       ]
@@ -7337,7 +7337,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toQueueOfElements"
         }
       ]
@@ -7353,7 +7353,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toQueueSliding"
         }
       ]
@@ -7961,7 +7961,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "mkString"
         }
       ]
@@ -8009,7 +8009,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runCollect"
         }
       ]
@@ -8025,7 +8025,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runCount"
         }
       ]
@@ -8041,7 +8041,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runDrain"
         }
       ]
@@ -8057,7 +8057,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runHead"
         }
       ]
@@ -8073,7 +8073,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runLast"
         }
       ]
@@ -8089,7 +8089,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "runSum"
         }
       ]
@@ -8121,7 +8121,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toPull"
         }
       ]
@@ -8137,7 +8137,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Stream.Aspects",
           "name": "toQueueUnbounded"
         }
       ]
@@ -9726,7 +9726,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "run"
         }
       ]
@@ -9742,7 +9742,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "runCollect"
         }
       ]
@@ -9758,7 +9758,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "runDrain"
         }
       ]
@@ -9774,7 +9774,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "toPull"
         }
       ]
@@ -9790,7 +9790,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/stream/Sink.Aspects",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "toSink"
         }
       ]
@@ -9806,7 +9806,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/stream/Stream.Aspects",
+          "typeName": "effect/stream/Channel.Aspects",
           "name": "toStream"
         }
       ]
@@ -9874,7 +9874,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "getAndSet"
         }
       ]
@@ -9890,7 +9890,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "getAndUpdate"
         }
       ]
@@ -9906,7 +9906,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "getAndUpdateEffect"
         }
       ]
@@ -9922,7 +9922,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "getAndUpdateSome"
         }
       ]
@@ -9938,7 +9938,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "getAndUpdateSomeEffect"
         }
       ]
@@ -9954,7 +9954,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "modify"
         }
       ]
@@ -9970,7 +9970,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "modifyEffect"
         }
       ]
@@ -9986,7 +9986,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "modifySome"
         }
       ]
@@ -10002,7 +10002,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "modifySomeEffect"
         }
       ]
@@ -10018,7 +10018,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "set"
         }
       ]
@@ -10034,7 +10034,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "setAndGet"
         }
       ]
@@ -10050,7 +10050,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "update"
         }
       ]
@@ -10066,7 +10066,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateEffect"
         }
       ]
@@ -10082,7 +10082,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateAndGet"
         }
       ]
@@ -10098,7 +10098,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateAndGetEffect"
         }
       ]
@@ -10114,7 +10114,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateSome"
         }
       ]
@@ -10130,7 +10130,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateSomeEffect"
         }
       ]
@@ -10146,7 +10146,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateSomeAndGet"
         }
       ]
@@ -10162,7 +10162,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "updateSomeAndGetEffect"
         }
       ]
@@ -10178,7 +10178,7 @@
         },
         {
           "kind": "static",
-          "typeName": "effect/io/src/Effect.Aspects",
+          "typeName": "effect/stream/SubscriptionRef.Aspects",
           "name": "get"
         }
       ]
