@@ -13,8 +13,9 @@
     "incremental": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "tsPlusTypes": [
-      "./vendor/effect-io-tsplus.json",
-      "./vendor/fp-ts-data-tsplus.json"
+      "./node_modules/@tsplus-types/effect__io/annotations.json",
+      "./node_modules/@tsplus-types/effect__stream/annotations.json",
+      "./node_modules/@tsplus-types/fp-ts__data/annotations.json"
     ]
   },
   "exclude": ["node_modules/**/*"],
