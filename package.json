@@ -32,7 +32,7 @@
     "@tsplus-types/fp-ts__data": "~0.0.39-a7577f9",
     "@types/ws": "^8.5.4",
     "lerna": "^6.4.1",
-    "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.163/compiler/typescript.tgz"
+    "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz"
   },
   "dependencies": {
     "@effect/io": "~0.0.62",

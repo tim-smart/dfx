@@ -13,7 +13,7 @@ specifiers:
   isomorphic-ws: ^5.0.0
   lerna: ^6.4.1
   tweetnacl: ^1.0.3
-  typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.163/compiler/typescript.tgz
+  typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz
   utf-8-validate: ^5.0.10
   ws: ^8.12.0
 
@@ -36,7 +36,7 @@ devDependencies:
   '@tsplus-types/fp-ts__data': 0.0.39-a7577f9_@fp-ts+data@0.0.39
   '@types/ws': 8.5.4
   lerna: 6.4.1
-  typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.163/compiler/typescript.tgz'
+  typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz'
 
 packages:
 
@@ -4689,10 +4689,10 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.163/compiler/typescript.tgz':
-    resolution: {tarball: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.163/compiler/typescript.tgz}
+  '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz':
+    resolution: {tarball: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz}
     name: typescript
-    version: 5.0.0-tsplus.20230108
+    version: 5.0.0-tsplus.20230113
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
