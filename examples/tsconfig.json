@@ -11,12 +11,7 @@
     "strictNullChecks": true,
     "target": "ES2022",
     "incremental": true,
-    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "tsPlusTypes": [
-      "./node_modules/@tsplus-types/effect__io/annotations.json",
-      "./node_modules/@tsplus-types/effect__stream/annotations.json",
-      "./node_modules/@tsplus-types/fp-ts__data/annotations.json"
-    ]
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
   },
   "exclude": ["node_modules/**/*"],
   "include": ["src/**/*"]
