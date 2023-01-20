@@ -1,6 +1,5 @@
 import { delayFrom } from "./utils.js"
 import * as Memory from "./memory.js"
-import { Success } from "dfx/utils/effect"
 
 export type BucketDetails = {
   key: "global" | string
@@ -32,7 +31,7 @@ export interface RateLimitStore {
 }
 
 export const RateLimitStore = Tag<RateLimitStore>()
-export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore)(Memory.make)
+export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Do(($) => {
   const store = $(Effect.service(RateLimitStore))
@@ -64,6 +63,6 @@ const makeLimiter = Do(($) => {
   return { maybeWait }
 })
 
-export interface RateLimiter extends Success<typeof makeLimiter> {}
+export interface RateLimiter extends Effect.Success<typeof makeLimiter> {}
 export const RateLimiter = Tag<RateLimiter>()
-export const LiveRateLimiter = Layer.effect(RateLimiter)(makeLimiter)
+export const LiveRateLimiter = Layer.effect(RateLimiter, makeLimiter)

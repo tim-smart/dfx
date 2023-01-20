@@ -15,7 +15,7 @@ export interface DiscordWSCodec {
   decode: (p: WebSocket.Data) => Discord.GatewayPayload
 }
 export const DiscordWSCodec = Tag<DiscordWSCodec>()
-export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec)({
+export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
   type: "json",
   encode: (p) => JSON.stringify(p),
   decode: (p) => JSON.parse(p.toString("utf8")),

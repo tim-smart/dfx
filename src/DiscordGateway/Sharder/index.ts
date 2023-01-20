@@ -77,6 +77,6 @@ const make = Do(($) => {
   return { shards }
 })
 
-export interface Sharder extends Success<typeof make> {}
+export interface Sharder extends Effect.Success<typeof make> {}
 export const Sharder = Tag<Sharder>()
-export const LiveSharder = Layer.scoped(Sharder)(make)
+export const LiveSharder = Layer.scoped(Sharder, make)

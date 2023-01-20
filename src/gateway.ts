@@ -47,3 +47,7 @@ export const makeFromConfig = (
 
   return LiveEnv
 }
+
+const test = (a: LazyArg<number>) => a()
+
+test(123)

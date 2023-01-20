@@ -193,6 +193,6 @@ const make = Do(($) => {
   return { request, ...routes }
 })
 
-export interface DiscordREST extends Success<typeof make> {}
+export interface DiscordREST extends Effect.Success<typeof make> {}
 export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST = Layer.effect(DiscordREST)(make)
+export const LiveDiscordREST = Layer.effect(DiscordREST, make)

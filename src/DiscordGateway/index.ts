@@ -43,6 +43,6 @@ export const make = Do(($) => {
   }
 })
 
-export interface DiscordGateway extends Success<typeof make> {}
+export interface DiscordGateway extends Effect.Success<typeof make> {}
 export const DiscordGateway = Tag<DiscordGateway>()
-export const LiveDiscordGateway = Layer.scoped(DiscordGateway)(make)
+export const LiveDiscordGateway = Layer.scoped(DiscordGateway, make)

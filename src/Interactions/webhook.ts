@@ -39,7 +39,9 @@ const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
 })
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
-export const makeConfigLayer = flow(makeConfig, Layer.succeed(WebhookConfig))
+export const makeConfigLayer = flow(makeConfig, (_) =>
+  Layer.succeed(WebhookConfig, _),
+)
 export const makeFromConfig = (a: Config<MakeConfigOpts>) =>
   a.config.map(makeConfig).toLayer(WebhookConfig)
 
@@ -65,8 +67,12 @@ const run = <R, E>(definitions: D.InteractionDefinition<R, E>[]) => {
   return (headers: Headers, body: string) =>
     Do(($) => {
       const interaction = $(fromHeadersAndBody(headers, body))
-      const provide = Effect.provideService(InteractionContext)(interaction)
-      return $(provide(handler[interaction.type](interaction)))
+      return $(
+        handler[interaction.type](interaction).provideService(
+          InteractionContext,
+          interaction,
+        ),
+      )
     })
 }
 

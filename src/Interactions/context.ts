@@ -28,7 +28,7 @@ export class ResolvedDataNotFound {
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(InteractionContext)((a) =>
+  Effect.serviceWithEffect(InteractionContext, (a) =>
     IxHelpers.resolveValues(f)(a).match(
       () => Effect.fail(new ResolvedDataNotFound(a)),
       Effect.succeed,
@@ -39,7 +39,7 @@ export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(InteractionContext)((a) =>
+  Effect.serviceWithEffect(InteractionContext, (a) =>
     IxHelpers.resolveOptionValue(
       name,
       f,
@@ -49,7 +49,8 @@ export const resolved = <A>(
     ),
   )
 
-export const focusedOptionValue = Effect.serviceWith(FocusedOptionContext)(
+export const focusedOptionValue = Effect.serviceWith(
+  FocusedOptionContext,
   (a) => a.focusedOption.value ?? "",
 )
 
@@ -89,21 +90,20 @@ export const handleSubCommands = <
       Effect.fromEither,
       (a) =>
         a.flatMap((command) =>
-          pipe(
-            commands[command.name],
-            Effect.provideService(SubCommandContext)({ command }),
-          ),
+          commands[command.name].provideService(SubCommandContext, {
+            command,
+          }),
         ),
     ),
   )
 
-export const currentSubCommand = Effect.serviceWith(SubCommandContext)(
+export const currentSubCommand = Effect.serviceWith(
+  SubCommandContext,
   (a) => a.command,
 )
 
-const _hashmap = HashMap.empty
-
-export const optionsMap = Effect.serviceWith(ApplicationCommandContext)(
+export const optionsMap = Effect.serviceWith(
+  ApplicationCommandContext,
   IxHelpers.optionsMap,
 )
 
@@ -118,7 +118,7 @@ export class RequiredOptionNotFound {
 }
 
 export const option = (name: string) =>
-  Effect.serviceWith(ApplicationCommandContext)(IxHelpers.getOption(name))
+  Effect.serviceWith(ApplicationCommandContext, IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
   option(name).flatMap((o) =>
@@ -136,6 +136,7 @@ export const optionValue = (name: string) =>
 export const optionValueOptional = (name: string) =>
   option(name).map((o) => o.flatMapNullable((a) => a.value))
 
-export const modalValues = Effect.serviceWith(ModalSubmitContext)(
+export const modalValues = Effect.serviceWith(
+  ModalSubmitContext,
   IxHelpers.componentsMap,
 )

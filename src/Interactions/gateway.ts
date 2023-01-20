@@ -57,8 +57,7 @@ export const run =
             rest.createInteractionResponse(i.id, i.token, r),
           ),
           postHandler,
-          Effect.provideService(InteractionContext)(i),
-        ),
+        ).provideService(InteractionContext, i),
       )
 
       $(sync ? run.zipPar(globalSync).zipPar(guildSync) : run)

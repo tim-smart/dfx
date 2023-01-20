@@ -41,7 +41,7 @@ export class InteractionBuilder<R, E> {
       )
       .map((c) => c.command)
 
-    return Effect.serviceWithEffect(DiscordREST)((rest) =>
+    return Effect.serviceWithEffect(DiscordREST, (rest) =>
       rest
         .getCurrentBotApplicationInformation()
         .flatMap((r) => r.json)
@@ -61,7 +61,7 @@ export class InteractionBuilder<R, E> {
       )
       .map((c) => c.command)
 
-    return Effect.serviceWithEffect(DiscordREST)((rest) =>
+    return Effect.serviceWithEffect(DiscordREST, (rest) =>
       rest.bulkOverwriteGuildApplicationCommands(
         appId,
         guildId,

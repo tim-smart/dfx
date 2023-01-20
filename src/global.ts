@@ -64,4 +64,4 @@ import { DiscordWS, Gateway, WS, Shard, ShardStore } from "dfx/gateway"
 /**
  * @tsplus global
  */
-import { Success } from "dfx/utils/effect"
+import type { LazyArg } from "@fp-ts/data/Function"

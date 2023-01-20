@@ -40,17 +40,15 @@ export const handlers = <R, E>(
     [Discord.InteractionType.APPLICATION_COMMAND]: (i) => {
       const data = i.data as Discord.ApplicationCommandDatum
 
-      return pipe(
-        Maybe.fromNullable(Commands[data.name]).match(
+      return Maybe.fromNullable(Commands[data.name])
+        .match(
           () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
           (command) =>
             Effect.isEffect(command.handle)
               ? command.handle
               : command.handle(context),
-        ),
-        (a) => a,
-        Effect.provideService(Ctx.ApplicationCommandContext)(data),
-      )
+        )
+        .provideService(Ctx.ApplicationCommandContext, data)
     },
 
     [Discord.InteractionType.MODAL_SUBMIT]: (i: Discord.Interaction) => {
@@ -65,15 +63,16 @@ export const handlers = <R, E>(
           }),
         ),
         (a) =>
-          a.collectAllPar.flatMap((a) =>
-            a
-              .findFirst((a) => a.match)
-              .match(
-                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                (a) => a.command.handle,
-              ),
-          ),
-        Effect.provideService(Ctx.ModalSubmitContext)(data),
+          a.collectAllPar
+            .flatMap((a) =>
+              a
+                .findFirst((a) => a.match)
+                .match(
+                  () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
+                  (a) => a.command.handle,
+                ),
+            )
+            .provideService(Ctx.ModalSubmitContext, data),
       )
     },
 
@@ -89,15 +88,16 @@ export const handlers = <R, E>(
           }),
         ),
         (a) =>
-          a.collectAllPar.flatMap((a) =>
-            a
-              .findFirst((a) => a.match)
-              .match(
-                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                (a) => a.command.handle,
-              ),
-          ),
-        Effect.provideService(Ctx.MessageComponentContext)(data),
+          a.collectAllPar
+            .flatMap((a) =>
+              a
+                .findFirst((a) => a.match)
+                .match(
+                  () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
+                  (a) => a.command.handle,
+                ),
+            )
+            .provideService(Ctx.MessageComponentContext, data),
       )
     },
 
@@ -115,17 +115,18 @@ export const handlers = <R, E>(
               }),
             ),
             (a) =>
-              a.collectAllPar.flatMap((a) =>
-                a
-                  .findFirst((a) => a.match)
-                  .match(
-                    () =>
-                      Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                    (a) => a.command.handle,
-                  ),
-              ),
-            Effect.provideService(Ctx.ApplicationCommandContext)(data),
-            Effect.provideService(Ctx.FocusedOptionContext)({ focusedOption }),
+              a.collectAllPar
+                .flatMap((a) =>
+                  a
+                    .findFirst((a) => a.match)
+                    .match(
+                      () =>
+                        Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
+                      (a) => a.command.handle,
+                    ),
+                )
+                .provideService(Ctx.ApplicationCommandContext, data)
+                .provideService(Ctx.FocusedOptionContext, { focusedOption }),
           ),
         )
         .getOrElse(() => Effect.fail(new DefinitionNotFound(i)))

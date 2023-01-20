@@ -28,7 +28,7 @@ const make = () => {
 
 export interface Http extends ReturnType<typeof make> {}
 export const Http = Tag<Http>()
-export const LiveHttp = Layer.sync(Http)(make)
+export const LiveHttp = Layer.sync(Http, make)
 
 export class FetchError {
   readonly _tag = "FetchError"
