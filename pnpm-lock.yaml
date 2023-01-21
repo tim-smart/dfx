@@ -14,7 +14,7 @@ specifiers:
   lerna: ^6.4.1
   tweetnacl: ^1.0.3
   typescript: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz
-  utf-8-validate: ^6.0.0
+  utf-8-validate: ^6.0.1
   ws: ^8.12.0
 
 dependencies:
@@ -26,8 +26,8 @@ dependencies:
 optionalDependencies:
   bufferutil: 4.0.7
   isomorphic-ws: 5.0.0_ws@8.12.0
-  utf-8-validate: 6.0.0
-  ws: 8.12.0_b534fhs3xgzvdbz5qzlfkrhjjm
+  utf-8-validate: 6.0.1
+  ws: 8.12.0_5olvw5zq3du33zho6srrfwyey4
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
@@ -2751,7 +2751,7 @@ packages:
     peerDependencies:
       ws: '*'
     dependencies:
-      ws: 8.12.0_b534fhs3xgzvdbz5qzlfkrhjjm
+      ws: 8.12.0_5olvw5zq3du33zho6srrfwyey4
     dev: false
     optional: true
 
@@ -4451,8 +4451,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /utf-8-validate/6.0.0:
-    resolution: {integrity: sha512-OCJuwxQsnG51swYmNloViggxNOFO/leOZpnb/vVeoastJbrzrZZU7lGsYlUcdkCl9nsBu2nkKLjpljb3Ckvb/Q==}
+  /utf-8-validate/6.0.1:
+    resolution: {integrity: sha512-gAZEa1DMXeBiHEwxef81kLtZjBrC1hib7UWnsvMVtxY8oJGtDSXt9McWu2D6V/xgrjbfRBsS5UIGEUBg2SrAsg==}
     engines: {node: '>=6.14.2'}
     requiresBuild: true
     dependencies:
@@ -4603,7 +4603,7 @@ packages:
       write-json-file: 3.2.0
     dev: true
 
-  /ws/8.12.0_b534fhs3xgzvdbz5qzlfkrhjjm:
+  /ws/8.12.0_5olvw5zq3du33zho6srrfwyey4:
     resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
     engines: {node: '>=10.0.0'}
     requiresBuild: true
@@ -4617,7 +4617,7 @@ packages:
         optional: true
     dependencies:
       bufferutil: 4.0.7
-      utf-8-validate: 6.0.0
+      utf-8-validate: 6.0.1
     dev: false
     optional: true
 
