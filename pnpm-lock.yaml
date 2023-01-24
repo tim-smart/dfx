@@ -3,11 +3,11 @@ lockfileVersion: 5.4
 specifiers:
   '@effect/io': ~0.0.66
   '@effect/stream': ~0.0.13
-  '@fp-ts/data': ~0.0.40
+  '@fp-ts/data': ~0.0.41
   '@tim-smart/discord-api-docs-parser': ^0.5.0
   '@tsplus-types/effect__io': 0.0.66-f715d9e
   '@tsplus-types/effect__stream': 0.0.13-f715d9e
-  '@tsplus-types/fp-ts__data': 0.0.40-f715d9e
+  '@tsplus-types/fp-ts__data': 0.0.41-cbaad16
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   isomorphic-ws: ^5.0.0
@@ -20,7 +20,7 @@ specifiers:
 dependencies:
   '@effect/io': 0.0.66
   '@effect/stream': 0.0.13
-  '@fp-ts/data': 0.0.40
+  '@fp-ts/data': 0.0.41
   tweetnacl: 1.0.3
 
 optionalDependencies:
@@ -33,7 +33,7 @@ devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
   '@tsplus-types/effect__io': 0.0.66-f715d9e_@effect+io@0.0.66
   '@tsplus-types/effect__stream': 0.0.13-f715d9e_@effect+stream@0.0.13
-  '@tsplus-types/fp-ts__data': 0.0.40-f715d9e_@fp-ts+data@0.0.40
+  '@tsplus-types/fp-ts__data': 0.0.41-cbaad16_@fp-ts+data@0.0.41
   '@types/ws': 8.5.4
   lerna: 6.4.1
   typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.164/compiler/typescript.tgz'
@@ -65,20 +65,20 @@ packages:
     resolution: {integrity: sha512-aRrVm4+hqT4VFVpBXEh8Ecrzgz0lHOOp4ArwvmF2sqMUhoVlKmMPCfHB6ccDYtQbsjKU9QkQrTA8OCdrMEndpQ==}
     dependencies:
       '@fp-ts/core': 0.0.11
-      '@fp-ts/data': 0.0.40
+      '@fp-ts/data': 0.0.41
 
   /@effect/stream/0.0.13:
     resolution: {integrity: sha512-2he8h0uUIwlfGpyeX9M/ZDAd8qQv/GD9wK7IWLr6G2kzZRT3YD9mB9PQMAtkxkt35qbc8EyfiFK3T8Gs9oWMVQ==}
     dependencies:
       '@effect/io': 0.0.66
       '@fp-ts/core': 0.0.11
-      '@fp-ts/data': 0.0.40
+      '@fp-ts/data': 0.0.41
 
   /@fp-ts/core/0.0.11:
     resolution: {integrity: sha512-BCAJBYzghwoJpcUOARJ1tui50HoYJFlV2pJlVMlsEkDFhD8MTtq8xQVpZCRF66RmtkxtGBYINCQ+5H1lRaL35Q==}
 
-  /@fp-ts/data/0.0.40:
-    resolution: {integrity: sha512-Wo/2KNO3n6TdUuX+vFEkK1hkQ3EDWp/5Uha8ZLtIvurndQxlDcF4kpU20c0CKJL8g5DpnRHiKN/cni5yyb09eQ==}
+  /@fp-ts/data/0.0.41:
+    resolution: {integrity: sha512-0S93kOQ91D7wp60q/PSVWvMsJjSWJutjt4qX/BvVNV7+fymuC2hTfW2HlE2OcMK11xCNiI6Rq2AkvyzoMhOlpg==}
     dependencies:
       '@fp-ts/core': 0.0.11
 
@@ -1199,12 +1199,12 @@ packages:
       '@effect/stream': 0.0.13
     dev: true
 
-  /@tsplus-types/fp-ts__data/0.0.40-f715d9e_@fp-ts+data@0.0.40:
-    resolution: {integrity: sha512-UOViOvnFYIURxVpcTiz6OO5NvxfZ0s/Aklb7MIFtH70dEpbSngW3qtT64iCRqLdE7F7IewU+SBWBb3yDVmOPRA==}
+  /@tsplus-types/fp-ts__data/0.0.41-cbaad16_@fp-ts+data@0.0.41:
+    resolution: {integrity: sha512-Mw1QetOdarQpBcg63oYcBG0WGrDFCs+pdWCygn78oKOsVn9ewhe3wZL8/qrjMvNgOUmMZS+0FiyovP4zhZFdGw==}
     peerDependencies:
-      '@fp-ts/data': 0.0.40
+      '@fp-ts/data': 0.0.41
     dependencies:
-      '@fp-ts/data': 0.0.40
+      '@fp-ts/data': 0.0.41
     dev: true
 
   /@types/minimatch/3.0.5:

@@ -371,13 +371,13 @@ export const enum ApplicationRoleConnectionMetadataType {
 export interface ApplicationRoleConnectionMetadatum {
   /** type of metadata value */
   type: ApplicationRoleConnectionMetadataType
-  /** dictionary key for the metadata field (must be a-z, 0-9, or _ characters; max 50 characters) */
+  /** dictionary key for the metadata field (must be a-z, 0-9, or _ characters; 1-50 characters) */
   key: string
-  /** name of the metadata field (max 100 characters) */
+  /** name of the metadata field (1-100 characters) */
   name: string
   /** translations of the name */
   name_localizations?: Locale
-  /** description of the metadata field (max 200 characters) */
+  /** description of the metadata field (1-200 characters) */
   description: string
   /** translations of the description */
   description_localizations?: Locale
@@ -1085,7 +1085,7 @@ export interface CreateGuildStickerParams {
   description: string
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
   tags: string
-  /** the sticker file to upload, must be a PNG, APNG, or Lottie JSON file, max 500 KB */
+  /** the sticker file to upload, must be a PNG, APNG, GIF, or Lottie JSON file, max 500 KB */
   file: string
 }
 export interface CreateGuildTemplateParams {
@@ -1936,10 +1936,11 @@ export function createRoutes<O = any>(
         url: `/stickers/${stickerId}`,
         options,
       }),
-    getThreadMember: (channelId, userId, options) =>
+    getThreadMember: (channelId, userId, params, options) =>
       fetch({
         method: "GET",
         url: `/channels/${channelId}/thread-members/${userId}`,
+        params,
         options,
       }),
     getUser: (userId, options) =>
@@ -2075,10 +2076,11 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    listThreadMembers: (channelId, options) =>
+    listThreadMembers: (channelId, params, options) =>
       fetch({
         method: "GET",
         url: `/channels/${channelId}/thread-members`,
+        params,
         options,
       }),
     listVoiceRegions: (options) =>
@@ -2995,13 +2997,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getChannel: (channelId: string, options?: O) => RestResponse<Channel>
   /** Returns a list of invite objects (with invite metadata) for the channel. Only usable for guild channels. Requires the MANAGE_CHANNELS permission. */
   getChannelInvites: (channelId: string, options?: O) => RestResponse<Invite[]>
-  /** Returns a specific message in the channel. If operating on a guild channel, this endpoint requires the READ_MESSAGE_HISTORY permission to be present on the current user. Returns a message object on success. */
+  /** Retrieves a specific message in the channel. Returns a message object on success. */
   getChannelMessage: (
     channelId: string,
     messageId: string,
     options?: O,
   ) => RestResponse<Message>
-  /** Returns the messages for a channel. If operating on a guild channel, this endpoint requires the VIEW_CHANNEL permission to be present on the current user. If the current user is missing the READ_MESSAGE_HISTORY permission in the channel then this will return no messages (since they cannot read the message history). Returns an array of message objects on success. */
+  /** Retrieves the messages in a channel. Returns an array of message objects on success. */
   getChannelMessages: (
     channelId: string,
     params?: Partial<GetChannelMessageParams>,
@@ -3214,6 +3216,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getThreadMember: (
     channelId: string,
     userId: string,
+    params?: Partial<GetThreadMemberParams>,
     options?: O,
   ) => RestResponse<ThreadMember>
   /** Returns a user object for a given user ID. */
@@ -3306,9 +3309,9 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListScheduledEventsForGuildParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent[]>
-  /** Returns array of thread members objects that are members of the thread. */
   listThreadMembers: (
     channelId: string,
+    params?: Partial<ListThreadMemberParams>,
     options?: O,
   ) => RestResponse<ThreadMember[]>
   /** Returns an array of voice region objects that can be used when setting a voice or stage channel's rtc_region. */
@@ -3623,7 +3626,7 @@ export interface ForumThreadMessageParam {
 export const GatewayIntents = {
   GUILDS: 1 << 0,
   GUILD_MEMBERS: 1 << 1,
-  GUILD_BANS: 1 << 2,
+  GUILD_MODERATION: 1 << 2,
   GUILD_EMOJIS_AND_STICKERS: 1 << 3,
   GUILD_INTEGRATIONS: 1 << 4,
   GUILD_WEBHOOKS: 1 << 5,
@@ -3789,6 +3792,10 @@ export interface GetReactionParams {
   /** Max number of users to return (1-100) */
   limit?: number
 }
+export interface GetThreadMemberParams {
+  /** Whether to include a guild member object for the thread member */
+  with_member?: boolean
+}
 export interface GetWebhookMessageParams {
   /** id of the thread the message is in */
   thread_id: Snowflake
@@ -3893,6 +3900,7 @@ export interface GuildApplicationCommandPermission {
   /** Permissions for the command in the guild, max of 100 */
   permissions: ApplicationCommandPermission[]
 }
+export type GuildAuditLogEntryCreateEvent = AuditLogEntry
 export interface GuildBanAddEvent {
   /** ID of the guild */
   guild_id: Snowflake
@@ -4012,6 +4020,8 @@ export interface GuildMember {
   deaf: boolean
   /** whether the user is muted in voice channels */
   mute: boolean
+  /** guild member flags represented as a bit set, defaults to 0 */
+  flags: number
   /** whether the user has not yet passed the guild's Membership Screening requirements */
   pending?: boolean
   /** total permissions of the member in the channel, including overwrites, returned when in the interaction object */
@@ -4024,6 +4034,16 @@ export interface GuildMemberAddExtra {
   /** ID of the guild */
   guild_id: Snowflake
 }
+export const GuildMemberFlag = {
+  /** Member has left and rejoined the guild */
+  DID_REJOIN: 1 << 0,
+  /** Member has completed onboarding */
+  COMPLETED_ONBOARDING: 1 << 1,
+  /** Member bypasses guild verification requirements */
+  BYPASSES_VERIFICATION: 1 << 2,
+  /** Member has started onboarding */
+  STARTED_ONBOARDING: 1 << 3,
+} as const
 export interface GuildMemberRemoveEvent {
   /** ID of the guild */
   guild_id: Snowflake
@@ -4609,6 +4629,14 @@ export interface ListScheduledEventsForGuildParams {
   /** include number of users subscribed to each event */
   with_user_count?: boolean
 }
+export interface ListThreadMemberParams {
+  /** Whether to include a guild member object for each thread member */
+  with_member?: boolean
+  /** Get thread members after this user ID */
+  after?: Snowflake
+  /** Max number of thread members to return (1-100). Defaults to 100. */
+  limit?: number
+}
 export interface Locale {
   /** Danish */
   da?: string
@@ -4736,6 +4764,8 @@ export interface Message {
   stickers?: Sticker[]
   /** A generally increasing integer (there may be gaps or duplicates) that represents the approximate position of the message in a thread, it can be used to estimate the relative position of the message in a thread in company with total_message_sent on parent thread */
   position?: number
+  /** data of the role subscription purchase or renewal that prompted this ROLE_SUBSCRIPTION_PURCHASE message */
+  role_subscription_data?: RoleSubscriptionDatum
 }
 export interface MessageActivity {
   /** type of message activity */
@@ -5417,6 +5447,7 @@ export type ReceiveEvent =
   | GuildCreateEvent
   | GuildUpdateEvent
   | GuildDeleteEvent
+  | GuildAuditLogEntryCreateEvent
   | GuildBanAddEvent
   | GuildBanRemoveEvent
   | GuildEmojisUpdateEvent
@@ -5481,6 +5512,7 @@ export interface ReceiveEvents {
   GUILD_CREATE: GuildCreateEvent
   GUILD_UPDATE: GuildUpdateEvent
   GUILD_DELETE: GuildDeleteEvent
+  GUILD_AUDIT_LOG_ENTRY_CREATE: GuildAuditLogEntryCreateEvent
   GUILD_BAN_ADD: GuildBanAddEvent
   GUILD_BAN_REMOVE: GuildBanRemoveEvent
   GUILD_EMOJIS_UPDATE: GuildEmojisUpdateEvent
@@ -5601,6 +5633,16 @@ export interface Role {
   mentionable: boolean
   /** the tags this role has */
   tags?: RoleTag
+}
+export interface RoleSubscriptionDatum {
+  /** the id of the sku and listing that the user is subscribed to */
+  role_subscription_listing_id: Snowflake
+  /** the name of the tier that the user is subscribed to */
+  tier_name: string
+  /** the cumulative number of months that the user has been subscribed for */
+  total_months_subscribed: number
+  /** whether this notification is for a renewal rather than a new purchase */
+  is_renewal: boolean
 }
 export interface RoleTag {
   /** the id of the bot this role belongs to */
@@ -5803,6 +5845,7 @@ export const enum StickerFormatType {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
+  GIF = 4,
 }
 export interface StickerItem {
   /** id of the sticker */
@@ -5843,6 +5886,10 @@ export const SystemChannelFlag = {
   SUPPRESS_GUILD_REMINDER_NOTIFICATIONS: 1 << 2,
   /** Hide member join sticker reply buttons */
   SUPPRESS_JOIN_NOTIFICATION_REPLIES: 1 << 3,
+  /** Suppress role subscription purchase and renewal notifications */
+  SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATIONS: 1 << 4,
+  /** Hide role subscription sticker reply buttons */
+  SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATION_REPLIES: 1 << 5,
 } as const
 export interface Team {
   /** a hash of the image of the team's icon */
@@ -5905,14 +5952,16 @@ export interface ThreadListSyncEvent {
   members: ThreadMember[]
 }
 export interface ThreadMember {
-  /** the id of the thread */
+  /** ID of the thread */
   id?: Snowflake
-  /** the id of the user */
+  /** ID of the user */
   user_id?: Snowflake
-  /** the time the current user last joined the thread */
+  /** Time the user last joined the thread */
   join_timestamp: string
-  /** any user-thread settings, currently only used for notifications */
+  /** Any user-thread settings, currently only used for notifications */
   flags: number
+  /** Additional information about the user */
+  member?: GuildMember
 }
 export interface ThreadMembersUpdateEvent {
   /** ID of the thread */
