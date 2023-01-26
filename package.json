@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.21.18",
+  "version": "0.21.19",
   "type": "module",
   "publishConfig": {
     "access": "public",
