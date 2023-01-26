@@ -5,9 +5,9 @@ Dotenv.config()
 
 // Create the dependencies layer
 const LiveEnv = makeFromConfig(
-  Config.struct({
+  {
     token: Config.secret("DISCORD_BOT_TOKEN"),
-  }),
+  },
   true,
 )
 

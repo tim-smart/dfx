@@ -5,13 +5,11 @@ import { fastify } from "fastify"
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = makeFromConfig(
-  Config.struct({
-    applicationId: Config.string("DISCORD_APP_ID"),
-    publicKey: Config.secret("DISCORD_PUBLIC_KEY"),
-    token: Config.secret("DISCORD_BOT_TOKEN"),
-  }),
-)
+const LiveEnv = makeFromConfig({
+  applicationId: Config.string("DISCORD_APP_ID"),
+  publicKey: Config.secret("DISCORD_PUBLIC_KEY"),
+  token: Config.secret("DISCORD_BOT_TOKEN"),
+})
 
 // Create your interaction definitions.
 // Here we are creating a global application command.
