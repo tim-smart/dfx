@@ -34,9 +34,11 @@ export const make = (
 }
 
 export const makeFromConfig = (
-  config: Config<DiscordConfig.MakeOpts & MakeConfigOpts>,
+  options: ConfigWrap.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
   debug = false,
 ) => {
+  const config = ConfigWrap.unwrap(options)
+
   const LiveWebhook = makeConfigFromConfig(config)
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
   const LiveConfig = DiscordConfig.makeFromConfig(config)

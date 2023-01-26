@@ -27,7 +27,7 @@ import type {
 /**
  * @tsplus global
  */
-import { Tag, Discord } from "dfx/_common"
+import { Tag, Discord, ConfigWrap } from "dfx/_common"
 
 /**
  * @tsplus global

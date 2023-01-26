@@ -24,6 +24,8 @@ export type { HashSet } from "@fp-ts/data/HashSet"
 
 export * as Discord from "./types.js"
 
+export * as ConfigWrap from "./utils/ConfigWrap.js"
+
 /**
  * @tsplus type effect/io/Schedule
  * @tsplus companion effect/io/Schedule.Ops
