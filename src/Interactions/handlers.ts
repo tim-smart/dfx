@@ -1,4 +1,4 @@
-import * as Arr from "@fp-ts/data/ReadonlyArray"
+import * as Arr from "@fp-ts/core/ReadonlyArray"
 import * as Ctx from "./context.js"
 import * as D from "./definitions.js"
 import { splitDefinitions } from "./utils.js"

@@ -32,7 +32,7 @@ import { Tag, Discord, ConfigWrap } from "dfx/_common"
 /**
  * @tsplus global
  */
-import { pipe, flow, identity } from "@fp-ts/data/Function"
+import { pipe, flow, identity } from "@fp-ts/core/Function"
 
 /**
  * @tsplus global
@@ -64,4 +64,4 @@ import { DiscordWS, Gateway, WS, Shard, ShardStore } from "dfx/gateway"
 /**
  * @tsplus global
  */
-import type { LazyArg } from "@fp-ts/data/Function"
+import type { LazyArg } from "@fp-ts/core/Function"

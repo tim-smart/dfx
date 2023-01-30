@@ -1,4 +1,5 @@
-import * as Arr from "@fp-ts/data/ReadonlyArray"
+import { Option as Maybe, Product } from "@fp-ts/core/Option"
+import * as Arr from "@fp-ts/core/ReadonlyArray"
 
 /**
  * Maybe find a sub-command within the interaction options.
@@ -140,7 +141,9 @@ export const resolveValues =
       )
       const r = $(resolved(a))
       return $(
-        Maybe.productAll(values.map((a) => Maybe.fromNullable(f(a as any, r)))),
+        Product.productAll(
+          values.map((a) => Maybe.fromNullable(f(a as any, r))),
+        ),
       )
     })
 

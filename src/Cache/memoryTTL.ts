@@ -141,7 +141,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
       getForParent: (parentId) =>
         Do(($) => {
           const ids = parentIds.get(parentId)
-          if (!ids) return Maybe.none
+          if (!ids) return Maybe.none()
 
           const toGet: Effect<never, never, readonly [string, Maybe<T>]>[] = []
           ids.forEach((id) => {

@@ -9,6 +9,6 @@ const maybeUpdateRef = <T>(
 ) => flow(f, (o) => o.match(Effect.unit, (a) => ref.set(Maybe.some(a))))
 
 export const latest = <T>(f: (p: Discord.GatewayPayload) => Maybe<T>) =>
-  Ref.make<Maybe<T>>(Maybe.none).map(
+  Ref.make<Maybe<T>>(Maybe.none()).map(
     (ref) => [ref, maybeUpdateRef(f, ref)] as const,
   )

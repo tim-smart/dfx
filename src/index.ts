@@ -26,6 +26,3 @@ export * as IxHelpers from "./Helpers/interactions.js"
 export * as Members from "./Helpers/members.js"
 export * as Perms from "./Helpers/permissions.js"
 export * as UI from "./Helpers/ui.js"
-
-// Hack for tsplus globals
-export type { Option as Maybe } from "@fp-ts/data/Option"
