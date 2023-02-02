@@ -1,15 +1,15 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@effect/io': ~0.1.3
+  '@effect/io': ~0.1.6
   '@effect/stream': ~0.1.0
   '@fp-ts/core': ^0.1.1
-  '@fp-ts/data': ~0.1.0
+  '@fp-ts/data': ~0.1.1
   '@tim-smart/discord-api-docs-parser': ^0.5.0
-  '@tsplus-types/effect__io': 0.1.3-4e9791d
-  '@tsplus-types/effect__stream': 0.1.0-4e9791d
-  '@tsplus-types/fp-ts__core': 0.1.1-4e9791d
-  '@tsplus-types/fp-ts__data': 0.1.0-4e9791d
+  '@tsplus-types/effect__io': 0.1.6-af168bc
+  '@tsplus-types/effect__stream': 0.1.0-cf15084
+  '@tsplus-types/fp-ts__core': 0.1.1-af168bc
+  '@tsplus-types/fp-ts__data': 0.1.1-af168bc
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   isomorphic-ws: ^5.0.0
@@ -20,10 +20,10 @@ specifiers:
   ws: ^8.12.0
 
 dependencies:
-  '@effect/io': 0.1.3
+  '@effect/io': 0.1.6
   '@effect/stream': 0.1.0
   '@fp-ts/core': 0.1.1
-  '@fp-ts/data': 0.1.0
+  '@fp-ts/data': 0.1.1
   tweetnacl: 1.0.3
 
 optionalDependencies:
@@ -34,10 +34,10 @@ optionalDependencies:
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
-  '@tsplus-types/effect__io': 0.1.3-4e9791d_@effect+io@0.1.3
-  '@tsplus-types/effect__stream': 0.1.0-4e9791d_@effect+stream@0.1.0
-  '@tsplus-types/fp-ts__core': 0.1.1-4e9791d_@fp-ts+core@0.1.1
-  '@tsplus-types/fp-ts__data': 0.1.0-4e9791d_@fp-ts+data@0.1.0
+  '@tsplus-types/effect__io': 0.1.6-af168bc_@effect+io@0.1.6
+  '@tsplus-types/effect__stream': 0.1.0-cf15084_@effect+stream@0.1.0
+  '@tsplus-types/fp-ts__core': 0.1.1-af168bc_@fp-ts+core@0.1.1
+  '@tsplus-types/fp-ts__data': 0.1.1-af168bc_@fp-ts+data@0.1.1
   '@types/ws': 8.5.4
   lerna: 6.4.1
   typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.168/compiler/typescript.tgz'
@@ -65,24 +65,25 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect/io/0.1.3:
-    resolution: {integrity: sha512-rGarnEP9VfXGbDvIw/EVXiPNcyUWJU8YNd5bFZRQAjkL+omBde6H/VZcYlQylS67B81MSQnRe4+1enEypaxB9A==}
+  /@effect/io/0.1.6:
+    resolution: {integrity: sha512-y3TM9hv4geV9BfMfVWfbTpRZi9g8ASq8jk4yWZ5ZohgQUS06NLZd3oUGmwR6SUgkVPCOoULQB3S9Fp+cXXwF4w==}
     dependencies:
       '@fp-ts/core': 0.1.1
-      '@fp-ts/data': 0.1.0
+      '@fp-ts/data': 0.1.1
+      typescript: 4.9.5
 
   /@effect/stream/0.1.0:
     resolution: {integrity: sha512-GeJNY5WKV6h/aLynZpJTR/xmvTD1JQq8hk9bt+Z2OxHLwyBZ+YSQetA9YsxQsZGLUZl+h1twSdkI0n7d0mx3Lw==}
     dependencies:
-      '@effect/io': 0.1.3
+      '@effect/io': 0.1.6
       '@fp-ts/core': 0.1.1
-      '@fp-ts/data': 0.1.0
+      '@fp-ts/data': 0.1.1
 
   /@fp-ts/core/0.1.1:
     resolution: {integrity: sha512-7vQnrnvJAMrXgIwt0qQNhXkPDtm4l8vwql8EvXeY47v/FwnWpDvt1HISoO9Kq3am5SZ0A8Av+4NqPab2FRdKxw==}
 
-  /@fp-ts/data/0.1.0:
-    resolution: {integrity: sha512-T4PbFVo2fzy2XaUHbFmEc24TJSPzTl/xUHC+1qCXZZfb3MaIKdKHS10aUt+9zcQ75KpiZbHL8hBfoP9fHOI6Mg==}
+  /@fp-ts/data/0.1.1:
+    resolution: {integrity: sha512-hgsoSDKP01kGY+g/Ino+QX3VEqiPnf0mrhKujMajT4ma0w82i4u0nMEPbBykyMxscQirFemwl7CnWn7G3TadcA==}
     dependencies:
       '@fp-ts/core': 0.1.1
 
@@ -618,7 +619,7 @@ packages:
       npmlog: 6.0.2
     dev: true
 
-  /@lerna/publish/6.4.1_nx@15.5.2+typescript@4.9.4:
+  /@lerna/publish/6.4.1_nx@15.5.2+typescript@4.9.5:
     resolution: {integrity: sha512-/D/AECpw2VNMa1Nh4g29ddYKRIqygEV1ftV8PYXVlHpqWN7VaKrcbRU6pn0ldgpFlMyPtESfv1zS32F5CQ944w==}
     engines: {node: ^14.15.0 || >=16.0.0}
     dependencies:
@@ -640,7 +641,7 @@ packages:
       '@lerna/run-lifecycle': 6.4.1
       '@lerna/run-topologically': 6.4.1
       '@lerna/validation-error': 6.4.1
-      '@lerna/version': 6.4.1_nx@15.5.2+typescript@4.9.4
+      '@lerna/version': 6.4.1_nx@15.5.2+typescript@4.9.5
       fs-extra: 9.1.0
       libnpmaccess: 6.0.4
       npm-package-arg: 8.1.1
@@ -777,7 +778,7 @@ packages:
       npmlog: 6.0.2
     dev: true
 
-  /@lerna/version/6.4.1_nx@15.5.2+typescript@4.9.4:
+  /@lerna/version/6.4.1_nx@15.5.2+typescript@4.9.5:
     resolution: {integrity: sha512-1/krPq0PtEqDXtaaZsVuKev9pXJCkNC1vOo2qCcn6PBkODw/QTAvGcUi0I+BM2c//pdxge9/gfmbDo1lC8RtAQ==}
     engines: {node: ^14.15.0 || >=16.0.0}
     dependencies:
@@ -795,7 +796,7 @@ packages:
       '@lerna/run-topologically': 6.4.1
       '@lerna/temp-write': 6.4.1
       '@lerna/validation-error': 6.4.1
-      '@nrwl/devkit': 15.5.2_nx@15.5.2+typescript@4.9.4
+      '@nrwl/devkit': 15.5.2_nx@15.5.2+typescript@4.9.5
       chalk: 4.1.2
       dedent: 0.7.0
       load-json-file: 6.2.0
@@ -1002,12 +1003,12 @@ packages:
       - debug
     dev: true
 
-  /@nrwl/devkit/15.5.2_nx@15.5.2+typescript@4.9.4:
+  /@nrwl/devkit/15.5.2_nx@15.5.2+typescript@4.9.5:
     resolution: {integrity: sha512-rvxuiYVpGDB9RzjOAWTNm7IBPwuYG6kL24LkJMUS8gCNqLBNNlYUsdkpa0PLRt5eNeGLKqpSDB8BpA+e1ty/zA==}
     peerDependencies:
       nx: '>= 14 <= 16'
     dependencies:
-      '@phenomnomnominal/tsquery': 4.1.1_typescript@4.9.4
+      '@phenomnomnominal/tsquery': 4.1.1_typescript@4.9.5
       ejs: 3.1.8
       ignore: 5.2.4
       nx: 15.5.2
@@ -1157,13 +1158,13 @@ packages:
       node-gyp-build: 4.6.0
     dev: true
 
-  /@phenomnomnominal/tsquery/4.1.1_typescript@4.9.4:
+  /@phenomnomnominal/tsquery/4.1.1_typescript@4.9.5:
     resolution: {integrity: sha512-jjMmK1tnZbm1Jq5a7fBliM4gQwjxMU7TFoRNwIyzwlO+eHPRCFv/Nv+H/Gi1jc3WR7QURG8D5d0Tn12YGrUqBQ==}
     peerDependencies:
       typescript: ^3 || ^4
     dependencies:
       esquery: 1.4.0
-      typescript: 4.9.4
+      typescript: 4.9.5
     dev: true
 
   /@tim-smart/discord-api-docs-parser/0.5.0:
@@ -1187,36 +1188,36 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@tsplus-types/effect__io/0.1.3-4e9791d_@effect+io@0.1.3:
-    resolution: {integrity: sha512-ckLZrTqWMoj/O8Z7V8ZHZ6/2yzGqIbf3UE8gfSGqkIhJJiPayoroxwiWpV9qaSoN1FMO+LPJKLCqh3h3d8Hc7Q==}
+  /@tsplus-types/effect__io/0.1.6-af168bc_@effect+io@0.1.6:
+    resolution: {integrity: sha512-Z5Vq2LFoImbqO56IjOJFPx+fblfgpERUnXco08EpWVsN4KpTMVZie4GbwSuDNnCM0bsxuQg9GZjjbU4Wcvdz5g==}
     peerDependencies:
-      '@effect/io': 0.1.3
+      '@effect/io': 0.1.6
     dependencies:
-      '@effect/io': 0.1.3
+      '@effect/io': 0.1.6
     dev: true
 
-  /@tsplus-types/effect__stream/0.1.0-4e9791d_@effect+stream@0.1.0:
-    resolution: {integrity: sha512-TTbDMTx+Yr6Dgwsnyqdvrd0fvMpymeu9xLMsRZtFsigg5jOJymTSeO8lcf1m/GeJyzcRV6srBFB1f2ZzV0rKRQ==}
+  /@tsplus-types/effect__stream/0.1.0-cf15084_@effect+stream@0.1.0:
+    resolution: {integrity: sha512-z3TJKrJl13z7dQM+04oqPnH4ABKwfnPEFQuVSNFkfI9MEmm+zPTpcwN3U6WYe7qngl6psdPYAqt408OWAH/FQA==}
     peerDependencies:
       '@effect/stream': 0.1.0
     dependencies:
       '@effect/stream': 0.1.0
     dev: true
 
-  /@tsplus-types/fp-ts__core/0.1.1-4e9791d_@fp-ts+core@0.1.1:
-    resolution: {integrity: sha512-wU7jH9SukYRpgnt51jHFnKL+SNdjr3JNo0pHe5syhYypYJYoya9YT0jAXZp4xaVWQlEh/78NIIANnEGmwObR1A==}
+  /@tsplus-types/fp-ts__core/0.1.1-af168bc_@fp-ts+core@0.1.1:
+    resolution: {integrity: sha512-1wO6pR3lPVC+mdjXKKhNCECHt9Pmdek6Br0gSmCR4rTZTy8HK68f27LhCfx3qS1lIBXJNc69uRJOkuSyft/+5g==}
     peerDependencies:
       '@fp-ts/core': 0.1.1
     dependencies:
       '@fp-ts/core': 0.1.1
     dev: true
 
-  /@tsplus-types/fp-ts__data/0.1.0-4e9791d_@fp-ts+data@0.1.0:
-    resolution: {integrity: sha512-3ZEYKOHr4e9MwDl6mJcYDmvdS0HXJfQqk17W6Xfkjsm999VGL6VJoNoxuoOLZ+WOMzNkptc71qsPparYgl1TlA==}
+  /@tsplus-types/fp-ts__data/0.1.1-af168bc_@fp-ts+data@0.1.1:
+    resolution: {integrity: sha512-FpdPAGbL92jYw7PLrtAq68KO/W/0StwE1dy2wqE5L+yhLMcMctw5ZQHjX/pS2K4OqH78OrJhNrcDqeVEhlq+aQ==}
     peerDependencies:
-      '@fp-ts/data': 0.1.0
+      '@fp-ts/data': 0.1.1
     dependencies:
-      '@fp-ts/data': 0.1.0
+      '@fp-ts/data': 0.1.1
     dev: true
 
   /@types/minimatch/3.0.5:
@@ -2869,16 +2870,16 @@ packages:
       '@lerna/init': 6.4.1
       '@lerna/link': 6.4.1
       '@lerna/list': 6.4.1
-      '@lerna/publish': 6.4.1_nx@15.5.2+typescript@4.9.4
+      '@lerna/publish': 6.4.1_nx@15.5.2+typescript@4.9.5
       '@lerna/run': 6.4.1
       '@lerna/validation-error': 6.4.1
-      '@lerna/version': 6.4.1_nx@15.5.2+typescript@4.9.4
-      '@nrwl/devkit': 15.5.2_nx@15.5.2+typescript@4.9.4
+      '@lerna/version': 6.4.1_nx@15.5.2+typescript@4.9.5
+      '@nrwl/devkit': 15.5.2_nx@15.5.2+typescript@4.9.5
       import-local: 3.1.0
       inquirer: 8.2.5
       npmlog: 6.0.2
       nx: 15.5.2
-      typescript: 4.9.4
+      typescript: 4.9.5
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
@@ -4421,11 +4422,10 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typescript/4.9.4:
-    resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
+  /typescript/4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /uglify-js/3.17.4:
     resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}
