@@ -18,7 +18,7 @@ export const routeFromConfig = (path: string, init: RequestInit) => {
 export const numberHeader = (headers: Headers) => (key: string) =>
   Maybe.fromNullable(headers.get(key))
     .map(parseFloat)
-    .filter((n) => !isNaN(n))
+    .filter(n => !isNaN(n))
 
 export const retryAfter = (headers: Headers) =>
   numberHeader(headers)("x-ratelimit-reset-after")

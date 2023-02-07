@@ -3,7 +3,7 @@
  */
 export const roles = (roles: Discord.Role[]) => (member: Discord.GuildMember) =>
   roles.filter(
-    (role) => member.roles.includes(role.id) || role.name === "@everyone",
+    role => member.roles.includes(role.id) || role.name === "@everyone",
   )
 
 /**

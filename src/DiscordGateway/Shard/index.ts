@@ -4,7 +4,7 @@ import * as InvalidSession from "./invalidSession.js"
 import * as Utils from "./utils.js"
 
 export const make = (shard: [id: number, count: number]) =>
-  Do(($) => {
+  Do($ => {
     const { token, gateway } = $(Effect.service(DiscordConfig.DiscordConfig))
     const limiter = $(Effect.service(RateLimiter))
 
@@ -19,17 +19,17 @@ export const make = (shard: [id: number, count: number]) =>
     const raw = $(socket.source.broadcastDynamic(1))
 
     const [latestReady, updateLatestReady] = $(
-      Utils.latest((p) =>
+      Utils.latest(p =>
         Maybe.some(p)
           .filter(
             (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
               p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
           )
-          .map((p) => p.d!),
+          .map(p => p.d!),
       ),
     )
     const [latestSequence, updateLatestSequence] = $(
-      Utils.latest((p) => Maybe.fromNullable(p.s)),
+      Utils.latest(p => Maybe.fromNullable(p.s)),
     )
     const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
       Maybe.some(p)
@@ -37,10 +37,10 @@ export const make = (shard: [id: number, count: number]) =>
           (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
             p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
         )
-        .map((p) => p.d!)
+        .map(p => p.d!)
         .match(
           () => Effect.unit(),
-          (a) => socket.setUrl(a.resume_gateway_url),
+          a => socket.setUrl(a.resume_gateway_url),
         )
 
     const updateRefs = raw

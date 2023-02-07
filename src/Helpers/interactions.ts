@@ -8,7 +8,7 @@ export const allSubCommands = (interaction: Discord.ApplicationCommandDatum) =>
   pipe(
     optionsWithNested(interaction),
     Arr.filter(
-      (o) => o.type === Discord.ApplicationCommandOptionType.SUB_COMMAND,
+      o => o.type === Discord.ApplicationCommandOptionType.SUB_COMMAND,
     ),
   )
 
@@ -20,7 +20,7 @@ export const findSubCommand =
     pipe(
       optionsWithNested(interaction),
       Arr.findFirst(
-        (o) =>
+        o =>
           o.type === Discord.ApplicationCommandOptionType.SUB_COMMAND &&
           o.name === name,
       ),
@@ -30,13 +30,13 @@ export const findSubCommand =
  * If the sub-command exists return `true`, else `false`.
  */
 export const isSubCommand = (name: string) =>
-  flow(findSubCommand(name), (o) => o.isSome())
+  flow(findSubCommand(name), o => o.isSome())
 
 /**
  * Maybe get the options for a sub-command
  */
 export const subCommandOptions = (name: string) =>
-  flow(findSubCommand(name), (o) => o.flatMapNullable((o) => o.options))
+  flow(findSubCommand(name), o => o.flatMapNullable(o => o.options))
 
 /**
  * A lens for accessing nested options in a interaction.
@@ -48,11 +48,11 @@ export const optionsWithNested = (
     opt: Discord.ApplicationCommandInteractionDataOption,
   ): Discord.ApplicationCommandInteractionDataOption[] =>
     Maybe.fromNullable(opt.options)
-      .map((opts) => [...opts, ...opts.flatMap(optsFromOption)])
+      .map(opts => [...opts, ...opts.flatMap(optsFromOption)])
       .match(() => [], identity)
 
   return Maybe.fromNullable(data.options)
-    .map((opts) => [...opts, ...opts.flatMap(optsFromOption)])
+    .map(opts => [...opts, ...opts.flatMap(optsFromOption)])
     .getOrElse(() => [])
 }
 
@@ -78,7 +78,7 @@ export const optionsMap = flow(optionsWithNested, transformOptions)
 export const getOption = (name: string) =>
   flow(
     optionsWithNested,
-    Arr.findFirst((o) => o.name === name),
+    Arr.findFirst(o => o.name === name),
   )
 
 /**
@@ -86,21 +86,21 @@ export const getOption = (name: string) =>
  */
 export const focusedOption = flow(
   optionsWithNested,
-  Arr.findFirst((o) => o.focused === true),
+  Arr.findFirst(o => o.focused === true),
 )
 
 /**
  * Try find a matching option value from the interaction.
  */
 export const optionValue = (name: string) =>
-  flow(getOption(name), (o) => o.flatMapNullable((o) => o.value))
+  flow(getOption(name), o => o.flatMapNullable(o => o.value))
 
 /**
  * Try extract resolved data
  */
 export const resolved = (data: Discord.Interaction) =>
   Maybe.fromNullable(data.data).flatMapNullable(
-    (a) => (a as Discord.ApplicationCommandDatum).resolved,
+    a => (a as Discord.ApplicationCommandDatum).resolved,
   )
 
 /**
@@ -112,7 +112,7 @@ export const resolveOptionValue =
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
   (a: Discord.Interaction): Maybe<T> =>
-    Do(($) => {
+    Do($ => {
       const data = $(
         Maybe.fromNullable(a.data as Discord.ApplicationCommandDatum),
       )
@@ -133,17 +133,15 @@ export const resolveValues =
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
   (a: Discord.Interaction): Maybe<readonly T[]> =>
-    Do(($) => {
+    Do($ => {
       const values = $(
         Maybe.fromNullable(
           a.data as Discord.MessageComponentDatum,
-        ).flatMapNullable((a) => a.values as unknown as string[]),
+        ).flatMapNullable(a => a.values as unknown as string[]),
       )
       const r = $(resolved(a))
       return $(
-        Product.productAll(
-          values.map((a) => Maybe.fromNullable(f(a as any, r))),
-        ),
+        Product.productAll(values.map(a => Maybe.fromNullable(f(a as any, r)))),
       )
     })
 
@@ -170,7 +168,7 @@ export const components = (
  */
 export const componentsWithValue = flow(
   components,
-  Arr.filter((c) => "value" in c && c.value !== undefined),
+  Arr.filter(c => "value" in c && c.value !== undefined),
 )
 
 /**
@@ -193,15 +191,15 @@ export const componentsMap = flow(components, transformComponents)
 export const getComponent = (id: string) =>
   flow(
     components,
-    Arr.findFirst((o) => (o as Discord.TextInput).custom_id === id),
+    Arr.findFirst(o => (o as Discord.TextInput).custom_id === id),
   )
 
 /**
  * Try find a matching component value from the interaction.
  */
 export const componentValue = (id: string) =>
-  flow(getComponent(id), (o) =>
-    o.flatMapNullable((o) => (o as Discord.TextInput).value),
+  flow(getComponent(id), o =>
+    o.flatMapNullable(o => (o as Discord.TextInput).value),
   )
 
 export type InteractionResponse =

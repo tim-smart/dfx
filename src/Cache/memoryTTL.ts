@@ -91,10 +91,10 @@ const make = <T>({
   return createDriver({
     size: Effect.sync(() => items.size),
 
-    get: (resourceId) =>
+    get: resourceId =>
       Effect.sync((): Maybe<T> => Maybe.fromNullable(getSync(resourceId))),
 
-    refreshTTL: (id) =>
+    refreshTTL: id =>
       Effect.sync(() => {
         getSync(id)
       }),
@@ -112,7 +112,7 @@ const make = <T>({
         }
       }),
 
-    delete: (resourceId) =>
+    delete: resourceId =>
       Effect.sync(() => {
         items.delete(resourceId)
       }),
@@ -131,22 +131,22 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
 
     return createParentDriver({
       size: store.size,
-      sizeForParent: (parentId) =>
+      sizeForParent: parentId =>
         Effect.sync(() => parentIds.get(parentId)?.size ?? 0),
 
       refreshTTL: (_, id) => store.refreshTTL(id),
 
       get: (_, id) => store.get(id),
 
-      getForParent: (parentId) =>
-        Do(($) => {
+      getForParent: parentId =>
+        Do($ => {
           const ids = parentIds.get(parentId)
           if (!ids) return Maybe.none()
 
           const toGet: Effect<never, never, readonly [string, Maybe<T>]>[] = []
-          ids.forEach((id) => {
+          ids.forEach(id => {
             toGet.push(
-              Do(($) => {
+              Do($ => {
                 const item = $(store.get(id))
                 if (item._tag === "None") {
                   parentIds.delete(id)
@@ -165,7 +165,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
         }),
 
       set: (parentId, resourceId, resource) =>
-        Do(($) => {
+        Do($ => {
           $(store.set(resourceId, resource))
 
           if (!parentIds.has(parentId)) {
@@ -175,19 +175,19 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
         }),
 
       delete: (parentId, resourceId) =>
-        Do(($) => {
+        Do($ => {
           $(store.delete(resourceId))
           parentIds.get(parentId)?.delete(resourceId)
         }),
 
-      parentDelete: (parentId) =>
-        Do(($) => {
+      parentDelete: parentId =>
+        Do($ => {
           const ids = parentIds.get(parentId)
           parentIds.delete(parentId)
 
           const effects: Effect<never, never, void>[] = []
           if (ids) {
-            ids.forEach((id) => {
+            ids.forEach(id => {
               effects.push(store.delete(id))
             })
           }

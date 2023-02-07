@@ -1,7 +1,7 @@
-import { millis } from "@fp-ts/data/Duration"
+import { millis } from "@effect/data/Duration"
 import { ShardStore } from "../ShardStore/index.js"
 
-const make = Do(($) => {
+const make = Do($ => {
   const store = $(Effect.service(ShardStore))
   const rest = $(Effect.service(DiscordREST))
   const { gateway: config } = $(Effect.service(DiscordConfig.DiscordConfig))
@@ -14,18 +14,18 @@ const make = Do(($) => {
           totalCount,
           sharderCount,
         })
-        .flatMap((a) =>
+        .flatMap(a =>
           a.match(
             () => claimId(sharderCount).delay(Duration.minutes(3)),
-            (id) => Effect.succeed(id),
+            id => Effect.succeed(id),
           ),
         )
 
-    return Stream.unfoldEffect(0, (sharderCount) =>
-      claimId(sharderCount).map((id) =>
+    return Stream.unfoldEffect(0, sharderCount =>
+      claimId(sharderCount).map(id =>
         Maybe.some([id, sharderCount + 1] as const),
       ),
-    ).map((id) => ({
+    ).map(id => ({
       id,
       totalCount,
     }))
@@ -34,7 +34,7 @@ const make = Do(($) => {
   const gateway = $(
     rest
       .getGatewayBot()
-      .flatMap((r) => r.json)
+      .flatMap(r => r.json)
       .catchAll(() =>
         Effect.succeed<Discord.GetGatewayBotResponse>({
           url: "wss://gateway.discord.gg/",
@@ -51,12 +51,12 @@ const make = Do(($) => {
 
   const shards = $(
     configs(config.shardCount ?? gateway.shards)
-      .map((config) => ({
+      .map(config => ({
         ...config,
         url: gateway.url,
         concurrency: gateway.session_start_limit.max_concurrency,
       }))
-      .groupBy((c) => Effect.succeed([c.id % c.concurrency, c]))
+      .groupBy(c => Effect.succeed([c.id % c.concurrency, c]))
       .evaluate((key, shardConfig) =>
         shardConfig
           .tap(() =>
@@ -66,9 +66,9 @@ const make = Do(($) => {
               config.identifyRateLimit[1],
             ),
           )
-          .mapEffect((c) => Shard.make([c.id, c.totalCount])),
+          .mapEffect(c => Shard.make([c.id, c.totalCount])),
       )
-      .flatMap((shard) =>
+      .flatMap(shard =>
         Stream.succeed(shard).merge(Stream.fromEffect(shard.run).drain),
       )
       .broadcastDynamic(1),

@@ -15,12 +15,12 @@ export class WebSocketCloseError {
 }
 
 const socket = (urlRef: Ref<string>) =>
-  Do(($) => {
+  Do($ => {
     const url = $(urlRef.get)
     const ws = new WebSocket(url) as any as globalThis.WebSocket
 
     $(
-      Effect.async<never, never, void>((resume) => {
+      Effect.async<never, never, void>(resume => {
         ws.addEventListener("open", () => resume(Effect.unit()), {
           once: true,
         })
@@ -28,7 +28,7 @@ const socket = (urlRef: Ref<string>) =>
     )
 
     return ws
-  }).acquireRelease((ws) =>
+  }).acquireRelease(ws =>
     Effect.sync(() => {
       ;(ws as any).removeAllListeners?.()
       ws.close()
@@ -40,17 +40,17 @@ const recv = (ws: globalThis.WebSocket) =>
     never,
     WebSocketError | WebSocketCloseError,
     WebSocket.Data
-  >((emit) =>
+  >(emit =>
     Effect.sync(() => {
-      ws.addEventListener("message", (message) => {
+      ws.addEventListener("message", message => {
         emit.single(message.data)
       })
 
-      ws.addEventListener("error", (cause) => {
+      ws.addEventListener("error", cause => {
         emit.fail(new WebSocketError(cause))
       })
 
-      ws.addEventListener("close", (e) => {
+      ws.addEventListener("close", e => {
         emit.fail(new WebSocketCloseError(e.code, e.reason))
       })
     }),
@@ -62,7 +62,7 @@ const send = (
   log: Log.Log,
 ) =>
   take
-    .tap((data) => log.debug("WS", "send", data))
+    .tap(data => log.debug("WS", "send", data))
     .tap((data): Effect<never, WebSocketCloseError, void> => {
       if (data === Reconnect) {
         return Effect.failSync(() => {
@@ -81,7 +81,7 @@ export const make = (
   takeOutbound: Effect<never, never, Message>,
 ) =>
   pipe(
-    Do(($) => {
+    Do($ => {
       const log = $(Effect.service(Log.Log))
       const ws = $(socket(url))
       const sendEffect = send(ws, takeOutbound, log)
@@ -90,7 +90,7 @@ export const make = (
         .merge(Stream.fromEffect(sendEffect))
         .retry(
           Schedule.recurWhile(
-            (e) => e._tag === "WebSocketCloseError" && e.code === 1012,
+            e => e._tag === "WebSocketCloseError" && e.code === 1012,
           ),
         )
     }),

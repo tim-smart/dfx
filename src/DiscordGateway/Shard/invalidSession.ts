@@ -7,5 +7,5 @@ export const fromRaw = <R, E>(
   opCode(raw)<Discord.InvalidSessionEvent>(
     Discord.GatewayOpcode.INVALID_SESSION,
   )
-    .tap((p) => (p.d ? Effect.unit() : latestReady.set(Maybe.none())))
+    .tap(p => (p.d ? Effect.unit() : latestReady.set(Maybe.none())))
     .map((): DiscordWS.Message => WS.Reconnect)

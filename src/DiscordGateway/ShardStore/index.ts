@@ -26,7 +26,7 @@ const memoryStore = (): ShardStore => {
         return Maybe.some(id)
       }),
 
-    allClaimed: (totalCount) => Effect.sync(() => currentId >= totalCount),
+    allClaimed: totalCount => Effect.sync(() => currentId >= totalCount),
   }
 }
 

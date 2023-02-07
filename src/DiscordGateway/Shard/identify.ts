@@ -39,7 +39,7 @@ const identifyOrResume = (
   ready: Ref<Maybe<Discord.ReadyEvent>>,
   seq: Ref<Maybe<number>>,
 ) =>
-  Do(($) => {
+  Do($ => {
     const readyEvent = $(ready.get)
     const seqNumber = $(seq.get)
 

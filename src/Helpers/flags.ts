@@ -22,7 +22,7 @@ export function toList<T extends Flags<any>>(
   flags: T,
 ): (bitfield: any) => (keyof T)[] {
   const entries = Object.entries(flags)
-  return (val) =>
+  return val =>
     entries.reduce(
       (acc, [key, flag]) => ((val & flag) === flag ? [...acc, key] : acc),
       [] as (keyof T)[],

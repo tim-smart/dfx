@@ -37,13 +37,13 @@ export const handlers = <R, E>(
         type: Discord.InteractionCallbackType.PONG,
       } as any),
 
-    [Discord.InteractionType.APPLICATION_COMMAND]: (i) => {
+    [Discord.InteractionType.APPLICATION_COMMAND]: i => {
       const data = i.data as Discord.ApplicationCommandDatum
 
       return Maybe.fromNullable(Commands[data.name])
         .match(
           () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-          (command) =>
+          command =>
             Effect.isEffect(command.handle)
               ? command.handle
               : command.handle(context),
@@ -56,74 +56,72 @@ export const handlers = <R, E>(
 
       return pipe(
         ModalSubmit,
-        Arr.map((a) =>
+        Arr.map(a =>
           Effect.struct({
             command: Effect.succeed(a),
             match: a.predicate(data.custom_id),
           }),
         ),
-        (a) =>
-          a.collectAllPar
-            .flatMap((a) =>
+        _ =>
+          _.collectAllPar
+            .flatMap(a =>
               a
-                .findFirst((a) => a.match)
+                .findFirst(a => a.match)
                 .match(
                   () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                  (a) => a.command.handle,
+                  a => a.command.handle,
                 ),
             )
             .provideService(Ctx.ModalSubmitContext, data),
       )
     },
 
-    [Discord.InteractionType.MESSAGE_COMPONENT]: (i) => {
+    [Discord.InteractionType.MESSAGE_COMPONENT]: i => {
       const data = i.data as Discord.MessageComponentDatum
 
       return pipe(
         MessageComponent,
-        Arr.map((a) =>
+        Arr.map(a =>
           Effect.struct({
             command: Effect.succeed(a),
             match: a.predicate(data.custom_id),
           }),
         ),
-        (a) =>
+        a =>
           a.collectAllPar
-            .flatMap((a) =>
+            .flatMap(a =>
               a
-                .findFirst((a) => a.match)
+                .findFirst(a => a.match)
                 .match(
                   () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                  (a) => a.command.handle,
+                  a => a.command.handle,
                 ),
             )
             .provideService(Ctx.MessageComponentContext, data),
       )
     },
 
-    [Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE]: (i) => {
+    [Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE]: i => {
       const data = i.data as Discord.ApplicationCommandDatum
 
       return IxHelpers.focusedOption(data)
-        .map((focusedOption) =>
+        .map(focusedOption =>
           pipe(
             Autocomplete,
-            Arr.map((a) =>
+            Arr.map(_ =>
               Effect.struct({
-                command: Effect.succeed(a),
-                match: a.predicate(data, focusedOption),
+                command: Effect.succeed(_),
+                match: _.predicate(data, focusedOption),
               }),
             ),
-            (a) =>
+            a =>
               a.collectAllPar
-                .flatMap((a) =>
-                  a
-                    .findFirst((a) => a.match)
-                    .match(
-                      () =>
-                        Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                      (a) => a.command.handle,
-                    ),
+                .flatMap(_ =>
+                  _.findFirst(_ => _.match).match(
+                    () =>
+                      Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
+                    _ => _.command.handle,
+                  ),
                 )
                 .provideService(Ctx.ApplicationCommandContext, data)
                 .provideService(Ctx.FocusedOptionContext, { focusedOption }),

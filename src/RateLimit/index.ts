@@ -33,7 +33,7 @@ export interface RateLimitStore {
 export const RateLimitStore = Tag<RateLimitStore>()
 export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
-const makeLimiter = Do(($) => {
+const makeLimiter = Do($ => {
   const store = $(Effect.service(RateLimitStore))
   const log = $(Effect.service(Log.Log))
 
@@ -48,7 +48,7 @@ const makeLimiter = Do(($) => {
     return store
       .incrementCounter(key, windowMs, limit)
       .map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl))
-      .tap((d) =>
+      .tap(d =>
         log.debug("RateLimitStore maybeWait", {
           key,
           window: window.millis,

@@ -43,6 +43,6 @@ export const make = ({ token, rest, gateway }: MakeOpts): DiscordConfig => ({
   },
 })
 
-export const makeLayer = flow(make, (_) => Layer.succeed(DiscordConfig, _))
-export const makeFromConfig = (a: Config<MakeOpts>) =>
-  a.config.map(make).toLayer(DiscordConfig)
+export const makeLayer = flow(make, _ => Layer.succeed(DiscordConfig, _))
+export const makeFromConfig = (_: Config.Wrap<MakeOpts>) =>
+  Config.unwrap(_).config.map(make).toLayer(DiscordConfig)

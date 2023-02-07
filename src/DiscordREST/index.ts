@@ -1,9 +1,9 @@
-import { millis } from "@fp-ts/data/Duration"
+import { millis } from "@effect/data/Duration"
 import Pkg from "../package.json" assert { type: "json" }
 import { ResponseWithData, RestResponse } from "./types.js"
 import { rateLimitFromHeaders, retryAfter, routeFromConfig } from "./utils.js"
 
-const make = Do(($) => {
+const make = Do($ => {
   const http = $(Effect.service(Http))
   const { token, rest } = $(Effect.service(DiscordConfig.DiscordConfig))
 
@@ -22,20 +22,19 @@ const make = Do(($) => {
   const addBadRoute = (route: string) =>
     [
       log.info("DiscordREST", "addBadRoute", route),
-      badRoutesRef.update((s) => s.add(route)),
+      badRoutesRef.update(s => s.add(route)),
       store.incrementCounter(
         "dfx.rest.invalid",
         Duration.minutes(10).millis,
         10000,
       ),
     ].collectAllParDiscard
-  const isBadRoute = (route: string) =>
-    badRoutesRef.get.map((s) => s.has(route))
+  const isBadRoute = (route: string) => badRoutesRef.get.map(s => s.has(route))
   const removeBadRoute = (route: string) =>
-    badRoutesRef.update((s) => s.remove(route))
+    badRoutesRef.update(s => s.remove(route))
 
   const invalidRateLimit = (route: string) =>
-    isBadRoute(route).tap((invalid) =>
+    isBadRoute(route).tap(invalid =>
       invalid
         ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
         : Effect.unit(),
@@ -43,7 +42,7 @@ const make = Do(($) => {
 
   // Request rate limiting
   const requestRateLimit = (path: string, init: RequestInit) =>
-    Do(($) => {
+    Do($ => {
       const route = routeFromConfig(path, init)
       const maybeBucket = $(store.getBucketForRoute(route))
       const bucket = maybeBucket.getOrElse(
@@ -61,7 +60,7 @@ const make = Do(($) => {
 
   // Update rate limit buckets
   const updateBuckets = (path: string, init: RequestInit, response: Response) =>
-    Do(($) => {
+    Do($ => {
       const route = routeFromConfig(path, init)
       const { bucket, retryAfter, limit, remaining } = $(
         Effect.fromOption(rateLimitFromHeaders(response.headers)),
@@ -95,7 +94,7 @@ const make = Do(($) => {
     FetchError | StatusCodeError | JsonParseError,
     ResponseWithData<A>
   > =>
-    Do(($) => {
+    Do($ => {
       $(requestRateLimit(path, init))
       $(globalRateLimit)
 
@@ -113,10 +112,10 @@ const make = Do(($) => {
       $(updateBuckets(path, init, response.response))
 
       return response
-    }).catchTag("StatusCodeError", (e) => {
+    }).catchTag("StatusCodeError", e => {
       switch (e.code) {
         case 403:
-          return Do(($) => {
+          return Do($ => {
             $(
               [
                 log.info("DiscordREST", "403", path),
@@ -128,7 +127,7 @@ const make = Do(($) => {
           })
 
         case 429:
-          return Do(($) => {
+          return Do($ => {
             $(
               [
                 log.info("DiscordREST", "429", path),

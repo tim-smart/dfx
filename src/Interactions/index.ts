@@ -39,13 +39,13 @@ export class InteractionBuilder<R, E> {
         (c): c is D.GlobalApplicationCommand<R, E> =>
           c._tag === "GlobalApplicationCommand",
       )
-      .map((c) => c.command)
+      .map(c => c.command)
 
-    return Effect.serviceWithEffect(DiscordREST, (rest) =>
+    return Effect.serviceWithEffect(DiscordREST, rest =>
       rest
         .getCurrentBotApplicationInformation()
-        .flatMap((r) => r.json)
-        .flatMap((app) =>
+        .flatMap(r => r.json)
+        .flatMap(app =>
           rest.bulkOverwriteGlobalApplicationCommands(app.id, {
             body: JSON.stringify(commands),
           }),
@@ -59,9 +59,9 @@ export class InteractionBuilder<R, E> {
         (c): c is D.GuildApplicationCommand<R, E> =>
           c._tag === "GuildApplicationCommand",
       )
-      .map((c) => c.command)
+      .map(c => c.command)
 
-    return Effect.serviceWithEffect(DiscordREST, (rest) =>
+    return Effect.serviceWithEffect(DiscordREST, rest =>
       rest.bulkOverwriteGuildApplicationCommands(
         appId,
         guildId,

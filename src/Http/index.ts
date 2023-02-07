@@ -1,22 +1,22 @@
 const make = () => {
   const request = (url: URL | string, init: RequestInit = {}) =>
     Effect.tryCatchPromiseInterrupt(
-      (signal) =>
+      signal =>
         fetch(url, {
           ...init,
           signal,
         }),
-      (e) => new FetchError(e),
+      e => new FetchError(e),
     ).filterOrElseWith(
-      (r) => r.status < 300,
-      (r) => Effect.fail(new StatusCodeError(r)),
+      r => r.status < 300,
+      r => Effect.fail(new StatusCodeError(r)),
     )
 
   const requestWithJson = <A = unknown>(
     url: URL | string,
     init: RequestInit = {},
   ) =>
-    request(url, init).map((response) => ({
+    request(url, init).map(response => ({
       response,
       json: json<A>(response),
       blob: blob(response),
@@ -51,7 +51,7 @@ export class JsonParseError {
 export const json = <A = unknown>(r: Response) =>
   Effect.tryCatchPromise(
     (): Promise<A> => r.json(),
-    (reason) => new JsonParseError(reason),
+    reason => new JsonParseError(reason),
   )
 
 export class BlobError {
@@ -62,5 +62,5 @@ export class BlobError {
 export const blob = (r: Response) =>
   Effect.tryCatchPromise(
     () => r.blob(),
-    (reason) => new BlobError(reason),
+    reason => new BlobError(reason),
   )

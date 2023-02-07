@@ -54,18 +54,18 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       driver
         .get(parentId, id)
         .someOrElseEffect(() =>
-          onMiss(parentId, id).tap((a) => driver.set(parentId, id, a)),
+          onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
         ),
 
     getForParent: (parentId: string) =>
       driver.getForParent(parentId).someOrElseEffect(() =>
         onParentMiss(parentId)
           .tap(
-            (entries) =>
+            entries =>
               entries.map(([id, a]) => driver.set(parentId, id, a))
                 .collectAllPar,
           )
-          .map((entries) => new Map(entries) as ReadonlyMap<string, A>),
+          .map(entries => new Map(entries) as ReadonlyMap<string, A>),
       ),
 
     run: sync.zipPar(driver.run).asUnit,
@@ -97,7 +97,7 @@ export const make = <EOps, EDriver, EMiss, A>({
     get: (id: string) =>
       driver
         .get(id)
-        .someOrElseEffect(() => onMiss(id).tap((a) => driver.set(id, a))),
+        .someOrElseEffect(() => onMiss(id).tap(a => driver.set(id, a))),
     run: sync.zipPar(driver.run).asUnit,
   }
 }

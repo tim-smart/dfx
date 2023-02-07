@@ -28,7 +28,7 @@ export class ResolvedDataNotFound {
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(InteractionContext, (a) =>
+  Effect.serviceWithEffect(InteractionContext, a =>
     IxHelpers.resolveValues(f)(a).match(
       () => Effect.fail(new ResolvedDataNotFound(a)),
       Effect.succeed,
@@ -39,7 +39,7 @@ export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(InteractionContext, (a) =>
+  Effect.serviceWithEffect(InteractionContext, a =>
     IxHelpers.resolveOptionValue(
       name,
       f,
@@ -51,7 +51,7 @@ export const resolved = <A>(
 
 export const focusedOptionValue = Effect.serviceWith(
   FocusedOptionContext,
-  (a) => a.focusedOption.value ?? "",
+  a => a.focusedOption.value ?? "",
 )
 
 export class SubCommandNotFound {
@@ -82,14 +82,14 @@ export const handleSubCommands = <
   | SubCommandNotFound,
   Discord.InteractionResponse
 > =>
-  Effect.service(ApplicationCommandContext).flatMap((data) =>
+  Effect.service(ApplicationCommandContext).flatMap(data =>
     pipe(
       IxHelpers.allSubCommands(data),
-      Arr.findFirst((a) => !!commands[a.name]),
-      (o) => o.toEither(() => new SubCommandNotFound(data)),
+      Arr.findFirst(a => !!commands[a.name]),
+      o => o.toEither(() => new SubCommandNotFound(data)),
       Effect.fromEither,
-      (a) =>
-        a.flatMap((command) =>
+      a =>
+        a.flatMap(command =>
           commands[command.name].provideService(SubCommandContext, {
             command,
           }),
@@ -99,7 +99,7 @@ export const handleSubCommands = <
 
 export const currentSubCommand = Effect.serviceWith(
   SubCommandContext,
-  (a) => a.command,
+  a => a.command,
 )
 
 export const optionsMap = Effect.serviceWith(
@@ -121,12 +121,12 @@ export const option = (name: string) =>
   Effect.serviceWith(ApplicationCommandContext, IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
-  option(name).flatMap((o) =>
+  option(name).flatMap(o =>
     o
-      .flatMapNullable((a) => a.value)
+      .flatMapNullable(a => a.value)
       .match(
         () =>
-          command.flatMap((data) =>
+          command.flatMap(data =>
             Effect.fail(new RequiredOptionNotFound(data, name)),
           ),
         Effect.succeed,
@@ -134,7 +134,7 @@ export const optionValue = (name: string) =>
   )
 
 export const optionValueOptional = (name: string) =>
-  option(name).map((o) => o.flatMapNullable((a) => a.value))
+  option(name).map(o => o.flatMapNullable(a => a.value))
 
 export const modalValues = Effect.serviceWith(
   ModalSubmitContext,

@@ -1657,19 +1657,19 @@ export function createRoutes<O = any>(
         url: `/channels/${channelId}/webhooks`,
         options,
       }),
-    getCurrentAuthorizationInformation: (options) =>
+    getCurrentAuthorizationInformation: options =>
       fetch({
         method: "GET",
         url: `/oauth2/@me`,
         options,
       }),
-    getCurrentBotApplicationInformation: (options) =>
+    getCurrentBotApplicationInformation: options =>
       fetch({
         method: "GET",
         url: `/oauth2/applications/@me`,
         options,
       }),
-    getCurrentUser: (options) =>
+    getCurrentUser: options =>
       fetch({
         method: "GET",
         url: `/users/@me`,
@@ -1694,13 +1694,13 @@ export function createRoutes<O = any>(
         url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         options,
       }),
-    getGateway: (options) =>
+    getGateway: options =>
       fetch({
         method: "GET",
         url: `/gateway`,
         options,
       }),
-    getGatewayBot: (options) =>
+    getGatewayBot: options =>
       fetch({
         method: "GET",
         url: `/gateway/bot`,
@@ -1955,7 +1955,7 @@ export function createRoutes<O = any>(
         url: `/users/@me/applications/${applicationId}/role-connection`,
         options,
       }),
-    getUserConnections: (options) =>
+    getUserConnections: options =>
       fetch({
         method: "GET",
         url: `/users/@me/connections`,
@@ -2049,7 +2049,7 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    listNitroStickerPacks: (options) =>
+    listNitroStickerPacks: options =>
       fetch({
         method: "GET",
         url: `/sticker-packs`,
@@ -2083,7 +2083,7 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    listVoiceRegions: (options) =>
+    listVoiceRegions: options =>
       fetch({
         method: "GET",
         url: `/voice/regions`,
@@ -4039,7 +4039,7 @@ export const GuildMemberFlag = {
   DID_REJOIN: 1 << 0,
   /** Member has completed onboarding */
   COMPLETED_ONBOARDING: 1 << 1,
-  /** Member bypasses guild verification requirements */
+  /** Member is exempt from guild verification requirements */
   BYPASSES_VERIFICATION: 1 << 2,
   /** Member has started onboarding */
   STARTED_ONBOARDING: 1 << 3,
@@ -5075,6 +5075,8 @@ export interface ModifyGuildMemberParams {
   channel_id: Snowflake
   /** when the user's timeout will expire and the user will be able to communicate in the guild again (up to 28 days in the future), set to null to remove timeout. Will throw a 403 error if the user has the ADMINISTRATOR permission or is the owner of the guild */
   communication_disabled_until: string
+  /** guild member flags */
+  flags: number
 }
 export interface ModifyGuildMfaLevelParams {
   /** MFA level */

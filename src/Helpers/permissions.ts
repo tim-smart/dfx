@@ -76,7 +76,7 @@ export const forChannel =
         overwriteIsForMember(guild_id)(memberOrRole),
       )
     } else {
-      const everyone = roles.find((role) => role.name === "@everyone")
+      const everyone = roles.find(role => role.name === "@everyone")
 
       basePermissions =
         BigInt(everyone?.permissions || "0") | BigInt(memberOrRole.permissions)
@@ -115,7 +115,7 @@ export const hasInChannel =
     channel: Discord.Channel,
     memberOrRole: Discord.GuildMember | Discord.Role,
   ) =>
-    Do(($) => {
+    Do($ => {
       const roles = $(rolesCache.getForParent(channel.guild_id!))
       const channelPerms = forChannel([...roles.values()])(channel)(
         memberOrRole,
@@ -126,11 +126,11 @@ export const hasInChannel =
 export const hasInGuild =
   <E>(rolesCache: RolesCache<E>, permission: bigint) =>
   (guildId: Discord.Snowflake, member: Discord.GuildMember) =>
-    Do(($) => {
+    Do($ => {
       const roles = $(rolesCache.getForParent(guildId))
       const hasPerm = has(permission)
 
-      return member.roles.some((id) => {
+      return member.roles.some(id => {
         const role = roles.get(id)
         return role ? hasPerm(role.permissions) : false
       })

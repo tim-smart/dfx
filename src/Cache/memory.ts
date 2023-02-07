@@ -13,7 +13,7 @@ export const createWithParent = <T>() =>
         return count
       }),
 
-      sizeForParent: (parentId) =>
+      sizeForParent: parentId =>
         Effect.sync(() => map.get(parentId)?.size ?? 0),
 
       get: (parentId, resourceId) =>
@@ -22,7 +22,7 @@ export const createWithParent = <T>() =>
             Maybe.fromNullable(map.get(parentId)?.get(resourceId)),
         ),
 
-      getForParent: (parentId) =>
+      getForParent: parentId =>
         Effect.sync(() => Maybe.fromNullable(map.get(parentId))),
 
       set: (parentId, resourceId, resource) =>
@@ -38,7 +38,7 @@ export const createWithParent = <T>() =>
           map.get(parentId)?.delete(resourceId)
         }),
 
-      parentDelete: (parentId) =>
+      parentDelete: parentId =>
         Effect.sync(() => {
           map.delete(parentId)
         }),
@@ -56,7 +56,7 @@ export const create = <T>() =>
     return createDriver({
       size: Effect.sync(() => map.size),
 
-      get: (resourceId) =>
+      get: resourceId =>
         Effect.sync((): Maybe<T> => Maybe.fromNullable(map.get(resourceId))),
 
       set: (resourceId, resource) =>
@@ -64,7 +64,7 @@ export const create = <T>() =>
           map.set(resourceId, resource)
         }),
 
-      delete: (resourceId) =>
+      delete: resourceId =>
         Effect.sync(() => {
           map.delete(resourceId)
         }),

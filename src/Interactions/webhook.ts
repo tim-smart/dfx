@@ -19,7 +19,7 @@ const checkSignature = (
     signature: Maybe.fromNullable(headers["x-signature-ed25519"]),
     timestamp: Maybe.fromNullable(headers["x-signature-timestamp"]),
   })
-    .filter((a) => {
+    .filter(a => {
       const enc = new TextEncoder()
       return Nacl.sign.detached.verify(
         enc.encode(a.timestamp + body),
@@ -39,7 +39,7 @@ const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
 })
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
-export const makeConfigLayer = flow(makeConfig, (_) =>
+export const makeConfigLayer = flow(makeConfig, _ =>
   Layer.succeed(WebhookConfig, _),
 )
 export const makeFromConfig = (a: Config<MakeConfigOpts>) =>
@@ -51,13 +51,13 @@ export class WebhookParseError {
 }
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
-  Do(($) => {
+  Do($ => {
     const { publicKey } = $(Effect.service(WebhookConfig))
     $(Effect.fromEither(checkSignature(publicKey, headers, body)))
     return $(
       Effect.tryCatch(
         () => JSON.parse(body) as Discord.Interaction,
-        (reason) => new WebhookParseError(reason),
+        reason => new WebhookParseError(reason),
       ),
     )
   })
@@ -65,7 +65,7 @@ const fromHeadersAndBody = (headers: Headers, body: string) =>
 const run = <R, E>(definitions: D.InteractionDefinition<R, E>[]) => {
   const handler = handlers(definitions)
   return (headers: Headers, body: string) =>
-    Do(($) => {
+    Do($ => {
       const interaction = $(fromHeadersAndBody(headers, body))
       return $(
         handler[interaction.type](interaction).provideService(

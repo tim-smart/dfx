@@ -118,7 +118,7 @@ export const ops = <E, T>({ id, create, update, remove }: OpsOptions<E, T>) => {
 export const guilds = <RM, EM, E>(
   makeDriver: Effect<RM, EM, CacheDriver<E, Discord.Guild>>,
 ) =>
-  Do(($) => {
+  Do($ => {
     const driver = $(makeDriver)
     const gateway = $(Effect.service(Gateway.DiscordGateway))
     const rest = $(Effect.service(DiscordREST))
@@ -127,7 +127,7 @@ export const guilds = <RM, EM, E>(
       driver,
       ops: ops({
         id: (g: Discord.Guild) => g.id,
-        create: gateway.fromDispatch("GUILD_CREATE").map((g) => ({
+        create: gateway.fromDispatch("GUILD_CREATE").map(g => ({
           ...g,
           channels: [],
           roles: [],
@@ -135,16 +135,16 @@ export const guilds = <RM, EM, E>(
           members: [],
         })),
         update: gateway.fromDispatch("GUILD_UPDATE"),
-        remove: gateway.fromDispatch("GUILD_DELETE").map((a) => a.id),
+        remove: gateway.fromDispatch("GUILD_DELETE").map(a => a.id),
       }),
-      onMiss: (id) => rest.getGuild(id).flatMap((r) => r.json),
+      onMiss: id => rest.getGuild(id).flatMap(r => r.json),
     })
   })
 
 export const channels = <RM, EM, E>(
   makeDriver: Effect<RM, EM, ParentCacheDriver<E, Discord.Channel>>,
 ) =>
-  Do(($) => {
+  Do($ => {
     const driver = $(makeDriver)
     const gateway = $(Effect.service(Gateway.DiscordGateway))
     const rest = $(Effect.service(DiscordREST))
@@ -155,31 +155,31 @@ export const channels = <RM, EM, E>(
         id: (a: Discord.Channel) => a.id,
         fromParent: gateway
           .fromDispatch("GUILD_CREATE")
-          .map((g) => [g.id, g.channels]),
+          .map(g => [g.id, g.channels]),
         create: gateway
           .fromDispatch("CHANNEL_CREATE")
-          .map((c) => [c.guild_id!, c]),
+          .map(c => [c.guild_id!, c]),
         update: gateway
           .fromDispatch("CHANNEL_UPDATE")
-          .map((c) => [c.guild_id!, c]),
+          .map(c => [c.guild_id!, c]),
         remove: gateway
           .fromDispatch("CHANNEL_DELETE")
-          .map((a) => [a.guild_id!, a.id]),
-        parentRemove: gateway.fromDispatch("GUILD_DELETE").map((g) => g.id),
+          .map(a => [a.guild_id!, a.id]),
+        parentRemove: gateway.fromDispatch("GUILD_DELETE").map(g => g.id),
       }),
-      onMiss: (id) => rest.getChannel(id).flatMap((r) => r.json),
-      onParentMiss: (guildId) =>
+      onMiss: id => rest.getChannel(id).flatMap(r => r.json),
+      onParentMiss: guildId =>
         rest
           .getGuildChannels(guildId)
-          .flatMap((r) => r.json)
-          .map((a) => a.map((a) => [a.id, a])),
+          .flatMap(r => r.json)
+          .map(a => a.map(a => [a.id, a])),
     })
   })
 
 export const roles = <RM, EM, E>(
   makeDriver: Effect<RM, EM, ParentCacheDriver<E, Discord.Role>>,
 ) =>
-  Do(($) => {
+  Do($ => {
     const driver = $(makeDriver)
     const gateway = $(Effect.service(Gateway.DiscordGateway))
     const rest = $(Effect.service(DiscordREST))
@@ -190,23 +190,23 @@ export const roles = <RM, EM, E>(
         id: (a: Discord.Role) => a.id,
         fromParent: gateway
           .fromDispatch("GUILD_CREATE")
-          .map((g) => [g.id, g.roles]),
+          .map(g => [g.id, g.roles]),
         create: gateway
           .fromDispatch("GUILD_ROLE_CREATE")
-          .map((r) => [r.guild_id, r.role]),
+          .map(r => [r.guild_id, r.role]),
         update: gateway
           .fromDispatch("GUILD_ROLE_UPDATE")
-          .map((r) => [r.guild_id, r.role]),
+          .map(r => [r.guild_id, r.role]),
         remove: gateway
           .fromDispatch("GUILD_ROLE_DELETE")
-          .map((a) => [a.guild_id, a.role_id]),
-        parentRemove: gateway.fromDispatch("GUILD_DELETE").map((g) => g.id),
+          .map(a => [a.guild_id, a.role_id]),
+        parentRemove: gateway.fromDispatch("GUILD_DELETE").map(g => g.id),
       }),
-      onMiss: (id) => Effect.fail(new CacheMissError("RolesCache", id)),
-      onParentMiss: (guildId) =>
+      onMiss: id => Effect.fail(new CacheMissError("RolesCache", id)),
+      onParentMiss: guildId =>
         rest
           .getGuildRoles(guildId)
-          .flatMap((r) => r.json)
-          .map((a) => a.map((a) => [a.id, a])),
+          .flatMap(r => r.json)
+          .map(a => a.map(a => [a.id, a])),
     })
   })
