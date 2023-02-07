@@ -30,7 +30,7 @@ const hello = Ix.global(
 const ix = Ix.builder.add(hello)
 
 // Optionally sync the commands
-ix.syncGlobal.provideLayer(LiveEnv).unsafeRun()
+ix.syncGlobal.provideLayer(LiveEnv).runFork
 
 // ==== HTTP handling
 // You could replace this with another http server like express, or use edge
@@ -57,18 +57,18 @@ server.post("/", (req, reply) => {
   handleRequest({
     headers: req.headers,
     body: req.body as string,
-    success: (a) =>
+    success: a =>
       Effect.sync(() => {
         reply.send(a)
       }),
-    error: (e) =>
+    error: e =>
       Effect.sync(() => {
-        console.error("FAILURE", e.pretty())
+        console.error("FAILURE", e.pretty)
         reply.code(500).send()
       }),
   })
     .provideLayer(LiveEnv)
-    .unsafeRun()
+    .runCallback()
 })
 
 // Start the server

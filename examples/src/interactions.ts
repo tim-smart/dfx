@@ -4,12 +4,9 @@ import Dotenv from "dotenv"
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = makeFromConfig(
-  {
-    token: Config.secret("DISCORD_BOT_TOKEN"),
-  },
-  true,
-)
+const LiveEnv = makeFromConfig({
+  token: Config.secret("DISCORD_BOT_TOKEN"),
+})
 
 // Create your interaction definitions.
 // Here we are creating a global application command.
@@ -45,11 +42,11 @@ const greeting = Ix.global(
       },
     ],
   } as const,
-  (i) =>
+  _ =>
     Effect.struct({
-      who: i.optionValue("who"),
-      greeting: i.optionValueOptional("greeting").someOrElse(() => "Hello"),
-      // fail: i.optionValue("fail"), // <- this would be a type error
+      who: _.optionValue("who"),
+      greeting: _.optionValueOptional("greeting").someOrElse(() => "Hello"),
+      // fail: _.optionValue("fail"), // <- this would be a type error
     }).map(({ who, greeting }) => ({
       type: 4,
       data: {
@@ -61,17 +58,17 @@ const greeting = Ix.global(
 // Build your program use `Ix.builder`
 const ix = Ix.builder.add(hello).add(greeting)
 
-const program = ix.runGateway((a) =>
-  a.catchAll((e) =>
+const program = ix.runGateway(_ =>
+  _.catchAll(e =>
     Effect.sync(() => {
-      console.error("CAUGHT ERROR", e)
+      console.error("CAUGHT INTERACTION ERROR", e)
     }),
   ),
 )
 
 // Run it
-program.provideLayer(LiveEnv).unsafeRun((exit) => {
-  if (exit.isFailure()) {
-    console.error(exit.cause.pretty())
-  }
-})
+program.provideLayer(LiveEnv).tapErrorCause(_ =>
+  Effect(() => {
+    console.error(_.squash)
+  }),
+).runFork
