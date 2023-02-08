@@ -22,7 +22,7 @@ export const numberHeader = (headers: Headers) => (key: string) =>
 
 export const retryAfter = (headers: Headers) =>
   numberHeader(headers)("x-ratelimit-reset-after")
-    .catchAll(() => numberHeader(headers)("retry-after"))
+    .orElse(() => numberHeader(headers)("retry-after"))
     .map(Duration.seconds)
 
 export const rateLimitFromHeaders = (headers: Headers) =>
