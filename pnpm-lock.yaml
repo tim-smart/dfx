@@ -7,10 +7,11 @@ specifiers:
   '@effect/stream': ~0.3.0
   '@fp-ts/core': ^0.2.0
   '@tim-smart/discord-api-docs-parser': ^0.5.0
-  '@tsplus-types/effect__data': 0.1.0-cf9876a
-  '@tsplus-types/effect__io': 0.1.11-cf9876a
-  '@tsplus-types/effect__stream': 0.3.0-cf9876a
-  '@tsplus-types/fp-ts__core': 0.2.0-cf9876a
+  '@tsplus-types/effect__data': 0.1.0-bbebbef
+  '@tsplus-types/effect__io': 0.1.11-bbebbef
+  '@tsplus-types/effect__stream': 0.3.0-bbebbef
+  '@tsplus-types/fp-ts__core': 0.2.1-bbebbef
+  '@tsplus-types/fp-ts__schema': 0.1.3-bbebbef
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   dotenv: ^16.0.3
@@ -37,10 +38,11 @@ optionalDependencies:
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
-  '@tsplus-types/effect__data': 0.1.0-cf9876a_@effect+data@0.1.0
-  '@tsplus-types/effect__io': 0.1.11-cf9876a_@effect+io@0.1.11
-  '@tsplus-types/effect__stream': 0.3.0-cf9876a_@effect+stream@0.3.0
-  '@tsplus-types/fp-ts__core': 0.2.0-cf9876a_@fp-ts+core@0.2.0
+  '@tsplus-types/effect__data': 0.1.0-bbebbef_@effect+data@0.1.0
+  '@tsplus-types/effect__io': 0.1.11-bbebbef_@effect+io@0.1.11
+  '@tsplus-types/effect__stream': 0.3.0-bbebbef_@effect+stream@0.3.0
+  '@tsplus-types/fp-ts__core': 0.2.1-bbebbef_@fp-ts+core@0.2.0
+  '@tsplus-types/fp-ts__schema': 0.1.3-bbebbef
   '@types/ws': 8.5.4
   dotenv: 16.0.3
   lerna: 6.4.1
@@ -1223,36 +1225,42 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@tsplus-types/effect__data/0.1.0-cf9876a_@effect+data@0.1.0:
-    resolution: {integrity: sha512-PFJ0Lh0ilCdYjapyab2S+8j7GnIk11IQ5EWHKR5Y+yLzHj5OOV9FWKRUeXv+qm2HC9Zg7YtWPIhU9saJlCPnNw==}
+  /@tsplus-types/effect__data/0.1.0-bbebbef_@effect+data@0.1.0:
+    resolution: {integrity: sha512-a3mo7v5jRBpDJAi2lYqPBBUfVW/HGcXayxEu5rHOvr+Qqdl7sE51uzR9TFvdLAwm8Elyr0rrLmVK/RUAtVADDg==}
     peerDependencies:
       '@effect/data': 0.1.0
     dependencies:
       '@effect/data': 0.1.0
     dev: true
 
-  /@tsplus-types/effect__io/0.1.11-cf9876a_@effect+io@0.1.11:
-    resolution: {integrity: sha512-ucYpZU4Q48mMoB6RtZEaZrmw42l6FqOyLOCXwir5XAZ20OXz0U6hLH/f200sDeqz2Di42ol9IwOS/2Y+mdKZbw==}
+  /@tsplus-types/effect__io/0.1.11-bbebbef_@effect+io@0.1.11:
+    resolution: {integrity: sha512-5ooAoZUoAaopbiL8gTezFzpFvfpP8XG8qAycB63JGlMMuWyuelns4NUs1eV5+3gWdnIo1BHtIiLyxBEpZy572A==}
     peerDependencies:
       '@effect/io': 0.1.11
     dependencies:
       '@effect/io': 0.1.11
     dev: true
 
-  /@tsplus-types/effect__stream/0.3.0-cf9876a_@effect+stream@0.3.0:
-    resolution: {integrity: sha512-3AeWo7G9A7iOOC33S0eNf+82wIfon3zMBEPW9AJp4oEVackjfYwtW8X7WNgTBu0vqypkfwTx39PzJUEJcvBE1g==}
+  /@tsplus-types/effect__stream/0.3.0-bbebbef_@effect+stream@0.3.0:
+    resolution: {integrity: sha512-qFxzbFp9v1th+2Z16JqU7w75PcjQNtM1L7kx1Y9+ttSeXTXjIc5KA9S1RJtFo9znZNRr+NZ5sl4Fjcl972VurQ==}
     peerDependencies:
       '@effect/stream': 0.3.0
     dependencies:
       '@effect/stream': 0.3.0
     dev: true
 
-  /@tsplus-types/fp-ts__core/0.2.0-cf9876a_@fp-ts+core@0.2.0:
-    resolution: {integrity: sha512-2/el0vVVPfKX6ddI68tfnMdGQq53OxMeJMS3XInH/MVBVGn8MocN/tCkC1VxCqshxhhGuTQh5r2jqtbOFOQwtA==}
+  /@tsplus-types/fp-ts__core/0.2.1-bbebbef_@fp-ts+core@0.2.0:
+    resolution: {integrity: sha512-Ci1oaAx1NCoMlYJU197akOzYR9k1/Mk4pVmZCkhrf7BzHr8uFkje7OPU2FUO3J1pKUTA6CPEpyjLGZAe4kpUhw==}
     peerDependencies:
-      '@fp-ts/core': 0.2.0
+      '@fp-ts/core': 0.2.1
     dependencies:
       '@fp-ts/core': 0.2.0
+    dev: true
+
+  /@tsplus-types/fp-ts__schema/0.1.3-bbebbef:
+    resolution: {integrity: sha512-slHCNMdrXiaYs99SEVHDI4QIFLTaBoYfN07tUqwaV6loD7ncZwxNLsTgxdvpLDm+jpY9MSCDcS6IGuMgDRd02Q==}
+    peerDependencies:
+      '@fp-ts/schema': 0.1.3
     dev: true
 
   /@types/minimatch/3.0.5:
