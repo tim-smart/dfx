@@ -112,7 +112,6 @@ const make = Do($ => {
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
         })
 
-      console.trace(requestWithCreds)
       const response = $(
         requestWithCreds.fetch().mapError(_ => new DiscordRESTError(_)),
       )
