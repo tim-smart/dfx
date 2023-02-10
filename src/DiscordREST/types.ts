@@ -1,15 +1,13 @@
-import { BlobError, FetchError, JsonParseError, StatusCodeError } from "dfx"
+import * as Http from "@effect-http/client"
+import { DiscordRESTError } from "dfx/DiscordREST"
 import { Effect } from "dfx/_common"
 
-export interface ResponseWithData<A> {
-  response: Response
-  json: Effect<never, JsonParseError, A>
-  text: Effect<never, never, string>
-  blob: Effect<never, BlobError, Blob>
+export interface ResponseWithData<A> extends Http.response.Response {
+  readonly json: Effect<never, Http.HttpClientError, A>
 }
 
 export type RestResponse<T> = Effect<
   never,
-  FetchError | StatusCodeError | JsonParseError,
+  DiscordRESTError,
   ResponseWithData<T>
 >

@@ -1,10 +1,19 @@
 import { millis } from "@effect/data/Duration"
 import Pkg from "../package.json" assert { type: "json" }
-import { ResponseWithData, RestResponse } from "./types.js"
-import { rateLimitFromHeaders, retryAfter, routeFromConfig } from "./utils.js"
+import { ResponseWithData, RestResponse } from "./DiscordREST/types.js"
+import {
+  rateLimitFromHeaders,
+  retryAfter,
+  routeFromConfig,
+} from "./DiscordREST/utils.js"
+import * as Http from "@effect-http/client"
+
+export class DiscordRESTError {
+  readonly _tag = "DiscordRESTError"
+  constructor(readonly error: Http.HttpClientError) {}
+}
 
 const make = Do($ => {
-  const http = $(Effect.service(Http))
   const { token, rest } = $(Effect.service(DiscordConfig.DiscordConfig))
 
   const log = $(Effect.service(Log.Log))
@@ -41,9 +50,9 @@ const make = Do($ => {
     ).asUnit
 
   // Request rate limiting
-  const requestRateLimit = (path: string, init: RequestInit) =>
+  const requestRateLimit = (path: string, request: Http.Request) =>
     Do($ => {
-      const route = routeFromConfig(path, init)
+      const route = routeFromConfig(path, request.method)
       const maybeBucket = $(store.getBucketForRoute(route))
       const bucket = maybeBucket.getOrElse(
         (): BucketDetails => ({
@@ -59,9 +68,12 @@ const make = Do($ => {
     })
 
   // Update rate limit buckets
-  const updateBuckets = (path: string, init: RequestInit, response: Response) =>
+  const updateBuckets = (
+    request: Http.Request,
+    response: Http.response.Response,
+  ) =>
     Do($ => {
-      const route = routeFromConfig(path, init)
+      const route = routeFromConfig(request.url, request.method)
       const { bucket, retryAfter, limit, remaining } = $(
         Effect.fromOption(rateLimitFromHeaders(response.headers)),
       )
@@ -86,41 +98,43 @@ const make = Do($ => {
       $(effectsToRun.collectAllParDiscard)
     }).ignore
 
-  const request = <A = unknown>(
-    path: string,
-    init: RequestInit = {},
-  ): Effect<
-    never,
-    FetchError | StatusCodeError | JsonParseError,
-    ResponseWithData<A>
-  > =>
+  const executor = <A = unknown>(
+    request: Http.Request,
+  ): Effect<never, DiscordRESTError, ResponseWithData<A>> =>
     Do($ => {
-      $(requestRateLimit(path, init))
+      $(requestRateLimit(request.url, request))
       $(globalRateLimit)
 
+      const requestWithCreds = request
+        .updateUrl(_ => `${rest.baseUrl}${_}`)
+        .addHeaders({
+          Authorization: `Bot ${token.value}`,
+          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
+        })
+
+      console.trace(requestWithCreds)
       const response = $(
-        http.requestWithJson<A>(`${rest.baseUrl}${path}`, {
-          ...init,
-          headers: {
-            ...(init?.headers ?? {}),
-            Authorization: `Bot ${token.value}`,
-            "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
-          },
-        }),
+        requestWithCreds.fetch().mapError(_ => new DiscordRESTError(_)),
       )
 
-      $(updateBuckets(path, init, response.response))
+      $(updateBuckets(request, response))
 
-      return response
-    }).catchTag("StatusCodeError", e => {
-      switch (e.code) {
+      return response as ResponseWithData<A>
+    }).catchTag("DiscordRESTError", e => {
+      if (e.error._tag !== "StatusCodeError") {
+        return Effect.fail(e)
+      }
+
+      const response = e.error.response
+
+      switch (e.error.status) {
         case 403:
           return Do($ => {
             $(
               [
-                log.info("DiscordREST", "403", path),
-                addBadRoute(routeFromConfig(path, init)),
-                updateBuckets(path, init, e.response),
+                log.info("DiscordREST", "403", request.url),
+                addBadRoute(routeFromConfig(request.url, request.method)),
+                updateBuckets(request, response),
               ].collectAllParDiscard,
             )
             return $(Effect.fail(e))
@@ -130,66 +144,51 @@ const make = Do($ => {
           return Do($ => {
             $(
               [
-                log.info("DiscordREST", "429", path),
-                addBadRoute(routeFromConfig(path, init)),
-                updateBuckets(path, init, e.response),
+                log.info("DiscordREST", "429", request.url),
+                addBadRoute(routeFromConfig(request.url, request.method)),
+                updateBuckets(request, response),
                 Effect.sleep(
-                  retryAfter(e.response.headers).getOrElse(() =>
+                  retryAfter(response.headers).getOrElse(() =>
                     Duration.seconds(5),
                   ),
                 ),
               ].collectAllParDiscard,
             )
-            return $(request<A>(path, init))
+            return $(executor<A>(request))
           })
       }
 
       return Effect.fail(e)
     })
 
-  const routes = Discord.createRoutes<RequestInit>(
+  const routes = Discord.createRoutes<Partial<Http.MakeOptions>>(
     <R, P>({
       method,
       url,
       params,
       options = {},
-    }: Discord.Route<P, RequestInit>): RestResponse<R> => {
+    }: Discord.Route<P, Partial<Http.MakeOptions>>): RestResponse<R> => {
       const hasBody = method !== "GET" && method !== "DELETE"
-      let hasFormData = typeof (options?.body as any)?.append === "function"
-      let body: BodyInit | undefined = undefined
+      let request = Http.make(method as any)(url, options)
 
-      const headers: Record<string, string> = {}
-      if (hasBody && !hasFormData) {
-        headers["content-type"] = "application/json"
-      }
-
-      const qs = new URLSearchParams()
       if (!hasBody) {
-        Object.entries((params ?? {}) as Record<string, string>).forEach(
-          ([key, value]) => {
-            qs.append(key, value)
-          },
-        )
-      } else if (hasFormData) {
-        body = options.body!
         if (params) {
-          ;(body as FormData).append("payload_json", JSON.stringify(params))
+          request = request.appendParams(params as any)
         }
+      } else if (
+        request.body._tag === "Some" &&
+        request.body.value._tag === "FormDataBody"
+      ) {
+        request.body.value.value.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        body = JSON.stringify(params)
-      } else {
-        body = options.body!
+        request = request.json(params)
       }
 
-      return request(`${url}?${qs.toString()}`, {
-        method,
-        headers,
-        body,
-      })
+      return executor(request)
     },
   )
 
-  return { request, ...routes }
+  return { executor, ...routes }
 })
 
 export interface DiscordREST extends Effect.Success<typeof make> {}

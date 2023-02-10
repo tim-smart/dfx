@@ -1,11 +1,10 @@
-import { LiveDiscordREST } from "./DiscordREST/index.js"
-import { LiveHttp } from "./Http/index.js"
+import { LiveDiscordREST } from "./DiscordREST.js"
 import {
   MakeConfigOpts,
   makeConfigLayer,
   makeFromConfig as makeConfigFromConfig,
 } from "./Interactions/webhook.js"
-import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit/index.js"
+import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit.js"
 
 export {
   BadWebhookSignature,
@@ -18,7 +17,7 @@ export {
 
 export const MemoryRateLimit = LiveMemoryRateLimitStore > LiveRateLimiter
 
-export const MemoryREST = (MemoryRateLimit + LiveHttp) >> LiveDiscordREST
+export const MemoryREST = MemoryRateLimit >> LiveDiscordREST
 
 export const make = (
   config: DiscordConfig.MakeOpts & MakeConfigOpts,

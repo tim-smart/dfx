@@ -1,5 +1,5 @@
 import { millis } from "@effect/data/Duration"
-import { ShardStore } from "../ShardStore/index.js"
+import { ShardStore } from "./ShardStore.js"
 
 const make = Do($ => {
   const store = $(Effect.service(ShardStore))

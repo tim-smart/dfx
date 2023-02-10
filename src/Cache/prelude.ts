@@ -9,7 +9,7 @@ import {
   makeWithParent,
   ParentCacheDriver,
   ParentCacheOp,
-} from "./index.js"
+} from "../Cache.js"
 
 export interface OptsWithParentOptions<E, A> {
   id: (a: A) => string

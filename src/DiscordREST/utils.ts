@@ -1,8 +1,6 @@
 const majorResources = ["channels", "guilds", "webhooks"] as const
 
-export const routeFromConfig = (path: string, init: RequestInit) => {
-  const method = (init?.method ?? "get").toLowerCase()
-
+export const routeFromConfig = (path: string, method: string) => {
   // Only keep major ID's
   const routeURL = path
     .split("?")[0]

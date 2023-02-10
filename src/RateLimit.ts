@@ -1,5 +1,5 @@
-import { delayFrom } from "./utils.js"
-import * as Memory from "./memory.js"
+import { delayFrom } from "./RateLimit/utils.js"
+import * as Memory from "./RateLimit/memory.js"
 
 export type BucketDetails = {
   key: "global" | string

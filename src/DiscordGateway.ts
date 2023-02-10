@@ -1,4 +1,4 @@
-import { Sharder } from "./Sharder/index.js"
+import { Sharder } from "./DiscordGateway/Sharder.js"
 
 const fromDispatchFactory =
   <R, E>(source: Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>) =>

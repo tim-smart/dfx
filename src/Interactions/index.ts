@@ -1,6 +1,7 @@
 import { DiscordREST } from "dfx"
 import { Discord, Effect } from "dfx/_common"
 import * as D from "./definitions.js"
+import * as Http from "@effect-http/client"
 
 export { response as r } from "../Helpers/interactions.js"
 export * from "./context.js"
@@ -47,7 +48,7 @@ export class InteractionBuilder<R, E> {
         .flatMap(r => r.json)
         .flatMap(app =>
           rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-            body: JSON.stringify(commands),
+            body: Http.body.json(commands),
           }),
         ),
     )

@@ -1,6 +1,8 @@
+import * as Http from "@effect-http/client"
 import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder, InteractionContext } from "./index.js"
 import { splitDefinitions } from "./utils.js"
+import { DiscordRESTError } from "dfx/DiscordREST"
 
 export interface RunOpts {
   sync?: boolean
@@ -14,7 +16,7 @@ export const run =
     postHandler: (
       effect: Effect<
         R | DiscordREST | Discord.Interaction,
-        E | FetchError | StatusCodeError | JsonParseError | DefinitionNotFound,
+        E | DiscordRESTError | DefinitionNotFound,
         void
       >,
     ) => Effect<R2, E2, void>,
@@ -34,9 +36,7 @@ export const run =
 
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
-        {
-          body: JSON.stringify(GlobalApplicationCommand.map(a => a.command)),
-        },
+        { body: Http.body.json(GlobalApplicationCommand.map(a => a.command)) },
       )
 
       const guildSync = GuildApplicationCommand.length

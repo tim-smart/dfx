@@ -1,4 +1,4 @@
-import { BucketDetails, RateLimitStore } from "./index.js"
+import { BucketDetails, RateLimitStore } from "../RateLimit.js"
 
 interface Counter {
   count: number

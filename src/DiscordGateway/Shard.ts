@@ -1,7 +1,7 @@
-import * as Heartbeats from "./heartbeats.js"
-import * as Identify from "./identify.js"
-import * as InvalidSession from "./invalidSession.js"
-import * as Utils from "./utils.js"
+import * as Heartbeats from "./Shard/heartbeats.js"
+import * as Identify from "./Shard/identify.js"
+import * as InvalidSession from "./Shard/invalidSession.js"
+import * as Utils from "./Shard/utils.js"
 
 export const make = (shard: [id: number, count: number]) =>
   Do($ => {
