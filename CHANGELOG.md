@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.22.0](https://github.com/tim-smart/dfx/compare/dfx@0.21.22...dfx@0.22.0) (2023-02-10)
+
+
+### reactor
+
+* effect-http and remove index.ts files ([1222477](https://github.com/tim-smart/dfx/commit/122247746a8fc8d322396d895441904fd2d44916))
+
+
+### BREAKING CHANGES
+
+* Error types have changed
+
+
+
+
+
 ## [0.21.22](https://github.com/tim-smart/dfx/compare/dfx@0.21.21...dfx@0.21.22) (2023-02-08)
 
 **Note:** Version bump only for package dfx
