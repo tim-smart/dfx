@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.1](https://github.com/tim-smart/dfx/compare/dfx@0.22.0...dfx@0.22.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* DiscordREST package.json import ([0aee00b](https://github.com/tim-smart/dfx/commit/0aee00bc729353f326a71acfbf6bf2298992f604))
+
+
+
+
+
 # [0.22.0](https://github.com/tim-smart/dfx/compare/dfx@0.21.22...dfx@0.22.0) (2023-02-10)
 
 
