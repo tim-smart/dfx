@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "rootDir": "src",
     "outDir": "dist",
-    "resolveJsonModule": false,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
     "module": "ESNext",

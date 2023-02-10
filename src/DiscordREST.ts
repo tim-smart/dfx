@@ -1,5 +1,5 @@
 import { millis } from "@effect/data/Duration"
-import Pkg from "../package.json" assert { type: "json" }
+import Pkg from "./package.json" assert { type: "json" }
 import { ResponseWithData, RestResponse } from "./DiscordREST/types.js"
 import {
   rateLimitFromHeaders,
