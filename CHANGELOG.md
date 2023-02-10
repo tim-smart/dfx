@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.2](https://github.com/tim-smart/dfx/compare/dfx@0.22.1...dfx@0.22.2) (2023-02-10)
+
+
+### Bug Fixes
+
+* console.trace ([efc7081](https://github.com/tim-smart/dfx/commit/efc708164c2805b0125277c0c431731e5d884e1d))
+
+
+
+
+
 ## [0.22.1](https://github.com/tim-smart/dfx/compare/dfx@0.22.0...dfx@0.22.1) (2023-02-10)
 
 
