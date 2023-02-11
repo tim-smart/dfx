@@ -80,19 +80,16 @@ export const make = (
   url: Ref<string>,
   takeOutbound: Effect<never, never, Message>,
 ) =>
-  pipe(
-    Do($ => {
-      const log = $(Effect.service(Log.Log))
-      const ws = $(socket(url))
-      const sendEffect = send(ws, takeOutbound, log)
+  Do($ => {
+    const log = $(Effect.service(Log.Log))
+    const ws = $(socket(url))
+    const sendEffect = send(ws, takeOutbound, log)
 
-      return recv(ws)
-        .merge(Stream.fromEffect(sendEffect))
-        .retry(
-          Schedule.recurWhile(
-            e => e._tag === "WebSocketCloseError" && e.code === 1012,
-          ),
-        )
-    }),
-    Stream.unwrapScoped,
-  )
+    return recv(ws)
+      .merge(Stream.fromEffect(sendEffect))
+      .retry(
+        Schedule.recurWhile(
+          e => e._tag === "WebSocketCloseError" && e.code === 1012,
+        ),
+      )
+  }).unwrapStreamScoped

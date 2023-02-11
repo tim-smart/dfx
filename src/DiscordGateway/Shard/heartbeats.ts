@@ -17,27 +17,25 @@ export const fromRaw = <R, E>(
   source: Stream<R, E, Discord.GatewayPayload>,
   seqRef: Ref<Maybe<number>>,
 ) =>
-  Stream.unwrap(
-    Ref.make(true).map(ackedRef => {
-      const heartbeats = Utils.opCode(source)<Discord.HelloEvent>(
-        Discord.GatewayOpcode.HELLO,
+  Ref.make(true).map(ackedRef => {
+    const heartbeats = Utils.opCode(source)<Discord.HelloEvent>(
+      Discord.GatewayOpcode.HELLO,
+    )
+      .tap(() => ackedRef.set(true))
+      .flatMapParSwitch(
+        p =>
+          Stream.fromSchedule(
+            Schedule.duration(
+              millis(p.d!.heartbeat_interval * Math.random()),
+            ).andThen(Schedule.spaced(millis(p.d!.heartbeat_interval))),
+          ),
+        1,
       )
-        .tap(() => ackedRef.set(true))
-        .flatMapParSwitch(
-          p =>
-            Stream.fromSchedule(
-              Schedule.duration(
-                millis(p.d!.heartbeat_interval * Math.random()),
-              ).andThen(Schedule.spaced(millis(p.d!.heartbeat_interval))),
-            ),
-          1,
-        )
-        .mapEffect(() => maybeSend(ackedRef, seqRef))
+      .mapEffect(() => maybeSend(ackedRef, seqRef))
 
-      const acks = Utils.opCode(source)(
-        Discord.GatewayOpcode.HEARTBEAT_ACK,
-      ).tap(() => ackedRef.set(true)).drain
+    const acks = Utils.opCode(source)(Discord.GatewayOpcode.HEARTBEAT_ACK).tap(
+      () => ackedRef.set(true),
+    ).drain
 
-      return heartbeats.merge(acks)
-    }),
-  )
+    return heartbeats.merge(acks)
+  }).unwrapStream
