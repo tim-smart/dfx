@@ -1,12 +1,12 @@
+import * as Http from "@effect-http/client"
 import { millis } from "@effect/data/Duration"
-import Pkg from "./package.json" assert { type: "json" }
 import { ResponseWithData, RestResponse } from "./DiscordREST/types.js"
 import {
   rateLimitFromHeaders,
   retryAfter,
   routeFromConfig,
 } from "./DiscordREST/utils.js"
-import * as Http from "@effect-http/client"
+import Pkg from "./package.json" assert { type: "json" }
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
@@ -107,7 +107,7 @@ const make = Do($ => {
 
       const requestWithCreds = request
         .updateUrl(_ => `${rest.baseUrl}${_}`)
-        .addHeaders({
+        .setHeaders({
           Authorization: `Bot ${token.value}`,
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
         })
@@ -180,7 +180,7 @@ const make = Do($ => {
       ) {
         request.body.value.value.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        request = request.json(params)
+        request = request.jsonBody(params)
       }
 
       return executor(request)
