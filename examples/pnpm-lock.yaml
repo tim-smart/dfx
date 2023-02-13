@@ -7,7 +7,7 @@ specifiers:
   '@tsplus-types/effect__data': 0.1.2-da5519d
   '@tsplus-types/effect__io': 0.1.11-da5519d
   '@tsplus-types/effect__stream': 0.3.0-da5519d
-  dfx: ^0.23.0
+  dfx: ^0.23.1
   dotenv: ^16.0.3
   esbuild: ^0.17.8
   fastify: ^4.13.0
@@ -18,7 +18,7 @@ dependencies:
   '@effect/data': 0.1.2
   '@effect/io': 0.1.11
   '@effect/stream': 0.3.0
-  dfx: 0.23.0
+  dfx: 0.23.1
   dotenv: 16.0.3
   fastify: 4.13.0
 
@@ -468,8 +468,8 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.23.0:
-    resolution: {integrity: sha512-SraJ/GZSGXzSpZ3tHL5xxmnYHiONKJOygXqzu6E78uzPbl6iEFJPZEf2S0LF1H9zGoN7H6A4nr+b1YFVPRcVdA==}
+  /dfx/0.23.1:
+    resolution: {integrity: sha512-OjH4Tg3Hj7Qb8ofp4OmzMrTSC38uGuSgRVitKjYSIT8TwSzJ6mzaehqaWxrDTomWRqBUDLJd6on8OsLu/jltWQ==}
     dependencies:
       '@effect-http/client': 0.2.4
       '@effect/data': 0.1.2

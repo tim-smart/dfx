@@ -1,11 +1,11 @@
-import { makeFromConfig } from "dfx/webhooks"
+import { makeLive } from "dfx/webhooks"
 import Dotenv from "dotenv"
 import { fastify } from "fastify"
 
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = makeFromConfig({
+const LiveEnv = makeLive({
   applicationId: Config.string("DISCORD_APP_ID"),
   publicKey: Config.secret("DISCORD_PUBLIC_KEY"),
   token: Config.secret("DISCORD_BOT_TOKEN"),
