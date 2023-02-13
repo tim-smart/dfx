@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.1](https://github.com/tim-smart/dfx/compare/dfx@0.23.0...dfx@0.23.1) (2023-02-13)
+
+
+### Bug Fixes
+
+* makeLive for webhooks ([f1c5ee0](https://github.com/tim-smart/dfx/commit/f1c5ee0a732a2e8a2c7cad20ec804edf8e7ff51e))
+
+
+
+
+
 # [0.23.0](https://github.com/tim-smart/dfx/compare/dfx@0.22.3...dfx@0.23.0) (2023-02-13)
 
 
