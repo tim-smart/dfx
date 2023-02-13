@@ -16,6 +16,7 @@ export class DiscordRESTError {
 const make = Do($ => {
   const { token, rest } = $(Effect.service(DiscordConfig.DiscordConfig))
 
+  const http = $(Effect.service(Http.executor.HttpRequestExecutor))
   const log = $(Effect.service(Log.Log))
   const store = $(Effect.service(RateLimitStore))
   const { maybeWait } = $(Effect.service(RateLimiter))
@@ -98,6 +99,16 @@ const make = Do($ => {
       $(effectsToRun.collectAllParDiscard)
     }).ignore
 
+  const httpExecutor = http.execute
+    .filterStatus(_ => _ >= 200 && _ < 300)
+    .contramap(_ =>
+      _.updateUrl(_ => `${rest.baseUrl}${_}`).setHeaders({
+        Authorization: `Bot ${token.value}`,
+        "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
+      }),
+    )
+    .catchAll(_ => Effect.fail(new DiscordRESTError(_)))
+
   const executor = <A = unknown>(
     request: Http.Request,
   ): Effect<never, DiscordRESTError, ResponseWithData<A>> =>
@@ -105,16 +116,7 @@ const make = Do($ => {
       $(requestRateLimit(request.url, request))
       $(globalRateLimit)
 
-      const requestWithCreds = request
-        .updateUrl(_ => `${rest.baseUrl}${_}`)
-        .setHeaders({
-          Authorization: `Bot ${token.value}`,
-          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
-        })
-
-      const response = $(
-        requestWithCreds.fetch().mapError(_ => new DiscordRESTError(_)),
-      )
+      const response = $(httpExecutor(request))
 
       $(updateBuckets(request, response))
 

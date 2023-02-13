@@ -4,6 +4,7 @@ import { LiveDiscordGateway } from "./DiscordGateway.js"
 import { LiveSharder } from "./DiscordGateway/Sharder.js"
 import { LiveMemoryShardStore } from "./DiscordGateway/ShardStore.js"
 import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit.js"
+import { LiveFetchRequestExecutor } from "@effect-http/client"
 
 export * as CachePrelude from "./Cache/prelude.js"
 export * as DiscordWS from "./DiscordGateway/DiscordWS.js"
@@ -28,15 +29,7 @@ export const MemoryGateway = MemorySharder >> LiveDiscordGateway
 
 export const MemoryBot = MemoryREST > MemoryGateway + MemoryRateLimit
 
-export const make = (config: DiscordConfig.MakeOpts, debug = false) => {
-  const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = DiscordConfig.makeLayer(config)
-  const LiveEnv = LiveLog + LiveConfig > MemoryBot
-
-  return LiveEnv
-}
-
-export const makeFromConfig = (
+export const makeLiveWithoutFetch = (
   config: ConfigWrap.Wrap<DiscordConfig.MakeOpts>,
   debug = false,
 ) => {
@@ -45,4 +38,11 @@ export const makeFromConfig = (
   const LiveEnv = LiveLog + LiveConfig > MemoryBot
 
   return LiveEnv
+}
+
+export const makeLive = (
+  config: ConfigWrap.Wrap<DiscordConfig.MakeOpts>,
+  debug = false,
+) => {
+  return LiveFetchRequestExecutor >> makeLiveWithoutFetch(config, debug)
 }
