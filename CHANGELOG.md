@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/tim-smart/dfx/compare/dfx@0.22.3...dfx@0.23.0) (2023-02-13)
+
+
+### Features
+
+* allow swapping out fetch ([f103d4c](https://github.com/tim-smart/dfx/commit/f103d4cdc42e87136f8bb1412102ed09cdc63bc9))
+
+
+
+
+
 ## [0.22.3](https://github.com/tim-smart/dfx/compare/dfx@0.22.2...dfx@0.22.3) (2023-02-11)
 
 **Note:** Version bump only for package dfx
