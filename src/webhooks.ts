@@ -1,9 +1,6 @@
+import { LiveFetchRequestExecutor } from "@effect-http/client"
 import { LiveDiscordREST } from "./DiscordREST.js"
-import {
-  MakeConfigOpts,
-  makeConfigLayer,
-  makeFromConfig as makeConfigFromConfig,
-} from "./Interactions/webhook.js"
+import { MakeConfigOpts, makeFromConfig } from "./Interactions/webhook.js"
 import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit.js"
 
 export {
@@ -19,30 +16,24 @@ export const MemoryRateLimit = LiveMemoryRateLimitStore > LiveRateLimiter
 
 export const MemoryREST = MemoryRateLimit >> LiveDiscordREST
 
-export const make = (
-  config: DiscordConfig.MakeOpts & MakeConfigOpts,
-  debug = false,
-) => {
-  const LiveWebhook = makeConfigLayer(config)
-  const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = DiscordConfig.makeLayer(config)
-  const LiveEnv =
-    (LiveLog + LiveConfig) >> (MemoryREST + LiveWebhook + MemoryRateLimit)
-
-  return LiveEnv
-}
-
-export const makeFromConfig = (
+export const makeLiveWithoutFetch = (
   options: ConfigWrap.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
   debug = false,
 ) => {
   const config = ConfigWrap.unwrap(options)
 
-  const LiveWebhook = makeConfigFromConfig(config)
+  const LiveWebhook = makeFromConfig(config)
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
   const LiveConfig = DiscordConfig.makeFromConfig(config)
   const LiveEnv =
     (LiveLog + LiveConfig) >> (MemoryREST + LiveWebhook + MemoryRateLimit)
 
   return LiveEnv
+}
+
+export const makeLive = (
+  config: ConfigWrap.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
+  debug = false,
+) => {
+  return LiveFetchRequestExecutor >> makeLiveWithoutFetch(config, debug)
 }

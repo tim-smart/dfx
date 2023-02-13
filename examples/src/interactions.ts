@@ -1,10 +1,10 @@
-import { makeFromConfig } from "dfx/gateway"
+import { makeLive } from "dfx/gateway"
 import Dotenv from "dotenv"
 
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = makeFromConfig({
+const LiveEnv = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
 })
 
