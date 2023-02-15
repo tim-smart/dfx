@@ -14,7 +14,7 @@ const hello = Ix.global(
   {
     name: "hello",
     description: "A basic command",
-  } as const,
+  },
   Effect.succeed({
     type: 4,
     data: {
@@ -41,7 +41,7 @@ const greeting = Ix.global(
         description: "What kind of greeting?",
       },
     ],
-  } as const,
+  },
   _ =>
     Effect.struct({
       who: _.optionValue("who"),
