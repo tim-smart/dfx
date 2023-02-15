@@ -31,7 +31,7 @@ export class GlobalApplicationCommand<R, E> {
 export const global = <
   R,
   E,
-  A extends DeepReadonly<Discord.CreateGlobalApplicationCommandParams>,
+  const A extends DeepReadonly<Discord.CreateGlobalApplicationCommandParams>,
 >(
   command: A,
   handle: DescriptionMissing<A> extends true
@@ -54,7 +54,7 @@ export class GuildApplicationCommand<R, E> {
 export const guild = <
   R,
   E,
-  A extends DeepReadonly<Discord.CreateGuildApplicationCommandParams>,
+  const A extends DeepReadonly<Discord.CreateGuildApplicationCommandParams>,
 >(
   command: A,
   handle: DescriptionMissing<A> extends true
