@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.24.0](https://github.com/tim-smart/dfx/compare/dfx@0.23.1...dfx@0.24.0) (2023-02-15)
+
+
+### Features
+
+* use const generic for Interactions commands ([d2e2ed4](https://github.com/tim-smart/dfx/commit/d2e2ed4acc75920af7aa0ae0da24b1716108eeb5))
+
+
+
+
+
 ## [0.23.1](https://github.com/tim-smart/dfx/compare/dfx@0.23.0...dfx@0.23.1) (2023-02-13)
 
 
