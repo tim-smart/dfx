@@ -46,9 +46,7 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
     const fiberRef = $(Ref.make<Maybe<RuntimeFiber<E1, X>>>(Maybe.none()))
 
     const run = self
-      .flatMap(
-        _ => f(_).tapErrorCause(_ => causeDeferred.failCause(_)).forkScoped,
-      )
+      .flatMap(_ => f(_).tapErrorCause(_ => causeDeferred.failCause(_)).fork)
       .flatMap(fiber => fiberRef.getAndSet(Maybe.some(fiber)))
       .tap(_ =>
         _.match(
@@ -58,4 +56,4 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       ).forever
 
     return $(run.zipParLeft(causeDeferred.await))
-  }).scoped
+  })

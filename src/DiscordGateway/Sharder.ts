@@ -71,8 +71,7 @@ const make = Do($ => {
         )
         .flatMap(c => shard.connect([c.id, c.totalCount], hub))
         .flatMap(
-          shard =>
-            shard.run.catchAllCause(_ => deferred.failCause(_)).forkScoped,
+          shard => shard.run.catchAllCause(_ => deferred.failCause(_)).fork,
         ).forever
 
       const spawners = Chunk.range(
@@ -87,7 +86,7 @@ const make = Do($ => {
           never
         >,
       )
-    }).scoped
+    })
 
   return { run } as const
 })
