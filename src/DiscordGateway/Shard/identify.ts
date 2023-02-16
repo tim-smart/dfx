@@ -1,6 +1,5 @@
 import * as SendEvents from "./sendEvents.js"
 import * as OS from "os"
-import { opCode } from "./utils.js"
 
 export interface Options {
   token: string
@@ -34,7 +33,7 @@ const resume = (token: string, ready: Discord.ReadyEvent, seq: number) =>
     seq,
   })
 
-const identifyOrResume = (
+export const identifyOrResume = (
   opts: Options,
   ready: Ref<Maybe<Discord.ReadyEvent>>,
   seq: Ref<Maybe<number>>,
@@ -51,11 +50,3 @@ const identifyOrResume = (
       ({ readyEvent, seqNumber }) => resume(opts.token, readyEvent, seqNumber),
     )
   })
-
-export const fromRaw = <R, E>(
-  source: Stream<R, E, Discord.GatewayPayload>,
-  { latestReady, latestSequence, ...opts }: Options & Requirements,
-) =>
-  opCode(source)<Discord.HelloEvent>(Discord.GatewayOpcode.HELLO).mapEffect(
-    () => identifyOrResume(opts, latestReady, latestSequence),
-  )

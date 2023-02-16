@@ -1,26 +1,27 @@
 import { millis } from "@effect/data/Duration"
 import * as SendEvents from "./sendEvents.js"
-import * as Utils from "./utils.js"
 
-const send = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
+const payload = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   seqRef.get
     .map(a => SendEvents.heartbeat(a.getOrNull))
     .tap(() => ref.set(false))
 
-const maybeSend = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
+const payloadOrReconnect = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   ref.get.flatMap(
     (acked): Effect<never, never, DiscordWS.Message> =>
-      acked ? send(ref, seqRef) : Effect.succeed(WS.Reconnect),
+      acked ? payload(ref, seqRef) : Effect.succeed(WS.Reconnect),
   )
 
-export const fromRaw = <R, E>(
-  source: Stream<R, E, Discord.GatewayPayload>,
+export const send = (
+  hellos: Dequeue<Discord.GatewayPayload>,
+  acks: Dequeue<Discord.GatewayPayload>,
   seqRef: Ref<Maybe<number>>,
+  send: (p: DiscordWS.Message) => Effect<never, never, boolean>,
 ) =>
-  Ref.make(true).map(ackedRef => {
-    const heartbeats = Utils.opCode(source)<Discord.HelloEvent>(
-      Discord.GatewayOpcode.HELLO,
-    )
+  Do($ => {
+    const ackedRef = $(Ref.make(true))
+
+    const heartbeats = Stream.fromQueue(hellos)
       .tap(() => ackedRef.set(true))
       .flatMapParSwitch(
         p =>
@@ -31,11 +32,10 @@ export const fromRaw = <R, E>(
           ),
         1,
       )
-      .mapEffect(() => maybeSend(ackedRef, seqRef))
+      .mapEffect(() => payloadOrReconnect(ackedRef, seqRef))
+      .tap(send)
 
-    const acks = Utils.opCode(source)(Discord.GatewayOpcode.HEARTBEAT_ACK).tap(
-      () => ackedRef.set(true),
-    ).drain
+    const run = acks.take().tap(() => ackedRef.set(true)).forever
 
-    return heartbeats.merge(acks)
-  }).unwrapStream
+    return $(run.zipParLeft(heartbeats.runDrain))
+  })

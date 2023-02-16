@@ -7,6 +7,7 @@ import {
   routeFromConfig,
 } from "./DiscordREST/utils.js"
 import Pkg from "./package.json" assert { type: "json" }
+import { LiveRateLimiter } from "./RateLimit.js"
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
@@ -194,4 +195,5 @@ const make = Do($ => {
 
 export interface DiscordREST extends Effect.Success<typeof make> {}
 export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST = Layer.effect(DiscordREST, make)
+export const LiveDiscordREST =
+  LiveRateLimiter >> Layer.effect(DiscordREST, make)

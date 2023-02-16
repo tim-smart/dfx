@@ -14,20 +14,9 @@ export * as ShardStore from "./DiscordGateway/ShardStore.js"
 export * as WS from "./DiscordGateway/WS.js"
 export { run as runIx } from "./Interactions/gateway.js"
 
-export const MemoryRateLimit = LiveMemoryRateLimitStore > LiveRateLimiter
-
-export const MemoryREST = MemoryRateLimit >> LiveDiscordREST
-
-export const MemorySharder =
-  (MemoryREST +
-    LiveMemoryShardStore +
-    MemoryRateLimit +
-    LiveJsonDiscordWSCodec) >>
-  LiveSharder
-
-export const MemoryGateway = MemorySharder >> LiveDiscordGateway
-
-export const MemoryBot = MemoryREST > MemoryGateway + MemoryRateLimit
+export const MemoryBot =
+  (LiveMemoryShardStore + LiveMemoryRateLimitStore + LiveJsonDiscordWSCodec) >>
+  (LiveDiscordREST > LiveDiscordGateway)
 
 export const makeLiveWithoutFetch = (
   config: ConfigWrap.Wrap<DiscordConfig.MakeOpts>,

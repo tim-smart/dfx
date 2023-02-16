@@ -1,11 +1,7 @@
-import { opCode } from "./utils.js"
-
-export const fromRaw = <R, E>(
-  raw: Stream<R, E, Discord.GatewayPayload>,
+export const fromPayload = (
+  p: Discord.GatewayPayload,
   latestReady: Ref<Maybe<Discord.ReadyEvent>>,
 ) =>
-  opCode(raw)<Discord.InvalidSessionEvent>(
-    Discord.GatewayOpcode.INVALID_SESSION,
+  (p.d ? Effect.unit() : latestReady.set(Maybe.none())).map(
+    (): DiscordWS.Message => WS.Reconnect,
   )
-    .tap(p => (p.d ? Effect.unit() : latestReady.set(Maybe.none())))
-    .map((): DiscordWS.Message => WS.Reconnect)

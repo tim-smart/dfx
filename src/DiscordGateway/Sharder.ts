@@ -1,11 +1,14 @@
 import { millis } from "@effect/data/Duration"
 import { ShardStore } from "./ShardStore.js"
+import { LiveShard, Shard } from "./Shard.js"
+import { LiveRateLimiter } from "dfx"
 
 const make = Do($ => {
   const store = $(Effect.service(ShardStore))
   const rest = $(Effect.service(DiscordREST))
   const { gateway: config } = $(Effect.service(DiscordConfig.DiscordConfig))
   const limiter = $(Effect.service(RateLimiter))
+  const shard = $(Shard.access)
 
   const configs = (totalCount: number) => {
     const claimId = (sharderCount: number): Effect<never, never, number> =>
@@ -49,7 +52,7 @@ const make = Do($ => {
       ),
   )
 
-  const shards = $(
+  const run = (hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
     configs(config.shardCount ?? gateway.shards)
       .map(config => ({
         ...config,
@@ -66,17 +69,14 @@ const make = Do($ => {
               config.identifyRateLimit[1],
             ),
           )
-          .mapEffect(c => Shard.make([c.id, c.totalCount])),
+          .mapEffect(c => shard.connect([c.id, c.totalCount], hub)),
       )
-      .flatMap(shard =>
-        Stream.succeed(shard).merge(Stream.fromEffect(shard.run).drain),
-      )
-      .broadcastDynamic(1),
-  )
+      .mapEffectPar(shard => shard.run, Number.POSITIVE_INFINITY).runDrain
 
-  return { shards }
+  return { run } as const
 })
 
 export interface Sharder extends Effect.Success<typeof make> {}
 export const Sharder = Tag<Sharder>()
-export const LiveSharder = Layer.scoped(Sharder, make)
+export const LiveSharder =
+  (LiveRateLimiter + LiveShard) >> Layer.scoped(Sharder, make)

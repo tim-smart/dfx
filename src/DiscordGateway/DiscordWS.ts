@@ -1,4 +1,5 @@
 import WebSocket from "isomorphic-ws"
+import { LiveWS } from "./WS.js"
 
 export type Message = Discord.GatewayPayload | WS.Reconnect
 
@@ -21,25 +22,47 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
   decode: p => JSON.parse(p.toString("utf8")),
 })
 
-export const make = ({
-  url = "wss://gateway.discord.gg/",
-  version = 10,
-  outbound,
-}: OpenOpts) =>
-  Do($ => {
-    const encoding = $(Effect.service(DiscordWSCodec))
-    const urlRef = $(Ref.make(`${url}?v=${version}&encoding=${encoding.type}`))
-    const setUrl = (url: string) =>
-      urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
-    const take = outbound.map(a =>
-      a === WS.Reconnect ? a : encoding.encode(a),
-    )
-    const log = $(Effect.service(Log.Log))
-    const ws = WS.make(urlRef, take).provideService(Log.Log, log)
-    const source = ws
-      .tapError(e => log.info("DiscordWS", "ERROR", e))
-      .retry(Schedule.exponential(Duration.seconds(0.5)))
-      .map(encoding.decode) as Stream<never, never, Discord.GatewayPayload>
+const make = Do($ => {
+  const ws = $(WS.WS.access)
+  const encoding = $(Effect.service(DiscordWSCodec))
+  const log = $(Effect.service(Log.Log))
 
-    return { source, setUrl }
-  })
+  const connect = ({
+    url = "wss://gateway.discord.gg/",
+    version = 10,
+    outbound,
+  }: OpenOpts) =>
+    Do($ => {
+      const urlRef = $(
+        Ref.make(`${url}?v=${version}&encoding=${encoding.type}`),
+      )
+      const setUrl = (url: string) =>
+        urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
+      const take = outbound.map(a =>
+        a === WS.Reconnect ? a : encoding.encode(a),
+      )
+      const socket = $(ws.connect(urlRef, take))
+      const hub = $(Hub.unbounded<Discord.GatewayPayload>())
+
+      const publish = socket.subscribe.flatMap(
+        _ => _.take().flatMap(_ => hub.publish(encoding.decode(_))).forever,
+      ).scoped
+
+      const run = socket.run
+        .zipParLeft(publish)
+        .tapError(e => log.info("DiscordWS", "ERROR", e))
+        .retry(Schedule.exponential(Duration.seconds(0.5))) as Effect<
+        never,
+        never,
+        never
+      >
+
+      return { run, subscribe: hub.subscribe(), setUrl } as const
+    })
+
+  return { connect } as const
+})
+
+export interface DiscordWS extends Effect.Success<typeof make> {}
+export const DiscordWS = Tag<DiscordWS>()
+export const LiveDiscordWS = LiveWS >> make.toLayer(DiscordWS)

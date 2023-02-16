@@ -1,86 +1,111 @@
+import { DiscordWS, LiveDiscordWS, Message } from "./DiscordWS.js"
 import * as Heartbeats from "./Shard/heartbeats.js"
 import * as Identify from "./Shard/identify.js"
 import * as InvalidSession from "./Shard/invalidSession.js"
 import * as Utils from "./Shard/utils.js"
 
-export const make = (shard: [id: number, count: number]) =>
-  Do($ => {
-    const { token, gateway } = $(Effect.service(DiscordConfig.DiscordConfig))
-    const limiter = $(Effect.service(RateLimiter))
+export const make = Do($ => {
+  const { token, gateway } = $(Effect.service(DiscordConfig.DiscordConfig))
+  const limiter = $(Effect.service(RateLimiter))
+  const dws = $(DiscordWS.access)
 
-    const outboundQueue = $(Queue.unbounded<DiscordWS.Message>())
-    const outbound = outboundQueue
-      .take()
-      .tap(() => limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120))
-    const send = (p: DiscordWS.Message) => outboundQueue.offer(p)
+  const connect = (
+    shard: [id: number, count: number],
+    hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
+  ) =>
+    Do($ => {
+      const outboundQueue = $(Queue.unbounded<Message>())
+      const outbound = outboundQueue
+        .take()
+        .tap(() =>
+          limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
+        )
+      const send = (p: Message) => outboundQueue.offer(p)
 
-    const socket = $(DiscordWS.make({ outbound }))
+      const socket = $(dws.connect({ outbound }))
 
-    const raw = $(socket.source.broadcastDynamic(1))
-
-    const [latestReady, updateLatestReady] = $(
-      Utils.latest(p =>
+      const [latestReady, updateLatestReady] = $(
+        Utils.latest(p =>
+          Maybe.some(p)
+            .filter(
+              (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
+                p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
+            )
+            .map(p => p.d!),
+        ),
+      )
+      const [latestSequence, updateLatestSequence] = $(
+        Utils.latest(p => Maybe.fromNullable(p.s)),
+      )
+      const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
         Maybe.some(p)
           .filter(
             (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
               p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
           )
-          .map(p => p.d!),
-      ),
-    )
-    const [latestSequence, updateLatestSequence] = $(
-      Utils.latest(p => Maybe.fromNullable(p.s)),
-    )
-    const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
-      Maybe.some(p)
-        .filter(
-          (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
-            p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
-        )
-        .map(p => p.d!)
-        .match(
-          () => Effect.unit(),
-          a => socket.setUrl(a.resume_gateway_url),
-        )
+          .map(p => p.d!)
+          .match(
+            () => Effect.unit(),
+            a => socket.setUrl(a.resume_gateway_url),
+          )
 
-    const updateRefs = raw
-      .tap(updateLatestReady)
-      .tap(updateLatestSequence)
-      .tap(maybeUpdateUrl).runDrain
+      const hellos = $(Queue.unbounded<Discord.GatewayPayload>())
+      const acks = $(Queue.unbounded<Discord.GatewayPayload>())
 
-    // heartbeats
-    const heartbeatEffects = Heartbeats.fromRaw(raw, latestSequence).runForEach(
-      send,
-    )
+      // heartbeats
+      const heartbeats = Heartbeats.send(hellos, acks, latestSequence, send)
 
-    const dispatch = raw.filter(
-      (p): p is Discord.GatewayPayload<Discord.ReceiveEvent> =>
-        p.op === Discord.GatewayOpcode.DISPATCH,
-    )
+      // identify
+      const identify = Identify.identifyOrResume(
+        {
+          token: token.value,
+          shard,
+          intents: gateway.intents,
+          presence: gateway.presence,
+        },
+        latestReady,
+        latestSequence,
+      )
 
-    // identify
-    const identifyEffects = Identify.fromRaw(raw, {
-      token: token.value,
-      shard,
-      intents: gateway.intents,
-      presence: gateway.presence,
-      latestSequence,
-      latestReady,
-    }).runForEach(send)
+      const onPayload = (_: Discord.GatewayPayload) =>
+        Do($ => {
+          $(
+            updateLatestReady(_)
+              .zipPar(updateLatestSequence(_))
+              .zipPar(maybeUpdateUrl(_)),
+          )
 
-    // invalid session
-    const invalidEffects = InvalidSession.fromRaw(raw, latestReady).runForEach(
-      send,
-    )
+          let effect = Effect.unit()
 
-    return {
-      run: updateRefs
-        .zipPar(heartbeatEffects)
-        .zipPar(identifyEffects)
-        .zipPar(invalidEffects).asUnit,
-      raw,
-      dispatch,
-      send: (p: Discord.GatewayPayload) => send(p),
-      reconnect: send(WS.Reconnect),
-    }
-  })
+          if (_.op === Discord.GatewayOpcode.HELLO) {
+            effect = identify.tap(send).zipPar(hellos.offer(_))
+          } else if (_.op === Discord.GatewayOpcode.HEARTBEAT_ACK) {
+            effect = acks.offer(_)
+          } else if (_.op === Discord.GatewayOpcode.INVALID_SESSION) {
+            effect = InvalidSession.fromPayload(_, latestReady).tap(send)
+          } else if (_.op === Discord.GatewayOpcode.DISPATCH) {
+            effect = hub.publish(_)
+          }
+
+          $(effect)
+        })
+
+      const run = socket.subscribe
+        .flatMap(_ => _.take().flatMap(onPayload).forever)
+        .scoped.zipParLeft(heartbeats)
+        .zipParLeft(socket.run)
+
+      return {
+        run,
+        send: (p: Discord.GatewayPayload) => send(p),
+        reconnect: send(WS.Reconnect),
+      } as const
+    })
+
+  return { connect } as const
+})
+
+export interface Shard extends Effect.Success<typeof make> {}
+export const Shard = Tag<Shard>()
+export const LiveShard =
+  (LiveDiscordWS + LiveRateLimiter) >> make.toLayer(Shard)

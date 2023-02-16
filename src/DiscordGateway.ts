@@ -1,4 +1,4 @@
-import { Sharder } from "./DiscordGateway/Sharder.js"
+import { LiveSharder, Sharder } from "./DiscordGateway/Sharder.js"
 
 const fromDispatchFactory =
   <R, E>(source: Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
@@ -8,35 +8,33 @@ const fromDispatchFactory =
     source.filter(p => p.t === event).map(p => p.d! as any)
 
 const handleDispatchFactory =
-  <R, E>(source: Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
-  <K extends keyof Discord.ReceiveEvents, R1, E1, A>(
+  (hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
+  <K extends keyof Discord.ReceiveEvents, R, E, A>(
     event: K,
-    handle: (event: Discord.ReceiveEvents[K]) => Effect<R1, E1, A>,
-  ): Effect<R | R1, E | E1, void> =>
-    source
-      .filter(p => p.t === event)
-      .flatMapPar(
-        a => Stream.fromEffect(handle(a.d as any)),
-        Number.POSITIVE_INFINITY,
-      ).runDrain
+    handle: (event: Discord.ReceiveEvents[K]) => Effect<R, E, A>,
+  ): Effect<R, E, void> =>
+    hub.subscribe().flatMap(
+      _ =>
+        _.take().flatMap(_ => {
+          if (_.t === event) {
+            return handle(_.d as any)
+          }
+          return Effect.unit()
+        }).forever,
+    ).scoped
 
 export const make = Do($ => {
   const sharder = $(Effect.service(Sharder))
-  const raw = $(
-    sharder.shards
-      .flatMapPar(s => s.raw, Number.POSITIVE_INFINITY)
-      .broadcastDynamic(8),
-  )
-  const dispatch = $(
-    sharder.shards
-      .flatMapPar(s => s.dispatch, Number.POSITIVE_INFINITY)
-      .broadcastDynamic(8),
-  )
+  const hub = $(Hub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>())
+
+  const dispatch = Stream.fromHub(hub)
   const fromDispatch = fromDispatchFactory(dispatch)
-  const handleDispatch = handleDispatchFactory(dispatch)
+  const handleDispatch = handleDispatchFactory(hub)
+
+  const run = sharder.run(hub)
 
   return {
-    raw,
+    run,
     dispatch,
     fromDispatch,
     handleDispatch,
@@ -45,4 +43,5 @@ export const make = Do($ => {
 
 export interface DiscordGateway extends Effect.Success<typeof make> {}
 export const DiscordGateway = Tag<DiscordGateway>()
-export const LiveDiscordGateway = Layer.scoped(DiscordGateway, make)
+export const LiveDiscordGateway =
+  LiveSharder >> Layer.scoped(DiscordGateway, make)

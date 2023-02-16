@@ -35,26 +35,20 @@ const socket = (urlRef: Ref<string>) =>
     }),
   )
 
-const recv = (ws: globalThis.WebSocket) =>
-  Stream.asyncEffect<
-    never,
-    WebSocketError | WebSocketCloseError,
-    WebSocket.Data
-  >(emit =>
-    Effect.sync(() => {
-      ws.addEventListener("message", message => {
-        emit.single(message.data)
-      })
+const offer = (ws: globalThis.WebSocket, hub: Hub<WebSocket.Data>) =>
+  Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
+    ws.addEventListener("message", message => {
+      hub.publish(message.data).runFork
+    })
 
-      ws.addEventListener("error", cause => {
-        emit.fail(new WebSocketError(cause))
-      })
+    ws.addEventListener("error", cause => {
+      resume(Effect.fail(new WebSocketError(cause)))
+    })
 
-      ws.addEventListener("close", e => {
-        emit.fail(new WebSocketCloseError(e.code, e.reason))
-      })
-    }),
-  )
+    ws.addEventListener("close", e => {
+      resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
+    })
+  })
 
 const send = (
   ws: globalThis.WebSocket,
@@ -76,20 +70,31 @@ const send = (
       })
     }).forever
 
-export const make = (
-  url: Ref<string>,
-  takeOutbound: Effect<never, never, Message>,
-) =>
-  Do($ => {
-    const log = $(Effect.service(Log.Log))
-    const ws = $(socket(url))
-    const sendEffect = send(ws, takeOutbound, log)
+const make = Do($ => {
+  const log = $(Effect.service(Log.Log))
 
-    return recv(ws)
-      .merge(Stream.fromEffect(sendEffect))
-      .retry(
+  const connect = (
+    url: Ref<string>,
+    takeOutbound: Effect<never, never, Message>,
+  ) =>
+    Do($ => {
+      const hub = $(Hub.unbounded<WebSocket.Data>())
+
+      const run = Do($ => {
+        const ws = $(socket(url))
+        return $(offer(ws, hub).zipParLeft(send(ws, takeOutbound, log)))
+      }).retry(
         Schedule.recurWhile(
           e => e._tag === "WebSocketCloseError" && e.code === 1012,
         ),
-      )
-  }).unwrapStreamScoped
+      ).scoped
+
+      return { run, subscribe: hub.subscribe() } as const
+    })
+
+  return { connect } as const
+})
+
+export interface WS extends Effect.Success<typeof make> {}
+export const WS = Tag<WS>()
+export const LiveWS = make.toLayer(WS)
