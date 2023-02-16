@@ -42,14 +42,10 @@ const make = Do($ => {
         a === WS.Reconnect ? a : encoding.encode(a),
       )
       const socket = $(ws.connect(urlRef, take))
-      const hub = $(Hub.unbounded<Discord.GatewayPayload>())
-
-      const publish = socket.subscribe.flatMap(
-        _ => _.take().flatMap(_ => hub.publish(encoding.decode(_))).forever,
-      ).scoped
+      const [queue, offer] = $(socket.queue.transform(encoding.decode))
 
       const run = socket.run
-        .zipParLeft(publish)
+        .zipParLeft(offer)
         .tapError(e => log.info("DiscordWS", "ERROR", e))
         .retry(Schedule.exponential(Duration.seconds(0.5))) as Effect<
         never,
@@ -57,7 +53,11 @@ const make = Do($ => {
         never
       >
 
-      return { run, subscribe: hub.subscribe(), setUrl } as const
+      return {
+        run,
+        queue: queue as Dequeue<Discord.GatewayPayload>,
+        setUrl,
+      } as const
     })
 
   return { connect } as const

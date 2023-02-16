@@ -90,9 +90,10 @@ export const make = Do($ => {
           $(effect)
         })
 
-      const run = socket.subscribe
-        .flatMap(_ => _.take().flatMap(onPayload).forever)
-        .scoped.zipParLeft(heartbeats)
+      const run = socket.queue
+        .take()
+        .flatMap(onPayload)
+        .forever.zipParLeft(heartbeats)
         .zipParLeft(socket.run)
 
       return {

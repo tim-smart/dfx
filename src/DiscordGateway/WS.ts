@@ -35,10 +35,10 @@ const socket = (urlRef: Ref<string>) =>
     }),
   )
 
-const offer = (ws: globalThis.WebSocket, hub: Hub<WebSocket.Data>) =>
+const offer = (ws: globalThis.WebSocket, queue: Enqueue<WebSocket.Data>) =>
   Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
     ws.addEventListener("message", message => {
-      hub.publish(message.data).runFork
+      queue.offer(message.data).runFork
     })
 
     ws.addEventListener("error", cause => {
@@ -78,18 +78,18 @@ const make = Do($ => {
     takeOutbound: Effect<never, never, Message>,
   ) =>
     Do($ => {
-      const hub = $(Hub.unbounded<WebSocket.Data>())
+      const queue = $(Queue.unbounded<WebSocket.Data>())
 
       const run = Do($ => {
         const ws = $(socket(url))
-        return $(offer(ws, hub).zipParLeft(send(ws, takeOutbound, log)))
+        return $(offer(ws, queue).zipParLeft(send(ws, takeOutbound, log)))
       }).retry(
         Schedule.recurWhile(
           e => e._tag === "WebSocketCloseError" && e.code === 1012,
         ),
       ).scoped
 
-      return { run, subscribe: hub.subscribe() } as const
+      return { run, queue: queue as Dequeue<WebSocket.Data> } as const
     })
 
   return { connect } as const

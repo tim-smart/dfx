@@ -13,15 +13,12 @@ const handleDispatchFactory =
     event: K,
     handle: (event: Discord.ReceiveEvents[K]) => Effect<R, E, A>,
   ): Effect<R, E, void> =>
-    hub.subscribe().flatMap(
-      _ =>
-        _.take().flatMap(_ => {
-          if (_.t === event) {
-            return handle(_.d as any)
-          }
-          return Effect.unit()
-        }).forever,
-    ).scoped
+    hub.subscribeForEach(_ => {
+      if (_.t === event) {
+        return handle(_.d as any)
+      }
+      return Effect.unit()
+    })
 
 export const make = Do($ => {
   const sharder = $(Effect.service(Sharder))
