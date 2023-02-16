@@ -12,9 +12,9 @@ export {
   WebhookParseError,
 } from "./Interactions/webhook.js"
 
-export const MemoryRateLimit = LiveMemoryRateLimitStore > LiveRateLimiter
+export const MemoryRateLimit = LiveMemoryRateLimitStore >> LiveRateLimiter
 
-export const MemoryREST = MemoryRateLimit >> LiveDiscordREST
+export const MemoryREST = LiveMemoryRateLimitStore >> LiveDiscordREST
 
 export const makeLiveWithoutFetch = (
   options: ConfigWrap.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
