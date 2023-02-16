@@ -17,11 +17,9 @@ import { Ix } from "dfx"
 import { runIx, makeFromConfig } from "dfx/gateway"
 
 // Create the dependencies layer
-const Dependencies = makeFromConfig(
-  Config.struct({
-    token: Config.secret("DISCORD_BOT_TOKEN"),
-  }),
-)
+const Dependencies = makeFromConfig({
+  token: Config.secret("DISCORD_BOT_TOKEN"),
+})
 
 // Create hello command that responds with "Hello!"
 const hello = Ix.global(
@@ -41,7 +39,7 @@ const hello = Ix.global(
 pipe(
   Ix.builder.add(hello),
   runIx(
-    Effect.catchAll((e) =>
+    Effect.catchAll(e =>
       Effect.sync(() => {
         console.error("CAUGHT ERROR", e)
       }),
