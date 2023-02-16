@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.24.1](https://github.com/tim-smart/dfx/compare/dfx@0.24.0...dfx@0.24.1) (2023-02-16)
+
+
+### Bug Fixes
+
+* ix runGateway ([43b39e9](https://github.com/tim-smart/dfx/commit/43b39e984786996876314f99199af3c0a38008a4))
+
+
+
+
+
 # [0.24.0](https://github.com/tim-smart/dfx/compare/dfx@0.23.1...dfx@0.24.0) (2023-02-15)
 
 
