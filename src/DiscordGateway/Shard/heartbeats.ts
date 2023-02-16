@@ -21,21 +21,20 @@ export const send = (
   Do($ => {
     const ackedRef = $(Ref.make(true))
 
-    const heartbeats = Stream.fromQueue(hellos)
+    const heartbeats = hellos
+      .take()
       .tap(() => ackedRef.set(true))
-      .flatMapParSwitch(
-        p =>
-          Stream.fromSchedule(
+      .foreverSwitch(p =>
+        payloadOrReconnect(ackedRef, seqRef)
+          .tap(send)
+          .schedule(
             Schedule.duration(
               millis(p.d!.heartbeat_interval * Math.random()),
-            ).andThen(Schedule.spaced(millis(p.d!.heartbeat_interval))),
+            ).andThen(Schedule.fixed(millis(p.d!.heartbeat_interval))),
           ),
-        1,
       )
-      .mapEffect(() => payloadOrReconnect(ackedRef, seqRef))
-      .tap(send)
 
     const run = acks.take().tap(() => ackedRef.set(true)).forever
 
-    return $(run.zipParLeft(heartbeats.runDrain))
+    return $(run.zipParLeft(heartbeats))
   })

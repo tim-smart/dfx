@@ -57,7 +57,7 @@ const makeLimiter = Do($ => {
           delay: d.millis,
         }),
       )
-      .tap(Effect.sleep).asUnit
+      .tap(_ => (_.millis === 0 ? Effect.unit() : Effect.sleep(_))).asUnit
   }
 
   return { maybeWait }

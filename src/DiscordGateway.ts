@@ -13,7 +13,7 @@ const handleDispatchFactory =
     event: K,
     handle: (event: Discord.ReceiveEvents[K]) => Effect<R, E, A>,
   ): Effect<R, E, void> =>
-    hub.subscribeForEach(_ => {
+    hub.subscribeForEachPar(_ => {
       if (_.t === event) {
         return handle(_.d as any)
       }

@@ -10,29 +10,28 @@ const make = Do($ => {
   const limiter = $(Effect.service(RateLimiter))
   const shard = $(Shard.access)
 
-  const configs = (totalCount: number) => {
-    const claimId = (sharderCount: number): Effect<never, never, number> =>
-      store
-        .claimId({
-          totalCount,
-          sharderCount,
-        })
-        .flatMap(a =>
-          a.match(
-            () => claimId(sharderCount).delay(Duration.minutes(3)),
-            id => Effect.succeed(id),
-          ),
-        )
+  const takeConfig = (totalCount: number) =>
+    Do($ => {
+      const currentCount = $(Ref.make(0))
 
-    return Stream.unfoldEffect(0, sharderCount =>
-      claimId(sharderCount).map(id =>
-        Maybe.some([id, sharderCount + 1] as const),
-      ),
-    ).map(id => ({
-      id,
-      totalCount,
-    }))
-  }
+      const claimId = (sharderCount: number): Effect<never, never, number> =>
+        store
+          .claimId({
+            totalCount,
+            sharderCount,
+          })
+          .flatMap(a =>
+            a.match(
+              () => claimId(sharderCount).delay(Duration.minutes(3)),
+              id => Effect.succeed(id),
+            ),
+          )
+
+      return currentCount
+        .getAndUpdate(_ => _ + 1)
+        .flatMap(claimId)
+        .map(id => ({ id, totalCount } as const))
+    })
 
   const gateway = $(
     rest
@@ -53,25 +52,42 @@ const make = Do($ => {
   )
 
   const run = (hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
-    configs(config.shardCount ?? gateway.shards)
-      .map(config => ({
-        ...config,
-        url: gateway.url,
-        concurrency: gateway.session_start_limit.max_concurrency,
-      }))
-      .groupBy(c => Effect.succeed([c.id % c.concurrency, c]))
-      .evaluate((key, shardConfig) =>
-        shardConfig
-          .tap(() =>
-            limiter.maybeWait(
-              `dfx.sharder.${key}`,
-              millis(config.identifyRateLimit[0]),
-              config.identifyRateLimit[1],
-            ),
-          )
-          .mapEffect(c => shard.connect([c.id, c.totalCount], hub)),
+    Do($ => {
+      const deferred = $(Deferred.make<never, never>())
+      const take = $(takeConfig(config.shardCount ?? gateway.shards))
+
+      const spawner = take
+        .map(config => ({
+          ...config,
+          url: gateway.url,
+          concurrency: gateway.session_start_limit.max_concurrency,
+        }))
+        .tap(({ id, concurrency }) =>
+          limiter.maybeWait(
+            `dfx.sharder.${id % concurrency}`,
+            millis(config.identifyRateLimit[0]),
+            config.identifyRateLimit[1],
+          ),
+        )
+        .flatMap(c => shard.connect([c.id, c.totalCount], hub))
+        .flatMap(
+          shard =>
+            shard.run.catchAllCause(_ => deferred.failCause(_)).forkScoped,
+        ).forever
+
+      const spawners = Chunk.range(
+        1,
+        gateway.session_start_limit.max_concurrency,
+      ).map(() => spawner)
+
+      return $(
+        spawners.collectAllParDiscard.zipParLeft(deferred.await) as Effect<
+          never,
+          never,
+          never
+        >,
       )
-      .mapEffectPar(shard => shard.run, Number.POSITIVE_INFINITY).runDrain
+    }).scoped
 
   return { run } as const
 })
