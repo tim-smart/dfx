@@ -2,12 +2,12 @@ lockfileVersion: 5.4
 
 specifiers:
   '@effect/data': ^0.1.2
-  '@effect/io': ~0.1.11
+  '@effect/io': ~0.1.12
   '@effect/stream': ~0.3.0
-  '@tsplus-types/effect__data': 0.1.2-da5519d
-  '@tsplus-types/effect__io': 0.1.11-da5519d
+  '@tsplus-types/effect__data': 0.1.2-565f9c6
+  '@tsplus-types/effect__io': 0.1.12-565f9c6
   '@tsplus-types/effect__stream': 0.3.0-da5519d
-  dfx: ^0.24.1
+  dfx: ^0.24.4
   dotenv: ^16.0.3
   esbuild: ^0.17.8
   fastify: ^4.13.0
@@ -16,15 +16,15 @@ specifiers:
 
 dependencies:
   '@effect/data': 0.1.2
-  '@effect/io': 0.1.11
+  '@effect/io': 0.1.12
   '@effect/stream': 0.3.0
-  dfx: 0.24.1
+  dfx: 0.24.4
   dotenv: 16.0.3
   fastify: 4.13.0
 
 devDependencies:
-  '@tsplus-types/effect__data': 0.1.2-da5519d_@effect+data@0.1.2
-  '@tsplus-types/effect__io': 0.1.11-da5519d_@effect+io@0.1.11
+  '@tsplus-types/effect__data': 0.1.2-565f9c6_@effect+data@0.1.2
+  '@tsplus-types/effect__io': 0.1.12-565f9c6_@effect+io@0.1.12
   '@tsplus-types/effect__stream': 0.3.0-da5519d_@effect+stream@0.3.0
   esbuild: 0.17.8
   ts-node: 10.9.1_gmyzgtbobtwqxr3kpifzlndcxy
@@ -39,11 +39,11 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@effect-http/client/0.2.4:
-    resolution: {integrity: sha512-sYTbHixvJBhov+Z8X8u9QGJfnzWuA/67qlf8kvduMAOyh0ATq9jd7U5lx4Wb/ASzpe1KvdbP5/i+OcVueSltGA==}
+  /@effect-http/client/0.2.7:
+    resolution: {integrity: sha512-lCifyBOtdoE3UsXsOlInZ+YKb3lqnnsyG0pmkQq/bQCi4lJ4hnfZOBvGcQkNmZCSmQxCGz/wTHHH0hEAYzdsPw==}
     dependencies:
       '@effect/data': 0.1.2
-      '@effect/io': 0.1.11
+      '@effect/io': 0.1.12
       '@effect/stream': 0.3.0
       '@fp-ts/core': 0.2.1
       '@fp-ts/schema': 0.1.3
@@ -54,8 +54,8 @@ packages:
     dependencies:
       '@fp-ts/core': 0.2.1
 
-  /@effect/io/0.1.11:
-    resolution: {integrity: sha512-dQLGx6KhuEgGAbb5UDbBi0P+wtSsm33ojlcshf2Ho4soORDd2QRDOMC+ki1EzVENztBhRmUd9Yp8DyICBQtldw==}
+  /@effect/io/0.1.12:
+    resolution: {integrity: sha512-qWEPKQzmkKiKn3bWy7nHJjr5f8ez3VHJ1SnzKOKIAvFq83pbGpCkbaxq4xyL6lIT/1kDG4wZzwSrTAMNoKRB1g==}
     dependencies:
       '@effect/data': 0.1.2
       '@fp-ts/core': 0.2.1
@@ -64,7 +64,7 @@ packages:
     resolution: {integrity: sha512-Q9dCeD56Kz6P3cdBDseWQZL5Gzqqg+chSmQ0Yv6/oS6QlFQnhK0sOA63aks5NYogk/hnQp0mx96nmbhhMhS1HA==}
     dependencies:
       '@effect/data': 0.1.2
-      '@effect/io': 0.1.11
+      '@effect/io': 0.1.12
       '@fp-ts/core': 0.2.1
 
   /@esbuild/android-arm/0.17.8:
@@ -340,20 +340,20 @@ packages:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: true
 
-  /@tsplus-types/effect__data/0.1.2-da5519d_@effect+data@0.1.2:
-    resolution: {integrity: sha512-reKdJbWduYQQNpISGiVwtQPdAuOeKWcUrWMVODFQoxdWP98+DsgcT9GwKspVE3gp633nFQzdYvHC0xjGLNqKFA==}
+  /@tsplus-types/effect__data/0.1.2-565f9c6_@effect+data@0.1.2:
+    resolution: {integrity: sha512-k1NaCYnXRbEzO6TLk3U4lpBUHMP5On1h2Apzyknapqlc/fU/8AmUoPNOSfU8VMLOJA5G4u3mnQqQM6mpfndBLQ==}
     peerDependencies:
       '@effect/data': 0.1.2
     dependencies:
       '@effect/data': 0.1.2
     dev: true
 
-  /@tsplus-types/effect__io/0.1.11-da5519d_@effect+io@0.1.11:
-    resolution: {integrity: sha512-jkWpJbDjROfieSK8c75noKDfMqcrD9mLQ32dzlxW1kz8CIPLrvB3MLi6w2bafM8zA7w4MCFE2wCHtVDa8VMFSg==}
+  /@tsplus-types/effect__io/0.1.12-565f9c6_@effect+io@0.1.12:
+    resolution: {integrity: sha512-fdaoTZ5ZpEnwEv1Gm0ChjoFz7BkwDgFgA9ucyVo0GdzGPDqtqoaEG3eS85ZifOb2Ohq5a7iy3nS+Bt8ZpnUdBw==}
     peerDependencies:
-      '@effect/io': 0.1.11
+      '@effect/io': 0.1.12
     dependencies:
-      '@effect/io': 0.1.11
+      '@effect/io': 0.1.12
     dev: true
 
   /@tsplus-types/effect__stream/0.3.0-da5519d_@effect+stream@0.3.0:
@@ -468,12 +468,12 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.24.1:
-    resolution: {integrity: sha512-dFxIxQvzRs9G4SI0MMwbmFDLGsTGSBJkWTKw2ep1WvoL54qSsA90U73qTaiuVyauYjA9xUMgQHhuf/1nCfANNw==}
+  /dfx/0.24.4:
+    resolution: {integrity: sha512-A8yTyyASTRtvFbpw69Ku0zkbjMlXKZ51B7w9NctJvxuGuHWsSsObcSai1dGDPVo57GT4kRgmxw8uNLymoeSmHA==}
     dependencies:
-      '@effect-http/client': 0.2.4
+      '@effect-http/client': 0.2.7
       '@effect/data': 0.1.2
-      '@effect/io': 0.1.11
+      '@effect/io': 0.1.12
       '@effect/stream': 0.3.0
       '@fp-ts/core': 0.2.1
       tweetnacl: 1.0.3
