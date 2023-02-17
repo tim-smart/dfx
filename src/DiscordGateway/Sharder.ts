@@ -94,4 +94,4 @@ const make = Do($ => {
 export interface Sharder extends Effect.Success<typeof make> {}
 export const Sharder = Tag<Sharder>()
 export const LiveSharder =
-  (LiveRateLimiter + LiveShard) >> Layer.scoped(Sharder, make)
+  (LiveRateLimiter + LiveShard) >> make.toLayer(Sharder)

@@ -40,5 +40,4 @@ export const make = Do($ => {
 
 export interface DiscordGateway extends Effect.Success<typeof make> {}
 export const DiscordGateway = Tag<DiscordGateway>()
-export const LiveDiscordGateway =
-  LiveSharder >> Layer.scoped(DiscordGateway, make)
+export const LiveDiscordGateway = LiveSharder >> make.toLayer(DiscordGateway)
