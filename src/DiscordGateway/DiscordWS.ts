@@ -45,7 +45,7 @@ const make = Do($ => {
       const [queue, offer] = $(socket.queue.transform(encoding.decode))
 
       const run = socket.run
-        .zipParLeft(offer)
+        .zipParRight(offer)
         .tapError(e => log.info("DiscordWS", "ERROR", e))
         .retry(Schedule.exponential(Duration.seconds(0.5))) as Effect<
         never,
@@ -55,7 +55,7 @@ const make = Do($ => {
 
       return {
         run,
-        queue: queue as Dequeue<Discord.GatewayPayload>,
+        queue,
         setUrl,
       } as const
     })

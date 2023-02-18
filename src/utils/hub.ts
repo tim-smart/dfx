@@ -31,7 +31,7 @@ export const transform = <A, B>(self: Dequeue<A>, f: (_: A) => B) =>
 
     const run = self.take().flatMap(_ => queue.offer(f(_))).forever
 
-    return [queue, run] as const
+    return [queue as Dequeue<B>, run] as const
   })
 
 /**
