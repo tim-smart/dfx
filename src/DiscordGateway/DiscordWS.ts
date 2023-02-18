@@ -38,14 +38,13 @@ const make = Do($ => {
       )
       const setUrl = (url: string) =>
         urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
-      const take = outbound.map(a =>
+      const takeOutbound = outbound.map(a =>
         a === WS.Reconnect ? a : encoding.encode(a),
       )
-      const socket = $(ws.connect(urlRef, take))
-      const [queue, offer] = $(socket.queue.transform(encoding.decode))
+      const socket = $(ws.connect(urlRef, takeOutbound))
+      const take = socket.take.map(encoding.decode)
 
       const run = socket.run
-        .zipParLeft(offer)
         .tapError(e => log.info("DiscordWS", "ERROR", e))
         .retry(Schedule.exponential(Duration.seconds(0.5))) as Effect<
         never,
@@ -55,7 +54,7 @@ const make = Do($ => {
 
       return {
         run,
-        queue: queue as Dequeue<Discord.GatewayPayload>,
+        take,
         setUrl,
       } as const
     })

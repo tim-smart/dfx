@@ -6,7 +6,7 @@ Dotenv.config()
 // Create the dependencies layer
 const LiveEnv = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
-})
+}, true)
 
 // Create your interaction definitions.
 // Here we are creating a global application command.

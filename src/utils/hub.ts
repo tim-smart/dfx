@@ -23,18 +23,6 @@ export const subscribeForEachPar = <R, E, A, X>(
   })
 
 /**
- * @tsplus fluent effect/io/Queue/Dequeue transform
- */
-export const transform = <A, B>(self: Dequeue<A>, f: (_: A) => B) =>
-  Do($ => {
-    const queue = $(Queue.unbounded<B>())
-
-    const run = self.take().flatMap(_ => queue.offer(f(_))).forever
-
-    return [queue, run] as const
-  })
-
-/**
  * @tsplus fluent effect/io/Effect foreverSwitch
  */
 export const foreverSwitch = <R, E, A, R1, E1, X>(

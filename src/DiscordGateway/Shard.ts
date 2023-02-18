@@ -67,31 +67,35 @@ export const make = Do($ => {
         latestSequence,
       )
 
-      const onPayload = (_: Discord.GatewayPayload) =>
+      const onPayload = (p: Discord.GatewayPayload) =>
         Do($ => {
           $(
-            updateLatestReady(_)
-              .zipPar(updateLatestSequence(_))
-              .zipPar(maybeUpdateUrl(_)),
+            updateLatestReady(p)
+              .zipPar(updateLatestSequence(p))
+              .zipPar(maybeUpdateUrl(p)),
           )
 
           let effect = Effect.unit()
 
-          if (_.op === Discord.GatewayOpcode.HELLO) {
-            effect = identify.tap(send).zipPar(hellos.offer(_))
-          } else if (_.op === Discord.GatewayOpcode.HEARTBEAT_ACK) {
-            effect = acks.offer(_)
-          } else if (_.op === Discord.GatewayOpcode.INVALID_SESSION) {
-            effect = InvalidSession.fromPayload(_, latestReady).tap(send)
-          } else if (_.op === Discord.GatewayOpcode.DISPATCH) {
-            effect = hub.publish(_)
+          switch (p.op) {
+            case Discord.GatewayOpcode.HELLO:
+              effect = identify.tap(send).zipPar(hellos.offer(p))
+              break
+            case Discord.GatewayOpcode.HEARTBEAT_ACK:
+              effect = acks.offer(p)
+              break
+            case Discord.GatewayOpcode.INVALID_SESSION:
+              effect = InvalidSession.fromPayload(p, latestReady).tap(send)
+              break
+            case Discord.GatewayOpcode.DISPATCH:
+              effect = hub.publish(p)
+              break
           }
 
           $(effect)
         })
 
-      const run = socket.queue
-        .take()
+      const run = socket.take
         .flatMap(onPayload)
         .forever.zipParLeft(heartbeats)
         .zipParLeft(socket.run)

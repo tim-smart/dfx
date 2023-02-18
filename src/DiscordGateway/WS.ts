@@ -89,7 +89,7 @@ const make = Do($ => {
         ),
       ).scoped
 
-      return { run, queue: queue as Dequeue<WebSocket.Data> } as const
+      return { run, take: queue.take() } as const
     })
 
   return { connect } as const
