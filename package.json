@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.24.3",
+  "version": "0.24.5",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -31,7 +31,6 @@
     "@tsplus-types/effect__io": "0.1.12-565f9c6",
     "@tsplus-types/effect__stream": "0.3.1-565f9c6",
     "@tsplus-types/fp-ts__core": "0.2.1-da5519d",
-    "@tsplus-types/fp-ts__schema": "0.2.0-565f9c6",
     "@types/ws": "^8.5.4",
     "dotenv": "^16.0.3",
     "lerna": "^6.5.1",

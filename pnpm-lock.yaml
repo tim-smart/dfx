@@ -11,7 +11,6 @@ specifiers:
   '@tsplus-types/effect__io': 0.1.12-565f9c6
   '@tsplus-types/effect__stream': 0.3.1-565f9c6
   '@tsplus-types/fp-ts__core': 0.2.1-da5519d
-  '@tsplus-types/fp-ts__schema': 0.2.0-565f9c6
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   dotenv: ^16.0.3
@@ -42,7 +41,6 @@ devDependencies:
   '@tsplus-types/effect__io': 0.1.12-565f9c6_@effect+io@0.1.12
   '@tsplus-types/effect__stream': 0.3.1-565f9c6_@effect+stream@0.3.1
   '@tsplus-types/fp-ts__core': 0.2.1-da5519d_@fp-ts+core@0.2.1
-  '@tsplus-types/fp-ts__schema': 0.2.0-565f9c6
   '@types/ws': 8.5.4
   dotenv: 16.0.3
   lerna: 6.5.1
@@ -648,12 +646,6 @@ packages:
       '@fp-ts/core': 0.2.1
     dependencies:
       '@fp-ts/core': 0.2.1
-    dev: true
-
-  /@tsplus-types/fp-ts__schema/0.2.0-565f9c6:
-    resolution: {integrity: sha512-CgGw2z+K19BlB8Ro5Gll2nNY5l/vFSgx6CLWP9I74Ch3stq4ExppU9Vqosd2fTWDi+ivxU20em7g9Jik9u4UVg==}
-    peerDependencies:
-      '@fp-ts/schema': 0.2.0
     dev: true
 
   /@types/minimatch/3.0.5:
