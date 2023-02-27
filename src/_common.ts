@@ -24,8 +24,8 @@ export type { Equal } from "@effect/data/Equal"
 export type { HashMap } from "@effect/data/HashMap"
 export type { HashSet } from "@effect/data/HashSet"
 
-export type { Option as Maybe } from "@fp-ts/core/Option"
-export type { Either } from "@fp-ts/core/Either"
+export type { Option as Maybe } from "@effect/data/Option"
+export type { Either } from "@effect/data/Either"
 
 export * as Discord from "./types.js"
 

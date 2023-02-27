@@ -1,5 +1,5 @@
-import { Option as Maybe, Product } from "@fp-ts/core/Option"
-import * as Arr from "@fp-ts/core/ReadonlyArray"
+import { Option as Maybe, Product } from "@effect/data/Option"
+import * as Arr from "@effect/data/ReadonlyArray"
 
 /**
  * Maybe find a sub-command within the interaction options.

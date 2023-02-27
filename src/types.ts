@@ -4,6 +4,8 @@ export interface ActionMetadatum {
   channel_id: Snowflake
   /** TIMEOUT */
   duration_seconds: number
+  /** BLOCK_MESSAGE */
+  custom_message?: string
 }
 export interface ActionRow {
   /** component type */
@@ -12,7 +14,7 @@ export interface ActionRow {
   components: Component[]
 }
 export const enum ActionType {
-  /** blocks the content of a message according to the rule */
+  /** blocks a member's message and prevents it from being posted. A custom explanation can be specified and shown to members whenever their message is blocked. */
   BLOCK_MESSAGE = 1,
   /** logs user content to a specified channel */
   SEND_ALERT_MESSAGE = 2,
@@ -737,6 +739,8 @@ export interface Channel {
   owner_id?: Snowflake
   /** application id of the group DM creator if it is bot-created */
   application_id?: Snowflake
+  /** for group DM channels: whether the channel is managed by an application via the gdm.join OAuth2 scope */
+  managed?: boolean
   /** for guild channels: id of the parent category for a channel (each parent category can contain up to 50 channels), for threads: id of the text channel this thread was created */
   parent_id?: Snowflake | null
   /** when the last pinned message was pinned. This may be null in events such as GUILD_CREATE when a message is not pinned. */
@@ -1085,7 +1089,7 @@ export interface CreateGuildStickerParams {
   description: string
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
   tags: string
-  /** the sticker file to upload, must be a PNG, APNG, GIF, or Lottie JSON file, max 500 KB */
+  /** the sticker file to upload, must be a PNG, APNG, GIF, or Lottie JSON file, max 512 KB */
   file: string
 }
 export interface CreateGuildTemplateParams {
@@ -1101,7 +1105,7 @@ export interface CreateMessageParams {
   nonce?: string
   /** true if this is a TTS message */
   tts?: boolean
-  /** Embedded rich content (up to 6000 characters) */
+  /** Up to 10 rich embeds (up to 6000 characters) */
   embeds?: Embed[]
   /** Allowed mentions for the message */
   allowed_mentions?: AllowedMention
@@ -1117,7 +1121,7 @@ export interface CreateMessageParams {
   payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
   attachments?: Attachment[]
-  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
+  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   flags?: number
 }
 export function createRoutes<O = any>(
@@ -2427,7 +2431,7 @@ export interface EditGuildApplicationCommandParams {
 export interface EditMessageParams {
   /** Message contents (up to 2000 characters) */
   content: string
-  /** Embedded rich content (up to 6000 characters) */
+  /** Up to 10 rich embeds (up to 6000 characters) */
   embeds: Embed[]
   /** Edit the flags of a message (only SUPPRESS_EMBEDS can currently be set/unset) */
   flags: number
@@ -2658,7 +2662,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGlobalApplicationCommandParams>,
     options?: O,
   ) => RestResponse<ApplicationCommand>
-  /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. DMs created with this endpoint will not be shown in the Discord client. Fires a Channel Create Gateway event. */
+  /** Create a new group DM channel with multiple users. Returns a DM channel object. This endpoint was intended to be used with the now-deprecated GameBridge SDK. Fires a Channel Create Gateway event. */
   createGroupDm: (
     params?: Partial<CreateGroupDmParams>,
     options?: O,
@@ -3606,7 +3610,7 @@ export interface ForumTag {
 export interface ForumThreadMessageParam {
   /** Message contents (up to 2000 characters) */
   content?: string
-  /** Embedded rich content (up to 6000 characters) */
+  /** Up to 10 rich embeds (up to 6000 characters) */
   embeds?: Embed[]
   /** Allowed mentions for the message */
   allowed_mentions?: AllowedMention
@@ -3620,7 +3624,7 @@ export interface ForumThreadMessageParam {
   payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
   attachments?: Attachment[]
-  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
+  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   flags?: number
 }
 export const GatewayIntents = {
@@ -3735,9 +3739,9 @@ export interface GetGuildAuditLogParams {
   user_id?: Snowflake
   /** Entries for a specific audit log event */
   action_type?: AuditLogEvent
-  /** Entries that preceded a specific audit log entry ID */
+  /** Entries with ID less than a specific audit log entry ID */
   before?: Snowflake
-  /** Entries that succeeded a specific audit log entry ID */
+  /** Entries with ID greater than a specific audit log entry ID */
   after?: Snowflake
   /** Maximum number of entries (between 1-100) to return, defaults to 50 */
   limit?: number
@@ -4564,11 +4568,11 @@ export const enum InviteTargetType {
   EMBEDDED_APPLICATION = 2,
 }
 export const enum KeywordPresetType {
-  /** Words that may be considered forms of swearing or cursing */
+  /** words that may be considered forms of swearing or cursing */
   PROFANITY = 1,
-  /** Words that refer to sexually explicit behavior or activity */
+  /** words that refer to sexually explicit behavior or activity */
   SEXUAL_CONTENT = 2,
-  /** Personal insults or words that may be considered hate speech */
+  /** personal insults or words that may be considered hate speech */
   SLURS = 3,
 }
 export interface ListActiveGuildThreadResponse {
@@ -4831,6 +4835,8 @@ export const MessageFlag = {
   LOADING: 1 << 7,
   /** this message failed to mention some roles and add their members to the thread */
   FAILED_TO_MENTION_SOME_ROLES_IN_THREAD: 1 << 8,
+  /** this message will not trigger push and desktop notifications */
+  SUPPRESS_NOTIFICATIONS: 1 << 12,
 } as const
 export interface MessageInteraction {
   /** ID of the interaction */
@@ -4925,6 +4931,10 @@ export const enum MessageType {
   AUTO_MODERATION_ACTION = 24,
   ROLE_SUBSCRIPTION_PURCHASE = 25,
   INTERACTION_PREMIUM_UPSELL = 26,
+  STAGE_START = 27,
+  STAGE_END = 28,
+  STAGE_SPEAKER = 29,
+  STAGE_TOPIC = 31,
   GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32,
 }
 export type MessageUpdateEvent = MessageCreateEvent
@@ -4977,7 +4987,7 @@ export interface ModifyChannelGuildChannelParams {
   rate_limit_per_user?: number | null
   /** the bitrate (in bits) of the voice or stage channel; min 8000 */
   bitrate?: number | null
-  /** the user limit of the voice channel; 0 refers to no limit, 1 to 99 refers to a user limit */
+  /** the user limit of the voice or stage channel, max 99 for voice channels and 10,000 for stage channels (0 refers to no limit) */
   user_limit?: number | null
   /** channel or category-specific permissions */
   permission_overwrites?: Overwrite[] | null
@@ -5764,7 +5774,7 @@ export interface StartThreadFromMessageParams {
 export interface StartThreadInForumChannelForumThreadMessageParams {
   /** Message contents (up to 2000 characters) */
   content?: string
-  /** Embedded rich content (up to 6000 characters) */
+  /** Up to 10 rich embeds (up to 6000 characters) */
   embeds?: Embed[]
   /** Allowed mentions for the message */
   allowed_mentions?: AllowedMention
@@ -5778,7 +5788,7 @@ export interface StartThreadInForumChannelForumThreadMessageParams {
   payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
   attachments?: Attachment[]
-  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
+  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   flags?: number
 }
 export interface StartThreadInForumChannelParams {

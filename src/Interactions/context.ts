@@ -1,4 +1,4 @@
-import * as Arr from "@fp-ts/core/ReadonlyArray"
+import * as Arr from "@effect/data/ReadonlyArray"
 import { Effect, EffectTypeId } from "@effect/io/Effect"
 
 export const InteractionContext = Tag<Discord.Interaction>()
