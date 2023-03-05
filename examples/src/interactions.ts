@@ -43,7 +43,7 @@ const greeting = Ix.global(
     ],
   },
   _ =>
-    Effect.struct({
+    Effect.all({
       who: _.optionValue("who"),
       greeting: _.optionValueOptional("greeting").someOrElse(() => "Hello"),
       // fail: _.optionValue("fail"), // <- this would be a type error
