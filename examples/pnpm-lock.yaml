@@ -7,7 +7,7 @@ specifiers:
   '@tsplus-types/effect__data': 0.3.2-152bf26
   '@tsplus-types/effect__io': 0.6.0-152bf26
   '@tsplus-types/effect__stream': 0.6.0-152bf26
-  dfx: ^0.25.0
+  dfx: ^0.26.0
   dotenv: ^16.0.3
   esbuild: ^0.17.11
   fastify: ^4.14.0
@@ -18,7 +18,7 @@ dependencies:
   '@effect/data': 0.3.2
   '@effect/io': 0.6.0
   '@effect/stream': 0.6.0
-  dfx: 0.25.0
+  dfx: 0.26.0
   dotenv: 16.0.3
   fastify: 4.14.0
 
@@ -39,38 +39,28 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@effect-http/client/0.3.0:
-    resolution: {integrity: sha512-GfRoufEoMzObuC/FhaZOahpKYk+5JOfFTudeANbk0wnj0LIiAmjZ9hxUAtU4C/Z4Bheih2CopnM8KWMfZq90/Q==}
+  /@effect-http/client/0.5.0:
+    resolution: {integrity: sha512-HwaRFUpPhntGrffyWb3JIQ/KIERMFL3szFAPsv+if5uyxnHYBa8w1S9cONhlfrooldBTO7t9FsBZa1kOSUhpzA==}
     dependencies:
-      '@effect/data': 0.2.0
-      '@effect/io': 0.3.1
-      '@effect/stream': 0.5.0
-      '@fp-ts/schema': 0.3.2
-    dev: false
-
-  /@effect/data/0.2.0:
-    resolution: {integrity: sha512-1hSNjR0LX3zsGxCB8wykSNZ4OHXoA9NjeWlxgjmxcCOkYyMH+3exxJu/9GbkXt/35zaZE0KDFyMwfvrr20zRKw==}
+      '@effect/data': 0.3.2
+      '@effect/io': 0.6.0
+      '@effect/schema': 0.0.4
+      '@effect/stream': 0.6.0
     dev: false
 
   /@effect/data/0.3.2:
     resolution: {integrity: sha512-4rdxsQI9mwfBdgbWQ5SjekLEJpxSJLiHLQOgZ6atoPFwKqAo1PsYglf8gbonWvMx4lIR2R2Km7zXwhk/LEgY0Q==}
-
-  /@effect/io/0.3.1:
-    resolution: {integrity: sha512-mcUWfA0eVNGklL9rx7pOAiRxd5TOmjJMxvBapb7fPiarYJCPJgvCPRxOi2mWb31buDN0Z9v3C8DE9KKLE8Yv3w==}
-    dependencies:
-      '@effect/data': 0.2.0
-    dev: false
 
   /@effect/io/0.6.0:
     resolution: {integrity: sha512-RqEXAt/2Gia2tzLo50rgA/rSuZCyZQjITT1YVHffqUZrG/g7a+cTB3Easm1ki4ehSh1NDyNUD4/E05Fn15cbPg==}
     dependencies:
       '@effect/data': 0.3.2
 
-  /@effect/stream/0.5.0:
-    resolution: {integrity: sha512-Qt+NGT8CpwTcCu8mhmSssNMDWDSokkpdhXrEDheHsjR1up3HkH4eNyxmLIITcl7byKfDpIXQDAxq9TQbkHMVEA==}
+  /@effect/schema/0.0.4:
+    resolution: {integrity: sha512-KOPkGMJgxV+vtkdUs01jg9wQvUcFLQ7JtOR2iFNycGtsP4n+rR9QcPf+oFsjdwROzgOgnkjEehB358Z9bIBZOQ==}
     dependencies:
-      '@effect/data': 0.2.0
-      '@effect/io': 0.3.1
+      '@effect/data': 0.3.2
+      fast-check: 3.7.0
     dev: false
 
   /@effect/stream/0.6.0:
@@ -299,13 +289,6 @@ packages:
       fast-json-stringify: 5.6.2
     dev: false
 
-  /@fp-ts/schema/0.3.2:
-    resolution: {integrity: sha512-DTWpgptOjnqEJxiif4Q8DDE6/8k7dx8Q+bJe/PMs+EiSvn62CXli4I6jBZHymL9+YJ35ezeK9zHa9Y2cQIOYwQ==}
-    dependencies:
-      '@effect/data': 0.2.0
-      fast-check: 3.7.0
-    dev: false
-
   /@jridgewell/resolve-uri/3.1.0:
     resolution: {integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==}
     engines: {node: '>=6.0.0'}
@@ -466,13 +449,13 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx/0.25.0:
-    resolution: {integrity: sha512-3go1pHboa3G6ZZ55wxGnLVFDC3B/IiJcxquAnxTtAehaT2es0FPehR0SGjB2RMQDB/GpKgm1KN52nIQ5avZyaA==}
+  /dfx/0.26.0:
+    resolution: {integrity: sha512-P1LAIBft74sOOtB7OslAE7XW5uqbgZ5sTYImSqH1kGMITpSeGBYlEoKEYVdgtCYjBsVv0rxKr19v54GP1DEfCQ==}
     dependencies:
-      '@effect-http/client': 0.3.0
-      '@effect/data': 0.2.0
-      '@effect/io': 0.3.1
-      '@effect/stream': 0.5.0
+      '@effect-http/client': 0.5.0
+      '@effect/data': 0.3.2
+      '@effect/io': 0.6.0
+      '@effect/stream': 0.6.0
       tweetnacl: 1.0.3
     optionalDependencies:
       bufferutil: 4.0.7
