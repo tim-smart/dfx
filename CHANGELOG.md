@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/tim-smart/dfx/compare/dfx@0.25.0...dfx@0.26.0) (2023-03-05)
+
+**Note:** Version bump only for package dfx
+
+
+
+
+
 # [0.25.0](https://github.com/tim-smart/dfx/compare/dfx@0.24.6...dfx@0.25.0) (2023-02-27)
 
 **Note:** Version bump only for package dfx
