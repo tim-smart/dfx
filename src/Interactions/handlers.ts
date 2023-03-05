@@ -57,7 +57,7 @@ export const handlers = <R, E>(
       return pipe(
         ModalSubmit,
         Arr.map(a =>
-          Effect.struct({
+          Effect.all({
             command: Effect.succeed(a),
             match: a.predicate(data.custom_id),
           }),
@@ -82,7 +82,7 @@ export const handlers = <R, E>(
       return pipe(
         MessageComponent,
         Arr.map(a =>
-          Effect.struct({
+          Effect.all({
             command: Effect.succeed(a),
             match: a.predicate(data.custom_id),
           }),
@@ -109,7 +109,7 @@ export const handlers = <R, E>(
           pipe(
             Autocomplete,
             Arr.map(_ =>
-              Effect.struct({
+              Effect.all({
                 command: Effect.succeed(_),
                 match: _.predicate(data, focusedOption),
               }),

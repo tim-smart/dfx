@@ -17,10 +17,10 @@ export const MemoryRateLimit = LiveMemoryRateLimitStore >> LiveRateLimiter
 export const MemoryREST = LiveMemoryRateLimitStore >> LiveDiscordREST
 
 export const makeLiveWithoutFetch = (
-  options: ConfigWrap.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
+  options: Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
   debug = false,
 ) => {
-  const config = ConfigWrap.unwrap(options)
+  const config = Config.unwrap(options)
 
   const LiveWebhook = makeFromConfig(config)
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
@@ -32,7 +32,7 @@ export const makeLiveWithoutFetch = (
 }
 
 export const makeLive = (
-  config: ConfigWrap.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
+  config: Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
   debug = false,
 ) => {
   return LiveFetchRequestExecutor >> makeLiveWithoutFetch(config, debug)

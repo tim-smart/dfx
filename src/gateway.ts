@@ -20,18 +20,18 @@ export const MemoryBot =
   ((LiveDiscordREST > LiveDiscordGateway) + MemoryRateLimit)
 
 export const makeLiveWithoutFetch = (
-  config: ConfigWrap.Wrap<DiscordConfig.MakeOpts>,
+  config: Config.Wrap<DiscordConfig.MakeOpts>,
   debug = false,
 ) => {
   const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = DiscordConfig.makeFromConfig(ConfigWrap.unwrap(config))
+  const LiveConfig = DiscordConfig.makeFromConfig(Config.unwrap(config))
   const LiveEnv = LiveLog + LiveConfig > MemoryBot
 
   return LiveEnv
 }
 
 export const makeLive = (
-  config: ConfigWrap.Wrap<DiscordConfig.MakeOpts>,
+  config: Config.Wrap<DiscordConfig.MakeOpts>,
   debug = false,
 ) => {
   return LiveFetchRequestExecutor >> makeLiveWithoutFetch(config, debug)

@@ -29,8 +29,6 @@ export type { Either } from "@effect/data/Either"
 
 export * as Discord from "./types.js"
 
-export * as ConfigWrap from "./utils/ConfigWrap.js"
-
 /**
  * @tsplus type effect/io/Schedule
  * @tsplus companion effect/io/Schedule.Ops
