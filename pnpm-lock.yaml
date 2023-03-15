@@ -1,14 +1,14 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@effect-http/client': ^0.7.0
+  '@effect-http/client': ^0.9.1
   '@effect/data': ^0.4.1
   '@effect/io': ~0.8.0
-  '@effect/stream': ~0.9.0
+  '@effect/stream': ~0.10.0
   '@tim-smart/discord-api-docs-parser': ^0.5.0
   '@tsplus-types/effect__data': 0.4.1-dc37160
   '@tsplus-types/effect__io': 0.8.0-dc37160
-  '@tsplus-types/effect__stream': 0.9.0-dc37160
+  '@tsplus-types/effect__stream': 0.10.0-3e044b4
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   dotenv: ^16.0.3
@@ -20,10 +20,10 @@ specifiers:
   ws: ^8.13.0
 
 dependencies:
-  '@effect-http/client': 0.7.0
+  '@effect-http/client': 0.9.1
   '@effect/data': 0.4.1
   '@effect/io': 0.8.0
-  '@effect/stream': 0.9.0
+  '@effect/stream': 0.10.0
   tweetnacl: 1.0.3
 
 optionalDependencies:
@@ -36,7 +36,7 @@ devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
   '@tsplus-types/effect__data': 0.4.1-dc37160_@effect+data@0.4.1
   '@tsplus-types/effect__io': 0.8.0-dc37160_@effect+io@0.8.0
-  '@tsplus-types/effect__stream': 0.9.0-dc37160_@effect+stream@0.9.0
+  '@tsplus-types/effect__stream': 0.10.0-3e044b4_@effect+stream@0.10.0
   '@types/ws': 8.5.4
   dotenv: 16.0.3
   lerna: 6.5.1
@@ -65,17 +65,13 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect-http/client/0.7.0:
-    resolution: {integrity: sha512-bQ8lqQ5vtIfFUjhqbEXtX9sampg+SfMqvNBVGV/J/vJHJqJrYfa+52vXZ4AyQR9V5qbu55jZcMkUvVGR8pnfDw==}
+  /@effect-http/client/0.9.1:
+    resolution: {integrity: sha512-jGn4MvA7z/8IrGFy2BwBkbkMfviM/SPvJUkMocELon4ty6Nuvrb49LCpozg8TFCzYMJqGCuFpgddvMoBqd9ueg==}
     dependencies:
       '@effect/data': 0.4.1
       '@effect/io': 0.8.0
-      '@effect/schema': 0.0.5
-      '@effect/stream': 0.9.0
-    dev: false
-
-  /@effect/data/0.3.3:
-    resolution: {integrity: sha512-qDeIoVmMErcd9fJLcWsDalmty5NJ/mtv7vAsFtYbH3gOY9jHRst2TWQnUTRjpCr/KTGv+fTX+5qcEDyzymNgGg==}
+      '@effect/schema': 0.2.0
+      '@effect/stream': 0.10.0
     dev: false
 
   /@effect/data/0.4.1:
@@ -86,15 +82,15 @@ packages:
     dependencies:
       '@effect/data': 0.4.1
 
-  /@effect/schema/0.0.5:
-    resolution: {integrity: sha512-xe+aL+WsK9+DGkyiMWCq7EeEbMMDYOKI4WveBs20Bgfl38vYiOxNtbJ8qcS6SUKso8bkyJcsZnlBUfzoW9pdyw==}
+  /@effect/schema/0.2.0:
+    resolution: {integrity: sha512-2lqFmYn0qEhFMyri3GH6qA/2gvxqDHKoXFMA9tkDFz77LiA6vpTylz64sskRUqifvdlX+FsZGozcieWcB5XObQ==}
     dependencies:
-      '@effect/data': 0.3.3
+      '@effect/data': 0.4.1
       fast-check: 3.7.0
     dev: false
 
-  /@effect/stream/0.9.0:
-    resolution: {integrity: sha512-oePK3uiOilENsgnSYAM6jSEeuYyrGXv/RctuI8HTuuzvD9oE74Lh3LLKiLZGa/Ec4RlbA1oJmg7bhukydQrOgQ==}
+  /@effect/stream/0.10.0:
+    resolution: {integrity: sha512-JmZLuBO6xYDeNWA2Mg9Sly/i25tHPmvX6fRval/FydTu0np59mTSRJDtHeFvg0jFe0xVvRTRy/CRcYtc130wIw==}
     dependencies:
       '@effect/data': 0.4.1
       '@effect/io': 0.8.0
@@ -623,12 +619,12 @@ packages:
       '@effect/io': 0.8.0
     dev: true
 
-  /@tsplus-types/effect__stream/0.9.0-dc37160_@effect+stream@0.9.0:
-    resolution: {integrity: sha512-5FW+iKnSWXXVwamm/g0pyzBo7M5xIWrb5TUqhHjo0spxEo8Dn8csd1WSLPbhG3mu6gzdYQA6FHEUaSyKNFZoUg==}
+  /@tsplus-types/effect__stream/0.10.0-3e044b4_@effect+stream@0.10.0:
+    resolution: {integrity: sha512-mLuzB6q2Krj5zJcuk90v8x9LQVRuPNgN5ElPs5rT3viqm7O+eQx7JL4aMPJDTMGUFLarocV1hMHy2pnsVLKqrQ==}
     peerDependencies:
-      '@effect/stream': 0.9.0
+      '@effect/stream': 0.10.0
     dependencies:
-      '@effect/stream': 0.9.0
+      '@effect/stream': 0.10.0
     dev: true
 
   /@types/minimatch/3.0.5:

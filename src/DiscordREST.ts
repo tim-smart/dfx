@@ -17,7 +17,7 @@ export class DiscordRESTError {
 const make = Do($ => {
   const { token, rest } = $(Effect.service(DiscordConfig.DiscordConfig))
 
-  const http = $(Effect.service(Http.executor.HttpRequestExecutor))
+  const http = $(Effect.service(Http.HttpRequestExecutor))
   const log = $(Effect.service(Log.Log))
   const store = $(Effect.service(RateLimitStore))
   const { maybeWait } = $(Effect.service(RateLimiter))
@@ -70,10 +70,7 @@ const make = Do($ => {
     })
 
   // Update rate limit buckets
-  const updateBuckets = (
-    request: Http.Request,
-    response: Http.response.Response,
-  ) =>
+  const updateBuckets = (request: Http.Request, response: Http.Response) =>
     Do($ => {
       const route = routeFromConfig(request.url, request.method)
       const { bucket, retryAfter, limit, remaining } = $(
@@ -100,8 +97,7 @@ const make = Do($ => {
       $(effectsToRun.collectAllParDiscard)
     }).ignore
 
-  const httpExecutor = http.execute
-    .filterStatus(_ => _ >= 200 && _ < 300)
+  const httpExecutor = http.execute.filterStatusOk
     .contramap(_ =>
       _.updateUrl(_ => `${rest.baseUrl}${_}`).setHeaders({
         Authorization: `Bot ${token.value}`,
