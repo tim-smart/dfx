@@ -55,7 +55,7 @@ const fromHeadersAndBody = (headers: Headers, body: string) =>
     const { publicKey } = $(Effect.service(WebhookConfig))
     $(Effect.fromEither(checkSignature(publicKey, headers, body)))
     return $(
-      Effect.tryCatch(
+      Effect.attemptCatch(
         () => JSON.parse(body) as Discord.Interaction,
         reason => new WebhookParseError(reason),
       ),

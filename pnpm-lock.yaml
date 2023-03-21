@@ -1,14 +1,14 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@effect-http/client': ^0.9.1
-  '@effect/data': ^0.4.1
-  '@effect/io': ~0.8.0
-  '@effect/stream': ~0.10.0
+  '@effect-http/client': ^0.11.0
+  '@effect/data': ^0.5.0
+  '@effect/io': ~0.10.0
+  '@effect/stream': ~0.12.1
   '@tim-smart/discord-api-docs-parser': ^0.5.0
-  '@tsplus-types/effect__data': 0.4.1-dc37160
-  '@tsplus-types/effect__io': 0.8.0-dc37160
-  '@tsplus-types/effect__stream': 0.10.0-3e044b4
+  '@tsplus-types/effect__data': 0.5.0-bf7ce75
+  '@tsplus-types/effect__io': 0.10.0-bf7ce75
+  '@tsplus-types/effect__stream': 0.12.1-bf7ce75
   '@types/ws': ^8.5.4
   bufferutil: ^4.0.7
   dotenv: ^16.0.3
@@ -20,10 +20,10 @@ specifiers:
   ws: ^8.13.0
 
 dependencies:
-  '@effect-http/client': 0.9.1
-  '@effect/data': 0.4.1
-  '@effect/io': 0.8.0
-  '@effect/stream': 0.10.0
+  '@effect-http/client': 0.11.0
+  '@effect/data': 0.5.0
+  '@effect/io': 0.10.0
+  '@effect/stream': 0.12.1
   tweetnacl: 1.0.3
 
 optionalDependencies:
@@ -34,9 +34,9 @@ optionalDependencies:
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser': 0.5.0
-  '@tsplus-types/effect__data': 0.4.1-dc37160_@effect+data@0.4.1
-  '@tsplus-types/effect__io': 0.8.0-dc37160_@effect+io@0.8.0
-  '@tsplus-types/effect__stream': 0.10.0-3e044b4_@effect+stream@0.10.0
+  '@tsplus-types/effect__data': 0.5.0-bf7ce75_@effect+data@0.5.0
+  '@tsplus-types/effect__io': 0.10.0-bf7ce75_@effect+io@0.10.0
+  '@tsplus-types/effect__stream': 0.12.1-bf7ce75_@effect+stream@0.12.1
   '@types/ws': 8.5.4
   dotenv: 16.0.3
   lerna: 6.5.1
@@ -65,35 +65,36 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect-http/client/0.9.1:
-    resolution: {integrity: sha512-jGn4MvA7z/8IrGFy2BwBkbkMfviM/SPvJUkMocELon4ty6Nuvrb49LCpozg8TFCzYMJqGCuFpgddvMoBqd9ueg==}
+  /@effect-http/client/0.11.0:
+    resolution: {integrity: sha512-c/HRFFbO9cRGN//tcyD9DCXusZdLCx3to0t8jGMoc30q/K7Hgz2dbEkuB/Drm7W3YSC0J6toIgNofwMUP8+JeA==}
     dependencies:
-      '@effect/data': 0.4.1
-      '@effect/io': 0.8.0
-      '@effect/schema': 0.2.0
-      '@effect/stream': 0.10.0
+      '@effect/data': 0.5.0
+      '@effect/io': 0.10.0
+      '@effect/schema': 0.3.1
+      '@effect/stream': 0.12.1
     dev: false
 
-  /@effect/data/0.4.1:
-    resolution: {integrity: sha512-FdQ0qbYL7t+GP5eWdAPC+oeN2w3zqnujrdDLp/sj58UtMxFSHg21crprmbmiAJAWsL5EdB9aZzcisBGn382xHg==}
+  /@effect/data/0.5.0:
+    resolution: {integrity: sha512-9yuEyx19MCt4cCUlqJMgtiDxuAVlm9oA14IS4AtsG7Xip/8uKcmxSfynKfiDuPWJukA2QHR54blUzewqBxupvQ==}
 
-  /@effect/io/0.8.0:
-    resolution: {integrity: sha512-JJUs05oiHzh/Eupf5mgeLRFA4RXJAJo2DNxPC4ZVXwhvgJeqJ/G0ftYo3znOO0vKLzXjw8WYrnXPBM1nYLPnfQ==}
+  /@effect/io/0.10.0:
+    resolution: {integrity: sha512-zNST2PjJlbpzle/zCUpui3Ttp8By8Z9gDfRpy6o//ejgL2CCd0G4VflZ74Hy3L8w/GLCVUXput52DfB5bxEsqA==}
     dependencies:
-      '@effect/data': 0.4.1
+      '@effect/data': 0.5.0
 
-  /@effect/schema/0.2.0:
-    resolution: {integrity: sha512-2lqFmYn0qEhFMyri3GH6qA/2gvxqDHKoXFMA9tkDFz77LiA6vpTylz64sskRUqifvdlX+FsZGozcieWcB5XObQ==}
+  /@effect/schema/0.3.1:
+    resolution: {integrity: sha512-tiJwSwDGik5euEkYXL4AEde6Z0Ghu3VSfSsicnLYfTCywS6cpM+u8k3GGUP2VYcJy9BhFs8rpLQ+/QfV8M3izw==}
     dependencies:
-      '@effect/data': 0.4.1
-      fast-check: 3.7.0
+      '@effect/data': 0.5.0
+      '@effect/io': 0.10.0
+      fast-check: 3.7.1
     dev: false
 
-  /@effect/stream/0.10.0:
-    resolution: {integrity: sha512-JmZLuBO6xYDeNWA2Mg9Sly/i25tHPmvX6fRval/FydTu0np59mTSRJDtHeFvg0jFe0xVvRTRy/CRcYtc130wIw==}
+  /@effect/stream/0.12.1:
+    resolution: {integrity: sha512-Y5CkZXv1M6EAbuqa1tQxL6qeeDlxRchUZq+XHc7kb/sko9Za+G/WyRqoEWm0VmIcyWh6RCzpEsN6m3izXqIT0w==}
     dependencies:
-      '@effect/data': 0.4.1
-      '@effect/io': 0.8.0
+      '@effect/data': 0.5.0
+      '@effect/io': 0.10.0
 
   /@gar/promisify/1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -603,28 +604,28 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@tsplus-types/effect__data/0.4.1-dc37160_@effect+data@0.4.1:
-    resolution: {integrity: sha512-S9XdFkNa+GRsZ0EEATHndhi8qJXVDtnLy7VV5zLQXGSNRsV65ZSzK8vYSIDL6zlzcB/3hUjR8vVxlECFSI75jQ==}
+  /@tsplus-types/effect__data/0.5.0-bf7ce75_@effect+data@0.5.0:
+    resolution: {integrity: sha512-uLCfotHgZAbAO1sHGV8epnd7qDM8jo57ll6acJ5MxkvsRmwJaoyiZco3NeNzVshllsnzgEXaD4CXCYrfQDCmgQ==}
     peerDependencies:
-      '@effect/data': 0.4.1
+      '@effect/data': 0.5.0
     dependencies:
-      '@effect/data': 0.4.1
+      '@effect/data': 0.5.0
     dev: true
 
-  /@tsplus-types/effect__io/0.8.0-dc37160_@effect+io@0.8.0:
-    resolution: {integrity: sha512-Lzzb+nzd8MSKzqPtOQs8lvEY4ix3EuwOiZTKN0yaMF9c+QQvq2mQ8UMbGMHYGJccJ6JatyNvHn8BAsYU+NoEmQ==}
+  /@tsplus-types/effect__io/0.10.0-bf7ce75_@effect+io@0.10.0:
+    resolution: {integrity: sha512-98GEQ+HB0jvWsMJ2K4eoA6yoLM1ilwoWl9+afV4ItmMgsXOzaIeQPAlApg4+SJnHTwzEfS0nHFwRKllZenvolA==}
     peerDependencies:
-      '@effect/io': 0.8.0
+      '@effect/io': 0.10.0
     dependencies:
-      '@effect/io': 0.8.0
+      '@effect/io': 0.10.0
     dev: true
 
-  /@tsplus-types/effect__stream/0.10.0-3e044b4_@effect+stream@0.10.0:
-    resolution: {integrity: sha512-mLuzB6q2Krj5zJcuk90v8x9LQVRuPNgN5ElPs5rT3viqm7O+eQx7JL4aMPJDTMGUFLarocV1hMHy2pnsVLKqrQ==}
+  /@tsplus-types/effect__stream/0.12.1-bf7ce75_@effect+stream@0.12.1:
+    resolution: {integrity: sha512-s/+zz87uuslbQ5IgdyzAzwYU3yerVtNgJaJ3hOSjseMP1NmoIGmDaVgMo4JCX6DeL76Gm9OrO+k/M/eQX+I0mA==}
     peerDependencies:
-      '@effect/stream': 0.10.0
+      '@effect/stream': 0.12.1
     dependencies:
-      '@effect/stream': 0.10.0
+      '@effect/stream': 0.12.1
     dev: true
 
   /@types/minimatch/3.0.5:
@@ -1544,8 +1545,8 @@ packages:
       tmp: 0.0.33
     dev: true
 
-  /fast-check/3.7.0:
-    resolution: {integrity: sha512-1QFnXC7UcTlSBk7523W99QbnP6mTrvUjEXLKODjjhh/QJUHAzzBow2POae7hV+Qrqjj4XaU0HbTfwEa8HprS5g==}
+  /fast-check/3.7.1:
+    resolution: {integrity: sha512-d63EsxP1eedA+x94xNxIpTWtBShq95KL6ZSrKTD0Pp1lPASmajAaDHJ71c5ebwZ+vBzlTt3AOalcAnBzL7PQ6Q==}
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.0.1
