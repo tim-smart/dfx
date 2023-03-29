@@ -71,7 +71,7 @@ const send = (
     }).forever
 
 const make = Do($ => {
-  const log = $(Effect.service(Log.Log))
+  const log = $(Log.Log)
 
   const connect = (
     url: Ref<string>,

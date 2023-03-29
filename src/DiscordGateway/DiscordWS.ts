@@ -23,9 +23,9 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
 })
 
 const make = Do($ => {
-  const ws = $(WS.WS.access)
-  const encoding = $(Effect.service(DiscordWSCodec))
-  const log = $(Effect.service(Log.Log))
+  const ws = $(WS.WS)
+  const encoding = $(DiscordWSCodec)
+  const log = $(Log.Log)
 
   const connect = ({
     url = "wss://gateway.discord.gg/",

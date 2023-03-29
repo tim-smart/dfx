@@ -21,7 +21,7 @@ const handleDispatchFactory =
     })
 
 export const make = Do($ => {
-  const sharder = $(Effect.service(Sharder))
+  const sharder = $(Sharder)
   const hub = $(Hub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>())
 
   const dispatch = Stream.fromHub(hub)

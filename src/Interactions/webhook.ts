@@ -52,7 +52,7 @@ export class WebhookParseError {
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
   Do($ => {
-    const { publicKey } = $(Effect.service(WebhookConfig))
+    const { publicKey } = $((WebhookConfig))
     $(Effect.fromEither(checkSignature(publicKey, headers, body)))
     return $(
       Effect.attemptCatch(

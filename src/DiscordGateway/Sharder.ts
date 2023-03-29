@@ -4,11 +4,11 @@ import { LiveShard, Shard } from "./Shard.js"
 import { LiveRateLimiter } from "dfx"
 
 const make = Do($ => {
-  const store = $(Effect.service(ShardStore))
-  const rest = $(Effect.service(DiscordREST))
-  const { gateway: config } = $(Effect.service(DiscordConfig.DiscordConfig))
-  const limiter = $(Effect.service(RateLimiter))
-  const shard = $(Shard.access)
+  const store = $(ShardStore)
+  const rest = $(DiscordREST)
+  const { gateway: config } = $(DiscordConfig.DiscordConfig)
+  const limiter = $(RateLimiter)
+  const shard = $(Shard)
 
   const takeConfig = (totalCount: number) =>
     Do($ => {

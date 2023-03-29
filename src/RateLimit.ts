@@ -34,8 +34,8 @@ export const RateLimitStore = Tag<RateLimitStore>()
 export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Do($ => {
-  const store = $(Effect.service(RateLimitStore))
-  const log = $(Effect.service(Log.Log))
+  const store = $(RateLimitStore)
+  const log = $(Log.Log)
 
   const maybeWait = (
     key: string,

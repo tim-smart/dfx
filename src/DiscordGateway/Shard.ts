@@ -5,9 +5,9 @@ import * as InvalidSession from "./Shard/invalidSession.js"
 import * as Utils from "./Shard/utils.js"
 
 export const make = Do($ => {
-  const { token, gateway } = $(Effect.service(DiscordConfig.DiscordConfig))
-  const limiter = $(Effect.service(RateLimiter))
-  const dws = $(DiscordWS.access)
+  const { token, gateway } = $(DiscordConfig.DiscordConfig)
+  const limiter = $(RateLimiter)
+  const dws = $(DiscordWS)
 
   const connect = (
     shard: [id: number, count: number],

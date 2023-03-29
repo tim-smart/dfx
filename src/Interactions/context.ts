@@ -16,9 +16,9 @@ export interface SubCommandContext {
 }
 export const SubCommandContext = Tag<SubCommandContext>()
 
-export const interaction = Effect.service(InteractionContext)
+export const interaction = InteractionContext
 
-export const command = Effect.service(ApplicationCommandContext)
+export const command = ApplicationCommandContext
 
 export class ResolvedDataNotFound {
   readonly _tag = "ResolvedDataNotFound"
@@ -28,9 +28,9 @@ export class ResolvedDataNotFound {
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(InteractionContext, a =>
-    IxHelpers.resolveValues(f)(a).match(
-      () => Effect.fail(new ResolvedDataNotFound(a)),
+  InteractionContext.flatMap(ix =>
+    IxHelpers.resolveValues(f)(ix).match(
+      () => Effect.fail(new ResolvedDataNotFound(ix)),
       Effect.succeed,
     ),
   )
@@ -39,19 +39,18 @@ export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Effect.serviceWithEffect(InteractionContext, a =>
+  InteractionContext.flatMap(ix =>
     IxHelpers.resolveOptionValue(
       name,
       f,
-    )(a).match(
-      () => Effect.fail(new ResolvedDataNotFound(a, name)),
+    )(ix).match(
+      () => Effect.fail(new ResolvedDataNotFound(ix, name)),
       Effect.succeed,
     ),
   )
 
-export const focusedOptionValue = Effect.serviceWith(
-  FocusedOptionContext,
-  a => a.focusedOption.value ?? "",
+export const focusedOptionValue = FocusedOptionContext.map(
+  _ => _.focusedOption.value ?? "",
 )
 
 export class SubCommandNotFound {
@@ -82,7 +81,7 @@ export const handleSubCommands = <
   | SubCommandNotFound,
   Discord.InteractionResponse
 > =>
-  Effect.service(ApplicationCommandContext).flatMap(data =>
+  ApplicationCommandContext.flatMap(data =>
     pipe(
       IxHelpers.allSubCommands(data),
       Arr.findFirst(a => !!commands[a.name]),
@@ -97,15 +96,9 @@ export const handleSubCommands = <
     ),
   )
 
-export const currentSubCommand = Effect.serviceWith(
-  SubCommandContext,
-  a => a.command,
-)
+export const currentSubCommand = SubCommandContext.map(_ => _.command)
 
-export const optionsMap = Effect.serviceWith(
-  ApplicationCommandContext,
-  IxHelpers.optionsMap,
-)
+export const optionsMap = ApplicationCommandContext.map(IxHelpers.optionsMap)
 
 export class RequiredOptionNotFound {
   readonly _tag = "RequiredOptionNotFound"
@@ -118,25 +111,20 @@ export class RequiredOptionNotFound {
 }
 
 export const option = (name: string) =>
-  Effect.serviceWith(ApplicationCommandContext, IxHelpers.getOption(name))
+  ApplicationCommandContext.map(IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
-  option(name).flatMap(o =>
-    o
-      .flatMapNullable(a => a.value)
-      .match(
-        () =>
-          command.flatMap(data =>
-            Effect.fail(new RequiredOptionNotFound(data, name)),
-          ),
-        Effect.succeed,
-      ),
+  option(name).flatMap(_ =>
+    _.flatMapNullable(a => a.value).match(
+      () =>
+        command.flatMap(data =>
+          Effect.fail(new RequiredOptionNotFound(data, name)),
+        ),
+      Effect.succeed,
+    ),
   )
 
 export const optionValueOptional = (name: string) =>
-  option(name).map(o => o.flatMapNullable(a => a.value))
+  option(name).map(o => o.flatMapNullable(o => o.value))
 
-export const modalValues = Effect.serviceWith(
-  ModalSubmitContext,
-  IxHelpers.componentsMap,
-)
+export const modalValues = ModalSubmitContext.map(IxHelpers.componentsMap)
