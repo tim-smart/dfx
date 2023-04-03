@@ -22,7 +22,6 @@ export const subscribeForEachPar = <R, E, A, X>(
     return $(run.zipParLeft(deferred.await))
   })
 
-
 /**
  * @tsplus fluent effect/io/Effect foreverSwitch
  */

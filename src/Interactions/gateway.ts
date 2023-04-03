@@ -27,8 +27,8 @@ export const run =
       const { GlobalApplicationCommand, GuildApplicationCommand } =
         splitDefinitions(ix.definitions)
 
-      const gateway = $((Gateway.DiscordGateway))
-      const rest = $((DiscordREST))
+      const gateway = $(Gateway.DiscordGateway)
+      const rest = $(DiscordREST)
 
       const application = $(
         rest.getCurrentBotApplicationInformation().flatMap(a => a.json),

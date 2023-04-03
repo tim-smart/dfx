@@ -52,10 +52,10 @@ export class WebhookParseError {
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
   Do($ => {
-    const { publicKey } = $((WebhookConfig))
+    const { publicKey } = $(WebhookConfig)
     $(Effect.fromEither(checkSignature(publicKey, headers, body)))
     return $(
-      Effect.attemptCatch(
+      Effect.tryCatch(
         () => JSON.parse(body) as Discord.Interaction,
         reason => new WebhookParseError(reason),
       ),

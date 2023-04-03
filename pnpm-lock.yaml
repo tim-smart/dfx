@@ -2,17 +2,17 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@effect-http/client':
-    specifier: ^0.14.0
-    version: 0.14.0
+    specifier: ^0.15.0
+    version: 0.15.0
   '@effect/data':
-    specifier: ^0.7.4
-    version: 0.7.4
+    specifier: ^0.10.3
+    version: 0.10.3
   '@effect/io':
-    specifier: ~0.15.1
-    version: 0.15.1
+    specifier: ~0.17.0
+    version: 0.17.0
   '@effect/stream':
-    specifier: ~0.14.0
-    version: 0.14.0
+    specifier: ~0.16.0
+    version: 0.16.0
   tweetnacl:
     specifier: ^1.0.3
     version: 1.0.3
@@ -36,14 +36,14 @@ devDependencies:
     specifier: ^0.5.0
     version: 0.5.0
   '@tsplus-types/effect__data':
-    specifier: 0.7.4-ce83fa1
-    version: 0.7.4-ce83fa1(@effect/data@0.7.4)
+    specifier: 0.10.3-5cbc616
+    version: 0.10.3-5cbc616(@effect/data@0.10.3)
   '@tsplus-types/effect__io':
-    specifier: 0.15.1-ce83fa1
-    version: 0.15.1-ce83fa1(@effect/io@0.15.1)
+    specifier: 0.17.0-5cbc616
+    version: 0.17.0-5cbc616(@effect/io@0.17.0)
   '@tsplus-types/effect__stream':
-    specifier: 0.14.0-ce83fa1
-    version: 0.14.0-ce83fa1(@effect/stream@0.14.0)
+    specifier: 0.16.0-5cbc616
+    version: 0.16.0-5cbc616(@effect/stream@0.16.0)
   '@types/ws':
     specifier: ^8.5.4
     version: 8.5.4
@@ -80,36 +80,36 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@effect-http/client@0.14.0:
-    resolution: {integrity: sha512-mOeKBltTtTqKjndOCuq+2btSe6HKzpadZBsM8UCPzJnmrydlX1ILNtwg4NhhCakESVTs7cppvRSgYA6M3mG9iw==}
+  /@effect-http/client@0.15.0:
+    resolution: {integrity: sha512-QxnOLfYsnoDf1FxTFoHIpAS8uJ3KZ1aXCqdpMS0vbVPjNIvzGrAQNk6XL1Girx2Byzs8kECGtzkCYNxugzYeXA==}
     dependencies:
-      '@effect/data': 0.7.4
-      '@effect/io': 0.15.1
-      '@effect/schema': 0.8.0
-      '@effect/stream': 0.14.0
+      '@effect/data': 0.10.3
+      '@effect/io': 0.17.0
+      '@effect/schema': 0.10.0
+      '@effect/stream': 0.16.0
     dev: false
 
-  /@effect/data@0.7.4:
-    resolution: {integrity: sha512-vHDyTq66H5JIFMysp11KawygR7ikc2do5FdRdvruLN4H6hFW7u404Bl/UVOu4MiKugHvV1MUaV2fy/dzOlwY7w==}
+  /@effect/data@0.10.3:
+    resolution: {integrity: sha512-D3T43FOiCDeYYQCfjR4ra1apgL78GS4T85wMMZ4A2UZ3SmKWeM0CP66jnysUoRW4f9Q6xnk4BfbU8eyUQo8oZw==}
 
-  /@effect/io@0.15.1:
-    resolution: {integrity: sha512-+y4xJsNSeDM0ULcHathoVGB6uxSUTXT0IBiwyZUdqhB7sgZpTrYoi5RUnQSgpI8cVLZr7ukfOVPHI/PMVt9DXw==}
+  /@effect/io@0.17.0:
+    resolution: {integrity: sha512-dJX3jaRksA3BXt3pmvjyBVvWsRJ7UVuw69BglWsDATn+7wPK+jTQSpZvtPehUknGm3aow095KsxCC+ruQ/7NnQ==}
     dependencies:
-      '@effect/data': 0.7.4
+      '@effect/data': 0.10.3
 
-  /@effect/schema@0.8.0:
-    resolution: {integrity: sha512-BcouVR+hCmhewgqY21rHPTPQdkyevr7LDLJQJxCxiAdo9nppJO2zbXrhGUh2lD58XCJIiVy9w7X42wcKD6dICg==}
+  /@effect/schema@0.10.0:
+    resolution: {integrity: sha512-QLFVT8WAEQ9i9BkZd4s850eXrQPbV9k6Vr2SPMvnJ0lf4vX7OnldEvPQ8TrKvcaMET8qPV8rk/6jzcz+z2Ia1w==}
     dependencies:
-      '@effect/data': 0.7.4
-      '@effect/io': 0.15.1
+      '@effect/data': 0.10.3
+      '@effect/io': 0.17.0
       fast-check: 3.8.0
     dev: false
 
-  /@effect/stream@0.14.0:
-    resolution: {integrity: sha512-wr6HhIN1q3L8QEj/+5ocVGoS615vzmGIQRPCI05mW6OOYNv9ORyF/NyM91NZ67C07KixC1SnP6M8HXCBBJ0QJw==}
+  /@effect/stream@0.16.0:
+    resolution: {integrity: sha512-rXpOuDqagiryke/hNOMT/oCne6j54DtXBlNMWwXO9f5M1mtBl4dl+dXKTu+lNuX3u9CZFGJUTZnALI4JGcUSyQ==}
     dependencies:
-      '@effect/data': 0.7.4
-      '@effect/io': 0.15.1
+      '@effect/data': 0.10.3
+      '@effect/io': 0.17.0
 
   /@gar/promisify@1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -775,28 +775,28 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@tsplus-types/effect__data@0.7.4-ce83fa1(@effect/data@0.7.4):
-    resolution: {integrity: sha512-qoHRFQqTD62N37/VzUsaK9CVqmz4Nz59LNorTexsApamfnxDEW2H2FOxgcliGNDTvboLgCc6l/4LnzCpgTHumw==}
+  /@tsplus-types/effect__data@0.10.3-5cbc616(@effect/data@0.10.3):
+    resolution: {integrity: sha512-Xp//txdngTZXqU7wVmUse3hAiSmhXrsVrpCXhiBSXXIVU8tVbwz8fJemm2ffhyZJca2XDH1ZHwgCG3DCPzs3uQ==}
     peerDependencies:
-      '@effect/data': 0.7.4
+      '@effect/data': 0.10.3
     dependencies:
-      '@effect/data': 0.7.4
+      '@effect/data': 0.10.3
     dev: true
 
-  /@tsplus-types/effect__io@0.15.1-ce83fa1(@effect/io@0.15.1):
-    resolution: {integrity: sha512-948/65yrCRXQIy2+KeFJxP2bLXZ3rSdTzBBKvagujeyRmQXAnCIfaNpWIH41hVRjpntv2WOm1qHEPz9Sfpnb8A==}
+  /@tsplus-types/effect__io@0.17.0-5cbc616(@effect/io@0.17.0):
+    resolution: {integrity: sha512-1eoldDdDNsU1ReWSLTmkhxhC4e6xN4W1LDZsqRBskHaCpXKo5JzTczmMpTZzXGAKNKwe3xoFEVEmI66RJsUvlg==}
     peerDependencies:
-      '@effect/io': 0.15.1
+      '@effect/io': 0.17.0
     dependencies:
-      '@effect/io': 0.15.1
+      '@effect/io': 0.17.0
     dev: true
 
-  /@tsplus-types/effect__stream@0.14.0-ce83fa1(@effect/stream@0.14.0):
-    resolution: {integrity: sha512-jmhI/MJM45Js1fvOPJuTAiVMKhVpeiDZf5AM9nY9Q4q5YMLOMvrshB7KmQVKTTRi8YMM4ML+C5BiahxTkG8ikA==}
+  /@tsplus-types/effect__stream@0.16.0-5cbc616(@effect/stream@0.16.0):
+    resolution: {integrity: sha512-5MFXpl13bShqSdWHzfXomI8NUhTIC4URmGfUpx7RZoDPTnDOQJdMD5KJoAq4Fp3kBchl/hiuItmxv94gBTzegw==}
     peerDependencies:
-      '@effect/stream': 0.14.0
+      '@effect/stream': 0.16.0
     dependencies:
-      '@effect/stream': 0.14.0
+      '@effect/stream': 0.16.0
     dev: true
 
   /@tufjs/models@1.0.1:

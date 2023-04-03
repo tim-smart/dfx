@@ -15,12 +15,12 @@ export class DiscordRESTError {
 }
 
 const make = Do($ => {
-  const { token, rest } = $((DiscordConfig.DiscordConfig))
+  const { token, rest } = $(DiscordConfig.DiscordConfig)
 
-  const http = $((Http.HttpRequestExecutor))
-  const log = $((Log.Log))
-  const store = $((RateLimitStore))
-  const { maybeWait } = $((RateLimiter))
+  const http = $(Http.HttpRequestExecutor)
+  const log = $(Log.Log)
+  const store = $(RateLimitStore)
+  const { maybeWait } = $(RateLimiter)
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
