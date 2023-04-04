@@ -325,6 +325,8 @@ export const enum ApplicationCommandType {
   MESSAGE = 3,
 }
 export const ApplicationFlag = {
+  /** Indicates if an app uses the Auto Moderation API */
+  APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE: 1 << 6,
   /** Intent required for bots in 100 or more servers to receive presence_update events */
   GATEWAY_PRESENCE: 1 << 12,
   /** Intent required for bots in under 100 servers to receive presence_update events, found in Bot Settings */
@@ -1799,6 +1801,12 @@ export function createRoutes<O = any>(
         url: `/guilds/${guildId}/members/${userId}`,
         options,
       }),
+    getGuildOnboarding: (guildId, options) =>
+      fetch({
+        method: "GET",
+        url: `/guilds/${guildId}/onboarding`,
+        options,
+      }),
     getGuildPreview: (guildId, options) =>
       fetch({
         method: "GET",
@@ -2691,7 +2699,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildChannelParams>,
     options?: O,
   ) => RestResponse<Channel>
-  /** Create a new emoji for the guild. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the new emoji object on success. Fires a Guild Emojis Update Gateway event. */
+  /** Create a new emoji for the guild. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the new emoji object on success. Fires a Guild Emojis Update Gateway event. */
   createGuildEmoji: (
     guildId: string,
     params?: Partial<CreateGuildEmojiParams>,
@@ -2715,7 +2723,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildScheduledEventParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent>
-  /** Create a new sticker for the guild. Send a multipart/form-data body. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the new sticker object on success. Fires a Guild Stickers Update Gateway event. */
+  /** Create a new sticker for the guild. Send a multipart/form-data body. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the new sticker object on success. Fires a Guild Stickers Update Gateway event. */
   createGuildSticker: (
     guildId: string,
     params?: Partial<CreateGuildStickerParams>,
@@ -2814,7 +2822,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     commandId: string,
     options?: O,
   ) => RestResponse<any>
-  /** Delete the given emoji. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns 204 No Content on success. Fires a Guild Emojis Update Gateway event. */
+  /** Delete the given emoji. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Emojis Update Gateway event. */
   deleteGuildEmoji: (
     guildId: string,
     emojiId: string,
@@ -2838,7 +2846,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildScheduledEventId: string,
     options?: O,
   ) => RestResponse<any>
-  /** Delete the given sticker. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns 204 No Content on success. Fires a Guild Stickers Update Gateway event. */
+  /** Delete the given sticker. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Stickers Update Gateway event. */
   deleteGuildSticker: (
     guildId: string,
     stickerId: string,
@@ -3122,6 +3130,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     userId: string,
     options?: O,
   ) => RestResponse<GuildMember>
+  /** Returns the Onboarding object for the guild. */
+  getGuildOnboarding: (
+    guildId: string,
+    options?: O,
+  ) => RestResponse<GuildOnboarding>
   /** Returns the guild preview object for the given id. If the user is not in the guild, then the guild must be lurkable. */
   getGuildPreview: (guildId: string, options?: O) => RestResponse<GuildPreview>
   /** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. Requires the KICK_MEMBERS permission. */
@@ -3146,7 +3159,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<GetGuildScheduledEventUserParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEventUser[]>
-  /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the MANAGE_EMOJIS_AND_STICKERS permission. */
+  /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the MANAGE_GUILD_EXPRESSIONS permission. */
   getGuildSticker: (
     guildId: string,
     stickerId: string,
@@ -3285,7 +3298,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListGuildMemberParams>,
     options?: O,
   ) => RestResponse<GuildMember[]>
-  /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the MANAGE_EMOJIS_AND_STICKERS permission. */
+  /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the MANAGE_GUILD_EXPRESSIONS permission. */
   listGuildStickers: (guildId: string, options?: O) => RestResponse<Sticker[]>
   /** Returns archived threads in the channel that are of type PRIVATE_THREAD, and the user has joined. Threads are ordered by their id, in descending order. Requires the READ_MESSAGE_HISTORY permission. */
   listJoinedPrivateArchivedThreads: (
@@ -3367,7 +3380,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildChannelPositionParams>,
     options?: O,
   ) => RestResponse<any>
-  /** Modify the given emoji. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the updated emoji object on success. Fires a Guild Emojis Update Gateway event. */
+  /** Modify the given emoji. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated emoji object on success. Fires a Guild Emojis Update Gateway event. */
   modifyGuildEmoji: (
     guildId: string,
     emojiId: string,
@@ -3407,7 +3420,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildScheduledEventParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent>
-  /** Modify the given sticker. Requires the MANAGE_EMOJIS_AND_STICKERS permission. Returns the updated sticker object on success. Fires a Guild Stickers Update Gateway event. */
+  /** Modify the given sticker. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated sticker object on success. Fires a Guild Stickers Update Gateway event. */
   modifyGuildSticker: (
     guildId: string,
     stickerId: string,
@@ -3833,7 +3846,7 @@ export interface Guild {
   region?: string | null
   /** id of afk channel */
   afk_channel_id?: Snowflake | null
-  /** afk timeout in seconds, can be set to: 60, 300, 900, 1800, 3600 */
+  /** afk timeout in seconds */
   afk_timeout: number
   /** true if the server widget is enabled */
   widget_enabled?: boolean
@@ -3881,6 +3894,8 @@ export interface Guild {
   public_updates_channel_id?: Snowflake | null
   /** the maximum amount of users in a video channel */
   max_video_channel_users?: number
+  /** the maximum amount of users in a stage video channel */
+  max_stage_video_channel_users?: number
   /** approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true */
   approximate_member_count?: number
   /** approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true */
@@ -4099,6 +4114,16 @@ export const enum GuildNsfwLevel {
   EXPLICIT = 1,
   SAFE = 2,
   AGE_RESTRICTED = 3,
+}
+export interface GuildOnboarding {
+  /** ID of the guild this onboarding is part of */
+  guild_id: Snowflake
+  /** Prompts shown during onboarding and in customize community */
+  prompts: OnboardingPrompt[]
+  /** Channel IDs that members get opted into automatically */
+  default_channel_ids: Snowflake[]
+  /** Whether onboarding is enabled in the guild */
+  enabled: boolean
 }
 export interface GuildPreview {
   /** guild id */
@@ -5283,6 +5308,22 @@ export const enum OAuth2Scope {
   /** this generates a webhook that is returned in the oauth token response for authorization code grants */
   WEBHOOK_INCOMING = "webhook.incoming",
 }
+export interface OnboardingPrompt {
+  /** ID of the prompt */
+  id: Snowflake
+  /** Type of prompt */
+  type: PromptType
+  /** Options available within the prompt */
+  options: PromptOption[]
+  /** Title of the prompt */
+  title: string
+  /** Indicates whether users are limited to selecting one option for the prompt */
+  single_select: boolean
+  /** Indicates whether the prompt is required before a user completes the onboarding flow */
+  required: boolean
+  /** Indicates whether the prompt is present in the onboarding flow. If false, the prompt will only appear in the Channels & Roles tab */
+  in_onboarding: boolean
+}
 export interface Overwrite {
   /** role or user id */
   id: Snowflake
@@ -5354,8 +5395,8 @@ export const PermissionFlag = {
   MANAGE_ROLES: BigInt(1) << BigInt(28),
   /** Allows management and editing of webhooks */
   MANAGE_WEBHOOKS: BigInt(1) << BigInt(29),
-  /** Allows management and editing of emojis and stickers */
-  MANAGE_EMOJIS_AND_STICKERS: BigInt(1) << BigInt(30),
+  /** Allows management and editing of emojis, stickers, and soundboard sounds */
+  MANAGE_GUILD_EXPRESSIONS: BigInt(1) << BigInt(30),
   /** Allows members to use application commands, including slash commands and context menu commands. */
   USE_APPLICATION_COMMANDS: BigInt(1) << BigInt(31),
   /** Allows for requesting to speak in stage channels. (This permission is under active development and may be changed or removed.) */
@@ -5376,6 +5417,10 @@ export const PermissionFlag = {
   USE_EMBEDDED_ACTIVITIES: BigInt(1) << BigInt(39),
   /** Allows for timing out users to prevent them from sending or reacting to messages in chat and threads, and from speaking in voice and stage channels */
   MODERATE_MEMBERS: BigInt(1) << BigInt(40),
+  /** Allows for viewing role subscription insights */
+  VIEW_CREATOR_MONETIZATION_ANALYTICS: BigInt(1) << BigInt(41),
+  /** Allows for using soundboard in a voice channel */
+  USE_SOUNDBOARD: BigInt(1) << BigInt(42),
 } as const
 export const enum PremiumTier {
   /** guild has not unlocked any Server Boost perks */
@@ -5410,6 +5455,24 @@ export const enum PrivacyLevel {
   PUBLIC = 1,
   /** The Stage instance is visible to only guild members. */
   GUILD_ONLY = 2,
+}
+export interface PromptOption {
+  /** ID of the prompt option */
+  id: Snowflake
+  /** IDs for channels a member is added to when the option is selected */
+  channel_ids: Snowflake[]
+  /** IDs for roles assigned to a member when the option is selected */
+  role_ids: Snowflake[]
+  /** Emoji of the option */
+  emoji: Emoji
+  /** Title of the option */
+  title: string
+  /** Description of the option */
+  description?: string | null
+}
+export const enum PromptType {
+  MULTIPLE_CHOICE = 0,
+  DROPDOWN = 1,
 }
 export interface Reaction {
   /** times this emoji has been used to react */
@@ -5606,12 +5669,10 @@ export interface Response {
   user?: User
 }
 export interface ResponseBody {
-  /** the public, archived threads */
+  /** the active threads */
   threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
   members: ThreadMember[]
-  /** whether there are potentially additional threads that could be returned on a subsequent call */
-  has_more: boolean
 }
 export interface Resume {
   /** Session token */
