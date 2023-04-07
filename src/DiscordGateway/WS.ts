@@ -83,10 +83,8 @@ const make = Do($ => {
       const run = Do($ => {
         const ws = $(socket(url))
         return $(offer(ws, queue).zipParLeft(send(ws, takeOutbound, log)))
-      }).retry(
-        Schedule.recurWhile(
-          e => e._tag === "WebSocketCloseError" && e.code === 1012,
-        ),
+      }).retryWhile(
+        e => e._tag === "WebSocketCloseError" && e.code === 1012,
       ).scoped
 
       return { run, take: queue.take() } as const

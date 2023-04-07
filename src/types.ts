@@ -4421,6 +4421,8 @@ export interface Interaction {
   /** Guild that the interaction was sent from */
   guild_id?: Snowflake
   /** Channel that the interaction was sent from */
+  channel?: Channel
+  /** Channel that the interaction was sent from */
   channel_id?: Snowflake
   /** Guild member data for the invoking user, including permissions */
   member?: GuildMember
@@ -5669,10 +5671,12 @@ export interface Response {
   user?: User
 }
 export interface ResponseBody {
-  /** the active threads */
+  /** the public, archived threads */
   threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
   members: ThreadMember[]
+  /** whether there are potentially additional threads that could be returned on a subsequent call */
+  has_more: boolean
 }
 export interface Resume {
   /** Session token */
