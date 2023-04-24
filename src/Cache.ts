@@ -60,10 +60,10 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     getForParent: (parentId: string) =>
       driver.getForParent(parentId).someOrElseEffect(() =>
         onParentMiss(parentId)
-          .tap(
-            entries =>
-              entries.map(([id, a]) => driver.set(parentId, id, a))
-                .collectAllPar,
+          .tap(entries =>
+            Effect.allPar(
+              entries.map(([id, a]) => driver.set(parentId, id, a)),
+            ),
           )
           .map(entries => new Map(entries) as ReadonlyMap<string, A>),
       ),

@@ -39,7 +39,7 @@ const make = Do($ => {
         Duration.minutes(10).millis,
         10000,
       ),
-    ].collectAllParDiscard
+    ].allParDiscard
   const isBadRoute = (route: string) => badRoutesRef.get.map(s => s.has(route))
   const removeBadRoute = (route: string) =>
     badRoutesRef.update(s => s.remove(route))
@@ -74,7 +74,7 @@ const make = Do($ => {
     Do($ => {
       const route = routeFromConfig(request.url, request.method)
       const { bucket, retryAfter, limit, remaining } = $(
-        Effect.fromOption(rateLimitFromHeaders(response.headers)),
+        rateLimitFromHeaders(response.headers),
       )
 
       const effectsToRun = [
@@ -94,7 +94,7 @@ const make = Do($ => {
         )
       }
 
-      $(effectsToRun.collectAllParDiscard)
+      $(effectsToRun.allParDiscard)
     }).ignore
 
   const httpExecutor = http.execute.filterStatusOk
@@ -133,7 +133,7 @@ const make = Do($ => {
                 log.info("DiscordREST", "403", request.url),
                 addBadRoute(routeFromConfig(request.url, request.method)),
                 updateBuckets(request, response),
-              ].collectAllParDiscard,
+              ].allParDiscard,
             )
             return $(Effect.fail(e))
           })
@@ -150,7 +150,7 @@ const make = Do($ => {
                     Duration.seconds(5),
                   ),
                 ),
-              ].collectAllParDiscard,
+              ].allParDiscard,
             )
             return $(executor<A>(request))
           })

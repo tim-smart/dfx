@@ -156,9 +156,10 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             )
           })
 
-          const results = $(toGet.collectAllPar)
-          const map = results.reduce(new Map<string, T>(), (map, [id, a]) =>
-            a._tag === "Some" ? map.set(id, a.value) : map,
+          const results = $(Effect.allPar(toGet))
+          const map = results.reduce(
+            (map, [id, a]) => (a._tag === "Some" ? map.set(id, a.value) : map),
+            new Map<string, T>(),
           )
 
           return Maybe.some(map)
@@ -192,7 +193,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             })
           }
 
-          $(effects.collectAllParDiscard)
+          $(effects.allParDiscard)
         }),
 
       run: store.run,

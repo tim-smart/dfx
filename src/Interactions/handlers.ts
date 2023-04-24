@@ -63,14 +63,12 @@ export const handlers = <R, E>(
           }),
         ),
         _ =>
-          _.collectAllPar
-            .flatMap(a =>
-              a
-                .findFirst(a => a.match)
-                .match(
-                  () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                  a => a.command.handle,
-                ),
+          Effect.allPar(_)
+            .flatMap(_ =>
+              Arr.findFirst(_, _ => _.match).match(
+                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
+                a => a.command.handle,
+              ),
             )
             .provideService(Ctx.ModalSubmitContext, data),
       )
@@ -87,15 +85,13 @@ export const handlers = <R, E>(
             match: a.predicate(data.custom_id),
           }),
         ),
-        a =>
-          a.collectAllPar
-            .flatMap(a =>
-              a
-                .findFirst(a => a.match)
-                .match(
-                  () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                  a => a.command.handle,
-                ),
+        _ =>
+          Effect.allPar(_)
+            .flatMap(commands =>
+              Arr.findFirst(commands, _ => _.match).match(
+                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
+                _ => _.command.handle,
+              ),
             )
             .provideService(Ctx.MessageComponentContext, data),
       )
@@ -114,10 +110,10 @@ export const handlers = <R, E>(
                 match: _.predicate(data, focusedOption),
               }),
             ),
-            a =>
-              a.collectAllPar
+            _ =>
+              Effect.allPar(_)
                 .flatMap(_ =>
-                  _.findFirst(_ => _.match).match(
+                  Arr.findFirst(_, _ => _.match).match(
                     () =>
                       Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
                     _ => _.command.handle,

@@ -80,7 +80,7 @@ const make = Do($ => {
       ).map(() => spawner)
 
       return $(
-        spawners.collectAllParDiscard.zipParLeft(deferred.await) as Effect<
+        spawners.allParDiscard.zipParLeft(deferred.await) as Effect<
           never,
           never,
           never

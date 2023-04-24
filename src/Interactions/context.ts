@@ -82,18 +82,13 @@ export const handleSubCommands = <
   Discord.InteractionResponse
 > =>
   ApplicationCommandContext.flatMap(data =>
-    pipe(
-      IxHelpers.allSubCommands(data),
-      Arr.findFirst(a => !!commands[a.name]),
-      o => o.toEither(() => new SubCommandNotFound(data)),
-      Effect.fromEither,
-      a =>
-        a.flatMap(command =>
-          commands[command.name].provideService(SubCommandContext, {
-            command,
-          }),
-        ),
-    ),
+    Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name])
+      .mapError(() => new SubCommandNotFound(data))
+      .flatMap(command =>
+        commands[command.name].provideService(SubCommandContext, {
+          command,
+        }),
+      ),
   )
 
 export const currentSubCommand = SubCommandContext.map(_ => _.command)
