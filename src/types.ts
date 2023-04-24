@@ -1,17 +1,17 @@
 import { RestResponse } from "dfx/DiscordREST/types"
 export interface ActionMetadatum {
   /** SEND_ALERT_MESSAGE */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** TIMEOUT */
-  duration_seconds: number
+  readonly duration_seconds: number
   /** BLOCK_MESSAGE */
-  custom_message?: string
+  readonly custom_message?: string
 }
 export interface ActionRow {
   /** component type */
-  type: ComponentType
+  readonly type: ComponentType
   /** a list of child components */
-  components: Component[]
+  readonly components: Component[]
 }
 export const enum ActionType {
   /** blocks a member's message and prevents it from being posted. A custom explanation can be specified and shown to members whenever their message is blocked. */
@@ -23,59 +23,59 @@ export const enum ActionType {
 }
 export interface Activity {
   /** Activity's name */
-  name: string
+  readonly name: string
   /** Activity type */
-  type: ActivityType
+  readonly type: ActivityType
   /** Stream URL, is validated when type is 1 */
-  url?: string | null
+  readonly url?: string | null
   /** Unix timestamp (in milliseconds) of when the activity was added to the user's session */
-  created_at: number
+  readonly created_at: number
   /** Unix timestamps for start and/or end of the game */
-  timestamps?: ActivityTimestamp
+  readonly timestamps?: ActivityTimestamp
   /** Application ID for the game */
-  application_id?: Snowflake
+  readonly application_id?: Snowflake
   /** What the player is currently doing */
-  details?: string | null
+  readonly details?: string | null
   /** User's current party status */
-  state?: string | null
+  readonly state?: string | null
   /** Emoji used for a custom status */
-  emoji?: ActivityEmoji | null
+  readonly emoji?: ActivityEmoji | null
   /** Information for the current party of the player */
-  party?: ActivityParty
+  readonly party?: ActivityParty
   /** Images for the presence and their hover texts */
-  assets?: ActivityAsset
+  readonly assets?: ActivityAsset
   /** Secrets for Rich Presence joining and spectating */
-  secrets?: ActivitySecret
+  readonly secrets?: ActivitySecret
   /** Whether or not the activity is an instanced game session */
-  instance?: boolean
+  readonly instance?: boolean
   /** Activity flags ORd together, describes what the payload includes */
-  flags?: number
+  readonly flags?: number
   /** Custom buttons shown in the Rich Presence (max 2) */
-  buttons?: ActivityButton[]
+  readonly buttons?: ActivityButton[]
 }
 export interface ActivityAsset {
   /** See Activity Asset Image */
-  large_image?: string
+  readonly large_image?: string
   /** Text displayed when hovering over the large image of the activity */
-  large_text?: string
+  readonly large_text?: string
   /** See Activity Asset Image */
-  small_image?: string
+  readonly small_image?: string
   /** Text displayed when hovering over the small image of the activity */
-  small_text?: string
+  readonly small_text?: string
 }
 export interface ActivityButton {
   /** Text shown on the button (1-32 characters) */
-  label: string
+  readonly label: string
   /** URL opened when clicking the button (1-512 characters) */
-  url: string
+  readonly url: string
 }
 export interface ActivityEmoji {
   /** Name of the emoji */
-  name: string
+  readonly name: string
   /** ID of the emoji */
-  id?: Snowflake
+  readonly id?: Snowflake
   /** Whether the emoji is animated */
-  animated?: boolean
+  readonly animated?: boolean
 }
 export const ActivityFlag = {
   INSTANCE: 1 << 0,
@@ -90,23 +90,23 @@ export const ActivityFlag = {
 } as const
 export interface ActivityParty {
   /** ID of the party */
-  id?: string
+  readonly id?: string
   /** Used to show the party's current and maximum size */
-  size?: number[]
+  readonly size?: number[]
 }
 export interface ActivitySecret {
   /** Secret for joining a party */
-  join?: string
+  readonly join?: string
   /** Secret for spectating a game */
-  spectate?: string
+  readonly spectate?: string
   /** Secret for a specific instanced match */
-  match?: string
+  readonly match?: string
 }
 export interface ActivityTimestamp {
   /** Unix time (in milliseconds) of when the activity started */
-  start?: number
+  readonly start?: number
   /** Unix time (in milliseconds) of when the activity ends */
-  end?: number
+  readonly end?: number
 }
 export const enum ActivityType {
   GAME = 0,
@@ -118,25 +118,25 @@ export const enum ActivityType {
 }
 export interface AddGuildMemberParams {
   /** an oauth2 access token granted with the guilds.join to the bot's application for the user you want to add to the guild */
-  access_token: string
+  readonly access_token: string
   /** value to set user's nickname to */
-  nick: string
+  readonly nick: string
   /** array of role ids the member is assigned */
-  roles: Snowflake[]
+  readonly roles: Snowflake[]
   /** whether the user is muted in voice channels */
-  mute: boolean
+  readonly mute: boolean
   /** whether the user is deafened in voice channels */
-  deaf: boolean
+  readonly deaf: boolean
 }
 export interface AllowedMention {
   /** An array of allowed mention types to parse from the content. */
-  parse: AllowedMentionType[]
+  readonly parse: AllowedMentionType[]
   /** Array of role_ids to mention (Max size of 100) */
-  roles: Snowflake[]
+  readonly roles: Snowflake[]
   /** Array of user_ids to mention (Max size of 100) */
-  users: Snowflake[]
+  readonly users: Snowflake[]
   /** For replies, whether to mention the author of the message being replied to (default false) */
-  replied_user: boolean
+  readonly replied_user: boolean
 }
 export const enum AllowedMentionType {
   /** Controls role mentions */
@@ -148,145 +148,145 @@ export const enum AllowedMentionType {
 }
 export interface Application {
   /** the id of the app */
-  id: Snowflake
+  readonly id: Snowflake
   /** the name of the app */
-  name: string
+  readonly name: string
   /** the icon hash of the app */
-  icon?: string | null
+  readonly icon?: string | null
   /** the description of the app */
-  description: string
+  readonly description: string
   /** an array of rpc origin urls, if rpc is enabled */
-  rpc_origins?: string[]
+  readonly rpc_origins?: string[]
   /** when false only app owner can join the app's bot to guilds */
-  bot_public: boolean
+  readonly bot_public: boolean
   /** when true the app's bot will only join upon completion of the full oauth2 code grant flow */
-  bot_require_code_grant: boolean
+  readonly bot_require_code_grant: boolean
   /** the url of the app's terms of service */
-  terms_of_service_url?: string
+  readonly terms_of_service_url?: string
   /** the url of the app's privacy policy */
-  privacy_policy_url?: string
+  readonly privacy_policy_url?: string
   /** partial user object containing info on the owner of the application */
-  owner?: User
+  readonly owner?: User
   /** deprecated and will be removed in v11. An empty string. */
-  summary: string
+  readonly summary: string
   /** the hex encoded key for verification in interactions and the GameSDK's GetTicket */
-  verify_key: string
+  readonly verify_key: string
   /** if the application belongs to a team, this will be a list of the members of that team */
-  team?: Team | null
+  readonly team?: Team | null
   /** if this application is a game sold on Discord, this field will be the guild to which it has been linked */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** if this application is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists */
-  primary_sku_id?: Snowflake
+  readonly primary_sku_id?: Snowflake
   /** if this application is a game sold on Discord, this field will be the URL slug that links to the store page */
-  slug?: string
+  readonly slug?: string
   /** the application's default rich presence invite cover image hash */
-  cover_image?: string
+  readonly cover_image?: string
   /** the application's public flags */
-  flags?: number
+  readonly flags?: number
   /** up to 5 tags describing the content and functionality of the application */
-  tags?: string[]
+  readonly tags?: string[]
   /** settings for the application's default in-app authorization link, if enabled */
-  install_params?: InstallParam
+  readonly install_params?: InstallParam
   /** the application's default custom authorization link, if enabled */
-  custom_install_url?: string
+  readonly custom_install_url?: string
   /** the application's role connection verification entry point, which when configured will render the app as a verification method in the guild role verification configuration */
-  role_connections_verification_url?: string
+  readonly role_connections_verification_url?: string
 }
 export interface ApplicationCommand {
   /** Unique ID of command */
-  id: Snowflake
+  readonly id: Snowflake
   /** Type of command, defaults to 1 */
-  type?: ApplicationCommandType
+  readonly type?: ApplicationCommandType
   /** ID of the parent application */
-  application_id: Snowflake
+  readonly application_id: Snowflake
   /** Guild ID of the command, if not global */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** Name of command, 1-32 characters */
-  name: string
+  readonly name: string
   /** Localization dictionary for name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** Description for CHAT_INPUT commands, 1-100 characters. Empty string for USER and MESSAGE commands */
-  description: string
+  readonly description: string
   /** Localization dictionary for description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** Parameters for the command, max of 25 */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
-  default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
-  dm_permission?: boolean
+  readonly dm_permission?: boolean
   /** Not recommended for use as field will soon be deprecated. Indicates whether the command is enabled by default when the app is added to a guild, defaults to true */
-  default_permission?: boolean | null
+  readonly default_permission?: boolean | null
   /** Indicates whether the command is age-restricted, defaults to false */
-  nsfw?: boolean
+  readonly nsfw?: boolean
   /** Autoincrementing version identifier updated during substantial record changes */
-  version: Snowflake
+  readonly version: Snowflake
 }
 export interface ApplicationCommandDatum {
   /** the ID of the invoked command */
-  id: Snowflake
+  readonly id: Snowflake
   /** the name of the invoked command */
-  name: string
+  readonly name: string
   /** the type of the invoked command */
-  type: number
+  readonly type: number
   /** converted users + roles + channels + attachments */
-  resolved?: ResolvedDatum
+  readonly resolved?: ResolvedDatum
   /** the params + values from the user */
-  options?: ApplicationCommandInteractionDataOption[]
+  readonly options?: ApplicationCommandInteractionDataOption[]
   /** the id of the guild the command is registered to */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** id of the user or message targeted by a user or message command */
-  target_id?: Snowflake
+  readonly target_id?: Snowflake
 }
 export interface ApplicationCommandInteractionDataOption {
   /** Name of the parameter */
-  name: string
+  readonly name: string
   /** Value of application command option type */
-  type: ApplicationCommandOptionType
+  readonly type: ApplicationCommandOptionType
   /** Value of the option resulting from user input */
-  value?: string
+  readonly value?: string
   /** Present if this option is a group or subcommand */
-  options?: ApplicationCommandInteractionDataOption[]
+  readonly options?: ApplicationCommandInteractionDataOption[]
   /** true if this option is the currently focused option for autocomplete */
-  focused?: boolean
+  readonly focused?: boolean
 }
 export interface ApplicationCommandOption {
   /** Type of option */
-  type: any
+  readonly type: any
   /** 1-32 character name */
-  name: string
+  readonly name: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** 1-100 character description */
-  description: string
+  readonly description: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** If the parameter is required or optional--default false */
-  required?: boolean
+  readonly required?: boolean
   /** Choices for STRING, INTEGER, and NUMBER types for the user to pick from, max 25 */
-  choices?: ApplicationCommandOptionChoice[]
+  readonly choices?: ApplicationCommandOptionChoice[]
   /** If the option is a subcommand or subcommand group type, these nested options will be the parameters */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** If the option is a channel type, the channels shown will be restricted to these types */
-  channel_types?: ChannelType[]
+  readonly channel_types?: ChannelType[]
   /** If the option is an INTEGER or NUMBER type, the minimum value permitted */
-  min_value?: number
+  readonly min_value?: number
   /** If the option is an INTEGER or NUMBER type, the maximum value permitted */
-  max_value?: number
+  readonly max_value?: number
   /** For option type STRING, the minimum allowed length (minimum of 0, maximum of 6000) */
-  min_length?: number
+  readonly min_length?: number
   /** For option type STRING, the maximum allowed length (minimum of 1, maximum of 6000) */
-  max_length?: number
+  readonly max_length?: number
   /** If autocomplete interactions are enabled for this STRING, INTEGER, or NUMBER type option */
-  autocomplete?: boolean
+  readonly autocomplete?: boolean
 }
 export interface ApplicationCommandOptionChoice {
   /** 1-100 character choice name */
-  name: string
+  readonly name: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** Value for the choice, up to 100 characters if string */
-  value: string
+  readonly value: string
 }
 export const enum ApplicationCommandOptionType {
   SUB_COMMAND = 1,
@@ -303,11 +303,11 @@ export const enum ApplicationCommandOptionType {
 }
 export interface ApplicationCommandPermission {
   /** ID of the role, user, or channel. It can also be a permission constant */
-  id: Snowflake
+  readonly id: Snowflake
   /** role (1), user (2), or channel (3) */
-  type: ApplicationCommandPermissionType
+  readonly type: ApplicationCommandPermissionType
   /** true to allow, false, to disallow */
-  permission: boolean
+  readonly permission: boolean
 }
 export type ApplicationCommandPermissionsUpdateEvent =
   GuildApplicationCommandPermission
@@ -329,11 +329,11 @@ export const ApplicationFlag = {
   APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE: 1 << 6,
   /** Intent required for bots in 100 or more servers to receive presence_update events */
   GATEWAY_PRESENCE: 1 << 12,
-  /** Intent required for bots in under 100 servers to receive presence_update events, found in Bot Settings */
+  /** Intent required for bots in under 100 servers to receive presence_update events, found on the Bot page in your app's settings */
   GATEWAY_PRESENCE_LIMITED: 1 << 13,
-  /** Intent required for bots in 100 or more servers to receive member-related events like guild_member_add. See list of member-related events under GUILD_MEMBERS */
+  /** Intent required for bots in 100 or more servers to receive member-related events like guild_member_add. See the list of member-related events under GUILD_MEMBERS */
   GATEWAY_GUILD_MEMBERS: 1 << 14,
-  /** Intent required for bots in under 100 servers to receive member-related events like guild_member_add, found in Bot Settings. See list of member-related events under GUILD_MEMBERS */
+  /** Intent required for bots in under 100 servers to receive member-related events like guild_member_add, found on the Bot page in your app's settings. See the list of member-related events under GUILD_MEMBERS */
   GATEWAY_GUILD_MEMBERS_LIMITED: 1 << 15,
   /** Indicates unusual growth of an app that prevents verification */
   VERIFICATION_PENDING_GUILD_LIMIT: 1 << 16,
@@ -341,18 +341,18 @@ export const ApplicationFlag = {
   EMBEDDED: 1 << 17,
   /** Intent required for bots in 100 or more servers to receive message content */
   GATEWAY_MESSAGE_CONTENT: 1 << 18,
-  /** Intent required for bots in under 100 servers to receive message content, found in Bot Settings */
+  /** Intent required for bots in under 100 servers to receive message content, found on the Bot page in your app's settings */
   GATEWAY_MESSAGE_CONTENT_LIMITED: 1 << 19,
   /** Indicates if an app has registered global application commands */
   APPLICATION_COMMAND_BADGE: 1 << 23,
 } as const
 export interface ApplicationRoleConnection {
   /** the vanity name of the platform a bot has connected (max 50 characters) */
-  platform_name?: string | null
+  readonly platform_name?: string | null
   /** the username on the platform a bot has connected (max 100 characters) */
-  platform_username?: string | null
+  readonly platform_username?: string | null
   /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
-  metadata: ApplicationRoleConnectionMetadatum
+  readonly metadata: ApplicationRoleConnectionMetadatum
 }
 export const enum ApplicationRoleConnectionMetadataType {
   /** the metadata value (integer) is less than or equal to the guild's configured value (integer) */
@@ -374,105 +374,109 @@ export const enum ApplicationRoleConnectionMetadataType {
 }
 export interface ApplicationRoleConnectionMetadatum {
   /** type of metadata value */
-  type: ApplicationRoleConnectionMetadataType
+  readonly type: ApplicationRoleConnectionMetadataType
   /** dictionary key for the metadata field (must be a-z, 0-9, or _ characters; 1-50 characters) */
-  key: string
+  readonly key: string
   /** name of the metadata field (1-100 characters) */
-  name: string
+  readonly name: string
   /** translations of the name */
-  name_localizations?: Locale
+  readonly name_localizations?: Locale
   /** description of the metadata field (1-200 characters) */
-  description: string
+  readonly description: string
   /** translations of the description */
-  description_localizations?: Locale
+  readonly description_localizations?: Locale
 }
 export interface Attachment {
   /** attachment id */
-  id: Snowflake
+  readonly id: Snowflake
   /** name of file attached */
-  filename: string
+  readonly filename: string
   /** description for the file (max 1024 characters) */
-  description?: string
+  readonly description?: string
   /** the attachment's media type */
-  content_type?: string
+  readonly content_type?: string
   /** size of file in bytes */
-  size: number
+  readonly size: number
   /** source url of file */
-  url: string
+  readonly url: string
   /** a proxied url of file */
-  proxy_url: string
+  readonly proxy_url: string
   /** height of file (if image) */
-  height?: number | null
+  readonly height?: number | null
   /** width of file (if image) */
-  width?: number | null
+  readonly width?: number | null
   /** whether this attachment is ephemeral */
-  ephemeral?: boolean
+  readonly ephemeral?: boolean
+  /** the duration of the audio file (currently for voice messages) */
+  readonly duration_secs?: number
+  /** base64 encoded bytearray representing a sampled waveform (currently for voice messages) */
+  readonly waveform?: string
 }
 export interface AuditEntryInfo {
   /** ID of the app whose permissions were targeted */
-  application_id: Snowflake
+  readonly application_id: Snowflake
   /** Name of the Auto Moderation rule that was triggered */
-  auto_moderation_rule_name: string
+  readonly auto_moderation_rule_name: string
   /** Trigger type of the Auto Moderation rule that was triggered */
-  auto_moderation_rule_trigger_type: string
+  readonly auto_moderation_rule_trigger_type: string
   /** Channel in which the entities were targeted */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** Number of entities that were targeted */
-  count: string
+  readonly count: string
   /** Number of days after which inactive members were kicked */
-  delete_member_days: string
+  readonly delete_member_days: string
   /** ID of the overwritten entity */
-  id: Snowflake
+  readonly id: Snowflake
   /** Number of members removed by the prune */
-  members_removed: string
+  readonly members_removed: string
   /** ID of the message that was targeted */
-  message_id: Snowflake
+  readonly message_id: Snowflake
   /** Name of the role if type is "0" (not present if type is "1") */
-  role_name: string
+  readonly role_name: string
   /** Type of overwritten entity - role ("0") or member ("1") */
-  type: string
+  readonly type: string
 }
 export interface AuditLog {
   /** List of application commands referenced in the audit log */
-  application_commands: ApplicationCommand[]
+  readonly application_commands: ApplicationCommand[]
   /** List of audit log entries, sorted from most to least recent */
-  audit_log_entries: AuditLogEntry[]
+  readonly audit_log_entries: AuditLogEntry[]
   /** List of auto moderation rules referenced in the audit log */
-  auto_moderation_rules: AutoModerationRule[]
+  readonly auto_moderation_rules: AutoModerationRule[]
   /** List of guild scheduled events referenced in the audit log */
-  guild_scheduled_events: GuildScheduledEvent[]
+  readonly guild_scheduled_events: GuildScheduledEvent[]
   /** List of partial integration objects */
-  integrations: Integration[]
+  readonly integrations: Integration[]
   /** List of threads referenced in the audit log* */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** List of users referenced in the audit log */
-  users: User[]
+  readonly users: User[]
   /** List of webhooks referenced in the audit log */
-  webhooks: Webhook[]
+  readonly webhooks: Webhook[]
 }
 export interface AuditLogChange {
   /** New value of the key */
-  new_value?: any
+  readonly new_value?: any
   /** Old value of the key */
-  old_value?: any
+  readonly old_value?: any
   /** Name of the changed entity, with a few exceptions */
-  key: string
+  readonly key: string
 }
 export interface AuditLogEntry {
   /** ID of the affected entity (webhook, user, role, etc.) */
-  target_id?: string | null
+  readonly target_id?: string | null
   /** Changes made to the target_id */
-  changes?: AuditLogChange[]
+  readonly changes?: AuditLogChange[]
   /** User or app that made the changes */
-  user_id?: Snowflake | null
+  readonly user_id?: Snowflake | null
   /** ID of the entry */
-  id: Snowflake
+  readonly id: Snowflake
   /** Type of action that occurred */
-  action_type: AuditLogEvent
+  readonly action_type: AuditLogEvent
   /** Additional info for certain event types */
-  options?: AuditEntryInfo
+  readonly options?: AuditEntryInfo
   /** Reason for the change (1-512 characters) */
-  reason?: string
+  readonly reason?: string
 }
 export const enum AuditLogEvent {
   /** Server settings were updated */
@@ -586,120 +590,120 @@ export const enum AuditLogEvent {
 }
 export interface AutoModerationAction {
   /** the type of action */
-  type: ActionType
+  readonly type: ActionType
   /** additional metadata needed during execution for this specific action type */
-  metadata?: ActionMetadatum
+  readonly metadata?: ActionMetadatum
 }
 export interface AutoModerationActionExecutionEvent {
   /** ID of the guild in which action was executed */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Action which was executed */
-  action: AutoModerationAction
+  readonly action: AutoModerationAction
   /** ID of the rule which action belongs to */
-  rule_id: Snowflake
+  readonly rule_id: Snowflake
   /** Trigger type of rule which was triggered */
-  rule_trigger_type: TriggerType
+  readonly rule_trigger_type: TriggerType
   /** ID of the user which generated the content which triggered the rule */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** ID of the channel in which user content was posted */
-  channel_id?: Snowflake
+  readonly channel_id?: Snowflake
   /** ID of any user message which content belongs to * */
-  message_id?: Snowflake
+  readonly message_id?: Snowflake
   /** ID of any system auto moderation messages posted as a result of this action ** */
-  alert_system_message_id?: Snowflake
+  readonly alert_system_message_id?: Snowflake
   /** User-generated text content */
-  content: string
+  readonly content: string
   /** Word or phrase configured in the rule that triggered the rule */
-  matched_keyword?: string | null
+  readonly matched_keyword?: string | null
   /** Substring in content that triggered the rule */
-  matched_content?: string | null
+  readonly matched_content?: string | null
 }
 export interface AutoModerationRule {
   /** the id of this rule */
-  id: Snowflake
+  readonly id: Snowflake
   /** the id of the guild which this rule belongs to */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** the rule name */
-  name: string
+  readonly name: string
   /** the user which first created this rule */
-  creator_id: Snowflake
+  readonly creator_id: Snowflake
   /** the rule event type */
-  event_type: EventType
+  readonly event_type: EventType
   /** the rule trigger type */
-  trigger_type: TriggerType
+  readonly trigger_type: TriggerType
   /** the rule trigger metadata */
-  trigger_metadata: TriggerMetadatum
+  readonly trigger_metadata: TriggerMetadatum
   /** the actions which will execute when the rule is triggered */
-  actions: AutoModerationAction[]
+  readonly actions: AutoModerationAction[]
   /** whether the rule is enabled */
-  enabled: boolean
+  readonly enabled: boolean
   /** the role ids that should not be affected by the rule (Maximum of 20) */
-  exempt_roles: Snowflake[]
+  readonly exempt_roles: Snowflake[]
   /** the channel ids that should not be affected by the rule (Maximum of 50) */
-  exempt_channels: Snowflake[]
+  readonly exempt_channels: Snowflake[]
 }
 export type AutoModerationRuleCreateEvent = AutoModerationRule
 export type AutoModerationRuleDeleteEvent = AutoModerationRule
 export type AutoModerationRuleUpdateEvent = AutoModerationRule
 export interface Ban {
   /** the reason for the ban */
-  reason?: string | null
+  readonly reason?: string | null
   /** the banned user */
-  user: User
+  readonly user: User
 }
 export interface BeginGuildPruneParams {
   /** number of days to prune (1-30) */
-  days: number
+  readonly days: number
   /** whether pruned is returned, discouraged for large guilds */
-  compute_prune_count: boolean
+  readonly compute_prune_count: boolean
   /** role(s) to include */
-  include_roles: Snowflake[]
+  readonly include_roles: Snowflake[]
   /** reason for the prune (deprecated) */
-  reason?: string
+  readonly reason?: string
 }
 export interface BulkDeleteMessageParams {
   /** an array of message ids to delete (2-100) */
-  messages: Snowflake[]
+  readonly messages: Snowflake[]
 }
 export interface BulkOverwriteGuildApplicationCommandParams {
   /** ID of the command, if known */
-  id?: Snowflake
+  readonly id?: Snowflake
   /** Name of command, 1-32 characters */
-  name: string
+  readonly name: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** 1-100 character description */
-  description: string
+  readonly description: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** Parameters for the command */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
-  default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
-  dm_permission?: boolean | null
+  readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
-  default_permission?: boolean
+  readonly default_permission?: boolean
   /** Type of command, defaults 1 if not set */
-  type?: ApplicationCommandType
+  readonly type?: ApplicationCommandType
   /** Indicates whether the command is age-restricted */
-  nsfw?: boolean
+  readonly nsfw?: boolean
 }
 export interface Button {
   /** 2 for a button */
-  type: number
+  readonly type: number
   /** A button style */
-  style: ButtonStyle
+  readonly style: ButtonStyle
   /** Text that appears on the button; max 80 characters */
-  label?: string
+  readonly label?: string
   /** name, id, and animated */
-  emoji?: Emoji
+  readonly emoji?: Emoji
   /** Developer-defined identifier for the button; max 100 characters */
-  custom_id?: string
+  readonly custom_id?: string
   /** URL for link-style buttons */
-  url?: string
+  readonly url?: string
   /** Whether the button is disabled (defaults to false) */
-  disabled?: boolean
+  readonly disabled?: boolean
 }
 export const enum ButtonStyle {
   PRIMARY = 1,
@@ -710,75 +714,75 @@ export const enum ButtonStyle {
 }
 export interface Channel {
   /** the id of this channel */
-  id: Snowflake
+  readonly id: Snowflake
   /** the type of channel */
-  type: ChannelType
+  readonly type: ChannelType
   /** the id of the guild (may be missing for some channel objects received over gateway guild dispatches) */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** sorting position of the channel */
-  position?: number
+  readonly position?: number
   /** explicit permission overwrites for members and roles */
-  permission_overwrites?: Overwrite[]
+  readonly permission_overwrites?: Overwrite[]
   /** the name of the channel (1-100 characters) */
-  name?: string | null
+  readonly name?: string | null
   /** the channel topic (0-4096 characters for GUILD_FORUM channels, 0-1024 characters for all others) */
-  topic?: string | null
+  readonly topic?: string | null
   /** whether the channel is nsfw */
-  nsfw?: boolean
+  readonly nsfw?: boolean
   /** the id of the last message sent in this channel (or thread for GUILD_FORUM channels) (may not point to an existing or valid message or thread) */
-  last_message_id?: Snowflake | null
+  readonly last_message_id?: Snowflake | null
   /** the bitrate (in bits) of the voice channel */
-  bitrate?: number
+  readonly bitrate?: number
   /** the user limit of the voice channel */
-  user_limit?: number
+  readonly user_limit?: number
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected */
-  rate_limit_per_user?: number
+  readonly rate_limit_per_user?: number
   /** the recipients of the DM */
-  recipients?: User[]
+  readonly recipients?: User[]
   /** icon hash of the group DM */
-  icon?: string | null
+  readonly icon?: string | null
   /** id of the creator of the group DM or thread */
-  owner_id?: Snowflake
+  readonly owner_id?: Snowflake
   /** application id of the group DM creator if it is bot-created */
-  application_id?: Snowflake
+  readonly application_id?: Snowflake
   /** for group DM channels: whether the channel is managed by an application via the gdm.join OAuth2 scope */
-  managed?: boolean
+  readonly managed?: boolean
   /** for guild channels: id of the parent category for a channel (each parent category can contain up to 50 channels), for threads: id of the text channel this thread was created */
-  parent_id?: Snowflake | null
+  readonly parent_id?: Snowflake | null
   /** when the last pinned message was pinned. This may be null in events such as GUILD_CREATE when a message is not pinned. */
-  last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null
   /** voice region id for the voice channel, automatic when set to null */
-  rtc_region?: string | null
+  readonly rtc_region?: string | null
   /** the camera video quality mode of the voice channel, 1 when not present */
-  video_quality_mode?: VideoQualityMode
+  readonly video_quality_mode?: VideoQualityMode
   /** number of messages (not including the initial message or deleted messages) in a thread. */
-  message_count?: number
+  readonly message_count?: number
   /** an approximate count of users in a thread, stops counting at 50 */
-  member_count?: number
+  readonly member_count?: number
   /** thread-specific fields not needed by other channels */
-  thread_metadata?: ThreadMetadatum
+  readonly thread_metadata?: ThreadMetadatum
   /** thread member object for the current user, if they have joined the thread, only included on certain API endpoints */
-  member?: ThreadMember
+  readonly member?: ThreadMember
   /** default duration, copied onto newly created threads, in minutes, threads will stop showing in the channel list after the specified period of inactivity, can be set to: 60, 1440, 4320, 10080 */
-  default_auto_archive_duration?: number
+  readonly default_auto_archive_duration?: number
   /** computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction */
-  permissions?: string
+  readonly permissions?: string
   /** channel flags combined as a bitfield */
-  flags?: number
+  readonly flags?: number
   /** number of messages ever sent in a thread, it's similar to message_count on message creation, but will not decrement the number when a message is deleted */
-  total_message_sent?: number
+  readonly total_message_sent?: number
   /** the set of tags that can be used in a GUILD_FORUM channel */
-  available_tags?: ForumTag[]
+  readonly available_tags?: ForumTag[]
   /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
-  applied_tags?: Snowflake[]
+  readonly applied_tags?: Snowflake[]
   /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
-  default_reaction_emoji?: DefaultReaction | null
+  readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
-  default_thread_rate_limit_per_user?: number
+  readonly default_thread_rate_limit_per_user?: number
   /** the default sort order type used to order posts in GUILD_FORUM channels. Defaults to null, which indicates a preferred sort order hasn't been set by a channel admin */
-  default_sort_order?: SortOrderType | null
+  readonly default_sort_order?: SortOrderType | null
   /** the default forum layout view used to display posts in GUILD_FORUM channels. Defaults to 0, which indicates a layout view has not been set by a channel admin */
-  default_forum_layout?: ForumLayoutType
+  readonly default_forum_layout?: ForumLayoutType
 }
 export type ChannelCreateEvent = Channel
 export type ChannelDeleteEvent = Channel
@@ -790,21 +794,21 @@ export const ChannelFlag = {
 } as const
 export interface ChannelMention {
   /** id of the channel */
-  id: Snowflake
+  readonly id: Snowflake
   /** id of the guild containing the channel */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** the type of channel */
-  type: ChannelType
+  readonly type: ChannelType
   /** the name of the channel */
-  name: string
+  readonly name: string
 }
 export interface ChannelPinsUpdateEvent {
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** Time at which the most recent pinned message was pinned */
-  last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null
 }
 export const enum ChannelType {
   /** a text channel within a server */
@@ -835,11 +839,11 @@ export const enum ChannelType {
 export type ChannelUpdateEvent = Channel
 export interface ClientStatus {
   /** User's status set for an active desktop (Windows, Linux, Mac) application session */
-  desktop?: string
+  readonly desktop?: string
   /** User's status set for an active mobile (iOS, Android) application session */
-  mobile?: string
-  /** User's status set for an active web (browser, bot account) application session */
-  web?: string
+  readonly mobile?: string
+  /** User's status set for an active web (browser, bot user) application session */
+  readonly web?: string
 }
 export type Component = ActionRow | Button | TextInput | SelectMenu
 export const enum ComponentType {
@@ -862,269 +866,269 @@ export const enum ComponentType {
 }
 export interface Connection {
   /** id of the connection account */
-  id: string
+  readonly id: string
   /** the username of the connection account */
-  name: string
+  readonly name: string
   /** the service of this connection */
-  type: string
+  readonly type: string
   /** whether the connection is revoked */
-  revoked?: boolean
+  readonly revoked?: boolean
   /** an array of partial server integrations */
-  integrations?: Integration[]
+  readonly integrations?: Integration[]
   /** whether the connection is verified */
-  verified: boolean
+  readonly verified: boolean
   /** whether friend sync is enabled for this connection */
-  friend_sync: boolean
+  readonly friend_sync: boolean
   /** whether activities related to this connection will be shown in presence updates */
-  show_activity: boolean
+  readonly show_activity: boolean
   /** whether this connection has a corresponding third party OAuth2 token */
-  two_way_link: boolean
+  readonly two_way_link: boolean
   /** visibility of this connection */
-  visibility: VisibilityType
+  readonly visibility: VisibilityType
 }
 export interface CreateAutoModerationRuleParams {
   /** the rule name */
-  name: string
+  readonly name: string
   /** the event type */
-  event_type: EventType
+  readonly event_type: EventType
   /** the trigger type */
-  trigger_type: TriggerType
+  readonly trigger_type: TriggerType
   /** the trigger metadata */
-  trigger_metadata?: TriggerMetadatum
+  readonly trigger_metadata?: TriggerMetadatum
   /** the actions which will execute when the rule is triggered */
-  actions: AutoModerationAction[]
+  readonly actions: AutoModerationAction[]
   /** whether the rule is enabled (False by default) */
-  enabled?: boolean
+  readonly enabled?: boolean
   /** the role ids that should not be affected by the rule (Maximum of 20) */
-  exempt_roles?: Snowflake[]
+  readonly exempt_roles?: Snowflake[]
   /** the channel ids that should not be affected by the rule (Maximum of 50) */
-  exempt_channels?: Snowflake[]
+  readonly exempt_channels?: Snowflake[]
 }
 export interface CreateChannelInviteParams {
   /** duration of invite in seconds before expiry, or 0 for never. between 0 and 604800 (7 days) */
-  max_age: number
+  readonly max_age: number
   /** max number of uses or 0 for unlimited. between 0 and 100 */
-  max_uses: number
+  readonly max_uses: number
   /** whether this invite only grants temporary membership */
-  temporary: boolean
+  readonly temporary: boolean
   /** if true, don't try to reuse a similar invite (useful for creating many unique one time use invites) */
-  unique: boolean
+  readonly unique: boolean
   /** the type of target for this voice channel invite */
-  target_type: InviteTargetType
+  readonly target_type: InviteTargetType
   /** the id of the user whose stream to display for this invite, required if target_type is 1, the user must be streaming in the channel */
-  target_user_id: Snowflake
+  readonly target_user_id: Snowflake
   /** the id of the embedded application to open for this invite, required if target_type is 2, the application must have the EMBEDDED flag */
-  target_application_id: Snowflake
+  readonly target_application_id: Snowflake
 }
 export interface CreateDmParams {
   /** the recipient to open a DM channel with */
-  recipient_id: Snowflake
+  readonly recipient_id: Snowflake
 }
 export interface CreateGlobalApplicationCommandParams {
   /** Name of command, 1-32 characters */
-  name: string
+  readonly name: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** 1-100 character description for CHAT_INPUT commands */
-  description?: string
+  readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** the parameters for the command */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
-  default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
-  dm_permission?: boolean | null
+  readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
-  default_permission?: boolean
+  readonly default_permission?: boolean
   /** Type of command, defaults 1 if not set */
-  type?: ApplicationCommandType
+  readonly type?: ApplicationCommandType
   /** Indicates whether the command is age-restricted */
-  nsfw?: boolean
+  readonly nsfw?: boolean
 }
 export interface CreateGroupDmParams {
   /** access tokens of users that have granted your app the gdm.join scope */
-  access_tokens: string[]
+  readonly access_tokens: string[]
   /** a dictionary of user ids to their respective nicknames */
-  nicks: Record<string, string>
+  readonly nicks: Record<string, string>
 }
 export interface CreateGuildApplicationCommandParams {
   /** Name of command, 1-32 characters */
-  name: string
+  readonly name: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** 1-100 character description for CHAT_INPUT commands */
-  description?: string
+  readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** Parameters for the command */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
-  default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
-  default_permission?: boolean
+  readonly default_permission?: boolean
   /** Type of command, defaults 1 if not set */
-  type?: ApplicationCommandType
+  readonly type?: ApplicationCommandType
   /** Indicates whether the command is age-restricted */
-  nsfw?: boolean
+  readonly nsfw?: boolean
 }
 export interface CreateGuildBanParams {
   /** number of days to delete messages for (0-7) (deprecated) */
-  delete_message_days?: number
+  readonly delete_message_days?: number
   /** number of seconds to delete messages for, between 0 and 604800 (7 days) */
-  delete_message_seconds?: number
+  readonly delete_message_seconds?: number
 }
 export interface CreateGuildChannelParams {
   /** channel name (1-100 characters) */
-  name: string
+  readonly name: string
   /** the type of channel */
-  type: ChannelType
+  readonly type: ChannelType
   /** channel topic (0-1024 characters) */
-  topic: string
+  readonly topic: string
   /** the bitrate (in bits) of the voice or stage channel; min 8000 */
-  bitrate: number
+  readonly bitrate: number
   /** the user limit of the voice channel */
-  user_limit: number
+  readonly user_limit: number
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected */
-  rate_limit_per_user: number
+  readonly rate_limit_per_user: number
   /** sorting position of the channel */
-  position: number
+  readonly position: number
   /** the channel's permission overwrites */
-  permission_overwrites: Overwrite[]
+  readonly permission_overwrites: Overwrite[]
   /** id of the parent category for a channel */
-  parent_id: Snowflake
+  readonly parent_id: Snowflake
   /** whether the channel is nsfw */
-  nsfw: boolean
+  readonly nsfw: boolean
   /** channel voice region id of the voice or stage channel, automatic when set to null */
-  rtc_region: string
+  readonly rtc_region: string
   /** the camera video quality mode of the voice channel */
-  video_quality_mode: VideoQualityMode
+  readonly video_quality_mode: VideoQualityMode
   /** the default duration that the clients use (not the API) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity */
-  default_auto_archive_duration: number
+  readonly default_auto_archive_duration: number
   /** emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
-  default_reaction_emoji: DefaultReaction
+  readonly default_reaction_emoji: DefaultReaction
   /** set of tags that can be used in a GUILD_FORUM channel */
-  available_tags: ForumTag[]
+  readonly available_tags: ForumTag[]
   /** the default sort order type used to order posts in GUILD_FORUM channels */
-  default_sort_order: SortOrderType
+  readonly default_sort_order: SortOrderType
 }
 export interface CreateGuildEmojiParams {
   /** name of the emoji */
-  name: string
+  readonly name: string
   /** the 128x128 emoji image */
-  image: string
+  readonly image: string
   /** roles allowed to use this emoji */
-  roles: Snowflake[]
+  readonly roles: Snowflake[]
 }
 export interface CreateGuildFromGuildTemplateParams {
   /** name of the guild (2-100 characters) */
-  name: string
+  readonly name: string
   /** base64 128x128 image for the guild icon */
-  icon?: string
+  readonly icon?: string
 }
 export interface CreateGuildParams {
   /** name of the guild (2-100 characters) */
-  name: string
+  readonly name: string
   /** voice region id (deprecated) */
-  region?: string | null
+  readonly region?: string | null
   /** base64 128x128 image for the guild icon */
-  icon?: string
+  readonly icon?: string
   /** verification level */
-  verification_level?: VerificationLevel
+  readonly verification_level?: VerificationLevel
   /** default message notification level */
-  default_message_notifications?: DefaultMessageNotificationLevel
+  readonly default_message_notifications?: DefaultMessageNotificationLevel
   /** explicit content filter level */
-  explicit_content_filter?: ExplicitContentFilterLevel
+  readonly explicit_content_filter?: ExplicitContentFilterLevel
   /** new guild roles */
-  roles?: Role[]
+  readonly roles?: Role[]
   /** new guild's channels */
-  channels?: Channel[]
+  readonly channels?: Channel[]
   /** id for afk channel */
-  afk_channel_id?: Snowflake
+  readonly afk_channel_id?: Snowflake
   /** afk timeout in seconds, can be set to: 60, 300, 900, 1800, 3600 */
-  afk_timeout?: number
+  readonly afk_timeout?: number
   /** the id of the channel where guild notices such as welcome messages and boost events are posted */
-  system_channel_id?: Snowflake
+  readonly system_channel_id?: Snowflake
   /** system channel flags */
-  system_channel_flags?: number
+  readonly system_channel_flags?: number
 }
 export interface CreateGuildRoleParams {
   /** name of the role, max 100 characters */
-  name: string
+  readonly name: string
   /** bitwise value of the enabled/disabled permissions */
-  permissions: string
+  readonly permissions: string
   /** RGB color value */
-  color: number
+  readonly color: number
   /** whether the role should be displayed separately in the sidebar */
-  hoist: boolean
+  readonly hoist: boolean
   /** the role's icon image (if the guild has the ROLE_ICONS feature) */
-  icon?: string | null
+  readonly icon?: string | null
   /** the role's unicode emoji as a standard emoji (if the guild has the ROLE_ICONS feature) */
-  unicode_emoji?: string | null
+  readonly unicode_emoji?: string | null
   /** whether the role should be mentionable */
-  mentionable: boolean
+  readonly mentionable: boolean
 }
 export interface CreateGuildScheduledEventParams {
   /** the channel id of the scheduled event. */
-  channel_id?: Snowflake
+  readonly channel_id?: Snowflake
   /** the entity metadata of the scheduled event */
-  entity_metadata?: GuildScheduledEventEntityMetadatum
+  readonly entity_metadata?: GuildScheduledEventEntityMetadatum
   /** the name of the scheduled event */
-  name: string
+  readonly name: string
   /** the privacy level of the scheduled event */
-  privacy_level: GuildScheduledEventPrivacyLevel
+  readonly privacy_level: GuildScheduledEventPrivacyLevel
   /** the time to schedule the scheduled event */
-  scheduled_start_time: string
+  readonly scheduled_start_time: string
   /** the time when the scheduled event is scheduled to end */
-  scheduled_end_time?: string
+  readonly scheduled_end_time?: string
   /** the description of the scheduled event */
-  description?: string
+  readonly description?: string
   /** the entity type of the scheduled event */
-  entity_type: GuildScheduledEventEntityType
+  readonly entity_type: GuildScheduledEventEntityType
   /** the cover image of the scheduled event */
-  image?: string
+  readonly image?: string
 }
 export interface CreateGuildStickerParams {
   /** name of the sticker (2-30 characters) */
-  name: string
+  readonly name: string
   /** description of the sticker (empty or 2-100 characters) */
-  description: string
+  readonly description: string
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
-  tags: string
+  readonly tags: string
   /** the sticker file to upload, must be a PNG, APNG, GIF, or Lottie JSON file, max 512 KB */
-  file: string
+  readonly file: string
 }
 export interface CreateGuildTemplateParams {
   /** name of the template (1-100 characters) */
-  name: string
+  readonly name: string
   /** description for the template (0-120 characters) */
-  description?: string | null
+  readonly description?: string | null
 }
 export interface CreateMessageParams {
   /** Message contents (up to 2000 characters) */
-  content?: string
+  readonly content?: string
   /** Can be used to verify a message was sent (up to 25 characters). Value will appear in the Message Create event. */
-  nonce?: string
+  readonly nonce?: string
   /** true if this is a TTS message */
-  tts?: boolean
+  readonly tts?: boolean
   /** Up to 10 rich embeds (up to 6000 characters) */
-  embeds?: Embed[]
+  readonly embeds?: Embed[]
   /** Allowed mentions for the message */
-  allowed_mentions?: AllowedMention
+  readonly allowed_mentions?: AllowedMention
   /** Include to make your message a reply */
-  message_reference?: MessageReference
+  readonly message_reference?: MessageReference
   /** Components to include with the message */
-  components?: Component[]
+  readonly components?: Component[]
   /** IDs of up to 3 stickers in the server to send in the message */
-  sticker_ids?: Snowflake[]
+  readonly sticker_ids?: Snowflake[]
   /** Contents of the file being sent. See Uploading Files */
-  files?: string
+  readonly files?: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
-  payload_json?: string
+  readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
-  attachments?: Attachment[]
+  readonly attachments?: Attachment[]
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
-  flags?: number
+  readonly flags?: number
 }
 export function createRoutes<O = any>(
   fetch: <R, P>(route: Route<P, O>) => RestResponse<R>,
@@ -2356,19 +2360,19 @@ export function createRoutes<O = any>(
 }
 export interface CreateStageInstanceParams {
   /** The id of the Stage channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** The topic of the Stage instance (1-120 characters) */
-  topic: string
+  readonly topic: string
   /** The privacy level of the Stage instance (default GUILD_ONLY) */
-  privacy_level?: PrivacyLevel
+  readonly privacy_level?: PrivacyLevel
   /** Notify @everyone that a Stage instance has started */
-  send_start_notification?: boolean
+  readonly send_start_notification?: boolean
 }
 export interface CreateWebhookParams {
   /** name of the webhook (1-80 characters) */
-  name: string
+  readonly name: string
   /** image for the default webhook avatar */
-  avatar?: string | null
+  readonly avatar?: string | null
 }
 export const enum DefaultMessageNotificationLevel {
   /** members will receive notifications for all messages by default */
@@ -2378,177 +2382,177 @@ export const enum DefaultMessageNotificationLevel {
 }
 export interface DefaultReaction {
   /** the id of a guild's custom emoji */
-  emoji_id?: Snowflake | null
+  readonly emoji_id?: Snowflake | null
   /** the unicode character of the emoji */
-  emoji_name?: string | null
+  readonly emoji_name?: string | null
 }
 export interface DeleteWebhookMessageParams {
   /** id of the thread the message is in */
-  thread_id: Snowflake
+  readonly thread_id: Snowflake
 }
 export interface EditApplicationCommandPermissionParams {
   /** Permissions for the command in the guild */
-  permissions: ApplicationCommandPermission[]
+  readonly permissions: ApplicationCommandPermission[]
 }
 export interface EditChannelPermissionParams {
   /** the bitwise value of all allowed permissions (default "0") */
-  allow?: string
+  readonly allow?: string
   /** the bitwise value of all disallowed permissions (default "0") */
-  deny?: string
+  readonly deny?: string
   /** 0 for a role or 1 for a member */
-  type: number
+  readonly type: number
 }
 export interface EditGlobalApplicationCommandParams {
   /** Name of command, 1-32 characters */
-  name?: string
+  readonly name?: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** 1-100 character description */
-  description?: string
+  readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** the parameters for the command */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
-  default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
-  dm_permission?: boolean | null
+  readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
-  default_permission?: boolean
+  readonly default_permission?: boolean
   /** Indicates whether the command is age-restricted */
-  nsfw?: boolean
+  readonly nsfw?: boolean
 }
 export interface EditGuildApplicationCommandParams {
   /** Name of command, 1-32 characters */
-  name?: string
+  readonly name?: string
   /** Localization dictionary for the name field. Values follow the same restrictions as name */
-  name_localizations?: Locale | null
+  readonly name_localizations?: Locale | null
   /** 1-100 character description */
-  description?: string
+  readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
-  description_localizations?: Locale | null
+  readonly description_localizations?: Locale | null
   /** Parameters for the command */
-  options?: ApplicationCommandOption[]
+  readonly options?: ApplicationCommandOption[]
   /** Set of permissions represented as a bit set */
-  default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
-  default_permission?: boolean
+  readonly default_permission?: boolean
   /** Indicates whether the command is age-restricted */
-  nsfw?: boolean
+  readonly nsfw?: boolean
 }
 export interface EditMessageParams {
   /** Message contents (up to 2000 characters) */
-  content: string
+  readonly content: string
   /** Up to 10 rich embeds (up to 6000 characters) */
-  embeds: Embed[]
+  readonly embeds: Embed[]
   /** Edit the flags of a message (only SUPPRESS_EMBEDS can currently be set/unset) */
-  flags: number
+  readonly flags: number
   /** Allowed mentions for the message */
-  allowed_mentions: AllowedMention
+  readonly allowed_mentions: AllowedMention
   /** Components to include with the message */
-  components: Component[]
+  readonly components: Component[]
   /** Contents of the file being sent/edited. See Uploading Files */
-  files: string
+  readonly files: string
   /** JSON-encoded body of non-file params (multipart/form-data only). See Uploading Files */
-  payload_json: string
+  readonly payload_json: string
   /** Attached files to keep and possible descriptions for new files. See Uploading Files */
-  attachments: Attachment[]
+  readonly attachments: Attachment[]
 }
 export interface EditWebhookMessageParams {
   /** the message contents (up to 2000 characters) */
-  content: string
+  readonly content: string
   /** embedded rich content */
-  embeds: Embed[]
+  readonly embeds: Embed[]
   /** allowed mentions for the message */
-  allowed_mentions: AllowedMention
+  readonly allowed_mentions: AllowedMention
   /** the components to include with the message */
-  components: Component[]
+  readonly components: Component[]
   /** the contents of the file being sent/edited */
-  files: string
+  readonly files: string
   /** JSON encoded body of non-file params (multipart/form-data only) */
-  payload_json: string
+  readonly payload_json: string
   /** attached files to keep and possible descriptions for new files */
-  attachments: Attachment[]
+  readonly attachments: Attachment[]
 }
 export interface Embed {
   /** title of embed */
-  title?: string
+  readonly title?: string
   /** type of embed (always "rich" for webhook embeds) */
-  type?: EmbedType
+  readonly type?: EmbedType
   /** description of embed */
-  description?: string
+  readonly description?: string
   /** url of embed */
-  url?: string
+  readonly url?: string
   /** timestamp of embed content */
-  timestamp?: string
+  readonly timestamp?: string
   /** color code of the embed */
-  color?: number
+  readonly color?: number
   /** footer information */
-  footer?: EmbedFooter
+  readonly footer?: EmbedFooter
   /** image information */
-  image?: EmbedImage
+  readonly image?: EmbedImage
   /** thumbnail information */
-  thumbnail?: EmbedThumbnail
+  readonly thumbnail?: EmbedThumbnail
   /** video information */
-  video?: EmbedVideo
+  readonly video?: EmbedVideo
   /** provider information */
-  provider?: EmbedProvider
+  readonly provider?: EmbedProvider
   /** author information */
-  author?: EmbedAuthor
+  readonly author?: EmbedAuthor
   /** fields information */
-  fields?: EmbedField[]
+  readonly fields?: EmbedField[]
 }
 export interface EmbedAuthor {
   /** name of author */
-  name: string
+  readonly name: string
   /** url of author (only supports http(s)) */
-  url?: string
+  readonly url?: string
   /** url of author icon (only supports http(s) and attachments) */
-  icon_url?: string
+  readonly icon_url?: string
   /** a proxied url of author icon */
-  proxy_icon_url?: string
+  readonly proxy_icon_url?: string
 }
 export interface EmbedField {
   /** name of the field */
-  name: string
+  readonly name: string
   /** value of the field */
-  value: string
+  readonly value: string
   /** whether or not this field should display inline */
-  inline?: boolean
+  readonly inline?: boolean
 }
 export interface EmbedFooter {
   /** footer text */
-  text: string
+  readonly text: string
   /** url of footer icon (only supports http(s) and attachments) */
-  icon_url?: string
+  readonly icon_url?: string
   /** a proxied url of footer icon */
-  proxy_icon_url?: string
+  readonly proxy_icon_url?: string
 }
 export interface EmbedImage {
   /** source url of image (only supports http(s) and attachments) */
-  url: string
+  readonly url: string
   /** a proxied url of the image */
-  proxy_url?: string
+  readonly proxy_url?: string
   /** height of image */
-  height?: number
+  readonly height?: number
   /** width of image */
-  width?: number
+  readonly width?: number
 }
 export interface EmbedProvider {
   /** name of provider */
-  name?: string
+  readonly name?: string
   /** url of provider */
-  url?: string
+  readonly url?: string
 }
 export interface EmbedThumbnail {
   /** source url of thumbnail (only supports http(s) and attachments) */
-  url: string
+  readonly url: string
   /** a proxied url of the thumbnail */
-  proxy_url?: string
+  readonly proxy_url?: string
   /** height of thumbnail */
-  height?: number
+  readonly height?: number
   /** width of thumbnail */
-  width?: number
+  readonly width?: number
 }
 export const enum EmbedType {
   /** generic embed rendered from embed attributes */
@@ -2566,31 +2570,31 @@ export const enum EmbedType {
 }
 export interface EmbedVideo {
   /** source url of video */
-  url?: string
+  readonly url?: string
   /** a proxied url of the video */
-  proxy_url?: string
+  readonly proxy_url?: string
   /** height of video */
-  height?: number
+  readonly height?: number
   /** width of video */
-  width?: number
+  readonly width?: number
 }
 export interface Emoji {
   /** emoji id */
-  id?: Snowflake | null
+  readonly id?: Snowflake | null
   /** emoji name */
-  name?: string | null
+  readonly name?: string | null
   /** roles allowed to use this emoji */
-  roles?: Snowflake[]
+  readonly roles?: Snowflake[]
   /** user that created this emoji */
-  user?: User
+  readonly user?: User
   /** whether this emoji must be wrapped in colons */
-  require_colons?: boolean
+  readonly require_colons?: boolean
   /** whether this emoji is managed */
-  managed?: boolean
+  readonly managed?: boolean
   /** whether this emoji is animated */
-  animated?: boolean
+  readonly animated?: boolean
   /** whether this emoji can be used, may be false due to loss of Server Boosts */
-  available?: boolean
+  readonly available?: boolean
 }
 export interface Endpoints<O> {
   /** Adds a user to the guild, provided you have a valid oauth2 access token for the user with the guilds.join scope. Returns a 201 Created with the guild member as the body, or 204 No Content if the user is already a member of the guild. Fires a Guild Member Add Gateway event. */
@@ -3558,29 +3562,29 @@ export const enum EventType {
 }
 export interface ExecuteWebhookParams {
   /** the message contents (up to 2000 characters) */
-  content: string
+  readonly content: string
   /** override the default username of the webhook */
-  username: string
+  readonly username: string
   /** override the default avatar of the webhook */
-  avatar_url: string
+  readonly avatar_url: string
   /** true if this is a TTS message */
-  tts: boolean
+  readonly tts: boolean
   /** embedded rich content */
-  embeds: Embed[]
+  readonly embeds: Embed[]
   /** allowed mentions for the message */
-  allowed_mentions: AllowedMention
+  readonly allowed_mentions: AllowedMention
   /** the components to include with the message */
-  components: Component[]
+  readonly components: Component[]
   /** the contents of the file being sent */
-  files: string
+  readonly files: string
   /** JSON encoded body of non-file params */
-  payload_json: string
+  readonly payload_json: string
   /** attachment objects with filename and description */
-  attachments: Attachment[]
+  readonly attachments: Attachment[]
   /** message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
-  flags: number
+  readonly flags: number
   /** name of thread to create (requires the webhook channel to be a forum channel) */
-  thread_name: string
+  readonly thread_name: string
 }
 export const enum ExplicitContentFilterLevel {
   /** media content will not be scanned */
@@ -3592,13 +3596,13 @@ export const enum ExplicitContentFilterLevel {
 }
 export interface FollowAnnouncementChannelParams {
   /** id of target channel */
-  webhook_channel_id: Snowflake
+  readonly webhook_channel_id: Snowflake
 }
 export interface FollowedChannel {
   /** source channel id */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** created target webhook id */
-  webhook_id: Snowflake
+  readonly webhook_id: Snowflake
 }
 export const enum ForumLayoutType {
   /** No default has been set for forum channel */
@@ -3610,35 +3614,35 @@ export const enum ForumLayoutType {
 }
 export interface ForumTag {
   /** the id of the tag */
-  id: Snowflake
+  readonly id: Snowflake
   /** the name of the tag (0-20 characters) */
-  name: string
+  readonly name: string
   /** whether this tag can only be added to or removed from threads by a member with the MANAGE_THREADS permission */
-  moderated: boolean
+  readonly moderated: boolean
   /** the id of a guild's custom emoji * */
-  emoji_id?: Snowflake | null
+  readonly emoji_id?: Snowflake | null
   /** the unicode character of the emoji * */
-  emoji_name?: string | null
+  readonly emoji_name?: string | null
 }
 export interface ForumThreadMessageParam {
   /** Message contents (up to 2000 characters) */
-  content?: string
+  readonly content?: string
   /** Up to 10 rich embeds (up to 6000 characters) */
-  embeds?: Embed[]
+  readonly embeds?: Embed[]
   /** Allowed mentions for the message */
-  allowed_mentions?: AllowedMention
+  readonly allowed_mentions?: AllowedMention
   /** Components to include with the message */
-  components?: Component[]
+  readonly components?: Component[]
   /** IDs of up to 3 stickers in the server to send in the message */
-  sticker_ids?: Snowflake[]
+  readonly sticker_ids?: Snowflake[]
   /** Contents of the file being sent. See Uploading Files */
-  files: string
+  readonly files: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
-  payload_json?: string
+  readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
-  attachments?: Attachment[]
+  readonly attachments?: Attachment[]
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
-  flags?: number
+  readonly flags?: number
 }
 export const GatewayIntents = {
   GUILDS: 1 << 0,
@@ -3687,282 +3691,282 @@ export const enum GatewayOpcode {
 }
 export interface GatewayPayload<T = any | null> {
   /** opcode for the payload */
-  op: GatewayOpcode
+  readonly op: GatewayOpcode
   /** event data */
-  d?: T
+  readonly d?: T
   /** sequence number, used for resuming sessions and heartbeats */
-  s?: number | null
+  readonly s?: number | null
   /** the event name for this payload */
-  t?: string | null
+  readonly t?: string | null
 }
 export interface GatewayUrlQueryStringParam {
   /** API Version to use */
-  v: number
+  readonly v: number
   /** The encoding of received gateway packets */
-  encoding: string
+  readonly encoding: string
   /** The optional transport compression of gateway packets */
-  compress?: string
+  readonly compress?: string
 }
 export interface GetChannelMessageParams {
   /** Get messages around this message ID */
-  around?: Snowflake
+  readonly around?: Snowflake
   /** Get messages before this message ID */
-  before?: Snowflake
+  readonly before?: Snowflake
   /** Get messages after this message ID */
-  after?: Snowflake
+  readonly after?: Snowflake
   /** Max number of messages to return (1-100) */
-  limit?: number
+  readonly limit?: number
 }
 export interface GetCurrentAuthorizationInformationResponse {
   /** the current application */
-  application: Application
+  readonly application: Application
   /** the scopes the user has authorized the application for */
-  scopes: string[]
+  readonly scopes: string[]
   /** when the access token expires */
-  expires: string
+  readonly expires: string
   /** the user who has authorized, if the user has authorized with the identify scope */
-  user?: User
+  readonly user?: User
 }
 export interface GetCurrentUserGuildParams {
   /** get guilds before this guild ID */
-  before: Snowflake
+  readonly before: Snowflake
   /** get guilds after this guild ID */
-  after: Snowflake
+  readonly after: Snowflake
   /** max number of guilds to return (1-200) */
-  limit: number
+  readonly limit: number
 }
 export interface GetGatewayBotResponse {
   /** WSS URL that can be used for connecting to the Gateway */
-  url: string
+  readonly url: string
   /** Recommended number of shards to use when connecting */
-  shards: number
+  readonly shards: number
   /** Information on the current session start limit */
-  session_start_limit: SessionStartLimit
+  readonly session_start_limit: SessionStartLimit
 }
 export interface GetGlobalApplicationCommandParams {
   /** Whether to include full localization dictionaries (name_localizations and description_localizations) in the returned objects, instead of the name_localized and description_localized fields. Default false. */
-  with_localizations?: boolean
+  readonly with_localizations?: boolean
 }
 export interface GetGuildApplicationCommandParams {
   /** Whether to include full localization dictionaries (name_localizations and description_localizations) in the returned objects, instead of the name_localized and description_localized fields. Default false. */
-  with_localizations?: boolean
+  readonly with_localizations?: boolean
 }
 export interface GetGuildAuditLogParams {
   /** Entries from a specific user ID */
-  user_id?: Snowflake
+  readonly user_id?: Snowflake
   /** Entries for a specific audit log event */
-  action_type?: AuditLogEvent
+  readonly action_type?: AuditLogEvent
   /** Entries with ID less than a specific audit log entry ID */
-  before?: Snowflake
+  readonly before?: Snowflake
   /** Entries with ID greater than a specific audit log entry ID */
-  after?: Snowflake
+  readonly after?: Snowflake
   /** Maximum number of entries (between 1-100) to return, defaults to 50 */
-  limit?: number
+  readonly limit?: number
 }
 export interface GetGuildBanParams {
   /** number of users to return (up to maximum 1000) */
-  limit?: Number
+  readonly limit?: Number
   /** consider only users before given user id */
-  before?: Snowflake
+  readonly before?: Snowflake
   /** consider only users after given user id */
-  after?: Snowflake
+  readonly after?: Snowflake
 }
 export interface GetGuildParams {
   /** when true, will return approximate member and presence counts for the guild */
-  with_counts?: boolean
+  readonly with_counts?: boolean
 }
 export interface GetGuildPruneCountParams {
   /** number of days to count prune for (1-30) */
-  days: number
+  readonly days: number
   /** role(s) to include */
-  include_roles: Snowflake[]
+  readonly include_roles: Snowflake[]
 }
 export interface GetGuildScheduledEventParams {
   /** include number of users subscribed to this event */
-  with_user_count?: boolean
+  readonly with_user_count?: boolean
 }
 export interface GetGuildScheduledEventUserParams {
   /** number of users to return (up to maximum 100) */
-  limit?: Number
+  readonly limit?: Number
   /** include guild member data if it exists */
-  with_member?: boolean
+  readonly with_member?: boolean
   /** consider only users before given user id */
-  before?: Snowflake
+  readonly before?: Snowflake
   /** consider only users after given user id */
-  after?: Snowflake
+  readonly after?: Snowflake
 }
 export interface GetGuildWidgetImageParams {
   /** style of the widget image returned (see below) */
-  style: string
+  readonly style: string
 }
 export interface GetInviteParams {
   /** whether the invite should contain approximate member counts */
-  with_counts?: boolean
+  readonly with_counts?: boolean
   /** whether the invite should contain the expiration date */
-  with_expiration?: boolean
+  readonly with_expiration?: boolean
   /** the guild scheduled event to include with the invite */
-  guild_scheduled_event_id?: Snowflake
+  readonly guild_scheduled_event_id?: Snowflake
 }
 export interface GetReactionParams {
   /** Get users after this user ID */
-  after?: Snowflake
+  readonly after?: Snowflake
   /** Max number of users to return (1-100) */
-  limit?: number
+  readonly limit?: number
 }
 export interface GetThreadMemberParams {
   /** Whether to include a guild member object for the thread member */
-  with_member?: boolean
+  readonly with_member?: boolean
 }
 export interface GetWebhookMessageParams {
   /** id of the thread the message is in */
-  thread_id: Snowflake
+  readonly thread_id: Snowflake
 }
 export interface GroupDmAddRecipientParams {
   /** access token of a user that has granted your app the gdm.join scope */
-  access_token: string
+  readonly access_token: string
   /** nickname of the user being added */
-  nick: string
+  readonly nick: string
 }
 export interface Guild {
   /** guild id */
-  id: Snowflake
+  readonly id: Snowflake
   /** guild name (2-100 characters, excluding trailing and leading whitespace) */
-  name: string
+  readonly name: string
   /** icon hash */
-  icon?: string | null
+  readonly icon?: string | null
   /** icon hash, returned when in the template object */
-  icon_hash?: string | null
+  readonly icon_hash?: string | null
   /** splash hash */
-  splash?: string | null
+  readonly splash?: string | null
   /** discovery splash hash; only present for guilds with the "DISCOVERABLE" feature */
-  discovery_splash?: string | null
+  readonly discovery_splash?: string | null
   /** true if the user is the owner of the guild */
-  owner?: boolean
+  readonly owner?: boolean
   /** id of owner */
-  owner_id: Snowflake
+  readonly owner_id: Snowflake
   /** total permissions for the user in the guild (excludes overwrites) */
-  permissions?: string
+  readonly permissions?: string
   /** voice region id for the guild (deprecated) */
-  region?: string | null
+  readonly region?: string | null
   /** id of afk channel */
-  afk_channel_id?: Snowflake | null
+  readonly afk_channel_id?: Snowflake | null
   /** afk timeout in seconds */
-  afk_timeout: number
+  readonly afk_timeout: number
   /** true if the server widget is enabled */
-  widget_enabled?: boolean
+  readonly widget_enabled?: boolean
   /** the channel id that the widget will generate an invite to, or null if set to no invite */
-  widget_channel_id?: Snowflake | null
+  readonly widget_channel_id?: Snowflake | null
   /** verification level required for the guild */
-  verification_level: VerificationLevel
+  readonly verification_level: VerificationLevel
   /** default message notifications level */
-  default_message_notifications: DefaultMessageNotificationLevel
+  readonly default_message_notifications: DefaultMessageNotificationLevel
   /** explicit content filter level */
-  explicit_content_filter: ExplicitContentFilterLevel
+  readonly explicit_content_filter: ExplicitContentFilterLevel
   /** roles in the guild */
-  roles: Role[]
+  readonly roles: Role[]
   /** custom guild emojis */
-  emojis: Emoji[]
+  readonly emojis: Emoji[]
   /** enabled guild features */
-  features: GuildFeature[]
+  readonly features: GuildFeature[]
   /** required MFA level for the guild */
-  mfa_level: MfaLevel
+  readonly mfa_level: MfaLevel
   /** application id of the guild creator if it is bot-created */
-  application_id?: Snowflake | null
+  readonly application_id?: Snowflake | null
   /** the id of the channel where guild notices such as welcome messages and boost events are posted */
-  system_channel_id?: Snowflake | null
+  readonly system_channel_id?: Snowflake | null
   /** system channel flags */
-  system_channel_flags: number
+  readonly system_channel_flags: number
   /** the id of the channel where Community guilds can display rules and/or guidelines */
-  rules_channel_id?: Snowflake | null
+  readonly rules_channel_id?: Snowflake | null
   /** the maximum number of presences for the guild (null is always returned, apart from the largest of guilds) */
-  max_presences?: number | null
+  readonly max_presences?: number | null
   /** the maximum number of members for the guild */
-  max_members?: number
+  readonly max_members?: number
   /** the vanity url code for the guild */
-  vanity_url_code?: string | null
+  readonly vanity_url_code?: string | null
   /** the description of a guild */
-  description?: string | null
+  readonly description?: string | null
   /** banner hash */
-  banner?: string | null
+  readonly banner?: string | null
   /** premium tier (Server Boost level) */
-  premium_tier: PremiumTier
+  readonly premium_tier: PremiumTier
   /** the number of boosts this guild currently has */
-  premium_subscription_count?: number
+  readonly premium_subscription_count?: number
   /** the preferred locale of a Community guild; used in server discovery and notices from Discord, and sent in interactions; defaults to "en-US" */
-  preferred_locale: string
+  readonly preferred_locale: string
   /** the id of the channel where admins and moderators of Community guilds receive notices from Discord */
-  public_updates_channel_id?: Snowflake | null
+  readonly public_updates_channel_id?: Snowflake | null
   /** the maximum amount of users in a video channel */
-  max_video_channel_users?: number
+  readonly max_video_channel_users?: number
   /** the maximum amount of users in a stage video channel */
-  max_stage_video_channel_users?: number
+  readonly max_stage_video_channel_users?: number
   /** approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true */
-  approximate_member_count?: number
+  readonly approximate_member_count?: number
   /** approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true */
-  approximate_presence_count?: number
+  readonly approximate_presence_count?: number
   /** the welcome screen of a Community guild, shown to new members, returned in an Invite's guild object */
-  welcome_screen?: WelcomeScreen
+  readonly welcome_screen?: WelcomeScreen
   /** guild NSFW level */
-  nsfw_level: GuildNsfwLevel
+  readonly nsfw_level: GuildNsfwLevel
   /** custom guild stickers */
-  stickers?: Sticker[]
+  readonly stickers?: Sticker[]
   /** whether the guild has the boost progress bar enabled */
-  premium_progress_bar_enabled: boolean
+  readonly premium_progress_bar_enabled: boolean
 }
 export interface GuildApplicationCommandPermission {
   /** ID of the command or the application ID */
-  id: Snowflake
+  readonly id: Snowflake
   /** ID of the application the command belongs to */
-  application_id: Snowflake
+  readonly application_id: Snowflake
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Permissions for the command in the guild, max of 100 */
-  permissions: ApplicationCommandPermission[]
+  readonly permissions: ApplicationCommandPermission[]
 }
 export type GuildAuditLogEntryCreateEvent = AuditLogEntry
 export interface GuildBanAddEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** User who was banned */
-  user: User
+  readonly user: User
 }
 export interface GuildBanRemoveEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** User who was unbanned */
-  user: User
+  readonly user: User
 }
 export type GuildCreateEvent = Guild & GuildCreateExtra
 export interface GuildCreateExtra {
   /** When this guild was joined at */
-  joined_at: string
+  readonly joined_at: string
   /** true if this is considered a large guild */
-  large: boolean
+  readonly large: boolean
   /** true if this guild is unavailable due to an outage */
-  unavailable?: boolean
+  readonly unavailable?: boolean
   /** Total number of members in this guild */
-  member_count: number
+  readonly member_count: number
   /** States of members currently in voice channels; lacks the guild_id key */
-  voice_states: VoiceState[]
+  readonly voice_states: VoiceState[]
   /** Users in the guild */
-  members: GuildMember[]
+  readonly members: GuildMember[]
   /** Channels in the guild */
-  channels: Channel[]
+  readonly channels: Channel[]
   /** All active threads in the guild that current user has permission to view */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** Presences of the members in the guild, will only include non-offline members if the size is greater than large threshold */
-  presences: PresenceUpdateEvent[]
+  readonly presences: PresenceUpdateEvent[]
   /** Stage instances in the guild */
-  stage_instances: StageInstance[]
+  readonly stage_instances: StageInstance[]
   /** Scheduled events in the guild */
-  guild_scheduled_events: GuildScheduledEvent[]
+  readonly guild_scheduled_events: GuildScheduledEvent[]
 }
 export type GuildDeleteEvent = UnavailableGuild
 export interface GuildEmojisUpdateEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Array of emojis */
-  emojis: Emoji[]
+  readonly emojis: Emoji[]
 }
 export const enum GuildFeature {
   /** guild has access to set an animated guild banner image */
@@ -4020,38 +4024,38 @@ export const enum GuildFeature {
 }
 export interface GuildIntegrationsUpdateEvent {
   /** ID of the guild whose integrations were updated */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export interface GuildMember {
   /** the user this guild member represents */
-  user?: User
+  readonly user?: User
   /** this user's guild nickname */
-  nick?: string | null
+  readonly nick?: string | null
   /** the member's guild avatar hash */
-  avatar?: string | null
+  readonly avatar?: string | null
   /** array of role object ids */
-  roles: Snowflake[]
+  readonly roles: Snowflake[]
   /** when the user joined the guild */
-  joined_at: string
+  readonly joined_at: string
   /** when the user started boosting the guild */
-  premium_since?: string | null
+  readonly premium_since?: string | null
   /** whether the user is deafened in voice channels */
-  deaf: boolean
+  readonly deaf: boolean
   /** whether the user is muted in voice channels */
-  mute: boolean
+  readonly mute: boolean
   /** guild member flags represented as a bit set, defaults to 0 */
-  flags: number
+  readonly flags: number
   /** whether the user has not yet passed the guild's Membership Screening requirements */
-  pending?: boolean
+  readonly pending?: boolean
   /** total permissions of the member in the channel, including overwrites, returned when in the interaction object */
-  permissions?: string
+  readonly permissions?: string
   /** when the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
-  communication_disabled_until?: string | null
+  readonly communication_disabled_until?: string | null
 }
 export type GuildMemberAddEvent = GuildMember & GuildMemberAddExtra
 export interface GuildMemberAddExtra {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export const GuildMemberFlag = {
   /** Member has left and rejoined the guild */
@@ -4065,49 +4069,49 @@ export const GuildMemberFlag = {
 } as const
 export interface GuildMemberRemoveEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** User who was removed */
-  user: User
+  readonly user: User
 }
 export interface GuildMembersChunkEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Set of guild members */
-  members: GuildMember[]
+  readonly members: GuildMember[]
   /** Chunk index in the expected chunks for this response (0 <= chunk_index < chunk_count) */
-  chunk_index: number
+  readonly chunk_index: number
   /** Total number of expected chunks for this response */
-  chunk_count: number
+  readonly chunk_count: number
   /** When passing an invalid ID to REQUEST_GUILD_MEMBERS, it will be returned here */
-  not_found?: any[]
+  readonly not_found?: any[]
   /** When passing true to REQUEST_GUILD_MEMBERS, presences of the returned members will be here */
-  presences?: PresenceUpdateEvent[]
+  readonly presences?: PresenceUpdateEvent[]
   /** Nonce used in the Guild Members Request */
-  nonce?: string
+  readonly nonce?: string
 }
 export interface GuildMemberUpdateEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** User role ids */
-  roles: Snowflake[]
+  readonly roles: Snowflake[]
   /** User */
-  user: User
+  readonly user: User
   /** Nickname of the user in the guild */
-  nick?: string | null
+  readonly nick?: string | null
   /** Member's guild avatar hash */
-  avatar?: string | null
+  readonly avatar?: string | null
   /** When the user joined the guild */
-  joined_at?: string | null
+  readonly joined_at?: string | null
   /** When the user starting boosting the guild */
-  premium_since?: string | null
+  readonly premium_since?: string | null
   /** Whether the user is deafened in voice channels */
-  deaf?: boolean
+  readonly deaf?: boolean
   /** Whether the user is muted in voice channels */
-  mute?: boolean
+  readonly mute?: boolean
   /** Whether the user has not yet passed the guild's Membership Screening requirements */
-  pending?: boolean
+  readonly pending?: boolean
   /** When the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
-  communication_disabled_until?: string | null
+  readonly communication_disabled_until?: string | null
 }
 export const enum GuildNsfwLevel {
   DEFAULT = 0,
@@ -4117,95 +4121,95 @@ export const enum GuildNsfwLevel {
 }
 export interface GuildOnboarding {
   /** ID of the guild this onboarding is part of */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Prompts shown during onboarding and in customize community */
-  prompts: OnboardingPrompt[]
+  readonly prompts: OnboardingPrompt[]
   /** Channel IDs that members get opted into automatically */
-  default_channel_ids: Snowflake[]
+  readonly default_channel_ids: Snowflake[]
   /** Whether onboarding is enabled in the guild */
-  enabled: boolean
+  readonly enabled: boolean
 }
 export interface GuildPreview {
   /** guild id */
-  id: Snowflake
+  readonly id: Snowflake
   /** guild name (2-100 characters) */
-  name: string
+  readonly name: string
   /** icon hash */
-  icon?: string | null
+  readonly icon?: string | null
   /** splash hash */
-  splash?: string | null
+  readonly splash?: string | null
   /** discovery splash hash */
-  discovery_splash?: string | null
+  readonly discovery_splash?: string | null
   /** custom guild emojis */
-  emojis: Emoji[]
+  readonly emojis: Emoji[]
   /** enabled guild features */
-  features: GuildFeature[]
+  readonly features: GuildFeature[]
   /** approximate number of members in this guild */
-  approximate_member_count: number
+  readonly approximate_member_count: number
   /** approximate number of online members in this guild */
-  approximate_presence_count: number
+  readonly approximate_presence_count: number
   /** the description for the guild */
-  description?: string | null
+  readonly description?: string | null
   /** custom guild stickers */
-  stickers: Sticker[]
+  readonly stickers: Sticker[]
 }
 export interface GuildRoleCreateEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Role that was created */
-  role: Role
+  readonly role: Role
 }
 export interface GuildRoleDeleteEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** ID of the role */
-  role_id: Snowflake
+  readonly role_id: Snowflake
 }
 export interface GuildRoleUpdateEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Role that was updated */
-  role: Role
+  readonly role: Role
 }
 export interface GuildScheduledEvent {
   /** the id of the scheduled event */
-  id: Snowflake
+  readonly id: Snowflake
   /** the guild id which the scheduled event belongs to */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** the channel id in which the scheduled event will be hosted, or null if scheduled entity type is EXTERNAL */
-  channel_id?: Snowflake | null
+  readonly channel_id?: Snowflake | null
   /** the id of the user that created the scheduled event * */
-  creator_id?: Snowflake | null
+  readonly creator_id?: Snowflake | null
   /** the name of the scheduled event (1-100 characters) */
-  name: string
+  readonly name: string
   /** the description of the scheduled event (1-1000 characters) */
-  description?: string | null
+  readonly description?: string | null
   /** the time the scheduled event will start */
-  scheduled_start_time: string
+  readonly scheduled_start_time: string
   /** the time the scheduled event will end, required if entity_type is EXTERNAL */
-  scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null
   /** the privacy level of the scheduled event */
-  privacy_level: GuildScheduledEventPrivacyLevel
+  readonly privacy_level: GuildScheduledEventPrivacyLevel
   /** the status of the scheduled event */
-  status: GuildScheduledEventStatus
+  readonly status: GuildScheduledEventStatus
   /** the type of the scheduled event */
-  entity_type: GuildScheduledEventEntityType
+  readonly entity_type: GuildScheduledEventEntityType
   /** the id of an entity associated with a guild scheduled event */
-  entity_id?: Snowflake | null
+  readonly entity_id?: Snowflake | null
   /** additional metadata for the guild scheduled event */
-  entity_metadata?: GuildScheduledEventEntityMetadatum | null
+  readonly entity_metadata?: GuildScheduledEventEntityMetadatum | null
   /** the user that created the scheduled event */
-  creator?: User
+  readonly creator?: User
   /** the number of users subscribed to the scheduled event */
-  user_count?: number
+  readonly user_count?: number
   /** the cover image hash of the scheduled event */
-  image?: string | null
+  readonly image?: string | null
 }
 export type GuildScheduledEventCreateEvent = GuildScheduledEvent
 export type GuildScheduledEventDeleteEvent = GuildScheduledEvent
 export interface GuildScheduledEventEntityMetadatum {
   /** location of the event (1-100 characters) */
-  location?: string
+  readonly location?: string
 }
 export const enum GuildScheduledEventEntityType {
   STAGE_INSTANCE = 1,
@@ -4225,179 +4229,179 @@ export const enum GuildScheduledEventStatus {
 export type GuildScheduledEventUpdateEvent = GuildScheduledEvent
 export interface GuildScheduledEventUser {
   /** the scheduled event id which the user subscribed to */
-  guild_scheduled_event_id: Snowflake
+  readonly guild_scheduled_event_id: Snowflake
   /** user which subscribed to an event */
-  user: User
+  readonly user: User
   /** guild member data for this user for the guild which this event belongs to, if any */
-  member?: GuildMember
+  readonly member?: GuildMember
 }
 export interface GuildScheduledEventUserAddEvent {
   /** ID of the guild scheduled event */
-  guild_scheduled_event_id: Snowflake
+  readonly guild_scheduled_event_id: Snowflake
   /** ID of the user */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export interface GuildScheduledEventUserRemoveEvent {
   /** ID of the guild scheduled event */
-  guild_scheduled_event_id: Snowflake
+  readonly guild_scheduled_event_id: Snowflake
   /** ID of the user */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export interface GuildStickersUpdateEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Array of stickers */
-  stickers: Sticker[]
+  readonly stickers: Sticker[]
 }
 export interface GuildTemplate {
   /** the template code (unique ID) */
-  code: string
+  readonly code: string
   /** template name */
-  name: string
+  readonly name: string
   /** the description for the template */
-  description?: string | null
+  readonly description?: string | null
   /** number of times this template has been used */
-  usage_count: number
+  readonly usage_count: number
   /** the ID of the user who created the template */
-  creator_id: Snowflake
+  readonly creator_id: Snowflake
   /** the user who created the template */
-  creator: User
+  readonly creator: User
   /** when this template was created */
-  created_at: string
+  readonly created_at: string
   /** when this template was last synced to the source guild */
-  updated_at: string
+  readonly updated_at: string
   /** the ID of the guild this template is based on */
-  source_guild_id: Snowflake
+  readonly source_guild_id: Snowflake
   /** the guild snapshot this template contains */
-  serialized_source_guild: Guild
+  readonly serialized_source_guild: Guild
   /** whether the template has unsynced changes */
-  is_dirty?: boolean | null
+  readonly is_dirty?: boolean | null
 }
 export type GuildUpdateEvent = Guild
 export interface GuildWidget {
   /** guild id */
-  id: Snowflake
+  readonly id: Snowflake
   /** guild name (2-100 characters) */
-  name: string
+  readonly name: string
   /** instant invite for the guilds specified widget invite channel */
-  instant_invite?: string | null
+  readonly instant_invite?: string | null
   /** voice and stage channels which are accessible by @everyone */
-  channels: Channel[]
+  readonly channels: Channel[]
   /** special widget user objects that includes users presence (Limit 100) */
-  members: User[]
+  readonly members: User[]
   /** number of online members in this guild */
-  presence_count: number
+  readonly presence_count: number
 }
 export interface GuildWidgetSetting {
   /** whether the widget is enabled */
-  enabled: boolean
+  readonly enabled: boolean
   /** the widget channel id */
-  channel_id?: Snowflake | null
+  readonly channel_id?: Snowflake | null
 }
 export type Heartbeat = number | null
 export interface HelloEvent {
   /** Interval (in milliseconds) an app should heartbeat with */
-  heartbeat_interval: number
+  readonly heartbeat_interval: number
 }
 export interface Identify {
   /** Authentication token */
-  token: string
+  readonly token: string
   /** Connection properties */
-  properties: IdentifyConnectionProperty
+  readonly properties: IdentifyConnectionProperty
   /** Whether this connection supports compression of packets */
-  compress?: boolean
+  readonly compress?: boolean
   /** Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list */
-  large_threshold?: number
+  readonly large_threshold?: number
   /** Used for Guild Sharding */
-  shard?: number[]
+  readonly shard?: number[]
   /** Presence structure for initial presence information */
-  presence?: UpdatePresence
+  readonly presence?: UpdatePresence
   /** Gateway Intents you wish to receive */
-  intents: number
+  readonly intents: number
 }
 export interface IdentifyConnectionProperty {
   /** Your operating system */
-  os: string
+  readonly os: string
   /** Your library name */
-  browser: string
+  readonly browser: string
   /** Your library name */
-  device: string
+  readonly device: string
 }
 export interface InstallParam {
   /** the scopes to add the application to the server with */
-  scopes: OAuth2Scope[]
+  readonly scopes: OAuth2Scope[]
   /** the permissions to request for the bot role */
-  permissions: string
+  readonly permissions: string
 }
 export interface Integration {
   /** integration id */
-  id: Snowflake
+  readonly id: Snowflake
   /** integration name */
-  name: string
+  readonly name: string
   /** integration type (twitch, youtube, discord, or guild_subscription) */
-  type: string
+  readonly type: string
   /** is this integration enabled */
-  enabled: boolean
+  readonly enabled: boolean
   /** is this integration syncing */
-  syncing?: boolean
+  readonly syncing?: boolean
   /** id that this integration uses for "subscribers" */
-  role_id?: Snowflake
+  readonly role_id?: Snowflake
   /** whether emoticons should be synced for this integration (twitch only currently) */
-  enable_emoticons?: boolean
+  readonly enable_emoticons?: boolean
   /** the behavior of expiring subscribers */
-  expire_behavior?: IntegrationExpireBehavior
+  readonly expire_behavior?: IntegrationExpireBehavior
   /** the grace period (in days) before expiring subscribers */
-  expire_grace_period?: number
+  readonly expire_grace_period?: number
   /** user for this integration */
-  user?: User
+  readonly user?: User
   /** integration account information */
-  account: IntegrationAccount
+  readonly account: IntegrationAccount
   /** when this integration was last synced */
-  synced_at?: string
+  readonly synced_at?: string
   /** how many subscribers this integration has */
-  subscriber_count?: number
+  readonly subscriber_count?: number
   /** has this integration been revoked */
-  revoked?: boolean
+  readonly revoked?: boolean
   /** The bot/OAuth2 application for discord integrations */
-  application?: IntegrationApplication
+  readonly application?: IntegrationApplication
   /** the scopes the application has been authorized for */
-  scopes?: OAuth2Scope[]
+  readonly scopes?: OAuth2Scope[]
 }
 export interface IntegrationAccount {
   /** id of the account */
-  id: string
+  readonly id: string
   /** name of the account */
-  name: string
+  readonly name: string
 }
 export interface IntegrationApplication {
   /** the id of the app */
-  id: Snowflake
+  readonly id: Snowflake
   /** the name of the app */
-  name: string
+  readonly name: string
   /** the icon hash of the app */
-  icon?: string | null
+  readonly icon?: string | null
   /** the description of the app */
-  description: string
+  readonly description: string
   /** the bot associated with this application */
-  bot?: User
+  readonly bot?: User
 }
 export type IntegrationCreateEvent = Integration &
   IntegrationCreateEventAdditional
 export interface IntegrationCreateEventAdditional {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export interface IntegrationDeleteEvent {
   /** Integration ID */
-  id: Snowflake
+  readonly id: Snowflake
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** ID of the bot/OAuth2 application for this discord integration */
-  application_id?: Snowflake
+  readonly application_id?: Snowflake
 }
 export const enum IntegrationExpireBehavior {
   REMOVE_ROLE = 0,
@@ -4407,43 +4411,43 @@ export type IntegrationUpdateEvent = Integration &
   IntegrationUpdateEventAdditional
 export interface IntegrationUpdateEventAdditional {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export interface Interaction {
   /** ID of the interaction */
-  id: Snowflake
+  readonly id: Snowflake
   /** ID of the application this interaction is for */
-  application_id: Snowflake
+  readonly application_id: Snowflake
   /** Type of interaction */
-  type: InteractionType
+  readonly type: InteractionType
   /** Interaction data payload */
-  data?: InteractionDatum
+  readonly data?: InteractionDatum
   /** Guild that the interaction was sent from */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** Channel that the interaction was sent from */
-  channel?: Channel
+  readonly channel?: Channel
   /** Channel that the interaction was sent from */
-  channel_id?: Snowflake
+  readonly channel_id?: Snowflake
   /** Guild member data for the invoking user, including permissions */
-  member?: GuildMember
+  readonly member?: GuildMember
   /** User object for the invoking user, if invoked in a DM */
-  user?: User
+  readonly user?: User
   /** Continuation token for responding to the interaction */
-  token: string
+  readonly token: string
   /** Read-only property, always 1 */
-  version: number
+  readonly version: number
   /** For components, the message they were attached to */
-  message?: Message
+  readonly message?: Message
   /** Bitwise set of permissions the app or bot has within the channel the interaction was sent from */
-  app_permissions?: string
+  readonly app_permissions?: string
   /** Selected language of the invoking user */
-  locale?: string
+  readonly locale?: string
   /** Guild's preferred locale, if invoked in a guild */
-  guild_locale?: string
+  readonly guild_locale?: string
 }
 export interface InteractionCallbackAutocomplete {
   /** autocomplete choices (max of 25 choices) */
-  choices: ApplicationCommandOptionChoice[]
+  readonly choices: ApplicationCommandOptionChoice[]
 }
 export type InteractionCallbackDatum =
   | InteractionCallbackAutocomplete
@@ -4451,27 +4455,27 @@ export type InteractionCallbackDatum =
   | InteractionCallbackModal
 export interface InteractionCallbackMessage {
   /** is the response TTS */
-  tts?: boolean
+  readonly tts?: boolean
   /** message content */
-  content?: string
+  readonly content?: string
   /** supports up to 10 embeds */
-  embeds?: Embed[]
+  readonly embeds?: Embed[]
   /** allowed mentions object */
-  allowed_mentions?: AllowedMention
+  readonly allowed_mentions?: AllowedMention
   /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and EPHEMERAL can be set) */
-  flags?: number
+  readonly flags?: number
   /** message components */
-  components?: Component[]
+  readonly components?: Component[]
   /** attachment objects with filename and description */
-  attachments?: Attachment[]
+  readonly attachments?: Attachment[]
 }
 export interface InteractionCallbackModal {
   /** a developer-defined identifier for the modal, max 100 characters */
-  custom_id: string
+  readonly custom_id: string
   /** the title of the popup modal, max 45 characters */
-  title: string
+  readonly title: string
   /** between 1 and 5 (inclusive) components that make up the modal */
-  components: Component[]
+  readonly components: Component[]
 }
 export const enum InteractionCallbackType {
   /** ACK a Ping */
@@ -4496,9 +4500,9 @@ export type InteractionDatum =
   | ModalSubmitDatum
 export interface InteractionResponse {
   /** the type of response */
-  type: InteractionCallbackType
+  readonly type: InteractionCallbackType
   /** an optional response message */
-  data?: InteractionCallbackDatum
+  readonly data?: InteractionCallbackDatum
 }
 export const enum InteractionType {
   PING = 1,
@@ -4510,85 +4514,85 @@ export const enum InteractionType {
 export type InvalidSessionEvent = boolean
 export interface Invite {
   /** the invite code (unique ID) */
-  code: string
+  readonly code: string
   /** the guild this invite is for */
-  guild?: Guild
+  readonly guild?: Guild
   /** the channel this invite is for */
-  channel?: Channel | null
+  readonly channel?: Channel | null
   /** the user who created the invite */
-  inviter?: User
+  readonly inviter?: User
   /** the type of target for this voice channel invite */
-  target_type?: InviteTargetType
+  readonly target_type?: InviteTargetType
   /** the user whose stream to display for this voice channel stream invite */
-  target_user?: User
+  readonly target_user?: User
   /** the embedded application to open for this voice channel embedded application invite */
-  target_application?: Application
+  readonly target_application?: Application
   /** approximate count of online members, returned from the GET /invites/<code> endpoint when with_counts is true */
-  approximate_presence_count?: number
+  readonly approximate_presence_count?: number
   /** approximate count of total members, returned from the GET /invites/<code> endpoint when with_counts is true */
-  approximate_member_count?: number
+  readonly approximate_member_count?: number
   /** the expiration date of this invite, returned from the GET /invites/<code> endpoint when with_expiration is true */
-  expires_at?: string | null
+  readonly expires_at?: string | null
   /** stage instance data if there is a public Stage instance in the Stage channel this invite is for (deprecated) */
-  stage_instance?: InviteStageInstance
+  readonly stage_instance?: InviteStageInstance
   /** guild scheduled event data, only included if guild_scheduled_event_id contains a valid guild scheduled event id */
-  guild_scheduled_event?: GuildScheduledEvent
+  readonly guild_scheduled_event?: GuildScheduledEvent
 }
 export interface InviteCreateEvent {
   /** Channel the invite is for */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** Unique invite code */
-  code: string
+  readonly code: string
   /** Time at which the invite was created */
-  created_at: string
+  readonly created_at: string
   /** Guild of the invite */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** User that created the invite */
-  inviter?: User
+  readonly inviter?: User
   /** How long the invite is valid for (in seconds) */
-  max_age: number
+  readonly max_age: number
   /** Maximum number of times the invite can be used */
-  max_uses: number
+  readonly max_uses: number
   /** Type of target for this voice channel invite */
-  target_type?: InviteTargetType
+  readonly target_type?: InviteTargetType
   /** User whose stream to display for this voice channel stream invite */
-  target_user?: User
+  readonly target_user?: User
   /** Embedded application to open for this voice channel embedded application invite */
-  target_application?: Application
+  readonly target_application?: Application
   /** Whether or not the invite is temporary (invited users will be kicked on disconnect unless they're assigned a role) */
-  temporary: boolean
+  readonly temporary: boolean
   /** How many times the invite has been used (always will be 0) */
-  uses: number
+  readonly uses: number
 }
 export interface InviteDeleteEvent {
   /** Channel of the invite */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** Guild of the invite */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** Unique invite code */
-  code: string
+  readonly code: string
 }
 export interface InviteMetadatum {
   /** number of times this invite has been used */
-  uses: number
+  readonly uses: number
   /** max number of times this invite can be used */
-  max_uses: number
+  readonly max_uses: number
   /** duration (in seconds) after which the invite expires */
-  max_age: number
+  readonly max_age: number
   /** whether this invite only grants temporary membership */
-  temporary: boolean
+  readonly temporary: boolean
   /** when this invite was created */
-  created_at: string
+  readonly created_at: string
 }
 export interface InviteStageInstance {
   /** the members speaking in the Stage */
-  members: GuildMember[]
+  readonly members: GuildMember[]
   /** the number of users in the Stage */
-  participant_count: number
+  readonly participant_count: number
   /** the number of users speaking in the Stage */
-  speaker_count: number
+  readonly speaker_count: number
   /** the topic of the Stage instance (1-120 characters) */
-  topic: string
+  readonly topic: string
 }
 export const enum InviteTargetType {
   STREAM = 1,
@@ -4604,131 +4608,131 @@ export const enum KeywordPresetType {
 }
 export interface ListActiveGuildThreadResponse {
   /** the active threads */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
-  members: ThreadMember[]
+  readonly members: ThreadMember[]
 }
 export interface ListGuildMemberParams {
   /** max number of members to return (1-1000) */
-  limit: number
+  readonly limit: number
   /** the highest user id in the previous page */
-  after: Snowflake
+  readonly after: Snowflake
 }
 export interface ListJoinedPrivateArchivedThreadParams {
   /** returns threads before this id */
-  before?: Snowflake
+  readonly before?: Snowflake
   /** optional maximum number of threads to return */
-  limit?: number
+  readonly limit?: number
 }
 export interface ListJoinedPrivateArchivedThreadResponse {
   /** the private, archived threads the current user has joined */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
-  members: ThreadMember[]
+  readonly members: ThreadMember[]
   /** whether there are potentially additional threads that could be returned on a subsequent call */
-  has_more: boolean
+  readonly has_more: boolean
 }
 export interface ListPrivateArchivedThreadParams {
   /** returns threads before this timestamp */
-  before?: string
+  readonly before?: string
   /** optional maximum number of threads to return */
-  limit?: number
+  readonly limit?: number
 }
 export interface ListPrivateArchivedThreadResponse {
   /** the private, archived threads */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
-  members: ThreadMember[]
+  readonly members: ThreadMember[]
   /** whether there are potentially additional threads that could be returned on a subsequent call */
-  has_more: boolean
+  readonly has_more: boolean
 }
 export interface ListPublicArchivedThreadParams {
   /** returns threads before this timestamp */
-  before?: string
+  readonly before?: string
   /** optional maximum number of threads to return */
-  limit?: number
+  readonly limit?: number
 }
 export interface ListPublicArchivedThreadResponse {
   /** the public, archived threads */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
-  members: ThreadMember[]
+  readonly members: ThreadMember[]
   /** whether there are potentially additional threads that could be returned on a subsequent call */
-  has_more: boolean
+  readonly has_more: boolean
 }
 export interface ListScheduledEventsForGuildParams {
   /** include number of users subscribed to each event */
-  with_user_count?: boolean
+  readonly with_user_count?: boolean
 }
 export interface ListThreadMemberParams {
   /** Whether to include a guild member object for each thread member */
-  with_member?: boolean
+  readonly with_member?: boolean
   /** Get thread members after this user ID */
-  after?: Snowflake
+  readonly after?: Snowflake
   /** Max number of thread members to return (1-100). Defaults to 100. */
-  limit?: number
+  readonly limit?: number
 }
 export interface Locale {
   /** Danish */
-  da?: string
+  readonly da?: string
   /** German */
-  de?: string
+  readonly de?: string
   /** English, */
-  "en-GB"?: string
+  readonly "en-GB"?: string
   /** English, */
-  "en-US"?: string
+  readonly "en-US"?: string
   /** Spanish */
-  "es-ES"?: string
+  readonly "es-ES"?: string
   /** French */
-  fr?: string
+  readonly fr?: string
   /** Croatian */
-  hr?: string
+  readonly hr?: string
   /** Italian */
-  it?: string
+  readonly it?: string
   /** Lithuanian */
-  lt?: string
+  readonly lt?: string
   /** Hungarian */
-  hu?: string
+  readonly hu?: string
   /** Dutch */
-  nl?: string
+  readonly nl?: string
   /** Norwegian */
-  no?: string
+  readonly no?: string
   /** Polish */
-  pl?: string
+  readonly pl?: string
   /** Portuguese, Brazilian */
-  "pt-BR"?: string
+  readonly "pt-BR"?: string
   /** Romanian, Romania */
-  ro?: string
+  readonly ro?: string
   /** Finnish */
-  fi?: string
+  readonly fi?: string
   /** Swedish */
-  "sv-SE"?: string
+  readonly "sv-SE"?: string
   /** Vietnamese */
-  vi?: string
+  readonly vi?: string
   /** Turkish */
-  tr?: string
+  readonly tr?: string
   /** Czech */
-  cs?: string
+  readonly cs?: string
   /** Greek */
-  el?: string
+  readonly el?: string
   /** Bulgarian */
-  bg?: string
+  readonly bg?: string
   /** Russian */
-  ru?: string
+  readonly ru?: string
   /** Ukrainian */
-  uk?: string
+  readonly uk?: string
   /** Hindi */
-  hi?: string
+  readonly hi?: string
   /** Thai */
-  th?: string
+  readonly th?: string
   /** Chinese, China */
-  "zh-CN"?: string
+  readonly "zh-CN"?: string
   /** Japanese */
-  ja?: string
+  readonly ja?: string
   /** Chinese, Taiwan */
-  "zh-TW"?: string
+  readonly "zh-TW"?: string
   /** Korean */
-  ko?: string
+  readonly ko?: string
 }
 export const enum MembershipState {
   INVITED = 1,
@@ -4736,73 +4740,73 @@ export const enum MembershipState {
 }
 export interface Message {
   /** id of the message */
-  id: Snowflake
+  readonly id: Snowflake
   /** id of the channel the message was sent in */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** the author of this message (not guaranteed to be a valid user, see below) */
-  author: User
+  readonly author: User
   /** contents of the message */
-  content: string
+  readonly content: string
   /** when this message was sent */
-  timestamp: string
+  readonly timestamp: string
   /** when this message was edited (or null if never) */
-  edited_timestamp?: string | null
+  readonly edited_timestamp?: string | null
   /** whether this was a TTS message */
-  tts: boolean
+  readonly tts: boolean
   /** whether this message mentions everyone */
-  mention_everyone: boolean
+  readonly mention_everyone: boolean
   /** users specifically mentioned in the message */
-  mentions: User[]
+  readonly mentions: User[]
   /** roles specifically mentioned in this message */
-  mention_roles: Snowflake[]
+  readonly mention_roles: Snowflake[]
   /** channels specifically mentioned in this message */
-  mention_channels?: ChannelMention[]
+  readonly mention_channels?: ChannelMention[]
   /** any attached files */
-  attachments: Attachment[]
+  readonly attachments: Attachment[]
   /** any embedded content */
-  embeds: Embed[]
+  readonly embeds: Embed[]
   /** reactions to the message */
-  reactions?: Reaction[]
+  readonly reactions?: Reaction[]
   /** used for validating a message was sent */
-  nonce?: string
+  readonly nonce?: string
   /** whether this message is pinned */
-  pinned: boolean
+  readonly pinned: boolean
   /** if the message is generated by a webhook, this is the webhook's id */
-  webhook_id?: Snowflake
+  readonly webhook_id?: Snowflake
   /** type of message */
-  type: MessageType
+  readonly type: MessageType
   /** sent with Rich Presence-related chat embeds */
-  activity?: MessageActivity
+  readonly activity?: MessageActivity
   /** sent with Rich Presence-related chat embeds */
-  application?: Application
+  readonly application?: Application
   /** if the message is an Interaction or application-owned webhook, this is the id of the application */
-  application_id?: Snowflake
+  readonly application_id?: Snowflake
   /** data showing the source of a crosspost, channel follow add, pin, or reply message */
-  message_reference?: MessageReference
+  readonly message_reference?: MessageReference
   /** message flags combined as a bitfield */
-  flags?: number
+  readonly flags?: number
   /** the message associated with the message_reference */
-  referenced_message?: Message | null
+  readonly referenced_message?: Message | null
   /** sent if the message is a response to an Interaction */
-  interaction?: MessageInteraction
+  readonly interaction?: MessageInteraction
   /** the thread that was started from this message, includes thread member object */
-  thread?: Channel
+  readonly thread?: Channel
   /** sent if the message contains components like buttons, action rows, or other interactive components */
-  components?: Component[]
+  readonly components?: Component[]
   /** sent if the message contains stickers */
-  sticker_items?: StickerItem[]
+  readonly sticker_items?: StickerItem[]
   /** Deprecated the stickers sent with the message */
-  stickers?: Sticker[]
+  readonly stickers?: Sticker[]
   /** A generally increasing integer (there may be gaps or duplicates) that represents the approximate position of the message in a thread, it can be used to estimate the relative position of the message in a thread in company with total_message_sent on parent thread */
-  position?: number
+  readonly position?: number
   /** data of the role subscription purchase or renewal that prompted this ROLE_SUBSCRIPTION_PURCHASE message */
-  role_subscription_data?: RoleSubscriptionDatum
+  readonly role_subscription_data?: RoleSubscriptionDatum
 }
 export interface MessageActivity {
   /** type of message activity */
-  type: MessageActivityType
+  readonly type: MessageActivityType
   /** party_id from a Rich Presence event */
-  party_id?: string
+  readonly party_id?: string
 }
 export const enum MessageActivityType {
   JOIN = 1,
@@ -4812,36 +4816,36 @@ export const enum MessageActivityType {
 }
 export interface MessageComponentDatum {
   /** the custom_id of the component */
-  custom_id: string
+  readonly custom_id: string
   /** the type of the component */
-  component_type: ComponentType
+  readonly component_type: ComponentType
   /** values the user selected in a select menu component */
-  values?: SelectOption[]
+  readonly values?: SelectOption[]
 }
 export type MessageCreateEvent = Message & MessageCreateExtra
 export interface MessageCreateExtra {
   /** ID of the guild the message was sent in - unless it is an ephemeral message */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** Member properties for this message's author. Missing for ephemeral messages and messages from webhooks */
-  member?: GuildMember
+  readonly member?: GuildMember
   /** Users specifically mentioned in the message */
-  mentions: User[]
+  readonly mentions: User[]
 }
 export interface MessageDeleteBulkEvent {
   /** IDs of the messages */
-  ids: Snowflake[]
+  readonly ids: Snowflake[]
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
 }
 export interface MessageDeleteEvent {
   /** ID of the message */
-  id: Snowflake
+  readonly id: Snowflake
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
 }
 export const MessageFlag = {
   /** this message has been published to subscribed channels (via Channel Following) */
@@ -4864,72 +4868,74 @@ export const MessageFlag = {
   FAILED_TO_MENTION_SOME_ROLES_IN_THREAD: 1 << 8,
   /** this message will not trigger push and desktop notifications */
   SUPPRESS_NOTIFICATIONS: 1 << 12,
+  /** this message is a voice message */
+  IS_VOICE_MESSAGE: 1 << 13,
 } as const
 export interface MessageInteraction {
   /** ID of the interaction */
-  id: Snowflake
+  readonly id: Snowflake
   /** Type of interaction */
-  type: InteractionType
+  readonly type: InteractionType
   /** Name of the application command, including subcommands and subcommand groups */
-  name: string
+  readonly name: string
   /** User who invoked the interaction */
-  user: User
+  readonly user: User
   /** Member who invoked the interaction in the guild */
-  member?: GuildMember
+  readonly member?: GuildMember
 }
 export interface MessageReactionAddEvent {
   /** ID of the user */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the message */
-  message_id: Snowflake
+  readonly message_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** Member who reacted if this happened in a guild */
-  member?: GuildMember
+  readonly member?: GuildMember
   /** Emoji used to react - example */
-  emoji: Emoji
+  readonly emoji: Emoji
 }
 export interface MessageReactionRemoveAllEvent {
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the message */
-  message_id: Snowflake
+  readonly message_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
 }
 export interface MessageReactionRemoveEmojiEvent {
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** ID of the message */
-  message_id: Snowflake
+  readonly message_id: Snowflake
   /** Emoji that was removed */
-  emoji: Emoji
+  readonly emoji: Emoji
 }
 export interface MessageReactionRemoveEvent {
   /** ID of the user */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the message */
-  message_id: Snowflake
+  readonly message_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** Emoji used to react - example */
-  emoji: Emoji
+  readonly emoji: Emoji
 }
 export interface MessageReference {
   /** id of the originating message */
-  message_id?: Snowflake
+  readonly message_id?: Snowflake
   /** id of the originating message's channel */
-  channel_id?: Snowflake
+  readonly channel_id?: Snowflake
   /** id of the originating message's guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true */
-  fail_if_not_exists?: boolean
+  readonly fail_if_not_exists?: boolean
 }
 export const enum MessageType {
   DEFAULT = 0,
@@ -4973,71 +4979,71 @@ export const enum MfaLevel {
 }
 export interface ModalSubmitDatum {
   /** the custom_id of the modal */
-  custom_id: string
+  readonly custom_id: string
   /** the values submitted by the user */
-  components: Component[]
+  readonly components: Component[]
 }
 export interface ModifyAutoModerationRuleParams {
   /** the rule name */
-  name: string
+  readonly name: string
   /** the event type */
-  event_type: EventType
+  readonly event_type: EventType
   /** the trigger metadata */
-  trigger_metadata?: TriggerMetadatum
+  readonly trigger_metadata?: TriggerMetadatum
   /** the actions which will execute when the rule is triggered */
-  actions: AutoModerationAction[]
+  readonly actions: AutoModerationAction[]
   /** whether the rule is enabled */
-  enabled: boolean
+  readonly enabled: boolean
   /** the role ids that should not be affected by the rule (Maximum of 20) */
-  exempt_roles: Snowflake[]
+  readonly exempt_roles: Snowflake[]
   /** the channel ids that should not be affected by the rule (Maximum of 50) */
-  exempt_channels: Snowflake[]
+  readonly exempt_channels: Snowflake[]
 }
 export interface ModifyChannelGroupDmParams {
   /** 1-100 character channel name */
-  name: string
+  readonly name: string
   /** base64 encoded icon */
-  icon: string
+  readonly icon: string
 }
 export interface ModifyChannelGuildChannelParams {
   /** 1-100 character channel name */
-  name: string
+  readonly name: string
   /** the type of channel; only conversion between text and announcement is supported and only in guilds with the "NEWS" feature */
-  type: ChannelType
+  readonly type: ChannelType
   /** the position of the channel in the left-hand listing */
-  position?: number | null
+  readonly position?: number | null
   /** 0-1024 character channel topic (0-4096 characters for GUILD_FORUM channels) */
-  topic?: string | null
+  readonly topic?: string | null
   /** whether the channel is nsfw */
-  nsfw?: boolean | null
+  readonly nsfw?: boolean | null
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected */
-  rate_limit_per_user?: number | null
+  readonly rate_limit_per_user?: number | null
   /** the bitrate (in bits) of the voice or stage channel; min 8000 */
-  bitrate?: number | null
+  readonly bitrate?: number | null
   /** the user limit of the voice or stage channel, max 99 for voice channels and 10,000 for stage channels (0 refers to no limit) */
-  user_limit?: number | null
+  readonly user_limit?: number | null
   /** channel or category-specific permissions */
-  permission_overwrites?: Overwrite[] | null
+  readonly permission_overwrites?: Overwrite[] | null
   /** id of the new parent category for a channel */
-  parent_id?: Snowflake | null
+  readonly parent_id?: Snowflake | null
   /** channel voice region id, automatic when set to null */
-  rtc_region?: string | null
+  readonly rtc_region?: string | null
   /** the camera video quality mode of the voice channel */
-  video_quality_mode?: VideoQualityMode | null
+  readonly video_quality_mode?: VideoQualityMode | null
   /** the default duration that the clients use (not the API) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity */
-  default_auto_archive_duration?: number | null
+  readonly default_auto_archive_duration?: number | null
   /** channel flags combined as a bitfield. Currently only REQUIRE_TAG (1 << 4) is supported. */
-  flags?: number
+  readonly flags?: number
   /** the set of tags that can be used in a GUILD_FORUM channel; limited to 20 */
-  available_tags?: ForumTag[]
+  readonly available_tags?: ForumTag[]
   /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
-  default_reaction_emoji?: DefaultReaction | null
+  readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
-  default_thread_rate_limit_per_user?: number
+  readonly default_thread_rate_limit_per_user?: number
   /** the default sort order type used to order posts in GUILD_FORUM channels */
-  default_sort_order?: SortOrderType | null
+  readonly default_sort_order?: SortOrderType | null
   /** the default forum layout type used to display posts in GUILD_FORUM channels */
-  default_forum_layout?: ForumLayoutType
+  readonly default_forum_layout?: ForumLayoutType
 }
 export type ModifyChannelParams =
   | ModifyChannelGroupDmParams
@@ -5045,207 +5051,207 @@ export type ModifyChannelParams =
   | ModifyChannelThreadParams
 export interface ModifyChannelThreadParams {
   /** 1-100 character channel name */
-  name: string
+  readonly name: string
   /** whether the thread is archived */
-  archived: boolean
+  readonly archived: boolean
   /** the thread will stop showing in the channel list after auto_archive_duration minutes of inactivity, can be set to: 60, 1440, 4320, 10080 */
-  auto_archive_duration: number
+  readonly auto_archive_duration: number
   /** whether the thread is locked; when a thread is locked, only users with MANAGE_THREADS can unarchive it */
-  locked: boolean
+  readonly locked: boolean
   /** whether non-moderators can add other non-moderators to a thread; only available on private threads */
-  invitable: boolean
+  readonly invitable: boolean
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages, manage_thread, or manage_channel, are unaffected */
-  rate_limit_per_user?: number | null
+  readonly rate_limit_per_user?: number | null
   /** channel flags combined as a bitfield; PINNED can only be set for threads in forum channels */
-  flags?: number
+  readonly flags?: number
   /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel; limited to 5 */
-  applied_tags?: Snowflake[]
+  readonly applied_tags?: Snowflake[]
 }
 export interface ModifyCurrentMemberParams {
   /** value to set user's nickname to */
-  nick?: string | null
+  readonly nick?: string | null
 }
 export interface ModifyCurrentUserNickParams {
   /** value to set user's nickname to */
-  nick?: string | null
+  readonly nick?: string | null
 }
 export interface ModifyCurrentUserParams {
   /** user's username, if changed may cause the user's discriminator to be randomized. */
-  username: string
+  readonly username: string
   /** if passed, modifies the user's avatar */
-  avatar?: string | null
+  readonly avatar?: string | null
 }
 export interface ModifyCurrentUserVoiceStateParams {
   /** the id of the channel the user is currently in */
-  channel_id?: Snowflake
+  readonly channel_id?: Snowflake
   /** toggles the user's suppress state */
-  suppress?: boolean
+  readonly suppress?: boolean
   /** sets the user's request to speak */
-  request_to_speak_timestamp?: string | null
+  readonly request_to_speak_timestamp?: string | null
 }
 export interface ModifyGuildChannelPositionParams {
   /** channel id */
-  id: Snowflake
+  readonly id: Snowflake
   /** sorting position of the channel */
-  position?: number | null
+  readonly position?: number | null
   /** syncs the permission overwrites with the new parent, if moving to a new category */
-  lock_permissions?: boolean | null
+  readonly lock_permissions?: boolean | null
   /** the new parent ID for the channel that is moved */
-  parent_id?: Snowflake | null
+  readonly parent_id?: Snowflake | null
 }
 export interface ModifyGuildEmojiParams {
   /** name of the emoji */
-  name: string
+  readonly name: string
   /** roles allowed to use this emoji */
-  roles?: Snowflake[] | null
+  readonly roles?: Snowflake[] | null
 }
 export interface ModifyGuildMemberParams {
   /** value to set user's nickname to */
-  nick: string
+  readonly nick: string
   /** array of role ids the member is assigned */
-  roles: Snowflake[]
+  readonly roles: Snowflake[]
   /** whether the user is muted in voice channels. Will throw a 400 error if the user is not in a voice channel */
-  mute: boolean
+  readonly mute: boolean
   /** whether the user is deafened in voice channels. Will throw a 400 error if the user is not in a voice channel */
-  deaf: boolean
+  readonly deaf: boolean
   /** id of channel to move user to (if they are connected to voice) */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** when the user's timeout will expire and the user will be able to communicate in the guild again (up to 28 days in the future), set to null to remove timeout. Will throw a 403 error if the user has the ADMINISTRATOR permission or is the owner of the guild */
-  communication_disabled_until: string
+  readonly communication_disabled_until: string
   /** guild member flags */
-  flags: number
+  readonly flags: number
 }
 export interface ModifyGuildMfaLevelParams {
   /** MFA level */
-  level: MfaLevel
+  readonly level: MfaLevel
 }
 export interface ModifyGuildParams {
   /** guild name */
-  name: string
+  readonly name: string
   /** guild voice region id (deprecated) */
-  region?: string | null
+  readonly region?: string | null
   /** verification level */
-  verification_level?: VerificationLevel | null
+  readonly verification_level?: VerificationLevel | null
   /** default message notification level */
-  default_message_notifications?: DefaultMessageNotificationLevel | null
+  readonly default_message_notifications?: DefaultMessageNotificationLevel | null
   /** explicit content filter level */
-  explicit_content_filter?: ExplicitContentFilterLevel | null
+  readonly explicit_content_filter?: ExplicitContentFilterLevel | null
   /** id for afk channel */
-  afk_channel_id?: Snowflake | null
+  readonly afk_channel_id?: Snowflake | null
   /** afk timeout in seconds, can be set to: 60, 300, 900, 1800, 3600 */
-  afk_timeout: number
+  readonly afk_timeout: number
   /** base64 1024x1024 png/jpeg/gif image for the guild icon (can be animated gif when the server has the ANIMATED_ICON feature) */
-  icon?: string | null
+  readonly icon?: string | null
   /** user id to transfer guild ownership to (must be owner) */
-  owner_id: Snowflake
+  readonly owner_id: Snowflake
   /** base64 16:9 png/jpeg image for the guild splash (when the server has the INVITE_SPLASH feature) */
-  splash?: string | null
+  readonly splash?: string | null
   /** base64 16:9 png/jpeg image for the guild discovery splash (when the server has the DISCOVERABLE feature) */
-  discovery_splash?: string | null
+  readonly discovery_splash?: string | null
   /** base64 16:9 png/jpeg image for the guild banner (when the server has the BANNER feature; can be animated gif when the server has the ANIMATED_BANNER feature) */
-  banner?: string | null
+  readonly banner?: string | null
   /** the id of the channel where guild notices such as welcome messages and boost events are posted */
-  system_channel_id?: Snowflake | null
+  readonly system_channel_id?: Snowflake | null
   /** system channel flags */
-  system_channel_flags: number
+  readonly system_channel_flags: number
   /** the id of the channel where Community guilds display rules and/or guidelines */
-  rules_channel_id?: Snowflake | null
+  readonly rules_channel_id?: Snowflake | null
   /** the id of the channel where admins and moderators of Community guilds receive notices from Discord */
-  public_updates_channel_id?: Snowflake | null
+  readonly public_updates_channel_id?: Snowflake | null
   /** the preferred locale of a Community guild used in server discovery and notices from Discord; defaults to "en-US" */
-  preferred_locale?: string | null
+  readonly preferred_locale?: string | null
   /** enabled guild features */
-  features: GuildFeature[]
+  readonly features: GuildFeature[]
   /** the description for the guild */
-  description?: string | null
+  readonly description?: string | null
   /** whether the guild's boost progress bar should be enabled */
-  premium_progress_bar_enabled: boolean
+  readonly premium_progress_bar_enabled: boolean
 }
 export interface ModifyGuildRoleParams {
   /** name of the role, max 100 characters */
-  name: string
+  readonly name: string
   /** bitwise value of the enabled/disabled permissions */
-  permissions: string
+  readonly permissions: string
   /** RGB color value */
-  color: number
+  readonly color: number
   /** whether the role should be displayed separately in the sidebar */
-  hoist: boolean
+  readonly hoist: boolean
   /** the role's icon image (if the guild has the ROLE_ICONS feature) */
-  icon: string
+  readonly icon: string
   /** the role's unicode emoji as a standard emoji (if the guild has the ROLE_ICONS feature) */
-  unicode_emoji: string
+  readonly unicode_emoji: string
   /** whether the role should be mentionable */
-  mentionable: boolean
+  readonly mentionable: boolean
 }
 export interface ModifyGuildRolePositionParams {
   /** role */
-  id: Snowflake
+  readonly id: Snowflake
   /** sorting position of the role */
-  position?: number | null
+  readonly position?: number | null
 }
 export interface ModifyGuildScheduledEventParams {
   /** the channel id of the scheduled event, set to null if changing entity type to EXTERNAL */
-  channel_id?: Snowflake | null
+  readonly channel_id?: Snowflake | null
   /** the entity metadata of the scheduled event */
-  entity_metadata?: GuildScheduledEventEntityMetadatum | null
+  readonly entity_metadata?: GuildScheduledEventEntityMetadatum | null
   /** the name of the scheduled event */
-  name?: string
+  readonly name?: string
   /** the privacy level of the scheduled event */
-  privacy_level?: GuildScheduledEventPrivacyLevel
+  readonly privacy_level?: GuildScheduledEventPrivacyLevel
   /** the time to schedule the scheduled event */
-  scheduled_start_time?: string
+  readonly scheduled_start_time?: string
   /** the time when the scheduled event is scheduled to end */
-  scheduled_end_time?: string
+  readonly scheduled_end_time?: string
   /** the description of the scheduled event */
-  description?: string | null
+  readonly description?: string | null
   /** the entity type of the scheduled event */
-  entity_type?: GuildScheduledEventEntityType
+  readonly entity_type?: GuildScheduledEventEntityType
   /** the status of the scheduled event */
-  status?: GuildScheduledEventStatus
+  readonly status?: GuildScheduledEventStatus
   /** the cover image of the scheduled event */
-  image?: string
+  readonly image?: string
 }
 export interface ModifyGuildStickerParams {
   /** name of the sticker (2-30 characters) */
-  name: string
+  readonly name: string
   /** description of the sticker (2-100 characters) */
-  description?: string | null
+  readonly description?: string | null
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
-  tags: string
+  readonly tags: string
 }
 export interface ModifyGuildTemplateParams {
   /** name of the template (1-100 characters) */
-  name?: string
+  readonly name?: string
   /** description for the template (0-120 characters) */
-  description?: string | null
+  readonly description?: string | null
 }
 export interface ModifyGuildWelcomeScreenParams {
   /** whether the welcome screen is enabled */
-  enabled: boolean
+  readonly enabled: boolean
   /** channels linked in the welcome screen and their display options */
-  welcome_channels: WelcomeScreenChannel[]
+  readonly welcome_channels: WelcomeScreenChannel[]
   /** the server description to show in the welcome screen */
-  description: string
+  readonly description: string
 }
 export interface ModifyStageInstanceParams {
   /** The topic of the Stage instance (1-120 characters) */
-  topic?: string
+  readonly topic?: string
   /** The privacy level of the Stage instance */
-  privacy_level?: PrivacyLevel
+  readonly privacy_level?: PrivacyLevel
 }
 export interface ModifyUserVoiceStateParams {
   /** the id of the channel the user is currently in */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** toggles the user's suppress state */
-  suppress?: boolean
+  readonly suppress?: boolean
 }
 export interface ModifyWebhookParams {
   /** the default name of the webhook */
-  name: string
+  readonly name: string
   /** image for the default webhook avatar */
-  avatar?: string | null
+  readonly avatar?: string | null
   /** the new channel id this webhook should be moved to */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
 }
 export const enum MutableGuildFeature {
   COMMUNITY = "COMMUNITY",
@@ -5253,7 +5259,7 @@ export const enum MutableGuildFeature {
   DISCOVERABLE = "DISCOVERABLE",
 }
 export const enum OAuth2Scope {
-  /** allows your app to fetch data from a user's "Now Playing/Recently Played" list - requires Discord approval */
+  /** allows your app to fetch data from a user's "Now Playing/Recently Played" list — not currently available for apps */
   ACTIVITIES_READ = "activities.read",
   /** allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER) */
   ACTIVITIES_WRITE = "activities.write",
@@ -5312,29 +5318,29 @@ export const enum OAuth2Scope {
 }
 export interface OnboardingPrompt {
   /** ID of the prompt */
-  id: Snowflake
+  readonly id: Snowflake
   /** Type of prompt */
-  type: PromptType
+  readonly type: PromptType
   /** Options available within the prompt */
-  options: PromptOption[]
+  readonly options: PromptOption[]
   /** Title of the prompt */
-  title: string
+  readonly title: string
   /** Indicates whether users are limited to selecting one option for the prompt */
-  single_select: boolean
+  readonly single_select: boolean
   /** Indicates whether the prompt is required before a user completes the onboarding flow */
-  required: boolean
+  readonly required: boolean
   /** Indicates whether the prompt is present in the onboarding flow. If false, the prompt will only appear in the Channels & Roles tab */
-  in_onboarding: boolean
+  readonly in_onboarding: boolean
 }
 export interface Overwrite {
   /** role or user id */
-  id: Snowflake
+  readonly id: Snowflake
   /** either 0 (role) or 1 (member) */
-  type: number
+  readonly type: number
   /** permission bit set */
-  allow: string
+  readonly allow: string
   /** permission bit set */
-  deny: string
+  readonly deny: string
 }
 export const PermissionFlag = {
   /** Allows creation of instant invites */
@@ -5423,6 +5429,8 @@ export const PermissionFlag = {
   VIEW_CREATOR_MONETIZATION_ANALYTICS: BigInt(1) << BigInt(41),
   /** Allows for using soundboard in a voice channel */
   USE_SOUNDBOARD: BigInt(1) << BigInt(42),
+  /** Allows sending voice messages */
+  SEND_VOICE_MESSAGES: BigInt(1) << BigInt(46),
 } as const
 export const enum PremiumTier {
   /** guild has not unlocked any Server Boost perks */
@@ -5442,15 +5450,15 @@ export const enum PremiumType {
 }
 export interface PresenceUpdateEvent {
   /** User whose presence is being updated */
-  user: User
+  readonly user: User
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Either "idle", "dnd", "online", or "offline" */
-  status: string
+  readonly status: string
   /** User's current activities */
-  activities: Activity[]
+  readonly activities: Activity[]
   /** User's platform-dependent status */
-  client_status: ClientStatus
+  readonly client_status: ClientStatus
 }
 export const enum PrivacyLevel {
   /** The Stage instance is visible publicly. (deprecated) */
@@ -5460,17 +5468,17 @@ export const enum PrivacyLevel {
 }
 export interface PromptOption {
   /** ID of the prompt option */
-  id: Snowflake
+  readonly id: Snowflake
   /** IDs for channels a member is added to when the option is selected */
-  channel_ids: Snowflake[]
+  readonly channel_ids: Snowflake[]
   /** IDs for roles assigned to a member when the option is selected */
-  role_ids: Snowflake[]
+  readonly role_ids: Snowflake[]
   /** Emoji of the option */
-  emoji: Emoji
+  readonly emoji: Emoji
   /** Title of the option */
-  title: string
+  readonly title: string
   /** Description of the option */
-  description?: string | null
+  readonly description?: string | null
 }
 export const enum PromptType {
   MULTIPLE_CHOICE = 0,
@@ -5478,27 +5486,27 @@ export const enum PromptType {
 }
 export interface Reaction {
   /** times this emoji has been used to react */
-  count: number
+  readonly count: number
   /** whether the current user reacted using this emoji */
-  me: boolean
+  readonly me: boolean
   /** emoji information */
-  emoji: Emoji
+  readonly emoji: Emoji
 }
 export interface ReadyEvent {
   /** API version */
-  v: number
+  readonly v: number
   /** Information about the user including email */
-  user: User
+  readonly user: User
   /** Guilds the user is in */
-  guilds: UnavailableGuild[]
+  readonly guilds: UnavailableGuild[]
   /** Used for resuming connections */
-  session_id: string
+  readonly session_id: string
   /** Gateway URL for resuming connections */
-  resume_gateway_url: string
+  readonly resume_gateway_url: string
   /** Shard information associated with this session, if sent when identifying */
-  shard?: number[]
+  readonly shard?: number[]
   /** Contains id and flags */
-  application: Application
+  readonly application: Application
 }
 export type ReceiveEvent =
   | HelloEvent
@@ -5634,106 +5642,106 @@ export interface ReceiveEvents {
 export type ReconnectEvent = null
 export interface RequestGuildMember {
   /** ID of the guild to get members for */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** string that username starts with, or an empty string to return all members */
-  query?: string
+  readonly query?: string
   /** maximum number of members to send matching the query; a limit of 0 can be used with an empty string query to return all members */
-  limit: number
+  readonly limit: number
   /** used to specify if we want the presences of the matched members */
-  presences?: boolean
+  readonly presences?: boolean
   /** used to specify which users you wish to fetch */
-  user_ids?: Snowflake[]
+  readonly user_ids?: Snowflake[]
   /** nonce to identify the Guild Members Chunk response */
-  nonce?: string
+  readonly nonce?: string
 }
 export interface ResolvedDatum {
   /** the ids and User objects */
-  users?: Record<Snowflake, User>
+  readonly users?: Record<Snowflake, User>
   /** the ids and partial Member objects */
-  members?: Record<Snowflake, GuildMember>
+  readonly members?: Record<Snowflake, GuildMember>
   /** the ids and Role objects */
-  roles?: Record<Snowflake, Role>
+  readonly roles?: Record<Snowflake, Role>
   /** the ids and partial Channel objects */
-  channels?: Record<Snowflake, Channel>
+  readonly channels?: Record<Snowflake, Channel>
   /** the ids and partial Message objects */
-  messages?: Record<Snowflake, Message>
+  readonly messages?: Record<Snowflake, Message>
   /** the ids and attachment objects */
-  attachments?: Record<Snowflake, Attachment>
+  readonly attachments?: Record<Snowflake, Attachment>
 }
 export interface Response {
   /** the current application */
-  application: Application
+  readonly application: Application
   /** the scopes the user has authorized the application for */
-  scopes: string[]
+  readonly scopes: string[]
   /** when the access token expires */
-  expires: string
+  readonly expires: string
   /** the user who has authorized, if the user has authorized with the identify scope */
-  user?: User
+  readonly user?: User
 }
 export interface ResponseBody {
   /** the public, archived threads */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
-  members: ThreadMember[]
+  readonly members: ThreadMember[]
   /** whether there are potentially additional threads that could be returned on a subsequent call */
-  has_more: boolean
+  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
-  token: string
+  readonly token: string
   /** Session ID */
-  session_id: string
+  readonly session_id: string
   /** Last sequence number received */
-  seq: number
+  readonly seq: number
 }
 export type ResumedEvent = null
 export interface Role {
   /** role id */
-  id: Snowflake
+  readonly id: Snowflake
   /** role name */
-  name: string
+  readonly name: string
   /** integer representation of hexadecimal color code */
-  color: number
+  readonly color: number
   /** if this role is pinned in the user listing */
-  hoist: boolean
+  readonly hoist: boolean
   /** role icon hash */
-  icon?: string | null
+  readonly icon?: string | null
   /** role unicode emoji */
-  unicode_emoji?: string | null
+  readonly unicode_emoji?: string | null
   /** position of this role */
-  position: number
+  readonly position: number
   /** permission bit set */
-  permissions: string
+  readonly permissions: string
   /** whether this role is managed by an integration */
-  managed: boolean
+  readonly managed: boolean
   /** whether this role is mentionable */
-  mentionable: boolean
+  readonly mentionable: boolean
   /** the tags this role has */
-  tags?: RoleTag
+  readonly tags?: RoleTag
 }
 export interface RoleSubscriptionDatum {
   /** the id of the sku and listing that the user is subscribed to */
-  role_subscription_listing_id: Snowflake
+  readonly role_subscription_listing_id: Snowflake
   /** the name of the tier that the user is subscribed to */
-  tier_name: string
+  readonly tier_name: string
   /** the cumulative number of months that the user has been subscribed for */
-  total_months_subscribed: number
+  readonly total_months_subscribed: number
   /** whether this notification is for a renewal rather than a new purchase */
-  is_renewal: boolean
+  readonly is_renewal: boolean
 }
 export interface RoleTag {
   /** the id of the bot this role belongs to */
-  bot_id?: Snowflake
+  readonly bot_id?: Snowflake
   /** the id of the integration this role belongs to */
-  integration_id?: Snowflake
+  readonly integration_id?: Snowflake
   /** whether this is the guild's Booster role */
-  premium_subscriber?: null
+  readonly premium_subscriber?: null
   /** the id of this role's subscription sku and listing */
-  subscription_listing_id?: Snowflake
+  readonly subscription_listing_id?: Snowflake
   /** whether this role is available for purchase */
-  available_for_purchase?: null
+  readonly available_for_purchase?: null
   /** whether this role is a guild's linked role */
-  guild_connections?: null
+  readonly guild_connections?: null
 }
 export type Route<P, O> = {
   method: string
@@ -5743,39 +5751,39 @@ export type Route<P, O> = {
 }
 export interface SearchGuildMemberParams {
   /** Query string to match username(s) and nickname(s) against. */
-  query: string
+  readonly query: string
   /** max number of members to return (1-1000) */
-  limit: number
+  readonly limit: number
 }
 export interface SelectMenu {
   /** Type of select menu component (text: 3, user: 5, role: 6, mentionable: 7, channels: 8) */
-  type: ComponentType
+  readonly type: ComponentType
   /** ID for the select menu; max 100 characters */
-  custom_id: string
+  readonly custom_id: string
   /** Specified choices in a select menu (only required and available for string selects (type 3); max 25 */
-  options?: SelectOption[]
+  readonly options?: SelectOption[]
   /** List of channel types to include in the channel select component (type 8) */
-  channel_types?: ChannelType[]
+  readonly channel_types?: ChannelType[]
   /** Placeholder text if nothing is selected; max 150 characters */
-  placeholder?: string
+  readonly placeholder?: string
   /** Minimum number of items that must be chosen (defaults to 1); min 0, max 25 */
-  min_values?: number
+  readonly min_values?: number
   /** Maximum number of items that can be chosen (defaults to 1); max 25 */
-  max_values?: number
+  readonly max_values?: number
   /** Whether select menu is disabled (defaults to false) */
-  disabled?: boolean
+  readonly disabled?: boolean
 }
 export interface SelectOption {
   /** User-facing name of the option; max 100 characters */
-  label: string
+  readonly label: string
   /** Dev-defined value of the option; max 100 characters */
-  value: string
+  readonly value: string
   /** Additional description of the option; max 100 characters */
-  description?: string
+  readonly description?: string
   /** id, name, and animated */
-  emoji?: Emoji
+  readonly emoji?: Emoji
   /** Will show this option as selected by default */
-  default?: boolean
+  readonly default?: boolean
 }
 export type SendEvent =
   | Identify
@@ -5794,13 +5802,13 @@ export interface SendEvents {
 }
 export interface SessionStartLimit {
   /** Total number of session starts the current user is allowed */
-  total: number
+  readonly total: number
   /** Remaining number of session starts the current user is allowed */
-  remaining: number
+  readonly remaining: number
   /** Number of milliseconds after which the limit resets */
-  reset_after: number
+  readonly reset_after: number
   /** Number of identify requests allowed per 5 seconds */
-  max_concurrency: number
+  readonly max_concurrency: number
 }
 export type Snowflake = `${bigint}`
 export const enum SortOrderType {
@@ -5811,74 +5819,74 @@ export const enum SortOrderType {
 }
 export interface StageInstance {
   /** The id of this Stage instance */
-  id: Snowflake
+  readonly id: Snowflake
   /** The guild id of the associated Stage channel */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** The id of the associated Stage channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** The topic of the Stage instance (1-120 characters) */
-  topic: string
+  readonly topic: string
   /** The privacy level of the Stage instance */
-  privacy_level: PrivacyLevel
+  readonly privacy_level: PrivacyLevel
   /** Whether or not Stage Discovery is disabled (deprecated) */
-  discoverable_disabled: boolean
+  readonly discoverable_disabled: boolean
   /** The id of the scheduled event for this Stage instance */
-  guild_scheduled_event_id?: Snowflake | null
+  readonly guild_scheduled_event_id?: Snowflake | null
 }
 export type StageInstanceCreateEvent = StageInstance
 export type StageInstanceDeleteEvent = StageInstance
 export type StageInstanceUpdateEvent = StageInstance
 export interface StartThreadFromMessageParams {
   /** 1-100 character channel name */
-  name: string
+  readonly name: string
   /** the thread will stop showing in the channel list after auto_archive_duration minutes of inactivity, can be set to: 60, 1440, 4320, 10080 */
-  auto_archive_duration?: number
+  readonly auto_archive_duration?: number
   /** amount of seconds a user has to wait before sending another message (0-21600) */
-  rate_limit_per_user?: number | null
+  readonly rate_limit_per_user?: number | null
 }
 export interface StartThreadInForumChannelForumThreadMessageParams {
   /** Message contents (up to 2000 characters) */
-  content?: string
+  readonly content?: string
   /** Up to 10 rich embeds (up to 6000 characters) */
-  embeds?: Embed[]
+  readonly embeds?: Embed[]
   /** Allowed mentions for the message */
-  allowed_mentions?: AllowedMention
+  readonly allowed_mentions?: AllowedMention
   /** Components to include with the message */
-  components?: Component[]
+  readonly components?: Component[]
   /** IDs of up to 3 stickers in the server to send in the message */
-  sticker_ids?: Snowflake[]
+  readonly sticker_ids?: Snowflake[]
   /** Contents of the file being sent. See Uploading Files */
-  files: string
+  readonly files: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
-  payload_json?: string
+  readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
-  attachments?: Attachment[]
+  readonly attachments?: Attachment[]
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
-  flags?: number
+  readonly flags?: number
 }
 export interface StartThreadInForumChannelParams {
   /** 1-100 character channel name */
-  name: string
+  readonly name: string
   /** duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080 */
-  auto_archive_duration?: number
+  readonly auto_archive_duration?: number
   /** amount of seconds a user has to wait before sending another message (0-21600) */
-  rate_limit_per_user?: number | null
+  readonly rate_limit_per_user?: number | null
   /** contents of the first message in the forum thread */
-  message: StartThreadInForumChannelForumThreadMessageParams
+  readonly message: StartThreadInForumChannelForumThreadMessageParams
   /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
-  applied_tags?: Snowflake[]
+  readonly applied_tags?: Snowflake[]
 }
 export interface StartThreadWithoutMessageParams {
   /** 1-100 character channel name */
-  name: string
+  readonly name: string
   /** the thread will stop showing in the channel list after auto_archive_duration minutes of inactivity, can be set to: 60, 1440, 4320, 10080 */
-  auto_archive_duration?: number
+  readonly auto_archive_duration?: number
   /** the type of thread to create */
-  type?: ChannelType
+  readonly type?: ChannelType
   /** whether non-moderators can add other non-moderators to a thread; only available when creating a private thread */
-  invitable?: boolean
+  readonly invitable?: boolean
   /** amount of seconds a user has to wait before sending another message (0-21600) */
-  rate_limit_per_user?: number | null
+  readonly rate_limit_per_user?: number | null
 }
 export const enum StatusType {
   /** Online */
@@ -5894,29 +5902,29 @@ export const enum StatusType {
 }
 export interface Sticker {
   /** id of the sticker */
-  id: Snowflake
+  readonly id: Snowflake
   /** for standard stickers, id of the pack the sticker is from */
-  pack_id?: Snowflake
+  readonly pack_id?: Snowflake
   /** name of the sticker */
-  name: string
+  readonly name: string
   /** description of the sticker */
-  description?: string | null
+  readonly description?: string | null
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
-  tags: string
+  readonly tags: string
   /** Deprecated previously the sticker asset hash, now an empty string */
-  asset?: string
+  readonly asset?: string
   /** type of sticker */
-  type: StickerType
+  readonly type: StickerType
   /** type of sticker format */
-  format_type: StickerFormatType
+  readonly format_type: StickerFormatType
   /** whether this guild sticker can be used, may be false due to loss of Server Boosts */
-  available?: boolean
+  readonly available?: boolean
   /** id of the guild that owns this sticker */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** the user that uploaded the guild sticker */
-  user?: User
+  readonly user?: User
   /** the standard sticker's sort order within its pack */
-  sort_value?: number
+  readonly sort_value?: number
 }
 export const enum StickerFormatType {
   PNG = 1,
@@ -5926,27 +5934,27 @@ export const enum StickerFormatType {
 }
 export interface StickerItem {
   /** id of the sticker */
-  id: Snowflake
+  readonly id: Snowflake
   /** name of the sticker */
-  name: string
+  readonly name: string
   /** type of sticker format */
-  format_type: StickerFormatType
+  readonly format_type: StickerFormatType
 }
 export interface StickerPack {
   /** id of the sticker pack */
-  id: Snowflake
+  readonly id: Snowflake
   /** the stickers in the pack */
-  stickers: Sticker[]
+  readonly stickers: Sticker[]
   /** name of the sticker pack */
-  name: string
+  readonly name: string
   /** id of the pack's SKU */
-  sku_id: Snowflake
+  readonly sku_id: Snowflake
   /** id of a sticker in the pack which is shown as the pack's icon */
-  cover_sticker_id?: Snowflake
+  readonly cover_sticker_id?: Snowflake
   /** description of the sticker pack */
-  description: string
+  readonly description: string
   /** id of the sticker pack's banner image */
-  banner_asset_id?: Snowflake
+  readonly banner_asset_id?: Snowflake
 }
 export const enum StickerType {
   /** an official sticker in a pack, part of Nitro or in a removed purchasable pack */
@@ -5970,45 +5978,45 @@ export const SystemChannelFlag = {
 } as const
 export interface Team {
   /** a hash of the image of the team's icon */
-  icon?: string | null
+  readonly icon?: string | null
   /** the unique id of the team */
-  id: Snowflake
+  readonly id: Snowflake
   /** the members of the team */
-  members: TeamMember[]
+  readonly members: TeamMember[]
   /** the name of the team */
-  name: string
+  readonly name: string
   /** the user id of the current team owner */
-  owner_user_id: Snowflake
+  readonly owner_user_id: Snowflake
 }
 export interface TeamMember {
   /** the user's membership state on the team */
-  membership_state: MembershipState
+  readonly membership_state: MembershipState
   /** will always be ["*"] */
-  permissions: string[]
+  readonly permissions: string[]
   /** the id of the parent team of which they are a member */
-  team_id: Snowflake
+  readonly team_id: Snowflake
   /** the avatar, discriminator, id, and username of the user */
-  user: User
+  readonly user: User
 }
 export interface TextInput {
   /** 4 for a text input */
-  type: number
+  readonly type: number
   /** Developer-defined identifier for the input; max 100 characters */
-  custom_id: string
+  readonly custom_id: string
   /** The Text Input Style */
-  style: TextInputStyle
+  readonly style: TextInputStyle
   /** Label for this component; max 45 characters */
-  label: string
+  readonly label: string
   /** Minimum input length for a text input; min 0, max 4000 */
-  min_length?: number
+  readonly min_length?: number
   /** Maximum input length for a text input; min 1, max 4000 */
-  max_length?: number
+  readonly max_length?: number
   /** Whether this component is required to be filled (defaults to true) */
-  required?: boolean
+  readonly required?: boolean
   /** Pre-filled value for this component; max 4000 characters */
-  value?: string
+  readonly value?: string
   /** Custom placeholder text if the input is empty; max 100 characters */
-  placeholder?: string
+  readonly placeholder?: string
 }
 export const enum TextInputStyle {
   /** Single-line input */
@@ -6020,69 +6028,69 @@ export type ThreadCreateEvent = Channel
 export type ThreadDeleteEvent = Channel
 export interface ThreadListSyncEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Parent channel IDs whose threads are being synced.  If omitted, then threads were synced for the entire guild.  This array may contain channel_ids that have no active threads as well, so you know to clear that data. */
-  channel_ids?: Snowflake[]
+  readonly channel_ids?: Snowflake[]
   /** All active threads in the given channels that the current user can access */
-  threads: Channel[]
+  readonly threads: Channel[]
   /** All thread member objects from the synced threads for the current user, indicating which threads the current user has been added to */
-  members: ThreadMember[]
+  readonly members: ThreadMember[]
 }
 export interface ThreadMember {
   /** ID of the thread */
-  id?: Snowflake
+  readonly id?: Snowflake
   /** ID of the user */
-  user_id?: Snowflake
+  readonly user_id?: Snowflake
   /** Time the user last joined the thread */
-  join_timestamp: string
+  readonly join_timestamp: string
   /** Any user-thread settings, currently only used for notifications */
-  flags: number
+  readonly flags: number
   /** Additional information about the user */
-  member?: GuildMember
+  readonly member?: GuildMember
 }
 export interface ThreadMembersUpdateEvent {
   /** ID of the thread */
-  id: Snowflake
+  readonly id: Snowflake
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Approximate number of members in the thread, capped at 50 */
-  member_count: number
+  readonly member_count: number
   /** Users who were added to the thread */
-  added_members?: ThreadMember[]
+  readonly added_members?: ThreadMember[]
   /** ID of the users who were removed from the thread */
-  removed_member_ids?: Snowflake[]
+  readonly removed_member_ids?: Snowflake[]
 }
 export type ThreadMemberUpdateEvent = ThreadMember
 export interface ThreadMemberUpdateEventExtra {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
 }
 export interface ThreadMetadatum {
   /** whether the thread is archived */
-  archived: boolean
+  readonly archived: boolean
   /** the thread will stop showing in the channel list after auto_archive_duration minutes of inactivity, can be set to: 60, 1440, 4320, 10080 */
-  auto_archive_duration: number
+  readonly auto_archive_duration: number
   /** timestamp when the thread's archive status was last changed, used for calculating recent activity */
-  archive_timestamp: string
+  readonly archive_timestamp: string
   /** whether the thread is locked; when a thread is locked, only users with MANAGE_THREADS can unarchive it */
-  locked: boolean
+  readonly locked: boolean
   /** whether non-moderators can add other non-moderators to a thread; only available on private threads */
-  invitable?: boolean
+  readonly invitable?: boolean
   /** timestamp when the thread was created; only populated for threads created after 2022-01-09 */
-  create_timestamp?: string | null
+  readonly create_timestamp?: string | null
 }
 export type ThreadUpdateEvent = Channel
 export interface TriggerMetadatum {
   /** KEYWORD */
-  keyword_filter: string[]
+  readonly keyword_filter: string[]
   /** KEYWORD */
-  regex_patterns: string[]
+  readonly regex_patterns: string[]
   /** KEYWORD_PRESET */
-  presets: KeywordPresetType[]
+  readonly presets: KeywordPresetType[]
   /** KEYWORD, KEYWORD_PRESET */
-  allow_list: string[]
+  readonly allow_list: string[]
   /** MENTION_SPAM */
-  mention_total_limit: number
+  readonly mention_total_limit: number
 }
 export const enum TriggerType {
   /** check if content contains words from a user defined list of keywords */
@@ -6096,81 +6104,81 @@ export const enum TriggerType {
 }
 export interface TypingStartEvent {
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** ID of the guild */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** ID of the user */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** Unix time (in seconds) of when the user started typing */
-  timestamp: number
+  readonly timestamp: number
   /** Member who started typing if this happened in a guild */
-  member?: GuildMember
+  readonly member?: GuildMember
 }
 export interface UnavailableGuild {
   /**  */
-  id: Snowflake
+  readonly id: Snowflake
   /**  */
-  unavailable: boolean
+  readonly unavailable: boolean
 }
 export interface UpdatePresence {
   /** Unix time (in milliseconds) of when the client went idle, or null if the client is not idle */
-  since?: number | null
+  readonly since?: number | null
   /** User's activities */
-  activities: Activity[]
+  readonly activities: Activity[]
   /** User's new status */
-  status: StatusType
+  readonly status: StatusType
   /** Whether or not the client is afk */
-  afk: boolean
+  readonly afk: boolean
 }
 export interface UpdateUserApplicationRoleConnectionParams {
   /** the vanity name of the platform a bot has connected (max 50 characters) */
-  platform_name?: string
+  readonly platform_name?: string
   /** the username on the platform a bot has connected (max 100 characters) */
-  platform_username?: string
+  readonly platform_username?: string
   /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
-  metadata?: ApplicationRoleConnectionMetadatum
+  readonly metadata?: ApplicationRoleConnectionMetadatum
 }
 export interface UpdateVoiceState {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** ID of the voice channel client wants to join (null if disconnecting) */
-  channel_id?: Snowflake | null
+  readonly channel_id?: Snowflake | null
   /** Whether the client is muted */
-  self_mute: boolean
+  readonly self_mute: boolean
   /** Whether the client deafened */
-  self_deaf: boolean
+  readonly self_deaf: boolean
 }
 export interface User {
   /** the user's id */
-  id: Snowflake
+  readonly id: Snowflake
   /** the user's username, not unique across the platform */
-  username: string
+  readonly username: string
   /** the user's 4-digit discord-tag */
-  discriminator: string
+  readonly discriminator: string
   /** the user's avatar hash */
-  avatar?: string | null
+  readonly avatar?: string | null
   /** whether the user belongs to an OAuth2 application */
-  bot?: boolean
+  readonly bot?: boolean
   /** whether the user is an Official Discord System user (part of the urgent message system) */
-  system?: boolean
+  readonly system?: boolean
   /** whether the user has two factor enabled on their account */
-  mfa_enabled?: boolean
+  readonly mfa_enabled?: boolean
   /** the user's banner hash */
-  banner?: string | null
+  readonly banner?: string | null
   /** the user's banner color encoded as an integer representation of hexadecimal color code */
-  accent_color?: number | null
+  readonly accent_color?: number | null
   /** the user's chosen language option */
-  locale?: string
+  readonly locale?: string
   /** whether the email on this account has been verified */
-  verified?: boolean
+  readonly verified?: boolean
   /** the user's email */
-  email?: string | null
+  readonly email?: string | null
   /** the flags on a user's account */
-  flags?: number
+  readonly flags?: number
   /** the type of Nitro subscription on a user's account */
-  premium_type?: PremiumType
+  readonly premium_type?: PremiumType
   /** the public flags on a user's account */
-  public_flags?: number
+  readonly public_flags?: number
 }
 export const UserFlag = {
   /** Discord Employee */
@@ -6255,84 +6263,84 @@ export const enum VoiceOpcode {
 }
 export interface VoiceRegion {
   /** unique ID for the region */
-  id: string
+  readonly id: string
   /** name of the region */
-  name: string
+  readonly name: string
   /** true for a single server that is closest to the current user's client */
-  optimal: boolean
+  readonly optimal: boolean
   /** whether this is a deprecated voice region (avoid switching to these) */
-  deprecated: boolean
+  readonly deprecated: boolean
   /** whether this is a custom voice region (used for events/etc) */
-  custom: boolean
+  readonly custom: boolean
 }
 export interface VoiceServerUpdateEvent {
   /** Voice connection token */
-  token: string
+  readonly token: string
   /** Guild this voice server update is for */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** Voice server host */
-  endpoint?: string | null
+  readonly endpoint?: string | null
 }
 export interface VoiceState {
   /** the guild id this voice state is for */
-  guild_id?: Snowflake
+  readonly guild_id?: Snowflake
   /** the channel id this user is connected to */
-  channel_id?: Snowflake | null
+  readonly channel_id?: Snowflake | null
   /** the user id this voice state is for */
-  user_id: Snowflake
+  readonly user_id: Snowflake
   /** the guild member this voice state is for */
-  member?: GuildMember
+  readonly member?: GuildMember
   /** the session id for this voice state */
-  session_id: string
+  readonly session_id: string
   /** whether this user is deafened by the server */
-  deaf: boolean
+  readonly deaf: boolean
   /** whether this user is muted by the server */
-  mute: boolean
+  readonly mute: boolean
   /** whether this user is locally deafened */
-  self_deaf: boolean
+  readonly self_deaf: boolean
   /** whether this user is locally muted */
-  self_mute: boolean
+  readonly self_mute: boolean
   /** whether this user is streaming using "Go Live" */
-  self_stream?: boolean
+  readonly self_stream?: boolean
   /** whether this user's camera is enabled */
-  self_video: boolean
+  readonly self_video: boolean
   /** whether this user's permission to speak is denied */
-  suppress: boolean
+  readonly suppress: boolean
   /** the time at which the user requested to speak */
-  request_to_speak_timestamp?: string | null
+  readonly request_to_speak_timestamp?: string | null
 }
 export type VoiceStateUpdateEvent = VoiceState
 export interface Webhook {
   /** the id of the webhook */
-  id: Snowflake
+  readonly id: Snowflake
   /** the type of the webhook */
-  type: WebhookType
+  readonly type: WebhookType
   /** the guild id this webhook is for, if any */
-  guild_id?: Snowflake | null
+  readonly guild_id?: Snowflake | null
   /** the channel id this webhook is for, if any */
-  channel_id?: Snowflake | null
+  readonly channel_id?: Snowflake | null
   /** the user this webhook was created by (not returned when getting a webhook with its token) */
-  user?: User
+  readonly user?: User
   /** the default name of the webhook */
-  name?: string | null
+  readonly name?: string | null
   /** the default user avatar hash of the webhook */
-  avatar?: string | null
+  readonly avatar?: string | null
   /** the secure token of the webhook (returned for Incoming Webhooks) */
-  token?: string
+  readonly token?: string
   /** the bot/OAuth2 application that created this webhook */
-  application_id?: Snowflake | null
+  readonly application_id?: Snowflake | null
   /** the guild of the channel that this webhook is following (returned for Channel Follower Webhooks) */
-  source_guild?: Guild
+  readonly source_guild?: Guild
   /** the channel that this webhook is following (returned for Channel Follower Webhooks) */
-  source_channel?: Channel
+  readonly source_channel?: Channel
   /** the url used for executing the webhook (returned by the webhooks OAuth2 flow) */
-  url?: string
+  readonly url?: string
 }
 export interface WebhooksUpdateEvent {
   /** ID of the guild */
-  guild_id: Snowflake
+  readonly guild_id: Snowflake
   /** ID of the channel */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
 }
 export const enum WebhookType {
   /** Incoming Webhooks can post messages to channels with a generated token */
@@ -6344,17 +6352,17 @@ export const enum WebhookType {
 }
 export interface WelcomeScreen {
   /** the server description shown in the welcome screen */
-  description?: string | null
+  readonly description?: string | null
   /** the channels shown in the welcome screen, up to 5 */
-  welcome_channels: WelcomeScreenChannel[]
+  readonly welcome_channels: WelcomeScreenChannel[]
 }
 export interface WelcomeScreenChannel {
   /** the channel's id */
-  channel_id: Snowflake
+  readonly channel_id: Snowflake
   /** the description shown for the channel */
-  description: string
+  readonly description: string
   /** the emoji id, if the emoji is custom */
-  emoji_id?: Snowflake | null
+  readonly emoji_id?: Snowflake | null
   /** the emoji name if custom, the unicode character if standard, or null if no emoji is set */
-  emoji_name?: string | null
+  readonly emoji_name?: string | null
 }
