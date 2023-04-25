@@ -1,6 +1,7 @@
 import * as Arr from "@effect/data/ReadonlyArray"
 import { Effect, EffectTypeId } from "@effect/io/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
+import { ModalSubmitDatum } from "dfx/types"
 
 export const InteractionContext = Tag<Discord.Interaction>()
 export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
@@ -128,9 +129,14 @@ export const modalValues = ModalSubmitContext.map(IxHelpers.componentsMap)
 export const modalValueOption = (name: string) =>
   ModalSubmitContext.map(IxHelpers.componentValue(name))
 
+export class ModalValueNotFound {
+  readonly _tag = "ModalValueNotFound"
+  constructor(readonly data: ModalSubmitDatum, readonly name: string) {}
+}
+
 export const modalValue = (name: string) =>
-  ModalSubmitContext.flatMap(IxHelpers.componentValue(name)).catchAll(() =>
-    command.flatMap(data =>
-      Effect.fail(new RequiredOptionNotFound(data, name)),
+  ModalSubmitContext.flatMap(data =>
+    IxHelpers.componentValue(name)(data).mapError(
+      () => new ModalValueNotFound(data, name),
     ),
   )
