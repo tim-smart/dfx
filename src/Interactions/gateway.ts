@@ -61,9 +61,5 @@ export const run =
         ).provideService(InteractionContext, i),
       )
 
-      $(
-        sync
-          ? run.zipPar(globalSync).zipPar(guildSync).zipPar(gateway.run)
-          : run,
-      )
+      $(sync ? Effect.allPar(run, globalSync, guildSync) : run)
     })

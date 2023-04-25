@@ -1,4 +1,5 @@
-import { makeLive } from "dfx/gateway"
+import { Ix } from "dfx"
+import { makeLive, DiscordGateway } from "dfx/gateway"
 import Dotenv from "dotenv"
 
 Dotenv.config()
@@ -59,15 +60,22 @@ const greeting = Ix.global(
 )
 
 // Build your program use `Ix.builder`
-const ix = Ix.builder.add(hello).add(greeting)
+const program = Do($ => {
+  const gateway = $(DiscordGateway)
 
-const program = ix.runGateway(_ =>
-  _.catchAll(e =>
-    Effect.sync(() => {
-      console.error("CAUGHT INTERACTION ERROR", e)
-    }),
-  ),
-)
+  const interactions = Ix.builder
+    .add(hello)
+    .add(greeting)
+    .runGateway(_ =>
+      _.catchAll(e =>
+        Effect.sync(() => {
+          console.error("CAUGHT INTERACTION ERROR", e)
+        }),
+      ),
+    )
+
+  $(Effect.allPar(gateway.run, interactions))
+})
 
 // Run it
 program.provideLayer(LiveEnv).tapErrorCause(_ =>
