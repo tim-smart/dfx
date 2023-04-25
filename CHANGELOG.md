@@ -3,150 +3,89 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.36.2](https://github.com/tim-smart/dfx/compare/dfx@0.36.0...dfx@0.36.2) (2023-04-25)
-
+## [0.36.4](https://github.com/tim-smart/dfx/compare/dfx@0.36.3...dfx@0.36.4) (2023-04-25)
 
 ### Bug Fixes
 
-* modalValue env ([36298d3](https://github.com/tim-smart/dfx/commit/36298d3eca0b38ed50915202850c3992e53a88c2))
+- cache imports ([c6f825e](https://github.com/tim-smart/dfx/commit/c6f825e3d8774005c71408ae445617fc8909fa6d))
 
+## [0.36.3](https://github.com/tim-smart/dfx/compare/dfx@0.36.2...dfx@0.36.3) (2023-04-25)
 
+**Note:** Version bump only for package dfx
 
+## [0.36.2](https://github.com/tim-smart/dfx/compare/dfx@0.36.0...dfx@0.36.2) (2023-04-25)
 
+### Bug Fixes
+
+- modalValue env ([36298d3](https://github.com/tim-smart/dfx/commit/36298d3eca0b38ed50915202850c3992e53a88c2))
 
 # [0.36.0](https://github.com/tim-smart/dfx/compare/dfx@0.35.2...dfx@0.36.0) (2023-04-25)
 
-
 ### Features
 
-* modalValue* ([283aa3e](https://github.com/tim-smart/dfx/commit/283aa3eb14a59ee1ed50b42734c7062e7429a04f))
-
-
-
-
+- modalValue\* ([283aa3e](https://github.com/tim-smart/dfx/commit/283aa3eb14a59ee1ed50b42734c7062e7429a04f))
 
 ## [0.35.2](https://github.com/tim-smart/dfx/compare/dfx@0.35.1...dfx@0.35.2) (2023-04-25)
 
-
 ### Bug Fixes
 
-* imports and channels cache ([b7fa4be](https://github.com/tim-smart/dfx/commit/b7fa4be92c0ae5c469c4050268629a1d728bbb8f))
-
-
-
-
+- imports and channels cache ([b7fa4be](https://github.com/tim-smart/dfx/commit/b7fa4be92c0ae5c469c4050268629a1d728bbb8f))
 
 ## [0.35.1](https://github.com/tim-smart/dfx/compare/dfx@0.35.0...dfx@0.35.1) (2023-04-24)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.35.0](https://github.com/tim-smart/dfx/compare/dfx@0.34.0...dfx@0.35.0) (2023-04-24)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.34.0](https://github.com/tim-smart/dfx/compare/dfx@0.33.0...dfx@0.34.0) (2023-04-11)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.33.0](https://github.com/tim-smart/dfx/compare/dfx@0.32.1...dfx@0.33.0) (2023-04-07)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.32.1](https://github.com/tim-smart/dfx/compare/dfx@0.32.0...dfx@0.32.1) (2023-04-04)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.32.0](https://github.com/tim-smart/dfx/compare/dfx@0.31.0...dfx@0.32.0) (2023-04-03)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.31.0](https://github.com/tim-smart/dfx/compare/dfx@0.30.0...dfx@0.31.0) (2023-03-29)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.30.0](https://github.com/tim-smart/dfx/compare/dfx@0.29.0...dfx@0.30.0) (2023-03-21)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.29.0](https://github.com/tim-smart/dfx/compare/dfx@0.28.0...dfx@0.29.0) (2023-03-15)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.28.0](https://github.com/tim-smart/dfx/compare/dfx@0.27.0...dfx@0.28.0) (2023-03-14)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.27.0](https://github.com/tim-smart/dfx/compare/dfx@0.26.0...dfx@0.27.0) (2023-03-08)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.26.0](https://github.com/tim-smart/dfx/compare/dfx@0.25.0...dfx@0.26.0) (2023-03-05)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.25.0](https://github.com/tim-smart/dfx/compare/dfx@0.24.6...dfx@0.25.0) (2023-02-27)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.24.6](https://github.com/tim-smart/dfx/compare/dfx@0.24.5...dfx@0.24.6) (2023-02-18)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.24.5](https://github.com/tim-smart/dfx/compare/dfx@0.24.4...dfx@0.24.5) (2023-02-17)
 
