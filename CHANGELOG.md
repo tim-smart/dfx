@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.35.2](https://github.com/tim-smart/dfx/compare/dfx@0.35.1...dfx@0.35.2) (2023-04-25)
+
+
+### Bug Fixes
+
+* imports and channels cache ([b7fa4be](https://github.com/tim-smart/dfx/commit/b7fa4be92c0ae5c469c4050268629a1d728bbb8f))
+
+
+
+
+
 ## [0.35.1](https://github.com/tim-smart/dfx/compare/dfx@0.35.0...dfx@0.35.1) (2023-04-24)
 
 **Note:** Version bump only for package dfx
