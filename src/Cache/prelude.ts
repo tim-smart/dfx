@@ -1,14 +1,14 @@
 import { DiscordREST } from "dfx"
-import { Gateway } from "dfx/gateway"
 import { Discord, Effect, Stream } from "dfx/_common"
+import { DiscordGateway } from "dfx/gateway"
 import {
   CacheDriver,
   CacheMissError,
   CacheOp,
-  make,
-  makeWithParent,
   ParentCacheDriver,
   ParentCacheOp,
+  make,
+  makeWithParent,
 } from "../Cache.js"
 
 export interface OptsWithParentOptions<E, A> {
@@ -120,7 +120,7 @@ export const guilds = <RM, EM, E>(
 ) =>
   Do($ => {
     const driver = $(makeDriver)
-    const gateway = $(Gateway.DiscordGateway)
+    const gateway = $(DiscordGateway)
     const rest = $(DiscordREST)
 
     return make({
@@ -146,7 +146,7 @@ export const channels = <RM, EM, E>(
 ) =>
   Do($ => {
     const driver = $(makeDriver)
-    const gateway = $(Gateway.DiscordGateway)
+    const gateway = $(DiscordGateway)
     const rest = $(DiscordREST)
 
     return makeWithParent({
@@ -181,7 +181,7 @@ export const roles = <RM, EM, E>(
 ) =>
   Do($ => {
     const driver = $(makeDriver)
-    const gateway = $(Gateway.DiscordGateway)
+    const gateway = $(DiscordGateway)
     const rest = $(DiscordREST)
 
     return makeWithParent({
