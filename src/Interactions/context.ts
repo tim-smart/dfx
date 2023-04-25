@@ -124,3 +124,13 @@ export const optionValueOptional = (name: string) =>
   option(name).map(o => o.flatMapNullable(o => o.value))
 
 export const modalValues = ModalSubmitContext.map(IxHelpers.componentsMap)
+
+export const modalValueOption = (name: string) =>
+  ModalSubmitContext.map(IxHelpers.componentValue(name))
+
+export const modalValue = (name: string) =>
+  ModalSubmitContext.flatMap(IxHelpers.componentValue(name)).catchAll(() =>
+    command.flatMap(data =>
+      Effect.fail(new RequiredOptionNotFound(data, name)),
+    ),
+  )
