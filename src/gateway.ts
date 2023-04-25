@@ -6,7 +6,7 @@ import { LiveMemoryShardStore } from "./DiscordGateway/ShardStore.js"
 import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit.js"
 
 export * as CachePrelude from "./Cache/prelude.js"
-export * as Gateway from "./DiscordGateway.js"
+export { DiscordGateway, LiveDiscordGateway } from "./DiscordGateway.js"
 export * as DiscordWS from "./DiscordGateway/DiscordWS.js"
 export * as Shard from "./DiscordGateway/Shard.js"
 export * as ShardStore from "./DiscordGateway/ShardStore.js"
