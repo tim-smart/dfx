@@ -1,5 +1,6 @@
 import { delayFrom } from "./RateLimit/utils.js"
 import * as Memory from "./RateLimit/memory.js"
+import { Log } from "dfx/Log"
 
 export type BucketDetails = {
   key: "global" | string
@@ -35,7 +36,7 @@ export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Do($ => {
   const store = $(RateLimitStore)
-  const log = $(Log.Log)
+  const log = $(Log)
 
   const maybeWait = (
     key: string,

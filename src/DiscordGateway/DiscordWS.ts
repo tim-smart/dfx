@@ -1,7 +1,8 @@
 import WebSocket from "isomorphic-ws"
-import { LiveWS } from "./WS.js"
+import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
+import { Log } from "dfx/Log"
 
-export type Message = Discord.GatewayPayload | WS.Reconnect
+export type Message = Discord.GatewayPayload | Reconnect
 
 export interface OpenOpts {
   url?: string
@@ -23,9 +24,9 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
 })
 
 const make = Do($ => {
-  const ws = $(WS.WS)
+  const ws = $(WS)
   const encoding = $(DiscordWSCodec)
-  const log = $(Log.Log)
+  const log = $(Log)
 
   const connect = ({
     url = "wss://gateway.discord.gg/",
@@ -39,7 +40,7 @@ const make = Do($ => {
       const setUrl = (url: string) =>
         urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
       const takeOutbound = outbound.map(a =>
-        a === WS.Reconnect ? a : encoding.encode(a),
+        a === Reconnect ? a : encoding.encode(a),
       )
       const socket = $(ws.connect(urlRef, takeOutbound))
       const take = socket.take.map(encoding.decode)

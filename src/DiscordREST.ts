@@ -1,13 +1,20 @@
 import * as Http from "@effect-http/client"
 import { millis } from "@effect/data/Duration"
+import { DiscordConfig } from "./DiscordConfig.js"
 import { ResponseWithData, RestResponse } from "./DiscordREST/types.js"
 import {
   rateLimitFromHeaders,
   retryAfter,
   routeFromConfig,
 } from "./DiscordREST/utils.js"
+import { Log } from "./Log.js"
+import {
+  BucketDetails,
+  LiveRateLimiter,
+  RateLimitStore,
+  RateLimiter,
+} from "./RateLimit.js"
 import Pkg from "./package.json" assert { type: "json" }
-import { LiveRateLimiter } from "./RateLimit.js"
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
@@ -15,10 +22,10 @@ export class DiscordRESTError {
 }
 
 const make = Do($ => {
-  const { token, rest } = $(DiscordConfig.DiscordConfig)
+  const { token, rest } = $(DiscordConfig)
 
   const http = $(Http.HttpRequestExecutor)
-  const log = $(Log.Log)
+  const log = $(Log)
   const store = $(RateLimitStore)
   const { maybeWait } = $(RateLimiter)
 

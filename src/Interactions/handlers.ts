@@ -1,4 +1,5 @@
 import * as Arr from "@effect/data/ReadonlyArray"
+import * as IxHelpers from "dfx/Helpers/interactions"
 import * as Ctx from "./context.js"
 import * as D from "./definitions.js"
 import { splitDefinitions } from "./utils.js"

@@ -42,30 +42,4 @@ import { pipe, flow, identity } from "@effect/data/Function"
 /**
  * @tsplus global
  */
-import {
-  DiscordConfig,
-  RateLimiter,
-  Log,
-  DiscordREST,
-  BucketDetails,
-  Intents,
-  Ix,
-  RateLimitStore,
-  LiveDiscordREST,
-  LiveMemoryRateLimitStore,
-  LiveRateLimiter,
-  Flags,
-  Members,
-  IxHelpers,
-  Perms,
-} from "dfx"
-
-/**
- * @tsplus global
- */
-import { DiscordWS, Gateway, WS, Shard, ShardStore } from "dfx/gateway"
-
-/**
- * @tsplus global
- */
 import type { LazyArg } from "@effect/data/Function"

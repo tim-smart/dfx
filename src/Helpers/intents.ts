@@ -1,3 +1,5 @@
+import * as Flags from "dfx/Helpers/flags"
+
 /**
  * All the intents
  */

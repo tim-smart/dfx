@@ -2,6 +2,8 @@ import { LiveFetchRequestExecutor } from "@effect-http/client"
 import { LiveDiscordREST } from "./DiscordREST.js"
 import { MakeConfigOpts, makeFromConfig } from "./Interactions/webhook.js"
 import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit.js"
+import * as DiscordConfig from "dfx/DiscordConfig"
+import * as Log from "./Log.js"
 
 export {
   BadWebhookSignature,

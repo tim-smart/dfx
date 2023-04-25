@@ -1,12 +1,14 @@
 import { millis } from "@effect/data/Duration"
-import { ShardStore } from "./ShardStore.js"
+import { DiscordConfig } from "dfx/DiscordConfig"
+import { DiscordREST } from "dfx/DiscordREST"
+import { LiveRateLimiter, RateLimiter } from "../RateLimit.js"
 import { LiveShard, Shard } from "./Shard.js"
-import { LiveRateLimiter } from "dfx"
+import { ShardStore } from "./ShardStore.js"
 
 const make = Do($ => {
   const store = $(ShardStore)
   const rest = $(DiscordREST)
-  const { gateway: config } = $(DiscordConfig.DiscordConfig)
+  const { gateway: config } = $(DiscordConfig)
   const limiter = $(RateLimiter)
   const shard = $(Shard)
 

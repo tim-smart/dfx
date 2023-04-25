@@ -1,5 +1,6 @@
 import * as Arr from "@effect/data/ReadonlyArray"
 import { Effect, EffectTypeId } from "@effect/io/Effect"
+import * as IxHelpers from "dfx/Helpers/interactions"
 
 export const InteractionContext = Tag<Discord.Interaction>()
 export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()

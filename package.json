@@ -33,6 +33,7 @@
     "@types/ws": "^8.5.4",
     "dotenv": "^16.0.3",
     "lerna": "^6.6.1",
+    "madge": "^6.0.0",
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.171/compiler/typescript.tgz"
   },
   "dependencies": {

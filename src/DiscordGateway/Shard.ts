@@ -1,11 +1,14 @@
+import { DiscordConfig } from "dfx/DiscordConfig"
+import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
 import { DiscordWS, LiveDiscordWS, Message } from "./DiscordWS.js"
 import * as Heartbeats from "./Shard/heartbeats.js"
 import * as Identify from "./Shard/identify.js"
 import * as InvalidSession from "./Shard/invalidSession.js"
 import * as Utils from "./Shard/utils.js"
+import { Reconnect } from "./WS.js"
 
 export const make = Do($ => {
-  const { token, gateway } = $(DiscordConfig.DiscordConfig)
+  const { token, gateway } = $(DiscordConfig)
   const limiter = $(RateLimiter)
   const dws = $(DiscordWS)
 
@@ -103,7 +106,7 @@ export const make = Do($ => {
       return {
         run,
         send: (p: Discord.GatewayPayload) => send(p),
-        reconnect: send(WS.Reconnect),
+        reconnect: send(Reconnect),
       } as const
     })
 

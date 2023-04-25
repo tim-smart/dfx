@@ -1,3 +1,6 @@
+import * as Flags from "dfx/Helpers/flags"
+import * as Members from "dfx/Helpers/members"
+
 /**
  * A constant of all the permissions
  */

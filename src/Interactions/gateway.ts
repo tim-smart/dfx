@@ -2,7 +2,8 @@ import * as Http from "@effect-http/client"
 import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder, InteractionContext } from "./index.js"
 import { splitDefinitions } from "./utils.js"
-import { DiscordRESTError } from "dfx/DiscordREST"
+import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
+import { DiscordGateway } from "dfx/DiscordGateway"
 
 export interface RunOpts {
   sync?: boolean
@@ -27,7 +28,7 @@ export const run =
       const { GlobalApplicationCommand, GuildApplicationCommand } =
         splitDefinitions(ix.definitions)
 
-      const gateway = $(Gateway.DiscordGateway)
+      const gateway = $(DiscordGateway)
       const rest = $(DiscordREST)
 
       const application = $(

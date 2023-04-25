@@ -1,5 +1,7 @@
 import { millis } from "@effect/data/Duration"
 import * as SendEvents from "./sendEvents.js"
+import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
+import { Reconnect } from "../WS.js"
 
 const payload = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   seqRef.get
@@ -9,7 +11,7 @@ const payload = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
 const payloadOrReconnect = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
   ref.get.flatMap(
     (acked): Effect<never, never, DiscordWS.Message> =>
-      acked ? payload(ref, seqRef) : Effect.succeed(WS.Reconnect),
+      acked ? payload(ref, seqRef) : Effect.succeed(Reconnect),
   )
 
 export const send = (

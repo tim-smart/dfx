@@ -1,3 +1,4 @@
+import { Log } from "dfx/Log"
 import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
@@ -53,7 +54,7 @@ const offer = (ws: globalThis.WebSocket, queue: Enqueue<WebSocket.Data>) =>
 const send = (
   ws: globalThis.WebSocket,
   take: Effect<never, never, Message>,
-  log: Log.Log,
+  log: Log,
 ) =>
   take
     .tap(data => log.debug("WS", "send", data))
@@ -71,7 +72,7 @@ const send = (
     }).forever
 
 const make = Do($ => {
-  const log = $(Log.Log)
+  const log = $(Log)
 
   const connect = (
     url: Ref<string>,

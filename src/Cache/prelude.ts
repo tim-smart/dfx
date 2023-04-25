@@ -167,7 +167,7 @@ export const channels = <RM, EM, E>(
           .map(a => [a.guild_id!, a.id]),
         parentRemove: gateway.fromDispatch("GUILD_DELETE").map(g => g.id),
       }),
-      onMiss: id => rest.getChannel(id).flatMap(r => r.json),
+      onMiss: (_, id) => rest.getChannel(id).flatMap(r => r.json),
       onParentMiss: guildId =>
         rest
           .getGuildChannels(guildId)
@@ -202,7 +202,7 @@ export const roles = <RM, EM, E>(
           .map(a => [a.guild_id, a.role_id]),
         parentRemove: gateway.fromDispatch("GUILD_DELETE").map(g => g.id),
       }),
-      onMiss: id => Effect.fail(new CacheMissError("RolesCache", id)),
+      onMiss: (_, id) => Effect.fail(new CacheMissError("RolesCache", id)),
       onParentMiss: guildId =>
         rest
           .getGuildRoles(guildId)
