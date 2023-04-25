@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.36.2](https://github.com/tim-smart/dfx/compare/dfx@0.36.0...dfx@0.36.2) (2023-04-25)
+
+
+### Bug Fixes
+
+* modalValue env ([36298d3](https://github.com/tim-smart/dfx/commit/36298d3eca0b38ed50915202850c3992e53a88c2))
+
+
+
+
+
 # [0.36.0](https://github.com/tim-smart/dfx/compare/dfx@0.35.2...dfx@0.36.0) (2023-04-25)
 
 
