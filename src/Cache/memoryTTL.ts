@@ -193,7 +193,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             })
           }
 
-          $(effects.allParDiscard)
+          $(Effect.allParDiscard(effects))
         }),
 
       run: store.run,

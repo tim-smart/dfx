@@ -38,7 +38,7 @@ const make = Do($ => {
   // Invalid route handling (40x)
   const badRoutesRef = $(Ref.make(HashSet.empty<string>()))
   const addBadRoute = (route: string) =>
-    [
+    Effect.allParDiscard([
       log.info("DiscordREST", "addBadRoute", route),
       badRoutesRef.update(s => s.add(route)),
       store.incrementCounter(
@@ -46,7 +46,7 @@ const make = Do($ => {
         Duration.minutes(10).millis,
         10000,
       ),
-    ].allParDiscard
+    ])
   const isBadRoute = (route: string) => badRoutesRef.get.map(s => s.has(route))
   const removeBadRoute = (route: string) =>
     badRoutesRef.update(s => s.remove(route))
@@ -101,7 +101,7 @@ const make = Do($ => {
         )
       }
 
-      $(effectsToRun.allParDiscard)
+      $(Effect.allParDiscard(effectsToRun))
     }).ignore
 
   const httpExecutor = http.execute.filterStatusOk
@@ -136,11 +136,11 @@ const make = Do($ => {
         case 403:
           return Do($ => {
             $(
-              [
+              Effect.allParDiscard([
                 log.info("DiscordREST", "403", request.url),
                 addBadRoute(routeFromConfig(request.url, request.method)),
                 updateBuckets(request, response),
-              ].allParDiscard,
+              ]),
             )
             return $(Effect.fail(e))
           })
@@ -148,7 +148,7 @@ const make = Do($ => {
         case 429:
           return Do($ => {
             $(
-              [
+              Effect.allParDiscard([
                 log.info("DiscordREST", "429", request.url),
                 addBadRoute(routeFromConfig(request.url, request.method)),
                 updateBuckets(request, response),
@@ -157,7 +157,7 @@ const make = Do($ => {
                     Duration.seconds(5),
                   ),
                 ),
-              ].allParDiscard,
+              ]),
             )
             return $(executor<A>(request))
           })
