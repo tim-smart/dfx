@@ -49,7 +49,7 @@ export const handlers = <R, E>(
               ? command.handle
               : command.handle(context),
         )
-        .provideService(Ctx.ApplicationCommandContext, data)
+        .provideService(Ctx.ApplicationCommand, data)
     },
 
     [Discord.InteractionType.MODAL_SUBMIT]: (i: Discord.Interaction) => {
@@ -71,7 +71,7 @@ export const handlers = <R, E>(
                 a => a.command.handle,
               ),
             )
-            .provideService(Ctx.ModalSubmitContext, data),
+            .provideService(Ctx.ModalSubmitData, data),
       )
     },
 
@@ -94,7 +94,7 @@ export const handlers = <R, E>(
                 _ => _.command.handle,
               ),
             )
-            .provideService(Ctx.MessageComponentContext, data),
+            .provideService(Ctx.MessageComponentData, data),
       )
     },
 
@@ -120,7 +120,7 @@ export const handlers = <R, E>(
                     _ => _.command.handle,
                   ),
                 )
-                .provideService(Ctx.ApplicationCommandContext, data)
+                .provideService(Ctx.ApplicationCommand, data)
                 .provideService(Ctx.FocusedOptionContext, { focusedOption }),
           ),
         )

@@ -1,9 +1,9 @@
 import * as Http from "@effect-http/client"
-import { DefinitionNotFound, handlers } from "./handlers.js"
-import { InteractionBuilder, InteractionContext } from "./index.js"
-import { splitDefinitions } from "./utils.js"
-import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordGateway } from "dfx/DiscordGateway"
+import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
+import { DefinitionNotFound, handlers } from "./handlers.js"
+import { Interaction, InteractionBuilder } from "./index.js"
+import { splitDefinitions } from "./utils.js"
 
 export interface RunOpts {
   sync?: boolean
@@ -58,7 +58,7 @@ export const run =
             rest.createInteractionResponse(i.id, i.token, r),
           ),
           postHandler,
-        ).provideService(InteractionContext, i),
+        ).provideService(Interaction, i),
       )
 
       $(sync ? Effect.allPar(run, globalSync, guildSync) : run)

@@ -3,10 +3,10 @@ import { Effect, EffectTypeId } from "@effect/io/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
 import { ModalSubmitDatum } from "dfx/types"
 
-export const InteractionContext = Tag<Discord.Interaction>()
-export const ApplicationCommandContext = Tag<Discord.ApplicationCommandDatum>()
-export const MessageComponentContext = Tag<Discord.MessageComponentDatum>()
-export const ModalSubmitContext = Tag<Discord.ModalSubmitDatum>()
+export const Interaction = Tag<Discord.Interaction>()
+export const ApplicationCommand = Tag<Discord.ApplicationCommandDatum>()
+export const MessageComponentData = Tag<Discord.MessageComponentDatum>()
+export const ModalSubmitData = Tag<Discord.ModalSubmitDatum>()
 
 export interface FocusedOptionContext {
   readonly focusedOption: Discord.ApplicationCommandInteractionDataOption
@@ -18,10 +18,6 @@ export interface SubCommandContext {
 }
 export const SubCommandContext = Tag<SubCommandContext>()
 
-export const interaction = InteractionContext
-
-export const command = ApplicationCommandContext
-
 export class ResolvedDataNotFound {
   readonly _tag = "ResolvedDataNotFound"
   constructor(readonly data: Discord.Interaction, readonly name?: string) {}
@@ -30,25 +26,19 @@ export class ResolvedDataNotFound {
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  InteractionContext.flatMap(ix =>
-    IxHelpers.resolveValues(f)(ix).match(
-      () => Effect.fail(new ResolvedDataNotFound(ix)),
-      Effect.succeed,
-    ),
+  Interaction.flatMap(ix =>
+    IxHelpers.resolveValues(f)(ix).mapError(() => new ResolvedDataNotFound(ix)),
   )
 
 export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  InteractionContext.flatMap(ix =>
+  Interaction.flatMap(ix =>
     IxHelpers.resolveOptionValue(
       name,
       f,
-    )(ix).match(
-      () => Effect.fail(new ResolvedDataNotFound(ix, name)),
-      Effect.succeed,
-    ),
+    )(ix).mapError(() => new ResolvedDataNotFound(ix, name)),
   )
 
 export const focusedOptionValue = FocusedOptionContext.map(
@@ -83,7 +73,7 @@ export const handleSubCommands = <
   | SubCommandNotFound,
   Discord.InteractionResponse
 > =>
-  ApplicationCommandContext.flatMap(data =>
+  ApplicationCommand.flatMap(data =>
     Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name])
       .mapError(() => new SubCommandNotFound(data))
       .flatMap(command =>
@@ -95,7 +85,7 @@ export const handleSubCommands = <
 
 export const currentSubCommand = SubCommandContext.map(_ => _.command)
 
-export const optionsMap = ApplicationCommandContext.map(IxHelpers.optionsMap)
+export const optionsMap = ApplicationCommand.map(IxHelpers.optionsMap)
 
 export class RequiredOptionNotFound {
   readonly _tag = "RequiredOptionNotFound"
@@ -108,13 +98,13 @@ export class RequiredOptionNotFound {
 }
 
 export const option = (name: string) =>
-  ApplicationCommandContext.map(IxHelpers.getOption(name))
+  ApplicationCommand.map(IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
   option(name).flatMap(_ =>
     _.flatMapNullable(a => a.value).match(
       () =>
-        command.flatMap(data =>
+        ApplicationCommand.flatMap(data =>
           Effect.fail(new RequiredOptionNotFound(data, name)),
         ),
       Effect.succeed,
@@ -124,10 +114,10 @@ export const optionValue = (name: string) =>
 export const optionValueOptional = (name: string) =>
   option(name).map(o => o.flatMapNullable(o => o.value))
 
-export const modalValues = ModalSubmitContext.map(IxHelpers.componentsMap)
+export const modalValues = ModalSubmitData.map(IxHelpers.componentsMap)
 
 export const modalValueOption = (name: string) =>
-  ModalSubmitContext.map(IxHelpers.componentValue(name))
+  ModalSubmitData.map(IxHelpers.componentValue(name))
 
 export class ModalValueNotFound {
   readonly _tag = "ModalValueNotFound"
@@ -135,7 +125,7 @@ export class ModalValueNotFound {
 }
 
 export const modalValue = (name: string) =>
-  ModalSubmitContext.flatMap(data =>
+  ModalSubmitData.flatMap(data =>
     IxHelpers.componentValue(name)(data).mapError(
       () => new ModalValueNotFound(data, name),
     ),
