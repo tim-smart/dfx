@@ -11,8 +11,8 @@ dependencies:
     specifier: ~0.21.0
     version: 0.21.0
   dfx:
-    specifier: ^0.36.4
-    version: 0.36.4
+    specifier: ^0.38.0
+    version: 0.38.0
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
@@ -25,8 +25,8 @@ devDependencies:
     specifier: 0.12.2-3b576ba
     version: 0.12.2-3b576ba(@effect/data@0.12.2)
   '@tsplus-types/effect__io':
-    specifier: 0.25.6-3b576ba
-    version: 0.25.6-3b576ba(@effect/io@0.25.7)
+    specifier: 0.25.7-3b576ba
+    version: 0.25.7-3b576ba(@effect/io@0.25.7)
   '@tsplus-types/effect__stream':
     specifier: 0.21.0-3b576ba
     version: 0.21.0-3b576ba(@effect/stream@0.21.0)
@@ -340,10 +340,10 @@ packages:
       '@effect/data': 0.12.2
     dev: true
 
-  /@tsplus-types/effect__io@0.25.6-3b576ba(@effect/io@0.25.7):
-    resolution: {integrity: sha512-VMIEJp2CcvY/WVCEwRLm1BLi8znDLLOsfp2SJb6D11c/FAHSiLrEGFW8RvF9pVslJ96YYShT5l0LhEHm9n6fpQ==}
+  /@tsplus-types/effect__io@0.25.7-3b576ba(@effect/io@0.25.7):
+    resolution: {integrity: sha512-2J8XLtR3VP94EIZF0Y9urx5K9FYsPsE+Q6Q9HvYuf9SFJOHEpHkTUAqNAaHBNWa/jRK6/jceC5fQhzwevMAG5w==}
     peerDependencies:
-      '@effect/io': 0.25.6
+      '@effect/io': 0.25.7
     dependencies:
       '@effect/io': 0.25.7
     dev: true
@@ -466,8 +466,8 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx@0.36.4:
-    resolution: {integrity: sha512-njfHacwVrcBwDQiuJ3UWxXJ8RsBOWn3Y6Agl2iei/b/+qqYYb4Q1ODA2dEOtNwZ4F43MAONgQh8kmoE0fs7UiA==}
+  /dfx@0.38.0:
+    resolution: {integrity: sha512-F9CtTG7aG9Tcen9kDafAQXqI+wVxLexXWzDg6zcayoG0APsFIifwjovnjP5ONA00WrQGgx3mMZCFTOLPWkbLwQ==}
     dependencies:
       '@effect-http/client': 0.22.0
       '@effect/data': 0.12.2
