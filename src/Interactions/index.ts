@@ -3,7 +3,8 @@ import { Discord, Effect } from "dfx/_common"
 import * as D from "./definitions.js"
 import * as Http from "@effect-http/client"
 
-export { response as r } from "../Helpers/interactions.js"
+export { response } from "../Helpers/interactions.js"
+export * as helpers from "../Helpers/interactions.js"
 export * from "./context.js"
 export {
   autocomplete,
