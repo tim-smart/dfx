@@ -68,7 +68,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
           .map(entries => new Map(entries) as ReadonlyMap<string, A>),
       ),
 
-    run: sync.zipPar(driver.run),
+    run: sync.zipParRight(driver.run),
   }
 }
 
