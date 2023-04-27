@@ -45,7 +45,7 @@ export const createWithParent = <T>() =>
 
       refreshTTL: () => Effect.unit(),
 
-      run: Effect.unit(),
+      run: Effect.never(),
     })
   })
 
@@ -71,6 +71,6 @@ export const create = <T>() =>
 
       refreshTTL: () => Effect.unit(),
 
-      run: Effect.unit(),
+      run: Effect.never(),
     })
   })
