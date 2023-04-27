@@ -1,6 +1,12 @@
-import WebSocket from "isomorphic-ws"
-import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
+import {
+  LiveWS,
+  Reconnect,
+  WS,
+  WebSocketCloseError,
+  WebSocketError,
+} from "dfx/DiscordGateway/WS"
 import { Log } from "dfx/Log"
+import WebSocket from "isomorphic-ws"
 
 export type Message = Discord.GatewayPayload | Reconnect
 
@@ -45,13 +51,12 @@ const make = Do($ => {
       const socket = $(ws.connect(urlRef, takeOutbound))
       const take = socket.take.map(encoding.decode)
 
-      const run = socket.run
-        .tapError(e => log.info("DiscordWS", "ERROR", e))
-        .retry(Schedule.exponential(Duration.seconds(0.5))) as Effect<
-        never,
-        never,
-        never
-      >
+      const run = socket.run.retry(
+        Schedule.exponential(Duration.seconds(0.5)).whileInput(
+          (_: WebSocketError | WebSocketCloseError) =>
+            _._tag === "WebSocketCloseError" && _.code < 2000,
+        ),
+      )
 
       return {
         run,

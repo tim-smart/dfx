@@ -4,6 +4,7 @@ import { DiscordREST } from "dfx/DiscordREST"
 import { LiveRateLimiter, RateLimiter } from "../RateLimit.js"
 import { LiveShard, Shard } from "./Shard.js"
 import { ShardStore } from "./ShardStore.js"
+import { WebSocketCloseError, WebSocketError } from "./WS.js"
 
 const make = Do($ => {
   const store = $(ShardStore)
@@ -55,7 +56,9 @@ const make = Do($ => {
 
   const run = (hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
     Do($ => {
-      const deferred = $(Deferred.make<never, never>())
+      const deferred = $(
+        Deferred.make<WebSocketError | WebSocketCloseError, never>(),
+      )
       const take = $(takeConfig(config.shardCount ?? gateway.shards))
 
       const spawner = take
@@ -84,7 +87,7 @@ const make = Do($ => {
       return $(
         Effect.allParDiscard(spawners).zipParLeft(deferred.await) as Effect<
           never,
-          never,
+          WebSocketError | WebSocketCloseError,
           never
         >,
       )

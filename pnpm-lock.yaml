@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@effect-http/client':
-    specifier: ^0.22.2
-    version: 0.22.2
+    specifier: ^0.22.4
+    version: 0.22.4
   '@effect/data':
     specifier: ^0.12.2
     version: 0.12.2
@@ -113,8 +113,8 @@ packages:
       node-source-walk: 5.0.1
     dev: true
 
-  /@effect-http/client@0.22.2:
-    resolution: {integrity: sha512-SCKwwabuHJGtE/AhVIgjephvB1Uoka5mTYur8ap6cruv0wA4x6Uf1rDG7MXxhcSRwo/nVqnyrnWRlRWKjcMC1g==}
+  /@effect-http/client@0.22.4:
+    resolution: {integrity: sha512-Fy9XYSrUpMzJcHnqOIqgUjAIWlzvHGz/vb2UkqmxXUNcygvWEaIwg+gxJmryoAF1QSCu+kw7yC9xkWeRP4PPag==}
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.7
