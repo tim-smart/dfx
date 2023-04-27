@@ -3,68 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.40.4](https://github.com/tim-smart/dfx/compare/dfx@0.40.3...dfx@0.40.4) (2023-04-27)
+
+### Bug Fixes
+
+- error on fatal errors ([4ff556e](https://github.com/tim-smart/dfx/commit/4ff556e36a6a5966853d3c8c83c830d357ca9c10))
+
 ## [0.40.3](https://github.com/tim-smart/dfx/compare/dfx@0.40.2...dfx@0.40.3) (2023-04-27)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.40.2](https://github.com/tim-smart/dfx/compare/dfx@0.40.1...dfx@0.40.2) (2023-04-27)
-
 
 ### Bug Fixes
 
-* cache never ([e4ccc95](https://github.com/tim-smart/dfx/commit/e4ccc95577a9c2941989be47f4f6c152951c0e7e))
-* never ([cb3092a](https://github.com/tim-smart/dfx/commit/cb3092a6d94c5883f1a5c5a86ce6b8d31fb33444))
-
-
-
-
+- cache never ([e4ccc95](https://github.com/tim-smart/dfx/commit/e4ccc95577a9c2941989be47f4f6c152951c0e7e))
+- never ([cb3092a](https://github.com/tim-smart/dfx/commit/cb3092a6d94c5883f1a5c5a86ce6b8d31fb33444))
 
 ## [0.40.1](https://github.com/tim-smart/dfx/compare/dfx@0.40.0...dfx@0.40.1) (2023-04-27)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.40.0](https://github.com/tim-smart/dfx/compare/dfx@0.39.0...dfx@0.40.0) (2023-04-26)
-
 
 ### Bug Fixes
 
-* allParDiscard ([3085865](https://github.com/tim-smart/dfx/commit/3085865476b384793741288eede6516643254dcc))
-
-
-
-
+- allParDiscard ([3085865](https://github.com/tim-smart/dfx/commit/3085865476b384793741288eede6516643254dcc))
 
 # [0.39.0](https://github.com/tim-smart/dfx/compare/dfx@0.38.0...dfx@0.39.0) (2023-04-26)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.38.0](https://github.com/tim-smart/dfx/compare/dfx@0.37.0...dfx@0.38.0) (2023-04-26)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.37.0](https://github.com/tim-smart/dfx/compare/dfx@0.36.4...dfx@0.37.0) (2023-04-25)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.36.4](https://github.com/tim-smart/dfx/compare/dfx@0.36.3...dfx@0.36.4) (2023-04-25)
 
