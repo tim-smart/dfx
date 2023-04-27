@@ -13,7 +13,7 @@ export interface ParentCacheDriver<E, T> {
   delete: (parentId: string, resourceId: string) => Effect<never, E, void>
   parentDelete: (parentId: string) => Effect<never, E, void>
   refreshTTL: (parentId: string, resourceId: string) => Effect<never, E, void>
-  readonly run: Effect<never, E, void>
+  readonly run: Effect<never, E, never>
 }
 
 export const createParentDriver = <E, T>(driver: ParentCacheDriver<E, T>) =>
@@ -25,7 +25,7 @@ export interface CacheDriver<E, T> {
   set: (resourceId: string, resource: T) => Effect<never, E, void>
   delete: (resourceId: string) => Effect<never, E, void>
   refreshTTL: (resourceId: string) => Effect<never, E, void>
-  readonly run: Effect<never, E, void>
+  readonly run: Effect<never, E, never>
 }
 
 export const createDriver = <E, T>(driver: CacheDriver<E, T>) => driver

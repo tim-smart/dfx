@@ -12,7 +12,7 @@ const handleDispatchFactory =
   <K extends keyof Discord.ReceiveEvents, R, E, A>(
     event: K,
     handle: (event: Discord.ReceiveEvents[K]) => Effect<R, E, A>,
-  ): Effect<R, E, void> =>
+  ): Effect<R, E, never> =>
     hub.subscribeForEachPar(_ => {
       if (_.t === event) {
         return handle(_.d as any)
