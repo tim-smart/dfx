@@ -23,7 +23,13 @@ export const run =
     ) => Effect<R2, E2, void>,
     { sync = true }: RunOpts = {},
   ) =>
-  (ix: InteractionBuilder<R, E>) =>
+  (
+    ix: InteractionBuilder<R, E>,
+  ): Effect<
+    DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
+    E2 | DiscordRESTError | Http.ResponseDecodeError,
+    never
+  > =>
     Do($ => {
       const { GlobalApplicationCommand, GuildApplicationCommand } =
         splitDefinitions(ix.definitions)
@@ -48,7 +54,7 @@ export const run =
               GuildApplicationCommand.map(a => a.command) as any,
             ),
           )
-        : Effect.unit()
+        : Effect.never()
 
       const handle = handlers(ix.definitions)
 
@@ -61,5 +67,5 @@ export const run =
         ).provideService(Interaction, i),
       )
 
-      $(sync ? Effect.allPar(run, globalSync, guildSync) : run)
+      return $(sync ? run.zipParRight(globalSync).zipParRight(guildSync) : run)
     })
