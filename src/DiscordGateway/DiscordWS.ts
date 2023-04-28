@@ -5,7 +5,6 @@ import {
   WebSocketCloseError,
   WebSocketError,
 } from "dfx/DiscordGateway/WS"
-import { Log } from "dfx/Log"
 import WebSocket from "isomorphic-ws"
 
 export type Message = Discord.GatewayPayload | Reconnect
@@ -15,6 +14,7 @@ export interface OpenOpts {
   version?: number
   encoding?: DiscordWSCodec
   outbound: Effect<never, never, Message>
+  onReconnect?: Effect<never, never, void>
 }
 
 export interface DiscordWSCodec {
@@ -32,12 +32,12 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
 const make = Do($ => {
   const ws = $(WS)
   const encoding = $(DiscordWSCodec)
-  const log = $(Log)
 
   const connect = ({
     url = "wss://gateway.discord.gg/",
     version = 10,
     outbound,
+    onReconnect,
   }: OpenOpts) =>
     Do($ => {
       const urlRef = $(
@@ -48,7 +48,7 @@ const make = Do($ => {
       const takeOutbound = outbound.map(a =>
         a === Reconnect ? a : encoding.encode(a),
       )
-      const socket = $(ws.connect(urlRef, takeOutbound))
+      const socket = $(ws.connect(urlRef, takeOutbound, onReconnect))
       const take = socket.take.map(encoding.decode)
 
       const run = socket.run.retry(

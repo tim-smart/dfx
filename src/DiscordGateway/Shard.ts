@@ -18,14 +18,42 @@ export const make = Do($ => {
   ) =>
     Do($ => {
       const outboundQueue = $(Queue.unbounded<Message>())
+      const pendingQueue = $(Queue.unbounded<Message>())
+      const connecting = $(Ref.make(true))
       const outbound = outboundQueue
         .take()
         .tap(() =>
           limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
         )
-      const send = (p: Message) => outboundQueue.offer(p)
 
-      const socket = $(dws.connect({ outbound }))
+      const send = (p: Message) =>
+        connecting.get.flatMap(_ =>
+          _ ? pendingQueue.offer(p) : outboundQueue.offer(p),
+        )
+
+      const prioritySend = (p: Message) => outboundQueue.offer(p)
+
+      const resume = connecting
+        .set(false)
+        .zipRight(pendingQueue.takeAll())
+        .tap(_ => outboundQueue.offerAll(_)).asUnit
+
+      const onReconnect = outboundQueue
+        .takeAll()
+        .tap(_ =>
+          pendingQueue.offerAll(
+            _.filter(
+              msg =>
+                msg !== Reconnect &&
+                msg.op !== Discord.GatewayOpcode.IDENTIFY &&
+                msg.op !== Discord.GatewayOpcode.RESUME &&
+                msg.op !== Discord.GatewayOpcode.HEARTBEAT,
+            ),
+          ),
+        )
+        .zipRight(connecting.set(true))
+
+      const socket = $(dws.connect({ outbound, onReconnect }))
 
       const [latestReady, updateLatestReady] = $(
         Utils.latest(p =>
@@ -82,7 +110,7 @@ export const make = Do($ => {
 
           switch (p.op) {
             case Discord.GatewayOpcode.HELLO:
-              effect = identify.tap(send).zipPar(hellos.offer(p))
+              effect = identify.tap(prioritySend).zipPar(hellos.offer(p))
               break
             case Discord.GatewayOpcode.HEARTBEAT_ACK:
               effect = acks.offer(p)
@@ -91,7 +119,11 @@ export const make = Do($ => {
               effect = InvalidSession.fromPayload(p, latestReady).tap(send)
               break
             case Discord.GatewayOpcode.DISPATCH:
-              effect = hub.publish(p)
+              if (p.t === "READY" || p.t === "RESUMED") {
+                effect = resume.zipRight(hub.publish(p))
+              } else {
+                effect = hub.publish(p)
+              }
               break
           }
 
@@ -105,6 +137,7 @@ export const make = Do($ => {
 
       return {
         run,
+        connected: connecting.get,
         send: (p: Discord.GatewayPayload) => send(p),
         reconnect: send(Reconnect),
       } as const

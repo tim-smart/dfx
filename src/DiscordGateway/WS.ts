@@ -15,6 +15,11 @@ export class WebSocketCloseError {
   constructor(readonly code: number, readonly reason: string) {}
 }
 
+const isReconnect = (
+  e: WebSocketError | WebSocketCloseError,
+): e is WebSocketCloseError =>
+  e._tag === "WebSocketCloseError" && e.code === 1012
+
 const socket = (urlRef: Ref<string>) =>
   Do($ => {
     const url = $(urlRef.get)
@@ -36,10 +41,15 @@ const socket = (urlRef: Ref<string>) =>
     }),
   )
 
-const offer = (ws: globalThis.WebSocket, queue: Enqueue<WebSocket.Data>) =>
+const offer = (
+  ws: globalThis.WebSocket,
+  queue: Enqueue<WebSocket.Data>,
+  log: Log,
+) =>
   Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
     ws.addEventListener("message", message => {
-      queue.offer(message.data).runFork
+      queue.offer(message.data).zipLeft(log.debug("WS", "offer", message.data))
+        .runFork
     })
 
     ws.addEventListener("error", cause => {
@@ -77,16 +87,17 @@ const make = Do($ => {
   const connect = (
     url: Ref<string>,
     takeOutbound: Effect<never, never, Message>,
+    onReconnect = Effect.unit(),
   ) =>
     Do($ => {
       const queue = $(Queue.unbounded<WebSocket.Data>())
 
       const run = Do($ => {
         const ws = $(socket(url))
-        return $(offer(ws, queue).zipParLeft(send(ws, takeOutbound, log)))
-      }).retryWhile(
-        e => e._tag === "WebSocketCloseError" && e.code === 1012,
-      ).scoped
+        return $(offer(ws, queue, log).zipParLeft(send(ws, takeOutbound, log)))
+      })
+        .tapError(_ => (isReconnect(_) ? onReconnect : Effect.unit()))
+        .retryWhile(isReconnect).scoped
 
       return { run, take: queue.take() } as const
     })
