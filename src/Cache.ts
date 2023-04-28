@@ -48,14 +48,27 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     }
   }).runDrain
 
+  const get = (parentId: string, id: string) =>
+    driver
+      .get(parentId, id)
+      .someOrElseEffect(() =>
+        onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
+      )
+
+  const update = <R, E>(
+    parentId: string,
+    id: string,
+    f: (_: A) => Effect<R, E, A>,
+  ) =>
+    get(parentId, id)
+      .flatMap(f)
+      .tap(_ => driver.set(parentId, id, _))
+
   return {
     ...driver,
-    get: (parentId: string, id: string) =>
-      driver
-        .get(parentId, id)
-        .someOrElseEffect(() =>
-          onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
-        ),
+
+    get,
+    update,
 
     getForParent: (parentId: string) =>
       driver.getForParent(parentId).someOrElseEffect(() =>
@@ -92,12 +105,20 @@ export const make = <EOps, EDriver, EMiss, A>({
     }
   }).runDrain
 
+  const get = (id: string) =>
+    driver
+      .get(id)
+      .someOrElseEffect(() => onMiss(id).tap(a => driver.set(id, a)))
+
+  const update = <R, E>(id: string, f: (_: A) => Effect<R, E, A>) =>
+    get(id)
+      .flatMap(f)
+      .tap(_ => driver.set(id, _))
+
   return {
     ...driver,
-    get: (id: string) =>
-      driver
-        .get(id)
-        .someOrElseEffect(() => onMiss(id).tap(a => driver.set(id, a))),
+    get,
+    update,
     run: sync.zipParRight(driver.run),
   }
 }
