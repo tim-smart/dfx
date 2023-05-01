@@ -24,11 +24,13 @@ export type CacheOp<T> =
 export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   driver,
   ops = Stream.empty,
+  id,
   onMiss,
   onParentMiss,
 }: {
   driver: ParentCacheDriver<EDriver, A>
   ops?: Stream<never, EOps, ParentCacheOp<A>>
+  id: (_: A) => Effect<never, EMiss, readonly [parentId: string, id: string]>
   onMiss: (parentId: string, id: string) => Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
@@ -55,6 +57,9 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
         onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
       )
 
+  const put = (_: A) =>
+    id(_).flatMap(([parentId, id]) => driver.set(parentId, id, _))
+
   const update = <R, E>(
     parentId: string,
     id: string,
@@ -68,6 +73,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     ...driver,
 
     get,
+    put,
     update,
 
     getForParent: (parentId: string) =>
@@ -88,10 +94,12 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
 export const make = <EOps, EDriver, EMiss, A>({
   driver,
   ops = Stream.empty,
+  id,
   onMiss,
 }: {
   driver: CacheDriver<EDriver, A>
   ops?: Stream<never, EOps, CacheOp<A>>
+  id: (_: A) => string
   onMiss: (id: string) => Effect<never, EMiss, A>
 }) => {
   const sync = ops.tap((op): Effect<never, EDriver, void> => {
@@ -110,6 +118,8 @@ export const make = <EOps, EDriver, EMiss, A>({
       .get(id)
       .someOrElseEffect(() => onMiss(id).tap(a => driver.set(id, a)))
 
+  const put = (_: A) => driver.set(id(_), _)
+
   const update = <R, E>(id: string, f: (_: A) => Effect<R, E, A>) =>
     get(id)
       .flatMap(f)
@@ -118,6 +128,7 @@ export const make = <EOps, EDriver, EMiss, A>({
   return {
     ...driver,
     get,
+    put,
     update,
     run: sync.zipParRight(driver.run),
   }

@@ -125,6 +125,7 @@ export const guilds = <RM, EM, E>(
 
     return make({
       driver,
+      id: _ => _.id,
       ops: ops({
         id: (g: Discord.Guild) => g.id,
         create: gateway.fromDispatch("GUILD_CREATE").map(g => ({
@@ -151,6 +152,7 @@ export const channels = <RM, EM, E>(
 
     return makeWithParent({
       driver,
+      id: _ => Effect.succeed([_.guild_id!, _.id]),
       ops: opsWithParent({
         id: (a: Discord.Channel) => a.id,
         fromParent: gateway
@@ -186,6 +188,7 @@ export const roles = <RM, EM, E>(
 
     return makeWithParent({
       driver,
+      id: _ => Effect.fail(new CacheMissError("RolesCache/id", _.id)),
       ops: opsWithParent({
         id: (a: Discord.Role) => a.id,
         fromParent: gateway
@@ -199,7 +202,7 @@ export const roles = <RM, EM, E>(
           .map(r => [r.guild_id, r.role]),
         remove: gateway
           .fromDispatch("GUILD_ROLE_DELETE")
-          .map(a => [a.guild_id, a.role_id]),
+          .map(r => [r.guild_id, r.role_id]),
         parentRemove: gateway.fromDispatch("GUILD_DELETE").map(g => g.id),
       }),
       onMiss: (_, id) => Effect.fail(new CacheMissError("RolesCache", id)),
@@ -207,6 +210,6 @@ export const roles = <RM, EM, E>(
         rest
           .getGuildRoles(guildId)
           .flatMap(r => r.json)
-          .map(a => a.map(a => [a.id, a])),
+          .map(_ => _.map(role => [role.id, role])),
     })
   })
