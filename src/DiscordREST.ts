@@ -181,6 +181,7 @@ const make = Do($ => {
           request = request.appendParams(params as any)
         }
       } else if (
+        params &&
         request.body._tag === "Some" &&
         request.body.value._tag === "FormDataBody"
       ) {
