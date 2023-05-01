@@ -7,7 +7,7 @@ export type Message = string | Buffer | ArrayBuffer | Reconnect
 
 export class WebSocketError {
   readonly _tag = "WebSocketError"
-  constructor(readonly reason: unknown) {}
+  constructor(readonly reason: "open" | "error", readonly error?: unknown) {}
 }
 
 export class WebSocketCloseError {
@@ -21,25 +21,23 @@ const isReconnect = (
   e._tag === "WebSocketCloseError" && e.code === 1012
 
 const socket = (urlRef: Ref<string>) =>
-  Do($ => {
-    const url = $(urlRef.get)
-    const ws = new WebSocket(url) as any as globalThis.WebSocket
-
-    $(
-      Effect.async<never, never, void>(resume => {
-        ws.addEventListener("open", () => resume(Effect.unit()), {
-          once: true,
-        })
+  urlRef.get
+    .map(_ => new WebSocket(_) as any as globalThis.WebSocket)
+    .acquireRelease(ws =>
+      Effect.sync(() => {
+        ;(ws as any).removeAllListeners?.()
+        ws.close()
       }),
     )
-
-    return ws
-  }).acquireRelease(ws =>
-    Effect.sync(() => {
-      ;(ws as any).removeAllListeners?.()
-      ws.close()
-    }),
-  )
+    .tap(ws =>
+      ws.readyState === WebSocket.OPEN
+        ? Effect.unit()
+        : Effect.async<never, never, void>(resume => {
+            ws.addEventListener("open", () => resume(Effect.unit()), {
+              once: true,
+            })
+          }),
+    )
 
 const offer = (
   ws: globalThis.WebSocket,
@@ -53,7 +51,7 @@ const offer = (
     })
 
     ws.addEventListener("error", cause => {
-      resume(Effect.fail(new WebSocketError(cause)))
+      resume(Effect.fail(new WebSocketError("error", cause)))
     })
 
     ws.addEventListener("close", e => {
@@ -88,12 +86,18 @@ const make = Do($ => {
     url: Ref<string>,
     takeOutbound: Effect<never, never, Message>,
     onReconnect = Effect.unit(),
+    openTimeout = Duration.seconds(3),
   ) =>
     Do($ => {
       const queue = $(Queue.unbounded<WebSocket.Data>())
 
       const run = Do($ => {
-        const ws = $(socket(url))
+        const ws = $(
+          socket(url).timeoutFail(
+            () => new WebSocketError("open"),
+            openTimeout,
+          ),
+        )
         return $(offer(ws, queue, log).zipParLeft(send(ws, takeOutbound, log)))
       })
         .tapError(_ => (isReconnect(_) ? onReconnect : Effect.unit()))

@@ -54,7 +54,8 @@ const make = Do($ => {
       const run = socket.run.retry(
         Schedule.exponential(Duration.seconds(0.5)).whileInput(
           (_: WebSocketError | WebSocketCloseError) =>
-            _._tag === "WebSocketCloseError" && _.code < 2000,
+            (_._tag === "WebSocketCloseError" && _.code < 2000) ||
+            (_._tag === "WebSocketError" && _.reason === "open"),
         ),
       )
 
