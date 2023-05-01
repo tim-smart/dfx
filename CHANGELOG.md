@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.42.0](https://github.com/tim-smart/dfx/compare/dfx@0.41.1...dfx@0.42.0) (2023-05-01)
+
+
+### Features
+
+* add put to Cache ([f605c57](https://github.com/tim-smart/dfx/commit/f605c57fe0409bc0e629ef7c3297c7e6e05c6476))
+
+
+
+
+
 ## [0.41.1](https://github.com/tim-smart/dfx/compare/dfx@0.41.0...dfx@0.41.1) (2023-05-01)
 
 **Note:** Version bump only for package dfx
