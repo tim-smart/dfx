@@ -11,8 +11,8 @@ dependencies:
     specifier: ~0.25.8
     version: 0.25.8
   '@effect/stream':
-    specifier: ~0.21.0
-    version: 0.21.0
+    specifier: ~0.21.1
+    version: 0.21.1
   tweetnacl:
     specifier: ^1.0.3
     version: 1.0.3
@@ -42,8 +42,8 @@ devDependencies:
     specifier: 0.25.8-3b576ba
     version: 0.25.8-3b576ba(@effect/io@0.25.8)
   '@tsplus-types/effect__stream':
-    specifier: 0.21.0-3b576ba
-    version: 0.21.0-3b576ba(@effect/stream@0.21.0)
+    specifier: 0.21.1-3b576ba
+    version: 0.21.1-3b576ba(@effect/stream@0.21.1)
   '@types/ws':
     specifier: ^8.5.4
     version: 8.5.4
@@ -118,8 +118,8 @@ packages:
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
-      '@effect/schema': 0.17.2
-      '@effect/stream': 0.21.0
+      '@effect/schema': 0.17.3
+      '@effect/stream': 0.21.1
     dev: false
 
   /@effect/data@0.12.2:
@@ -130,16 +130,16 @@ packages:
     dependencies:
       '@effect/data': 0.12.2
 
-  /@effect/schema@0.17.2:
-    resolution: {integrity: sha512-HcXZBGtPzhuX/RnIkaVIlYGp1ThuAyl34YNhxrhUQ8TdOnRFkx3tAbmXYpkWkrlo92Ou+/Z0ZixEaSFn7x2shw==}
+  /@effect/schema@0.17.3:
+    resolution: {integrity: sha512-IYimFeJQ+chz3C2I+sgm7uRW7rWGOqAGxxipViyL/wA7FUznysNlGmS1m0ABlk1kXbep3ZfvgxBEQtK3wY4dCw==}
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
       fast-check: 3.8.1
     dev: false
 
-  /@effect/stream@0.21.0:
-    resolution: {integrity: sha512-39nkKJVUt41DDn08E4we9L/7YGHAZeDjyiAapFn1Grx2npR+CRra4gZqqJF3bwO/9b9Yipl1I8WD+6v/Hx2tfA==}
+  /@effect/stream@0.21.1:
+    resolution: {integrity: sha512-x227xIB+PC/xaz4R3RYkjg2Z0sw5Fgkt5hfxXeGHpKThhmqVEeIXjd0v04pcoz2lJtStcvWL5Wuh/Z8HP3Hw/Q==}
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
@@ -824,12 +824,12 @@ packages:
       '@effect/io': 0.25.8
     dev: true
 
-  /@tsplus-types/effect__stream@0.21.0-3b576ba(@effect/stream@0.21.0):
-    resolution: {integrity: sha512-i3omc4bRzCab/FoVfiO2PVb6Co1cisnANeHHoaMGnza7mHB7kPlzJZlA5R/ncapp/qjkMoa6Qp4N99ROZt3JyA==}
+  /@tsplus-types/effect__stream@0.21.1-3b576ba(@effect/stream@0.21.1):
+    resolution: {integrity: sha512-vprR7BEm2G0+denA3fFXIFV0nzXO4pn9POyeZeQN6uHQrGlOYe/ryS0PpShdMf8bBwCxFmocrDr44/GVK+X93Q==}
     peerDependencies:
-      '@effect/stream': 0.21.0
+      '@effect/stream': 0.21.1
     dependencies:
-      '@effect/stream': 0.21.0
+      '@effect/stream': 0.21.1
     dev: true
 
   /@tufjs/models@1.0.1:

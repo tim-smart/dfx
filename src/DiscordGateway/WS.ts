@@ -70,9 +70,8 @@ const send = (
   ws: globalThis.WebSocket,
   take: Effect<never, never, Message>,
   log: Log,
-  openTimeout: Duration,
-) => {
-  const loop = take
+) =>
+  take
     .tap(data => log.debug("WS", "send", data))
     .tap((data): Effect<never, WebSocketCloseError, void> => {
       if (data === Reconnect) {
@@ -86,9 +85,6 @@ const send = (
         ws.send(data)
       })
     }).forever
-
-  return waitForOpen(ws, openTimeout).zipRight(loop)
-}
 
 const make = Do($ => {
   const log = $(Log)
@@ -105,7 +101,7 @@ const make = Do($ => {
       const run = socket(url)
         .flatMap(ws =>
           offer(ws, queue, log).zipParLeft(
-            send(ws, takeOutbound, log, openTimeout),
+            waitForOpen(ws, openTimeout).zipRight(send(ws, takeOutbound, log)),
           ),
         )
         .tapError(_ => (isReconnect(_) ? onReconnect : Effect.unit()))
