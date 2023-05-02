@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "src",
-    "outDir": "build",
+    "outDir": ".",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
@@ -12,13 +12,12 @@
     "declaration": true,
     "strict": true,
     "target": "ES2022",
-    "incremental": true,
     "tsPlusConfig": "./tsplus.config.json",
     "paths": {
       "dfx": ["./src/index.js"],
       "dfx/*": ["./src/*.js"]
-    },
-    "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
+    }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": []
 }

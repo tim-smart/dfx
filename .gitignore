@@ -4,3 +4,4 @@ dist/
 _old/
 tsconfig.tsbuildinfo
 .DS_Store
+build/

@@ -14,10 +14,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "pnpm run clean && pnpm run build:tsc && cp package.json README.md dist/",
-    "build:tsc": "tsc -p tsconfig.json",
-    "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=RestResponse|dfx/DiscordREST/types' 'endpointReturnType=RestResponse' > src/types.ts && prettier -w src/types.ts",
-    "clean": "rm -rf dist/ *.tsbuildinfo"
+    "prepublishOnly": "make build",
+    "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=RestResponse|dfx/DiscordREST/types' 'endpointReturnType=RestResponse' > src/types.ts && prettier -w src/types.ts"
   },
   "exports": {
     ".": "./index.js",
