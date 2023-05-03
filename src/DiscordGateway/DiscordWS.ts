@@ -52,7 +52,7 @@ const make = Do($ => {
       const take = socket.take.map(encoding.decode)
 
       const run = socket.run.retry(
-        Schedule.exponential(Duration.seconds(0.5)).whileInput(
+        Schedule.fixed(Duration.seconds(0.5)).whileInput(
           (_: WebSocketError | WebSocketCloseError) =>
             (_._tag === "WebSocketCloseError" && _.code < 2000) ||
             (_._tag === "WebSocketError" && _.reason === "open-timeout"),
