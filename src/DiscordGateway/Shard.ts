@@ -6,6 +6,7 @@ import * as Identify from "./Shard/identify.js"
 import * as InvalidSession from "./Shard/invalidSession.js"
 import * as Utils from "./Shard/utils.js"
 import { Reconnect } from "./WS.js"
+import { Log } from "dfx/Log"
 
 const enum Phase {
   Connecting,
@@ -13,12 +14,11 @@ const enum Phase {
   Connected,
 }
 
-type ConnectionPhase = "connecting" | "handshake" | "connected"
-
 export const make = Do($ => {
   const { token, gateway } = $(DiscordConfig)
   const limiter = $(RateLimiter)
   const dws = $(DiscordWS)
+  const log = $(Log)
 
   const connect = (
     shard: [id: number, count: number],
@@ -28,6 +28,8 @@ export const make = Do($ => {
       const outboundQueue = $(Queue.unbounded<Message>())
       const pendingQueue = $(Queue.unbounded<Message>())
       const phase = $(Ref.make(Phase.Connecting))
+      const setPhase = (p: Phase) =>
+        phase.set(p).zipLeft(log.debug("Shard", shard, "phase", p))
       const outbound = outboundQueue
         .take()
         .tap(() =>
@@ -50,8 +52,7 @@ export const make = Do($ => {
 
       const prioritySend = (p: Message) => outboundQueue.offer(p)
 
-      const resume = phase
-        .set(Phase.Connected)
+      const resume = setPhase(Phase.Connected)
         .zipRight(pendingQueue.takeAll())
         .tap(_ => outboundQueue.offerAll(_)).asUnit
 
@@ -68,7 +69,7 @@ export const make = Do($ => {
             ),
           ),
         )
-        .zipRight(phase.set(Phase.Connecting))
+        .zipRight(setPhase(Phase.Connecting))
 
       const socket = $(dws.connect({ outbound, onReconnect }))
 
@@ -132,7 +133,9 @@ export const make = Do($ => {
 
           switch (p.op) {
             case Discord.GatewayOpcode.HELLO:
-              effect = identify.tap(prioritySend).zipPar(hellos.offer(p))
+              effect = identify
+                .tap(prioritySend)
+                .zipPar(setPhase(Phase.Handshake).zipRight(hellos.offer(p)))
               break
             case Discord.GatewayOpcode.HEARTBEAT_ACK:
               effect = acks.offer(p)
