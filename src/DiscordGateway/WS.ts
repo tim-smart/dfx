@@ -1,4 +1,5 @@
 import { Log } from "dfx/Log"
+import * as Runtime from "@effect/io/Runtime"
 import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
@@ -38,20 +39,26 @@ const offer = (
   queue: Enqueue<WebSocket.Data>,
   log: Log,
 ) =>
-  Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
-    ws.addEventListener("message", message => {
-      queue.offer(message.data).zipLeft(log.debug("WS", "offer", message.data))
-        .runFork
-    })
+  Effect.runtime<never>().flatMap(runtime =>
+    Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
+      const run = Runtime.runFork(runtime)
+      ws.addEventListener("message", message => {
+        run(
+          queue
+            .offer(message.data)
+            .zipLeft(log.debug("WS", "offer", message.data)),
+        )
+      })
 
-    ws.addEventListener("error", cause => {
-      resume(Effect.fail(new WebSocketError("error", cause)))
-    })
+      ws.addEventListener("error", cause => {
+        resume(Effect.fail(new WebSocketError("error", cause)))
+      })
 
-    ws.addEventListener("close", e => {
-      resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
-    })
-  })
+      ws.addEventListener("close", e => {
+        resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
+      })
+    }),
+  )
 
 const waitForOpen = (ws: globalThis.WebSocket, timeout: Duration) =>
   Effect.suspend(() => {
