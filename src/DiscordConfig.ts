@@ -2,6 +2,7 @@ const VERSION = 10
 
 export interface DiscordConfig {
   token: ConfigSecret
+  debug: boolean
   rest: {
     baseUrl: string
     globalRateLimit: {
@@ -21,12 +22,19 @@ export const DiscordConfig = Tag<DiscordConfig>()
 
 export interface MakeOpts {
   token: ConfigSecret
+  debug?: boolean
   rest?: Partial<DiscordConfig["rest"]>
   gateway?: Partial<DiscordConfig["gateway"]>
 }
 
-export const make = ({ token, rest, gateway }: MakeOpts): DiscordConfig => ({
+export const make = ({
   token,
+  debug = false,
+  rest,
+  gateway,
+}: MakeOpts): DiscordConfig => ({
+  token,
+  debug,
   rest: {
     baseUrl: `https://discord.com/api/v${VERSION}`,
     ...(rest ?? {}),

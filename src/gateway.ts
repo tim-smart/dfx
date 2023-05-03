@@ -21,18 +21,16 @@ export const MemoryBot =
 
 export const makeLiveWithoutFetch = (
   config: Config.Wrap<DiscordConfig.MakeOpts>,
-  debug = false,
-) => {
-  const LiveLog = debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveConfig = DiscordConfig.makeFromConfig(Config.unwrap(config))
-  const LiveEnv = LiveLog + LiveConfig > MemoryBot
+) =>
+  Layer.unwrapEffect(
+    Config.unwrap(config)
+      .config.map(DiscordConfig.make)
+      .map(config => {
+        const LiveLog = config.debug ? Log.LiveLogDebug : Log.LiveLog
+        const LiveConfig = Layer.succeed(DiscordConfig.DiscordConfig, config)
+        return LiveLog + LiveConfig > MemoryBot
+      }),
+  )
 
-  return LiveEnv
-}
-
-export const makeLive = (
-  config: Config.Wrap<DiscordConfig.MakeOpts>,
-  debug = false,
-) => {
-  return LiveFetchRequestExecutor >> makeLiveWithoutFetch(config, debug)
-}
+export const makeLive = (config: Config.Wrap<DiscordConfig.MakeOpts>) =>
+  LiveFetchRequestExecutor >> makeLiveWithoutFetch(config)
