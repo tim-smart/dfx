@@ -194,10 +194,19 @@ const make = Do($ => {
     },
   )
 
-  return { executor, ...routes }
+  return {
+    ...routes,
+    executor,
+  }
 })
 
-export interface DiscordREST extends Effect.Success<typeof make> {}
+export interface DiscordREST
+  extends Discord.Endpoints<Partial<Http.MakeOptions>> {
+  readonly executor: <A = unknown>(
+    request: Http.Request,
+  ) => Effect<never, DiscordRESTError, ResponseWithData<A>>
+}
+
 export const DiscordREST = Tag<DiscordREST>()
 export const LiveDiscordREST =
   LiveRateLimiter >> Layer.effect(DiscordREST, make)
