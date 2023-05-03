@@ -51,12 +51,10 @@ const make = Do($ => {
       const socket = $(ws.connect(urlRef, takeOutbound, onReconnect))
       const take = socket.take.map(encoding.decode)
 
-      const run = socket.run.retry(
-        Schedule.fixed(Duration.seconds(0.5)).whileInput(
-          (_: WebSocketError | WebSocketCloseError) =>
-            (_._tag === "WebSocketCloseError" && _.code < 2000) ||
-            (_._tag === "WebSocketError" && _.reason === "open-timeout"),
-        ),
+      const run = socket.run.retryWhile(
+        _ =>
+          (_._tag === "WebSocketCloseError" && _.code < 2000) ||
+          (_._tag === "WebSocketError" && _.reason === "open-timeout"),
       )
 
       return {
