@@ -39,8 +39,8 @@ devDependencies:
     specifier: 0.12.2-3b576ba
     version: 0.12.2-3b576ba(@effect/data@0.12.2)
   '@tsplus-types/effect__io':
-    specifier: 0.25.8-3b576ba
-    version: 0.25.8-3b576ba(@effect/io@0.25.8)
+    specifier: 0.25.8-11739c0
+    version: 0.25.8-11739c0(@effect/io@0.25.8)
   '@tsplus-types/effect__stream':
     specifier: 0.21.1-3b576ba
     version: 0.21.1-3b576ba(@effect/stream@0.21.1)
@@ -816,8 +816,8 @@ packages:
       '@effect/data': 0.12.2
     dev: true
 
-  /@tsplus-types/effect__io@0.25.8-3b576ba(@effect/io@0.25.8):
-    resolution: {integrity: sha512-V4zrT6uUOflTy/V5sRwBIXQD1rVHnzGM0nVz7KN/m6aK0QcIeTDv0RscM4Op2fa5KAbNCfKQoXjRfUwUuxA7Mw==}
+  /@tsplus-types/effect__io@0.25.8-11739c0(@effect/io@0.25.8):
+    resolution: {integrity: sha512-RicAQd3DWWC2a0OObuBYu1pZMEgxnanoWz60w1kWB1Cblx6y4rAXMlzGmiMP03/BTlGVptRzLz77U+As9WT/hw==}
     peerDependencies:
       '@effect/io': 0.25.8
     dependencies:

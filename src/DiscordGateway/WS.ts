@@ -1,5 +1,4 @@
 import { Log } from "dfx/Log"
-import * as Runtime from "@effect/io/Runtime"
 import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
@@ -41,7 +40,7 @@ const offer = (
 ) =>
   Effect.runtime<never>().flatMap(runtime =>
     Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
-      const run = Runtime.runFork(runtime)
+      const run = runtime.runFork
       ws.addEventListener("message", message => {
         run(
           queue
