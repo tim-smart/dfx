@@ -73,7 +73,7 @@ const send = (
 ) =>
   take
     .tap(data => log.debug("WS", "send", data))
-    .tap((data): Effect<never, WebSocketCloseError, void> => {
+    .tap(data => {
       if (data === Reconnect) {
         return Effect.failSync(() => {
           ws.close(1012, "reconnecting")
@@ -104,8 +104,8 @@ const make = Do($ => {
             waitForOpen(ws, openTimeout).zipRight(send(ws, takeOutbound, log)),
           ),
         )
-        .tapError(_ => (isReconnect(_) ? onReconnect : Effect.unit()))
-        .retryWhile(isReconnect).scoped
+        .scoped.tapError(_ => (isReconnect(_) ? onReconnect : Effect.unit()))
+        .retryWhile(isReconnect)
 
       return { run, take: queue.take() } as const
     })
