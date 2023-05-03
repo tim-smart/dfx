@@ -7,6 +7,14 @@ import * as InvalidSession from "./Shard/invalidSession.js"
 import * as Utils from "./Shard/utils.js"
 import { Reconnect } from "./WS.js"
 
+const enum Phase {
+  Connecting,
+  Handshake,
+  Connected,
+}
+
+type ConnectionPhase = "connecting" | "handshake" | "connected"
+
 export const make = Do($ => {
   const { token, gateway } = $(DiscordConfig)
   const limiter = $(RateLimiter)
@@ -19,7 +27,7 @@ export const make = Do($ => {
     Do($ => {
       const outboundQueue = $(Queue.unbounded<Message>())
       const pendingQueue = $(Queue.unbounded<Message>())
-      const connecting = $(Ref.make(true))
+      const phase = $(Ref.make(Phase.Connecting))
       const outbound = outboundQueue
         .take()
         .tap(() =>
@@ -27,14 +35,23 @@ export const make = Do($ => {
         )
 
       const send = (p: Message) =>
-        connecting.get.flatMap(_ =>
-          _ ? pendingQueue.offer(p) : outboundQueue.offer(p),
+        phase.get.flatMap(_ =>
+          _ === Phase.Connected
+            ? outboundQueue.offer(p)
+            : pendingQueue.offer(p),
+        )
+
+      const heartbeatSend = (p: Message) =>
+        phase.get.flatMap(_ =>
+          _ !== Phase.Connecting
+            ? outboundQueue.offer(p)
+            : Effect.succeed(false),
         )
 
       const prioritySend = (p: Message) => outboundQueue.offer(p)
 
-      const resume = connecting
-        .set(false)
+      const resume = phase
+        .set(Phase.Connected)
         .zipRight(pendingQueue.takeAll())
         .tap(_ => outboundQueue.offerAll(_)).asUnit
 
@@ -51,7 +68,7 @@ export const make = Do($ => {
             ),
           ),
         )
-        .zipRight(connecting.set(true))
+        .zipRight(phase.set(Phase.Connecting))
 
       const socket = $(dws.connect({ outbound, onReconnect }))
 
@@ -84,7 +101,12 @@ export const make = Do($ => {
       const acks = $(Queue.unbounded<Discord.GatewayPayload>())
 
       // heartbeats
-      const heartbeats = Heartbeats.send(hellos, acks, latestSequence, send)
+      const heartbeats = Heartbeats.send(
+        hellos,
+        acks,
+        latestSequence,
+        heartbeatSend,
+      )
 
       // identify
       const identify = Identify.identifyOrResume(
@@ -137,7 +159,6 @@ export const make = Do($ => {
 
       return {
         run,
-        connected: connecting.get,
         send: (p: Discord.GatewayPayload) => send(p),
         reconnect: send(Reconnect),
       } as const
