@@ -3,29 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.44.0](https://github.com/tim-smart/dfx/compare/dfx@0.43.1...dfx@0.44.0) (2023-05-04)
+
+### Features
+
+- catch methods on InteractionBuilder ([a4d1b55](https://github.com/tim-smart/dfx/commit/a4d1b55d0c6af7a08028cdbb0d1e336c35fba09e))
+- InteractionsRegistry ([7317b8d](https://github.com/tim-smart/dfx/commit/7317b8d560532bacf80064c557ebbc19443fa8ee))
+
 ## [0.43.1](https://github.com/tim-smart/dfx/compare/dfx@0.43.0...dfx@0.43.1) (2023-05-04)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.43.0](https://github.com/tim-smart/dfx/compare/dfx@0.42.9...dfx@0.43.0) (2023-05-03)
-
 
 ### Code Refactoring
 
-* move debug option to DiscordConfig ([7e4120f](https://github.com/tim-smart/dfx/commit/7e4120f8869d977870497fd0bce67c04bed993e9))
-
+- move debug option to DiscordConfig ([7e4120f](https://github.com/tim-smart/dfx/commit/7e4120f8869d977870497fd0bce67c04bed993e9))
 
 ### BREAKING CHANGES
 
-* debug setting moved
-
-
-
-
+- debug setting moved
 
 ## [0.42.9](https://github.com/tim-smart/dfx/compare/dfx@0.42.8...dfx@0.42.9) (2023-05-03)
 
