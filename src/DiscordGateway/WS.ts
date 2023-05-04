@@ -98,20 +98,20 @@ const make = Do($ => {
   const connect = (
     url: Ref<string>,
     takeOutbound: Effect<never, never, Message>,
-    onReconnect = Effect.unit(),
+    onConnecting = Effect.unit(),
     openTimeout = Duration.seconds(3),
   ) =>
     Do($ => {
       const queue = $(Queue.unbounded<WebSocket.Data>())
 
-      const run = socket(url)
+      const run = onConnecting
+        .zipRight(socket(url))
         .flatMap(ws =>
           offer(ws, queue, log).zipParLeft(
             waitForOpen(ws, openTimeout).zipRight(send(ws, takeOutbound, log)),
           ),
         )
-        .scoped.tapError(_ => (isReconnect(_) ? onReconnect : Effect.unit()))
-        .retryWhile(isReconnect)
+        .scoped.retryWhile(isReconnect)
 
       return { run, take: queue.take() } as const
     })

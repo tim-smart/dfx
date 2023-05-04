@@ -56,7 +56,7 @@ export const make = Do($ => {
         .zipRight(pendingQueue.takeAll())
         .tap(_ => outboundQueue.offerAll(_)).asUnit
 
-      const onReconnect = outboundQueue
+      const onConnecting = outboundQueue
         .takeAll()
         .tap(_ =>
           pendingQueue.offerAll(
@@ -71,7 +71,7 @@ export const make = Do($ => {
         )
         .zipRight(setPhase(Phase.Connecting))
 
-      const socket = $(dws.connect({ outbound, onReconnect }))
+      const socket = $(dws.connect({ outbound, onConnecting }))
 
       const [latestReady, updateLatestReady] = $(
         Utils.latest(p =>

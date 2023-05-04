@@ -14,7 +14,7 @@ export interface OpenOpts {
   version?: number
   encoding?: DiscordWSCodec
   outbound: Effect<never, never, Message>
-  onReconnect?: Effect<never, never, void>
+  onConnecting?: Effect<never, never, void>
 }
 
 export interface DiscordWSCodec {
@@ -37,7 +37,7 @@ const make = Do($ => {
     url = "wss://gateway.discord.gg/",
     version = 10,
     outbound,
-    onReconnect,
+    onConnecting,
   }: OpenOpts) =>
     Do($ => {
       const urlRef = $(
@@ -48,7 +48,7 @@ const make = Do($ => {
       const takeOutbound = outbound.map(a =>
         a === Reconnect ? a : encoding.encode(a),
       )
-      const socket = $(ws.connect(urlRef, takeOutbound, onReconnect))
+      const socket = $(ws.connect(urlRef, takeOutbound, onConnecting))
       const take = socket.take.map(encoding.decode)
 
       const run = socket.run.retryWhile(
