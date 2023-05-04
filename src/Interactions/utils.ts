@@ -1,39 +1,49 @@
 import * as D from "./definitions.js"
 
-export const splitDefinitions = <R, E>(
-  definitions: D.InteractionDefinition<R, E>[],
+export const splitDefinitions = <R, E, TE>(
+  definitions: Chunk<
+    readonly [
+      handler: D.InteractionDefinition<R, E>,
+      transform: (self: Effect<any, any, any>) => Effect<R, TE, void>,
+    ]
+  >,
 ) => {
-  const grouped = definitions.reduce<{
-    [K in D.InteractionDefinition<R, E>["_tag"]]: Extract<
-      D.InteractionDefinition<R, E>,
-      { _tag: K }
-    >[]
-  }>(
-    (acc, a) => ({
-      ...acc,
-      [a._tag]: [...(acc[a._tag] ?? []), a],
-    }),
+  const grouped = definitions.reduce(
     {
-      Autocomplete: [],
-      GlobalApplicationCommand: [],
-      GuildApplicationCommand: [],
-      MessageComponent: [],
-      ModalSubmit: [],
+      Autocomplete: Chunk.empty(),
+      GlobalApplicationCommand: Chunk.empty(),
+      GuildApplicationCommand: Chunk.empty(),
+      MessageComponent: Chunk.empty(),
+      ModalSubmit: Chunk.empty(),
+    } as {
+      [K in D.InteractionDefinition<R, E>["_tag"]]: Chunk<
+        readonly [
+          Extract<D.InteractionDefinition<R, E>, { _tag: K }>,
+          (self: Effect<any, any, any>) => Effect<R, TE, void>,
+        ]
+      >
     },
+    (acc, [d, t]) => ({
+      ...acc,
+      [d._tag]: (acc[d._tag] as Chunk<any>).append([d, t]),
+    }),
   )
 
-  const Commands = [
-    ...grouped.GlobalApplicationCommand,
-    ...grouped.GuildApplicationCommand,
-  ].reduce(
-    (acc, a) => ({
-      ...acc,
-      [a.command.name]: a,
-    }),
+  const Commands = grouped.GlobalApplicationCommand.concat(
+    grouped.GuildApplicationCommand,
+  ).reduce(
     {} as Record<
       string,
-      D.GlobalApplicationCommand<R, E> | D.GuildApplicationCommand<R, E>
+      readonly [
+        D.GlobalApplicationCommand<R, E> | D.GuildApplicationCommand<R, E>,
+        (self: Effect<any, any, any>) => Effect<R, TE, void>,
+      ]
     >,
+    (acc, [d, t]) =>
+      ({
+        ...acc,
+        [d.command.name]: [d, t],
+      } as any),
   )
 
   return {

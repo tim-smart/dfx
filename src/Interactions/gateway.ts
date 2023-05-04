@@ -13,18 +13,18 @@ export interface RunOpts {
  * @tsplus pipeable dfx/InteractionBuilder runGateway
  */
 export const run =
-  <R, R2, E, E2>(
+  <R, R2, E, TE, E2>(
     postHandler: (
       effect: Effect<
         R | DiscordREST | Discord.Interaction,
-        E | DiscordRESTError | DefinitionNotFound,
+        TE | DiscordRESTError | DefinitionNotFound,
         void
       >,
     ) => Effect<R2, E2, void>,
     { sync = true }: RunOpts = {},
   ) =>
   (
-    ix: InteractionBuilder<R, E>,
+    ix: InteractionBuilder<R, E, TE>,
   ): Effect<
     DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
     E2 | DiscordRESTError | Http.ResponseDecodeError,
@@ -43,7 +43,11 @@ export const run =
 
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
-        { body: Http.body.json(GlobalApplicationCommand.map(a => a.command)) },
+        {
+          body: Http.body.json(
+            GlobalApplicationCommand.map(([_]) => _.command),
+          ),
+        },
       )
 
       const guildSync = GuildApplicationCommand.length
@@ -51,7 +55,7 @@ export const run =
             rest.bulkOverwriteGuildApplicationCommands(
               application.id,
               a.id,
-              GuildApplicationCommand.map(a => a.command) as any,
+              GuildApplicationCommand.map(([_]) => _.command) as any,
             ),
           )
         : Effect.never()
@@ -60,10 +64,9 @@ export const run =
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
         pipe(
-          ix
-            .transformRespond(handle[i.type](i))
-            .tap(r => rest.createInteractionResponse(i.id, i.token, r)),
-          ix.transform,
+          handle[i.type](i).tap(r =>
+            rest.createInteractionResponse(i.id, i.token, r),
+          ),
           postHandler,
         ).provideService(Interaction, i),
       )

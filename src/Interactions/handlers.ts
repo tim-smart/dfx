@@ -23,8 +23,13 @@ const context: D.CommandHelper<any> = {
   subCommands: Ctx.handleSubCommands,
 } as any
 
-export const handlers = <R, E>(
-  definitions: D.InteractionDefinition<R, E>[],
+export const handlers = <R, E, TE>(
+  definitions: Chunk<
+    readonly [
+      handler: D.InteractionDefinition<R, E>,
+      transform: (self: Effect<any, any, any>) => Effect<R, TE, void>,
+    ]
+  >,
 ): Record<
   Discord.InteractionType,
   (i: Discord.Interaction) => Handler<R, E>
@@ -44,7 +49,7 @@ export const handlers = <R, E>(
       return Maybe.fromNullable(Commands[data.name])
         .match(
           () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-          command =>
+          ([command]) =>
             Effect.isEffect(command.handle)
               ? command.handle
               : command.handle(context),
@@ -56,8 +61,7 @@ export const handlers = <R, E>(
       const data = i.data as Discord.ModalSubmitDatum
 
       return pipe(
-        ModalSubmit,
-        Arr.map(a =>
+        ModalSubmit.map(a =>
           Effect.all({
             command: Effect.succeed(a),
             match: a.predicate(data.custom_id),
