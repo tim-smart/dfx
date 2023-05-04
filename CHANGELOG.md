@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.45.0](https://github.com/tim-smart/dfx/compare/dfx@0.44.0...dfx@0.45.0) (2023-05-04)
+
+
+### Features
+
+* working InteractionBuilder catch and registry ([258deb5](https://github.com/tim-smart/dfx/commit/258deb590ad3beed7a48292e6592c2e8e81b4249))
+
+
+
+
+
 # [0.44.0](https://github.com/tim-smart/dfx/compare/dfx@0.43.1...dfx@0.44.0) (2023-05-04)
 
 ### Features
