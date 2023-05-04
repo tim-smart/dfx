@@ -2,7 +2,7 @@ import * as Http from "@effect-http/client"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
 import { DefinitionNotFound, handlers } from "./handlers.js"
-import { Interaction, InteractionBuilder } from "./index.js"
+import { Interaction, InteractionBuilder, builder } from "./index.js"
 import { splitDefinitions } from "./utils.js"
 
 export interface RunOpts {
@@ -70,3 +70,32 @@ export const run =
 
       return $(sync ? run.zipParRight(globalSync).zipParRight(guildSync) : run)
     })
+
+const makeRegistry = Do($ => {
+  const ref = $(Ref.make(builder))
+
+  const register = (ix: InteractionBuilder<never, never>) =>
+    ref.update(_ => _.concat(ix))
+
+  const run = ref.get.flatMap(_ =>
+    _.runGateway(_ => _.catchAllCause(_ => _.logErrorCause)),
+  )
+
+  return { register, run } as const
+})
+
+export interface InteractionsRegistry {
+  readonly register: (
+    ix: InteractionBuilder<never, never>,
+  ) => Effect<never, never, void>
+
+  readonly run: Effect<
+    DiscordREST | DiscordGateway,
+    DiscordRESTError | Http.ResponseDecodeError,
+    never
+  >
+}
+
+export const InteractionsRegistry = Tag<InteractionsRegistry>()
+export const InteractionsRegistryLive =
+  makeRegistry.toLayer(InteractionsRegistry)

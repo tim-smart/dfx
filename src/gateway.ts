@@ -11,7 +11,11 @@ export * as DiscordWS from "./DiscordGateway/DiscordWS.js"
 export * as Shard from "./DiscordGateway/Shard.js"
 export * as ShardStore from "./DiscordGateway/ShardStore.js"
 export * as WS from "./DiscordGateway/WS.js"
-export { run as runIx } from "./Interactions/gateway.js"
+export {
+  InteractionsRegistry,
+  InteractionsRegistryLive,
+  run as runIx,
+} from "./Interactions/gateway.js"
 
 export const MemoryRateLimit = LiveMemoryRateLimitStore >> LiveRateLimiter
 
