@@ -3,7 +3,10 @@ import { DiscordGateway } from "dfx/DiscordGateway"
 import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
 import { DefinitionNotFound, handlers } from "./handlers.js"
 import { Interaction, InteractionBuilder, builder } from "./index.js"
-import { splitDefinitions } from "./utils.js"
+import type {
+  GlobalApplicationCommand,
+  GuildApplicationCommand,
+} from "./definitions.js"
 
 export interface RunOpts {
   sync?: boolean
@@ -31,8 +34,18 @@ export const run =
     never
   > =>
     Do($ => {
-      const { GlobalApplicationCommand, GuildApplicationCommand } =
-        splitDefinitions(ix.definitions)
+      const GlobalApplicationCommand = ix.definitions
+        .map(_ => _[0])
+        .filter(
+          (_): _ is GlobalApplicationCommand<R, E> =>
+            _._tag === "GlobalApplicationCommand",
+        ).toReadonlyArray
+      const GuildApplicationCommand = ix.definitions
+        .map(_ => _[0])
+        .filter(
+          (_): _ is GuildApplicationCommand<R, E> =>
+            _._tag === "GuildApplicationCommand",
+        ).toReadonlyArray
 
       const gateway = $(DiscordGateway)
       const rest = $(DiscordREST)
@@ -44,9 +57,7 @@ export const run =
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
         {
-          body: Http.body.json(
-            GlobalApplicationCommand.map(([_]) => _.command),
-          ),
+          body: Http.body.json(GlobalApplicationCommand.map(_ => _.command)),
         },
       )
 
@@ -55,20 +66,17 @@ export const run =
             rest.bulkOverwriteGuildApplicationCommands(
               application.id,
               a.id,
-              GuildApplicationCommand.map(([_]) => _.command) as any,
+              GuildApplicationCommand.map(_ => _.command) as any,
             ),
           )
         : Effect.never()
 
-      const handle = handlers(ix.definitions)
+      const handle = handlers(ix.definitions, (i, r) =>
+        rest.createInteractionResponse(i.id, i.token, r),
+      )
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
-        pipe(
-          handle[i.type](i).tap(r =>
-            rest.createInteractionResponse(i.id, i.token, r),
-          ),
-          postHandler,
-        ).provideService(Interaction, i),
+        postHandler(handle[i.type](i)).provideService(Interaction, i),
       )
 
       return $(sync ? run.zipParRight(globalSync).zipParRight(guildSync) : run)
@@ -77,24 +85,32 @@ export const run =
 const makeRegistry = Do($ => {
   const ref = $(Ref.make(builder))
 
-  const register = (ix: InteractionBuilder<never, never>) =>
-    ref.update(_ => _.concat(ix))
+  const register = <E>(ix: InteractionBuilder<never, E, never>) =>
+    ref.update(_ => _.concat(ix as any))
 
-  const run = ref.get.flatMap(_ =>
-    _.runGateway(_ => _.catchAllCause(_ => _.logErrorCause)),
-  )
+  const run = <R, E>(
+    onError: (
+      _: Cause<DiscordRESTError | DefinitionNotFound>,
+    ) => Effect<R, E, void>,
+    opts?: RunOpts,
+  ) => ref.get.flatMap(_ => _.runGateway(_ => _.catchAllCause(onError), opts))
 
   return { register, run } as const
 })
 
 export interface InteractionsRegistry {
-  readonly register: (
-    ix: InteractionBuilder<never, never>,
+  readonly register: <E>(
+    ix: InteractionBuilder<never, E, never>,
   ) => Effect<never, never, void>
 
-  readonly run: Effect<
-    DiscordREST | DiscordGateway,
-    DiscordRESTError | Http.ResponseDecodeError,
+  readonly run: <R, E>(
+    onError: (
+      _: Cause<DiscordRESTError | DefinitionNotFound>,
+    ) => Effect<R, E, void>,
+    opts?: RunOpts,
+  ) => Effect<
+    DiscordREST | DiscordGateway | Exclude<R, Discord.Interaction>,
+    DiscordRESTError | Http.ResponseDecodeError | E,
     never
   >
 }

@@ -1,41 +1,38 @@
-import * as Arr from "@effect/data/ReadonlyArray"
 import * as IxHelpers from "dfx/Helpers/interactions"
 import * as Ctx from "./context.js"
 import * as D from "./definitions.js"
-import { splitDefinitions } from "./utils.js"
+import { flattenDefinitions, splitDefinitions } from "./utils.js"
 
 export class DefinitionNotFound {
   readonly _tag = "DefinitionNotFound"
   constructor(readonly interaction: Discord.Interaction) {}
 }
 
-type Handler<R, E> = Effect<
+type Handler<R, E, A> = Effect<
   R | Discord.Interaction,
   E | DefinitionNotFound,
-  Discord.InteractionResponse
+  A
 >
 
-const context: D.CommandHelper<any> = {
-  resolve: Ctx.resolved,
-  option: Ctx.option,
-  optionValue: Ctx.optionValue,
-  optionValueOptional: Ctx.optionValueOptional,
-  subCommands: Ctx.handleSubCommands,
-} as any
-
-export const handlers = <R, E, TE>(
+export const handlers = <R, E, TE, A, B>(
   definitions: Chunk<
     readonly [
       handler: D.InteractionDefinition<R, E>,
-      transform: (self: Effect<any, any, any>) => Effect<R, TE, void>,
+      transform: (self: Effect<R, E, A>) => Effect<R, TE, B>,
     ]
   >,
+  handleResponse: (
+    ix: Discord.Interaction,
+    _: Discord.InteractionResponse,
+  ) => Effect<R, E, A>,
 ): Record<
   Discord.InteractionType,
-  (i: Discord.Interaction) => Handler<R, E>
+  (i: Discord.Interaction) => Handler<R, E, B>
 > => {
+  const flattened = flattenDefinitions(definitions, handleResponse)
+
   const { Commands, Autocomplete, MessageComponent, ModalSubmit } =
-    splitDefinitions(definitions)
+    splitDefinitions(flattened)
 
   return {
     [Discord.InteractionType.PING]: () =>
@@ -46,89 +43,67 @@ export const handlers = <R, E, TE>(
     [Discord.InteractionType.APPLICATION_COMMAND]: i => {
       const data = i.data as Discord.ApplicationCommandDatum
 
-      return Maybe.fromNullable(Commands[data.name])
-        .match(
-          () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-          ([command]) =>
-            Effect.isEffect(command.handle)
-              ? command.handle
-              : command.handle(context),
-        )
-        .provideService(Ctx.ApplicationCommand, data)
+      return Maybe.fromNullable(Commands[data.name]).match(
+        () => Effect.fail(new DefinitionNotFound(i)),
+        command =>
+          command
+            .handle(i)
+            .provideService(Ctx.ApplicationCommand, data) as Handler<R, E, B>,
+      )
     },
 
-    [Discord.InteractionType.MODAL_SUBMIT]: (i: Discord.Interaction) => {
+    [Discord.InteractionType.MODAL_SUBMIT]: i => {
       const data = i.data as Discord.ModalSubmitDatum
 
-      return pipe(
-        ModalSubmit.map(a =>
-          Effect.all({
-            command: Effect.succeed(a),
-            match: a.predicate(data.custom_id),
-          }),
+      return ModalSubmit.find(_ => _.predicate(data.custom_id)).flatMap(_ =>
+        _.match(
+          () => Effect.fail(new DefinitionNotFound(i)),
+          match =>
+            match
+              .handle(i)
+              .provideService(Ctx.ModalSubmitData, data) as Handler<R, E, B>,
         ),
-        _ =>
-          Effect.allPar(_)
-            .flatMap(_ =>
-              Arr.findFirst(_, _ => _.match).match(
-                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                a => a.command.handle,
-              ),
-            )
-            .provideService(Ctx.ModalSubmitData, data),
       )
     },
 
     [Discord.InteractionType.MESSAGE_COMPONENT]: i => {
       const data = i.data as Discord.MessageComponentDatum
 
-      return pipe(
-        MessageComponent,
-        Arr.map(a =>
-          Effect.all({
-            command: Effect.succeed(a),
-            match: a.predicate(data.custom_id),
-          }),
-        ),
+      return MessageComponent.find(_ => _.predicate(data.custom_id)).flatMap(
         _ =>
-          Effect.allPar(_)
-            .flatMap(commands =>
-              Arr.findFirst(commands, _ => _.match).match(
-                () => Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                _ => _.command.handle,
-              ),
-            )
-            .provideService(Ctx.MessageComponentData, data),
+          _.match(
+            () => Effect.fail(new DefinitionNotFound(i)),
+            match =>
+              match
+                .handle(i)
+                .provideService(Ctx.MessageComponentData, data) as Handler<
+                R,
+                E,
+                B
+              >,
+          ),
       )
     },
 
     [Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE]: i => {
       const data = i.data as Discord.ApplicationCommandDatum
 
-      return IxHelpers.focusedOption(data)
-        .map(focusedOption =>
-          pipe(
-            Autocomplete,
-            Arr.map(_ =>
-              Effect.all({
-                command: Effect.succeed(_),
-                match: _.predicate(data, focusedOption),
-              }),
+      return IxHelpers.focusedOption(data).match(
+        () => Effect.fail(new DefinitionNotFound(i)),
+        focusedOption =>
+          Autocomplete.find(_ => _.predicate(data, focusedOption)).flatMap(_ =>
+            _.match(
+              () => Effect.fail(new DefinitionNotFound(i)),
+              match =>
+                match
+                  .handle(i)
+                  .provideService(Ctx.ApplicationCommand, data)
+                  .provideService(Ctx.FocusedOptionContext, {
+                    focusedOption,
+                  }) as Handler<R, E, B>,
             ),
-            _ =>
-              Effect.allPar(_)
-                .flatMap(_ =>
-                  Arr.findFirst(_, _ => _.match).match(
-                    () =>
-                      Effect.fail(new DefinitionNotFound(i)) as Handler<R, E>,
-                    _ => _.command.handle,
-                  ),
-                )
-                .provideService(Ctx.ApplicationCommand, data)
-                .provideService(Ctx.FocusedOptionContext, { focusedOption }),
           ),
-        )
-        .getOrElse(() => Effect.fail(new DefinitionNotFound(i)))
+      )
     },
   }
 }

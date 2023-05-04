@@ -143,7 +143,7 @@ type DeepReadonlyObject<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>
 }
 
-type CommandHandler<R, E, A = any> =
+export type CommandHandler<R, E, A = any> =
   | Effect<R, E, Discord.InteractionResponse>
   | CommandHandlerFn<R, E, A>
 
@@ -196,7 +196,7 @@ export interface CommandHelper<A> {
   >
 }
 
-type CommandHandlerFn<R, E, A> = (
+export type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
 ) => Effect<R, E, Discord.InteractionResponse>
 

@@ -62,8 +62,21 @@ const fromHeadersAndBody = (headers: Headers, body: string) =>
     )
   })
 
-const run = <R, E>(definitions: D.InteractionDefinition<R, E>[]) => {
-  const handler = handlers(definitions)
+const run = <R, E>(
+  definitions: Chunk<
+    readonly [
+      handler: D.InteractionDefinition<R, E>,
+      transform: (
+        self: Effect<R, E, Discord.InteractionResponse>,
+      ) => Effect<R, E, Discord.InteractionResponse>,
+    ]
+  >,
+  handleResponse: (
+    ix: Discord.Interaction,
+    _: Discord.InteractionResponse,
+  ) => Effect<R, E, Discord.InteractionResponse>,
+) => {
+  const handler = handlers(definitions, handleResponse)
   return (headers: Headers, body: string) =>
     Do($ => {
       const interaction = $(fromHeadersAndBody(headers, body))
@@ -86,8 +99,11 @@ export interface HandleWebhookOpts<E> {
 /**
  * @tsplus getter dfx/InteractionBuilder webhookHandler
  */
-export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
-  const handle = run(ix.definitions)
+export const makeHandler = <R, E, TE>(ix: InteractionBuilder<R, E, TE>) => {
+  const handle = run(
+    ix.definitions.map(([d]) => [d, identity] as any),
+    (_i, r) => Effect.succeed(r),
+  )
 
   return ({
     headers,
@@ -96,17 +112,19 @@ export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
     error,
   }: HandleWebhookOpts<
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
-  >) =>
-    ix
-      .transform(ix.transformRespond(handle(headers, body)).flatMap(success))
-      .catchAllCause(error)
+  >) => handle(headers, body).flatMap(success).catchAllCause(error)
 }
 
 /**
  * @tsplus getter dfx/InteractionBuilder simpleWebhookHandler
  */
-export const makeSimpleHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
-  const handle = run(ix.definitions)
+export const makeSimpleHandler = <R, E, TE>(
+  ix: InteractionBuilder<R, E, TE>,
+) => {
+  const handle = run(
+    ix.definitions.map(([d]) => [d, identity] as any),
+    (_i, r) => Effect.succeed(r),
+  )
 
   return ({ headers, body }: { headers: Headers; body: string }) =>
     handle(headers, body)
