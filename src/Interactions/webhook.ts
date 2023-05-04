@@ -96,7 +96,10 @@ export const makeHandler = <R, E>(ix: InteractionBuilder<R, E>) => {
     error,
   }: HandleWebhookOpts<
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
-  >) => handle(headers, body).flatMap(success).catchAllCause(error)
+  >) =>
+    ix
+      .transform(ix.transformRespond(handle(headers, body)).flatMap(success))
+      .catchAllCause(error)
 }
 
 /**

@@ -60,9 +60,10 @@ export const run =
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
         pipe(
-          handle[i.type](i).tap(r =>
-            rest.createInteractionResponse(i.id, i.token, r),
-          ),
+          ix
+            .transformRespond(handle[i.type](i))
+            .tap(r => rest.createInteractionResponse(i.id, i.token, r)),
+          ix.transform,
           postHandler,
         ).provideService(Interaction, i),
       )
