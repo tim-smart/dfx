@@ -87,7 +87,9 @@ const makeRegistry = Do($ => {
   const queue = $(Queue.unbounded<InteractionBuilder<never, never, never>>())
 
   const register = <E>(ix: InteractionBuilder<never, E, never>) =>
-    ref.updateAndGet(_ => _.concat(ix as any)).flatMap(_ => queue.offer(_))
+    ref
+      .updateAndGet(_ => _.concat(ix as any))
+      .flatMap(_ => queue.takeAll().zipRight(queue.offer(_)))
 
   const run = <R, E>(
     onError: (
