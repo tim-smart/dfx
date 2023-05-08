@@ -84,16 +84,20 @@ export const run =
 
 const makeRegistry = Do($ => {
   const ref = $(Ref.make(builder))
+  const queue = $(Queue.unbounded<InteractionBuilder<never, never, never>>())
 
   const register = <E>(ix: InteractionBuilder<never, E, never>) =>
-    ref.update(_ => _.concat(ix as any))
+    ref.updateAndGet(_ => _.concat(ix as any)).flatMap(_ => queue.offer(_))
 
   const run = <R, E>(
     onError: (
       _: Cause<DiscordRESTError | DefinitionNotFound>,
     ) => Effect<R, E, void>,
     opts?: RunOpts,
-  ) => ref.get.flatMap(_ => _.runGateway(_ => _.catchAllCause(onError), opts))
+  ) =>
+    queue
+      .take()
+      .foreverSwitch(_ => _.runGateway(_ => _.catchAllCause(onError), opts))
 
   return { register, run } as const
 })
