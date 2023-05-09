@@ -84,12 +84,10 @@ export const run =
 
 const makeRegistry = Do($ => {
   const ref = $(Ref.make(builder))
-  const queue = $(Queue.unbounded<InteractionBuilder<never, never, never>>())
+  const queue = $(Queue.sliding<InteractionBuilder<never, never, never>>(1))
 
   const register = <E>(ix: InteractionBuilder<never, E, never>) =>
-    ref
-      .updateAndGet(_ => _.concat(ix as any))
-      .flatMap(_ => queue.takeAll().zipRight(queue.offer(_)))
+    ref.updateAndGet(_ => _.concat(ix as any)).flatMap(_ => queue.offer(_))
 
   const run = <R, E>(
     onError: (
@@ -99,7 +97,7 @@ const makeRegistry = Do($ => {
   ) =>
     queue
       .take()
-      .foreverSwitch(_ => _.runGateway(_ => _.catchAllCause(onError), opts))
+      .foreverSwitch(ix => ix.runGateway(_ => _.catchAllCause(onError), opts))
 
   return { register, run } as const
 })
