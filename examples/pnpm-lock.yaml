@@ -5,37 +5,37 @@ dependencies:
     specifier: ^0.12.2
     version: 0.12.2
   '@effect/io':
-    specifier: ~0.25.7
-    version: 0.25.7
+    specifier: ~0.25.9
+    version: 0.25.9
   '@effect/stream':
-    specifier: ~0.21.0
-    version: 0.21.0
+    specifier: ~0.21.1
+    version: 0.21.1
   dfx:
-    specifier: ^0.38.0
-    version: 0.38.0
+    specifier: ^0.45.3
+    version: 0.45.3
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
   fastify:
-    specifier: ^4.16.0
-    version: 4.16.0
+    specifier: ^4.17.0
+    version: 4.17.0
 
 devDependencies:
   '@tsplus-types/effect__data':
     specifier: 0.12.2-3b576ba
     version: 0.12.2-3b576ba(@effect/data@0.12.2)
   '@tsplus-types/effect__io':
-    specifier: 0.25.7-3b576ba
-    version: 0.25.7-3b576ba(@effect/io@0.25.7)
+    specifier: 0.25.9-11739c0
+    version: 0.25.9-11739c0(@effect/io@0.25.9)
   '@tsplus-types/effect__stream':
-    specifier: 0.21.0-3b576ba
-    version: 0.21.0-3b576ba(@effect/stream@0.21.0)
+    specifier: 0.21.1-11739c0
+    version: 0.21.1-11739c0(@effect/stream@0.21.1)
   esbuild:
     specifier: ^0.17.18
     version: 0.17.18
   ts-node:
     specifier: ^10.9.1
-    version: 10.9.1(@types/node@18.16.1)(typescript@5.0.0-tsplus.20230205)
+    version: 10.9.1(@types/node@20.1.3)(typescript@5.0.0-tsplus.20230205)
   typescript:
     specifier: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.170/compiler/typescript.tgz
     version: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.170/compiler/typescript.tgz'
@@ -49,36 +49,36 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@effect-http/client@0.22.0:
-    resolution: {integrity: sha512-MWmMTTmfuh7A2KN+K7mlF90AS6b1XOzuNfRVLl9nKl13Lu5bvhgpkjLpD/5Jf+xDWKh5HtJjl0W0Zk6Ocpb3jA==}
+  /@effect-http/client@0.24.2:
+    resolution: {integrity: sha512-Ae5v2KraedgMSlwSvD2Qn+dLWJ21XAWDZoUtdHbmNL21DRfR4DiF0NvogA/Wa4tlyrlAscY1GY+PnFoi48GqGw==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.7
-      '@effect/schema': 0.16.0
-      '@effect/stream': 0.21.0
+      '@effect/io': 0.25.9
+      '@effect/schema': 0.17.5
+      '@effect/stream': 0.21.1
     dev: false
 
   /@effect/data@0.12.2:
     resolution: {integrity: sha512-bmWRTcsSRG1FlBswT+D8SxW6r3c4B3pKJrjYfitCD03tXHnup5gLHaWqbFgIjiyYITS+UsJRRjVrNxvyGG4ZNQ==}
 
-  /@effect/io@0.25.7:
-    resolution: {integrity: sha512-+aVOwsyBfFyDvHik8qEUyQY2AeOTG+GAZQmInwkFQvcWx4CokLqn6ysZD2rF9KlDUSYGEeYLtZPC7uQuq9F9Nw==}
+  /@effect/io@0.25.9:
+    resolution: {integrity: sha512-RvW3l7A7PpPb74xwegxVKL5S+Zt+oA73fimSI7GunwaRk/OpI942BKdMczW1xN2sV5EME6jernAVAhKdncxM9Q==}
     dependencies:
       '@effect/data': 0.12.2
 
-  /@effect/schema@0.16.0:
-    resolution: {integrity: sha512-KYf77SQRD6Z2KJ30XMc47KHbPGTYCQwjXNuGlELl/WjzJYJuvKSQBMTRUUuhrjSi+ROTm5sUwwfskLfXeO0GVA==}
+  /@effect/schema@0.17.5:
+    resolution: {integrity: sha512-I9NJ/Zwx605hdMT5G1OZ1jlo95WC4KvfXFY2zHYTJNAkdv6f31GF5qylrcd32pUm6/EM73HdjxrEZMMKnpEeUQ==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.7
+      '@effect/io': 0.25.9
       fast-check: 3.8.1
     dev: false
 
-  /@effect/stream@0.21.0:
-    resolution: {integrity: sha512-39nkKJVUt41DDn08E4we9L/7YGHAZeDjyiAapFn1Grx2npR+CRra4gZqqJF3bwO/9b9Yipl1I8WD+6v/Hx2tfA==}
+  /@effect/stream@0.21.1:
+    resolution: {integrity: sha512-x227xIB+PC/xaz4R3RYkjg2Z0sw5Fgkt5hfxXeGHpKThhmqVEeIXjd0v04pcoz2lJtStcvWL5Wuh/Z8HP3Hw/Q==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.7
+      '@effect/io': 0.25.9
 
   /@esbuild/android-arm64@0.17.18:
     resolution: {integrity: sha512-/iq0aK0eeHgSC3z55ucMAHO05OIqmQehiGay8eP5l/5l+iEr4EIbh4/MI8xD9qRFjqzgkc0JkX0LculNC9mXBw==}
@@ -294,8 +294,8 @@ packages:
     resolution: {integrity: sha512-KAfcLa+CnknwVi5fWogrLXgidLic+GXnLjijXdpl8pvkvbXU5BGa37iZO9FGvsh9ZL4y+oFi5cbHBm5UOG+dmQ==}
     dev: false
 
-  /@fastify/fast-json-stringify-compiler@4.2.0:
-    resolution: {integrity: sha512-ypZynRvXA3dibfPykQN3RB5wBdEUgSGgny8Qc6k163wYPLD4mEGEDkACp+00YmqkGvIm8D/xYoHajwyEdWD/eg==}
+  /@fastify/fast-json-stringify-compiler@4.3.0:
+    resolution: {integrity: sha512-aZAXGYo6m22Fk1zZzEUKBvut/CIIQe/BapEORnxiD5Qr0kPHqqI69NtEMCme74h+at72sPhbkb4ZrLd1W3KRLA==}
     dependencies:
       fast-json-stringify: 5.7.0
     dev: false
@@ -340,24 +340,24 @@ packages:
       '@effect/data': 0.12.2
     dev: true
 
-  /@tsplus-types/effect__io@0.25.7-3b576ba(@effect/io@0.25.7):
-    resolution: {integrity: sha512-2J8XLtR3VP94EIZF0Y9urx5K9FYsPsE+Q6Q9HvYuf9SFJOHEpHkTUAqNAaHBNWa/jRK6/jceC5fQhzwevMAG5w==}
+  /@tsplus-types/effect__io@0.25.9-11739c0(@effect/io@0.25.9):
+    resolution: {integrity: sha512-WfLpcuNcZAqWns2MQKIq/4noPyAqtZAXmtnD04kx3FEfQg4Kt0Hr5s5M3AO1WL2ga2oQVlaTaE+pQWXkecn7lQ==}
     peerDependencies:
-      '@effect/io': 0.25.7
+      '@effect/io': 0.25.9
     dependencies:
-      '@effect/io': 0.25.7
+      '@effect/io': 0.25.9
     dev: true
 
-  /@tsplus-types/effect__stream@0.21.0-3b576ba(@effect/stream@0.21.0):
-    resolution: {integrity: sha512-i3omc4bRzCab/FoVfiO2PVb6Co1cisnANeHHoaMGnza7mHB7kPlzJZlA5R/ncapp/qjkMoa6Qp4N99ROZt3JyA==}
+  /@tsplus-types/effect__stream@0.21.1-11739c0(@effect/stream@0.21.1):
+    resolution: {integrity: sha512-KYbOdY2kBEU3zjC7m3jaCwQLhzPme76rVqxkwr4rkYCI6Ax++1EKwZEkMnzcU7cfoBSj4gTWKbOoge4BT6CfpQ==}
     peerDependencies:
-      '@effect/stream': 0.21.0
+      '@effect/stream': 0.21.1
     dependencies:
-      '@effect/stream': 0.21.0
+      '@effect/stream': 0.21.1
     dev: true
 
-  /@types/node@18.16.1:
-    resolution: {integrity: sha512-DZxSZWXxFfOlx7k7Rv4LAyiMroaxa3Ly/7OOzZO8cBNho0YzAi4qlbrx8W27JGqG57IgR/6J7r+nOJWw6kcvZA==}
+  /@types/node@20.1.3:
+    resolution: {integrity: sha512-NP2yfZpgmf2eDRPmgGq+fjGjSwFgYbihA8/gK+ey23qT9RkxsgNTZvGOEpXgzIGqesTYkElELLgtKoMQTys5vA==}
     dev: true
 
   /abort-controller@3.0.0:
@@ -466,13 +466,13 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /dfx@0.38.0:
-    resolution: {integrity: sha512-F9CtTG7aG9Tcen9kDafAQXqI+wVxLexXWzDg6zcayoG0APsFIifwjovnjP5ONA00WrQGgx3mMZCFTOLPWkbLwQ==}
+  /dfx@0.45.3:
+    resolution: {integrity: sha512-PudoR4k9+fDidm+5ZlvqTZKY6/plfbI/3vzhq+bbS9AzGZtAdHuR8z12xe+Lryi16LP0/979/Stx6mkzgRBW0g==}
     dependencies:
-      '@effect-http/client': 0.22.0
+      '@effect-http/client': 0.24.2
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.7
-      '@effect/stream': 0.21.0
+      '@effect/io': 0.25.9
+      '@effect/stream': 0.21.1
       tweetnacl: 1.0.3
     optionalDependencies:
       bufferutil: 4.0.7
@@ -576,18 +576,19 @@ packages:
     resolution: {integrity: sha512-cIusKBIt/R/oI6z/1nyfe2FvGKVTohVRfvkOhvx0nCEW+xf5NoCXjAHcWp93uOUBchzYcsvPlrapAdX1uW+YGg==}
     dev: false
 
-  /fastify@4.16.0:
-    resolution: {integrity: sha512-Js9VNCqQ2n82X1U49lQGff1bkmOvA2KtoN7nWw99f3AVA51sr20zfDkQyzjHiHU/DV2FLHdEiPUB12eA4CWTWA==}
+  /fastify@4.17.0:
+    resolution: {integrity: sha512-tzuY1tgWJo2Y6qEKwmLhFvACUmr68Io2pqP/sDKU71KRM6A6R3DrCDqLGqANbeLZcKUfdfY58ut35CGqemcTgg==}
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
       '@fastify/error': 3.2.0
-      '@fastify/fast-json-stringify-compiler': 4.2.0
+      '@fastify/fast-json-stringify-compiler': 4.3.0
       abstract-logging: 2.0.1
       avvio: 8.2.1
       fast-content-type-parse: 1.0.0
-      find-my-way: 7.6.0
+      fast-json-stringify: 5.7.0
+      find-my-way: 7.6.2
       light-my-request: 5.9.1
-      pino: 8.11.0
+      pino: 8.14.1
       process-warning: 2.2.0
       proxy-addr: 2.0.7
       rfdc: 1.3.0
@@ -604,8 +605,8 @@ packages:
       reusify: 1.0.4
     dev: false
 
-  /find-my-way@7.6.0:
-    resolution: {integrity: sha512-H7berWdHJ+5CNVr4ilLWPai4ml7Y2qAsxjw3pfeBxPigZmaDTzF0wjJLj90xRCmGcWYcyt050yN+34OZDJm1eQ==}
+  /find-my-way@7.6.2:
+    resolution: {integrity: sha512-0OjHn1b1nCX3eVbm9ByeEHiscPYiHLfhei1wOUU9qffQkk98wE0Lo8VrVYfSGMgnSnDh86DxedduAnBf4nwUEw==}
     engines: {node: '>=14'}
     dependencies:
       fast-deep-equal: 3.1.3
@@ -677,23 +678,23 @@ packages:
   /pino-abstract-transport@1.0.0:
     resolution: {integrity: sha512-c7vo5OpW4wIS42hUVcT5REsL8ZljsUfBjqV/e2sFxmFEFZiq1XLUp5EYLtuDH6PEHq9W1egWqRbnLUP5FuZmOA==}
     dependencies:
-      readable-stream: 4.3.0
+      readable-stream: 4.4.0
       split2: 4.2.0
     dev: false
 
-  /pino-std-serializers@6.2.0:
-    resolution: {integrity: sha512-IWgSzUL8X1w4BIWTwErRgtV8PyOGOOi60uqv0oKuS/fOA8Nco/OeI6lBuc4dyP8MMfdFwyHqTMcBIA7nDiqEqA==}
+  /pino-std-serializers@6.2.1:
+    resolution: {integrity: sha512-wHuWB+CvSVb2XqXM0W/WOYUkVSPbiJb9S5fNB7TBhd8s892Xq910bRxwHtC4l71hgztObTjXL6ZheZXFjhDrDQ==}
     dev: false
 
-  /pino@8.11.0:
-    resolution: {integrity: sha512-Z2eKSvlrl2rH8p5eveNUnTdd4AjJk8tAsLkHYZQKGHP4WTh2Gi1cOSOs3eWPqaj+niS3gj4UkoreoaWgF3ZWYg==}
+  /pino@8.14.1:
+    resolution: {integrity: sha512-8LYNv7BKWXSfS+k6oEc6occy5La+q2sPwU3q2ljTX5AZk7v+5kND2o5W794FyRaqha6DJajmkNRsWtPpFyMUdw==}
     hasBin: true
     dependencies:
       atomic-sleep: 1.0.0
       fast-redact: 3.1.2
       on-exit-leak-free: 2.1.0
       pino-abstract-transport: 1.0.0
-      pino-std-serializers: 6.2.0
+      pino-std-serializers: 6.2.1
       process-warning: 2.2.0
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
@@ -732,8 +733,8 @@ packages:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
     dev: false
 
-  /readable-stream@4.3.0:
-    resolution: {integrity: sha512-MuEnA0lbSi7JS8XM+WNJlWZkHAAdm7gETHdFK//Q/mChGyj2akEFtdLZh32jSdkWGbRwCW9pn6g3LWDdDeZnBQ==}
+  /readable-stream@4.4.0:
+    resolution: {integrity: sha512-kDMOq0qLtxV9f/SQv522h8cxZBqNZXuXNyjyezmfAAuribMyVXziljpQ/uQhfE1XLg2/TLTW2DsnoE4VAi/krg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       abort-controller: 3.0.0
@@ -815,7 +816,7 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /ts-node@10.9.1(@types/node@18.16.1)(typescript@5.0.0-tsplus.20230205):
+  /ts-node@10.9.1(@types/node@20.1.3)(typescript@5.0.0-tsplus.20230205):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -834,7 +835,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 18.16.1
+      '@types/node': 20.1.3
       acorn: 8.8.1
       acorn-walk: 8.2.0
       arg: 4.1.3
