@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.45.5](https://github.com/tim-smart/dfx/compare/dfx@0.45.4...dfx@0.45.5) (2023-05-14)
+
+
+### Bug Fixes
+
+* small memory leak ([bfccc06](https://github.com/tim-smart/dfx/commit/bfccc064845b63d0a019b779c1ce629297523032))
+
+
+
+
+
 ## [0.45.4](https://github.com/tim-smart/dfx/compare/dfx@0.45.3...dfx@0.45.4) (2023-05-12)
 
 **Note:** Version bump only for package dfx
