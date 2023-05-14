@@ -5,6 +5,11 @@ import { LiveRateLimiter, RateLimiter } from "../RateLimit.js"
 import { LiveShard, Shard } from "./Shard.js"
 import { ShardStore } from "./ShardStore.js"
 import { WebSocketCloseError, WebSocketError } from "./WS.js"
+import { Some } from "@effect/data/Option"
+
+const claimRepeatPolicy = Schedule.fixed(Duration.minutes(3)).whileInput(
+  (_: Maybe<number>) => _.isNone(),
+).passthrough as Schedule<never, Maybe<number>, Some<number>>
 
 const make = Do($ => {
   const store = $(ShardStore)
@@ -23,12 +28,8 @@ const make = Do($ => {
             totalCount,
             sharderCount,
           })
-          .flatMap(a =>
-            a.match(
-              () => claimId(sharderCount).delay(Duration.minutes(3)),
-              id => Effect.succeed(id),
-            ),
-          )
+          .repeat(claimRepeatPolicy)
+          .map(_ => _.value)
 
       return currentCount
         .getAndUpdate(_ => _ + 1)
