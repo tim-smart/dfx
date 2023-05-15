@@ -1,22 +1,9 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": "src",
     "outDir": ".",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "moduleResolution": "NodeNext",
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "sourceMap": true,
-    "declaration": true,
-    "strict": true,
-    "target": "ES2022",
-    "tsPlusConfig": "./tsplus.config.json",
-    "paths": {
-      "dfx": ["./src/index.js"],
-      "dfx/*": ["./src/*.js"]
-    }
+    "rootDir": "./src"
   },
   "include": ["src/**/*"],
   "exclude": []
