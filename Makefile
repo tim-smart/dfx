@@ -7,4 +7,4 @@ build: clean
 
 .PHONY: clean
 clean:
-	rm -rf dist build
+	rm -rf dist build *.tsbuildinfo
