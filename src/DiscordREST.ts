@@ -21,6 +21,8 @@ export class DiscordRESTError {
   constructor(readonly error: Http.HttpClientError) {}
 }
 
+export { ResponseDecodeError } from "@effect-http/client"
+
 const make = Do($ => {
   const { token, rest } = $(DiscordConfig)
 
