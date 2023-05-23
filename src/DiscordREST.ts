@@ -68,8 +68,8 @@ const make = Do($ => {
       const bucket = maybeBucket.getOrElse(
         (): BucketDetails => ({
           key: `?.${route}`,
-          resetAfter: 5000,
-          limit: 1,
+          resetAfter: 1000,
+          limit: 5,
         }),
       )
       const resetAfter = millis(bucket.resetAfter)
