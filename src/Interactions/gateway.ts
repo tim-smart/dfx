@@ -83,7 +83,7 @@ export const run =
     })
 
 const makeRegistry = Do($ => {
-  const ref = $(Ref.make(builder))
+  const ref = $(Ref.make(builder as InteractionBuilder<never, never, never>))
   const queue = $(Queue.sliding<InteractionBuilder<never, never, never>>(1))
 
   const register = <E>(ix: InteractionBuilder<never, E, never>) =>

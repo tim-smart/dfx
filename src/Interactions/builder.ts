@@ -3,6 +3,7 @@ import { catchTag } from "@effect/io/Effect"
 import { DiscordREST } from "dfx"
 import { Discord, Effect } from "dfx/_common"
 import * as D from "./definitions.js"
+import { DiscordRESTError } from "dfx/DiscordREST"
 
 type ExtractTag<A> = A extends { _tag: infer Tag }
   ? Tag extends string
@@ -150,7 +151,7 @@ export class InteractionBuilder<R, E, TE> {
   }
 }
 
-export const builder = new InteractionBuilder<never, never, never>(
+export const builder = new InteractionBuilder<never, never, DiscordRESTError>(
   Chunk.empty(),
   identity as any,
 )

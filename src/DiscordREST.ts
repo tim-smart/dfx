@@ -18,7 +18,7 @@ import Pkg from "./package.json" assert { type: "json" }
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
-  constructor(readonly error: Http.HttpClientError) {}
+  constructor(readonly error: Http.HttpClientError, readonly body?: unknown) {}
 }
 
 export { ResponseDecodeError } from "@effect-http/client"
@@ -113,7 +113,13 @@ const make = Do($ => {
         "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
       }),
     )
-    .catchAll(_ => Effect.fail(new DiscordRESTError(_)))
+    .catchAll(error =>
+      error._tag === "StatusCodeError"
+        ? error.response.json
+            .mapError(_ => new DiscordRESTError(_))
+            .flatMap(body => Effect.fail(new DiscordRESTError(error, body)))
+        : Effect.fail(new DiscordRESTError(error)),
+    )
 
   const executor = <A = unknown>(
     request: Http.Request,
