@@ -3912,6 +3912,8 @@ export interface Guild {
   readonly stickers?: Sticker[]
   /** whether the guild has the boost progress bar enabled */
   readonly premium_progress_bar_enabled: boolean
+  /** the id of the channel where admins and moderators of Community guilds receive safety alerts from Discord */
+  readonly safety_alerts_channel_id?: Snowflake | null
 }
 export interface GuildApplicationCommandPermission {
   /** ID of the command or the application ID */
@@ -4005,6 +4007,8 @@ export const enum GuildFeature {
   PARTNERED = "PARTNERED",
   /** guild can be previewed before joining via Membership Screening or the directory */
   PREVIEW_ENABLED = "PREVIEW_ENABLED",
+  /** guild has disabled alerts for join raids in the configured safety alerts channel */
+  RAID_ALERTS_DISABLED = "RAID_ALERTS_DISABLED",
   /** guild is able to set role icons */
   ROLE_ICONS = "ROLE_ICONS",
   /** guild has role subscriptions that can be purchased */
@@ -5166,6 +5170,8 @@ export interface ModifyGuildParams {
   readonly description?: string | null
   /** whether the guild's boost progress bar should be enabled */
   readonly premium_progress_bar_enabled: boolean
+  /** the id of the channel where admins and moderators of Community guilds receive safety alerts from Discord */
+  readonly safety_alerts_channel_id?: Snowflake | null
 }
 export interface ModifyGuildRoleParams {
   /** name of the role, max 100 characters */
@@ -5255,8 +5261,9 @@ export interface ModifyWebhookParams {
 }
 export const enum MutableGuildFeature {
   COMMUNITY = "COMMUNITY",
-  INVITES_DISABLED = "INVITES_DISABLED",
   DISCOVERABLE = "DISCOVERABLE",
+  INVITES_DISABLED = "INVITES_DISABLED",
+  RAID_ALERTS_DISABLED = "RAID_ALERTS_DISABLED",
 }
 export const enum OAuth2Scope {
   /** allows your app to fetch data from a user's "Now Playing/Recently Played" list — not currently available for apps */
@@ -5429,6 +5436,8 @@ export const PermissionFlag = {
   VIEW_CREATOR_MONETIZATION_ANALYTICS: BigInt(1) << BigInt(41),
   /** Allows for using soundboard in a voice channel */
   USE_SOUNDBOARD: BigInt(1) << BigInt(42),
+  /** Allows the usage of custom soundboard sounds from other servers */
+  USE_EXTERNAL_SOUNDS: BigInt(1) << BigInt(45),
   /** Allows sending voice messages */
   SEND_VOICE_MESSAGES: BigInt(1) << BigInt(46),
 } as const
@@ -5679,12 +5688,10 @@ export interface Response {
   readonly user?: User
 }
 export interface ResponseBody {
-  /** the public, archived threads */
+  /** the active threads */
   readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
   readonly members: ThreadMember[]
-  /** whether there are potentially additional threads that could be returned on a subsequent call */
-  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
@@ -6091,6 +6098,8 @@ export interface TriggerMetadatum {
   readonly allow_list: string[]
   /** MENTION_SPAM */
   readonly mention_total_limit: number
+  /** MENTION_SPAM */
+  readonly mention_raid_protection_enabled: boolean
 }
 export const enum TriggerType {
   /** check if content contains words from a user defined list of keywords */
