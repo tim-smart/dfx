@@ -1212,10 +1212,11 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    createFollowupMessage: (applicationId, interactionToken, options) =>
+    createFollowupMessage: (applicationId, interactionToken, params, options) =>
       fetch({
         method: "POST",
         url: `/webhooks/${applicationId}/${interactionToken}`,
+        params,
         options,
       }),
     createGlobalApplicationCommand: (applicationId, params, options) =>
@@ -1536,11 +1537,13 @@ export function createRoutes<O = any>(
       applicationId,
       interactionToken,
       messageId,
+      params,
       options,
     ) =>
       fetch({
         method: "PATCH",
         url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        params,
         options,
       }),
     editGlobalApplicationCommand: (applicationId, commandId, params, options) =>
@@ -1573,11 +1576,13 @@ export function createRoutes<O = any>(
     editOriginalInteractionResponse: (
       applicationId,
       interactionToken,
+      params,
       options,
     ) =>
       fetch({
         method: "PATCH",
         url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        params,
         options,
       }),
     editWebhookMessage: (webhookId, webhookToken, messageId, params, options) =>
@@ -1698,10 +1703,17 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    getFollowupMessage: (applicationId, interactionToken, messageId, options) =>
+    getFollowupMessage: (
+      applicationId,
+      interactionToken,
+      messageId,
+      params,
+      options,
+    ) =>
       fetch({
         method: "GET",
         url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        params,
         options,
       }),
     getGateway: options =>
@@ -1920,11 +1932,13 @@ export function createRoutes<O = any>(
     getOriginalInteractionResponse: (
       applicationId,
       interactionToken,
+      params,
       options,
     ) =>
       fetch({
         method: "GET",
         url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        params,
         options,
       }),
     getPinnedMessages: (channelId, options) =>
@@ -2667,6 +2681,7 @@ export interface Endpoints<O> {
   createFollowupMessage: (
     applicationId: string,
     interactionToken: string,
+    params?: Partial<ExecuteWebhookParams>,
     options?: O,
   ) => RestResponse<any>
   createGlobalApplicationCommand: (
@@ -2930,6 +2945,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     applicationId: string,
     interactionToken: string,
     messageId: string,
+    params?: Partial<EditWebhookMessageParams>,
     options?: O,
   ) => RestResponse<any>
   editGlobalApplicationCommand: (
@@ -2956,6 +2972,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   editOriginalInteractionResponse: (
     applicationId: string,
     interactionToken: string,
+    params?: Partial<EditWebhookMessageParams>,
     options?: O,
   ) => RestResponse<any>
   /** Edits a previously-sent webhook message from the same token. Returns a message object on success. */
@@ -3055,6 +3072,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     applicationId: string,
     interactionToken: string,
     messageId: string,
+    params?: Partial<GetWebhookMessageParams>,
     options?: O,
   ) => RestResponse<any>
   getGateway: (options?: O) => RestResponse<any>
@@ -3216,6 +3234,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getOriginalInteractionResponse: (
     applicationId: string,
     interactionToken: string,
+    params?: Partial<GetWebhookMessageParams>,
     options?: O,
   ) => RestResponse<any>
   /** Returns all pinned messages in the channel as an array of message objects. */
@@ -5688,10 +5707,12 @@ export interface Response {
   readonly user?: User
 }
 export interface ResponseBody {
-  /** the active threads */
+  /** the public, archived threads */
   readonly threads: Channel[]
   /** a thread member object for each returned thread the current user has joined */
   readonly members: ThreadMember[]
+  /** whether there are potentially additional threads that could be returned on a subsequent call */
+  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
