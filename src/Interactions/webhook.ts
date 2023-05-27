@@ -1,8 +1,7 @@
-import Nacl from "tweetnacl"
+import Verify from "discord-verify"
 import * as D from "./definitions.js"
 import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder, Interaction } from "./index.js"
-import { fromHex } from "./utils.js"
 
 export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
@@ -11,31 +10,47 @@ export class BadWebhookSignature {
 export type Headers = Record<string, string | string[] | undefined>
 
 const checkSignature = (
-  publicKey: Uint8Array,
+  publicKey: string,
   headers: Headers,
   body: string,
+  crypto: SubtleCrypto,
+  algorithm: any,
 ) =>
   Maybe.struct({
     signature: Maybe.fromNullable(headers["x-signature-ed25519"]),
     timestamp: Maybe.fromNullable(headers["x-signature-timestamp"]),
   })
-    .filter(a => {
-      const enc = new TextEncoder()
-      return Nacl.sign.detached.verify(
-        enc.encode(a.timestamp + body),
-        fromHex(`${a.signature}`),
-        publicKey,
-      )
-    })
-    .toEither(() => new BadWebhookSignature()).asUnit
+    .flatMap(_ =>
+      Effect.promise(() =>
+        Verify.verify(
+          body,
+          _.signature as string,
+          _.timestamp as string,
+          publicKey,
+          crypto,
+          algorithm,
+        ),
+      ),
+    )
+    .filterOrFail(identity, () => new BadWebhookSignature())
+    .catchAllCause(() => Effect.fail(new BadWebhookSignature())).asUnit
 
 export interface MakeConfigOpts {
   applicationId: string
   publicKey: ConfigSecret
+  crypto: SubtleCrypto
+  algorithm: keyof typeof Verify.PlatformAlgorithm
 }
-const makeConfig = ({ applicationId, publicKey }: MakeConfigOpts) => ({
+const makeConfig = ({
   applicationId,
-  publicKey: fromHex(publicKey.value),
+  publicKey,
+  crypto,
+  algorithm,
+}: MakeConfigOpts) => ({
+  applicationId,
+  publicKey: publicKey.value,
+  crypto,
+  algorithm: Verify.PlatformAlgorithm[algorithm],
 })
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
@@ -52,8 +67,8 @@ export class WebhookParseError {
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
   Do($ => {
-    const { publicKey } = $(WebhookConfig)
-    $(checkSignature(publicKey, headers, body))
+    const { publicKey, crypto, algorithm } = $(WebhookConfig)
+    $(checkSignature(publicKey, headers, body, crypto, algorithm))
     return $(
       Effect.tryCatch(
         () => JSON.parse(body) as Discord.Interaction,
