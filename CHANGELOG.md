@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.2](https://github.com/tim-smart/dfx/compare/dfx@0.47.1...dfx@0.47.2) (2023-05-28)
+
+
+### Bug Fixes
+
+* ix command sync ([b579f0f](https://github.com/tim-smart/dfx/commit/b579f0f8e43afe6d25d0768e151c66028ab029ff))
+
+
+
+
+
 ## [0.47.1](https://github.com/tim-smart/dfx/compare/dfx@0.47.0...dfx@0.47.1) (2023-05-28)
 
 
