@@ -1,4 +1,4 @@
-import Verify from "discord-verify"
+import * as Verify from "discord-verify"
 import * as D from "./definitions.js"
 import { DefinitionNotFound, handlers } from "./handlers.js"
 import { InteractionBuilder, Interaction } from "./index.js"
