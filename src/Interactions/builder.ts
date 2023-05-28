@@ -126,7 +126,7 @@ export class InteractionBuilder<R, E, TE> {
         .flatMap(r => r.json)
         .flatMap(app =>
           rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-            body: Http.body.json(commands),
+            body: Http.body.json(commands.toReadonlyArray),
           }),
         ),
     )
@@ -145,7 +145,7 @@ export class InteractionBuilder<R, E, TE> {
       rest.bulkOverwriteGuildApplicationCommands(
         appId,
         guildId,
-        commands as any,
+        commands.toReadonlyArray as any,
       ),
     )
   }
