@@ -33,14 +33,14 @@ optionalDependencies:
 
 devDependencies:
   '@tim-smart/discord-api-docs-parser':
-    specifier: ^0.5.3
-    version: 0.5.3
+    specifier: ^0.5.5
+    version: 0.5.5
   '@tsplus-types/effect__data':
-    specifier: 0.12.2-3b576ba
-    version: 0.12.2-3b576ba(@effect/data@0.12.3)
+    specifier: 0.12.3-11739c0
+    version: 0.12.3-11739c0(@effect/data@0.12.3)
   '@tsplus-types/effect__io':
-    specifier: 0.25.9-11739c0
-    version: 0.25.9-11739c0(@effect/io@0.25.13)
+    specifier: 0.25.13-11739c0
+    version: 0.25.13-11739c0(@effect/io@0.25.13)
   '@tsplus-types/effect__stream':
     specifier: 0.21.1-3b576ba
     version: 0.21.1-3b576ba(@effect/stream@0.21.1)
@@ -507,7 +507,7 @@ packages:
       nx: 15.9.4
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /@nrwl/nx-darwin-arm64@15.9.4:
@@ -767,8 +767,8 @@ packages:
     resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
     dev: true
 
-  /@tim-smart/discord-api-docs-parser@0.5.3:
-    resolution: {integrity: sha512-HCovhxqyuxirh+pItKnJsBHmZ91xDTfvC/3A6YCP++VojaV3aXaC9ptixfGEzXzikAcY3omP3oL4Pk6p/eAcjw==}
+  /@tim-smart/discord-api-docs-parser@0.5.5:
+    resolution: {integrity: sha512-MqIVK5hJcVFLHvKAlr9eMEdR1CdEQ68CC8/em1IyLyJwNvL5AlnGGiCuM+AKLEWHXy8vweyVPaNw9L8ZpjHYvw==}
     hasBin: true
     dependencies:
       cheerio: 1.0.0-rc.12
@@ -788,18 +788,18 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@tsplus-types/effect__data@0.12.2-3b576ba(@effect/data@0.12.3):
-    resolution: {integrity: sha512-xqVeUnt6VNtEsaUK75ds1hMIs9VrxEdmFKUmUr4vMgKlX4A7MxGG7b6AWW+qO+S/TW09H796VxtcZ/infrWvgw==}
+  /@tsplus-types/effect__data@0.12.3-11739c0(@effect/data@0.12.3):
+    resolution: {integrity: sha512-Ix7oRb/EKnxaWt85jufNYMoNl29ChZXUWkK3RPhI0C3bK2886Ph2k+7Hb8zrP7bIItVKdEjnUt3AuSKL7X8SYg==}
     peerDependencies:
-      '@effect/data': 0.12.2
+      '@effect/data': 0.12.3
     dependencies:
       '@effect/data': 0.12.3
     dev: true
 
-  /@tsplus-types/effect__io@0.25.9-11739c0(@effect/io@0.25.13):
-    resolution: {integrity: sha512-WfLpcuNcZAqWns2MQKIq/4noPyAqtZAXmtnD04kx3FEfQg4Kt0Hr5s5M3AO1WL2ga2oQVlaTaE+pQWXkecn7lQ==}
+  /@tsplus-types/effect__io@0.25.13-11739c0(@effect/io@0.25.13):
+    resolution: {integrity: sha512-9lUIPJ/Mo+wkSGHe/sgrsgUrnpU78YUOnr6kXgJXcUH1QLs+Nld0v0mZ0gxiKEedXrbjOq/fzt9Q+nqzpIOOAw==}
     peerDependencies:
-      '@effect/io': 0.25.9
+      '@effect/io': 0.25.13
     dependencies:
       '@effect/io': 0.25.13
     dev: true
@@ -932,7 +932,7 @@ packages:
     engines: {node: '>=14.15.0'}
     dependencies:
       js-yaml: 3.14.1
-      tslib: 2.5.0
+      tslib: 2.5.2
     dev: true
 
   /@zkochan/js-yaml@0.0.6:
@@ -4018,7 +4018,7 @@ packages:
       tar-stream: 2.2.0
       tmp: 0.2.1
       tsconfig-paths: 4.2.0
-      tslib: 2.5.0
+      tslib: 2.5.2
       v8-compile-cache: 2.3.0
       yargs: 17.7.2
       yargs-parser: 21.1.1
@@ -5277,10 +5277,6 @@ packages:
 
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-    dev: true
-
-  /tslib@2.5.0:
-    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
     dev: true
 
   /tslib@2.5.2:

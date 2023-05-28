@@ -2947,7 +2947,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     messageId: string,
     params?: Partial<EditWebhookMessageParams>,
     options?: O,
-  ) => RestResponse<any>
+  ) => RestResponse<Message>
   editGlobalApplicationCommand: (
     applicationId: string,
     commandId: string,
@@ -2974,7 +2974,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     interactionToken: string,
     params?: Partial<EditWebhookMessageParams>,
     options?: O,
-  ) => RestResponse<any>
+  ) => RestResponse<Message>
   /** Edits a previously-sent webhook message from the same token. Returns a message object on success. */
   editWebhookMessage: (
     webhookId: string,
@@ -3074,7 +3074,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     messageId: string,
     params?: Partial<GetWebhookMessageParams>,
     options?: O,
-  ) => RestResponse<any>
+  ) => RestResponse<Message>
   getGateway: (options?: O) => RestResponse<any>
   getGatewayBot: (options?: O) => RestResponse<GetGatewayBotResponse>
   /** Fetch a global command for your application. Returns an application command object. */
@@ -3236,7 +3236,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     interactionToken: string,
     params?: Partial<GetWebhookMessageParams>,
     options?: O,
-  ) => RestResponse<any>
+  ) => RestResponse<Message>
   /** Returns all pinned messages in the channel as an array of message objects. */
   getPinnedMessages: (channelId: string, options?: O) => RestResponse<Message[]>
   /** Get a list of users that reacted with this emoji. Returns an array of user objects on success.
