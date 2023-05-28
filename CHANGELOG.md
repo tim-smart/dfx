@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.1](https://github.com/tim-smart/dfx/compare/dfx@0.47.0...dfx@0.47.1) (2023-05-28)
+
+
+### Bug Fixes
+
+* discord-verify import ([0e546e8](https://github.com/tim-smart/dfx/commit/0e546e8d7d3b18286c65a5acec7a565d706471d1))
+
+
+
+
+
 # [0.47.0](https://github.com/tim-smart/dfx/compare/dfx@0.46.1...dfx@0.47.0) (2023-05-28)
 
 
