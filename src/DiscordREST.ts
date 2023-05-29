@@ -66,16 +66,18 @@ const make = Do($ => {
       const route = routeFromConfig(path, request.method)
       const maybeBucket = $(store.getBucketForRoute(route))
 
-      $(invalidRateLimit(route))
+      const effect = maybeBucket.match(
+        () => invalidRateLimit(route),
+        bucket =>
+          Do($ => {
+            $(invalidRateLimit(route))
+            const resetAfter = millis(bucket.resetAfter)
 
-      if (maybeBucket._tag === "None") {
-        return
-      }
+            $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
+          }),
+      )
 
-      const bucket = maybeBucket.value
-      const resetAfter = millis(bucket.resetAfter)
-
-      $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
+      $(effect)
     })
 
   // Update rate limit buckets
