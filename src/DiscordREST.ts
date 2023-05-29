@@ -65,16 +65,16 @@ const make = Do($ => {
     Do($ => {
       const route = routeFromConfig(path, request.method)
       const maybeBucket = $(store.getBucketForRoute(route))
-      const bucket = maybeBucket.getOrElse(
-        (): BucketDetails => ({
-          key: `?.${route}`,
-          resetAfter: 1000,
-          limit: 5,
-        }),
-      )
-      const resetAfter = millis(bucket.resetAfter)
 
       $(invalidRateLimit(route))
+
+      if (maybeBucket._tag === "None") {
+        return
+      }
+
+      const bucket = maybeBucket.value
+      const resetAfter = millis(bucket.resetAfter)
+
       $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
     })
 
