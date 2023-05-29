@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.4](https://github.com/tim-smart/dfx/compare/dfx@0.47.3...dfx@0.47.4) (2023-05-29)
+
+
+### Bug Fixes
+
+* rate limiting ([0e02504](https://github.com/tim-smart/dfx/commit/0e02504b225e7c559de54b5b04029da3cc54d4ef))
+
+
+
+
+
 ## [0.47.3](https://github.com/tim-smart/dfx/compare/dfx@0.47.2...dfx@0.47.3) (2023-05-29)
 
 **Note:** Version bump only for package dfx
