@@ -157,15 +157,18 @@ export const channels = <RM, EM, E>(
         id: (a: Discord.Channel) => a.id,
         fromParent: gateway
           .fromDispatch("GUILD_CREATE")
-          .map(g => [g.id, g.channels]),
+          .map(g => [g.id, g.channels.concat(g.threads)]),
         create: gateway
           .fromDispatch("CHANNEL_CREATE")
+          .merge(gateway.fromDispatch("THREAD_CREATE"))
           .map(c => [c.guild_id!, c]),
         update: gateway
           .fromDispatch("CHANNEL_UPDATE")
+          .merge(gateway.fromDispatch("THREAD_UPDATE"))
           .map(c => [c.guild_id!, c]),
         remove: gateway
           .fromDispatch("CHANNEL_DELETE")
+          .merge(gateway.fromDispatch("THREAD_DELETE"))
           .map(a => [a.guild_id!, a.id]),
         parentRemove: gateway.fromDispatch("GUILD_DELETE").map(g => g.id),
       }),
