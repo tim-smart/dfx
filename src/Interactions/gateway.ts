@@ -97,7 +97,11 @@ const makeRegistry = Do($ => {
   ) =>
     queue
       .take()
-      .foreverSwitch(ix => ix.runGateway(_ => _.catchAllCause(onError), opts))
+      .foreverSwitch(ix =>
+        ix
+          .runGateway(_ => _.catchAllCause(onError), opts)
+          .delay(Duration.seconds(0.1)),
+      )
 
   return { register, run } as const
 })
