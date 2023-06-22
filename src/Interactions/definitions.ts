@@ -5,16 +5,6 @@ import {
   SubCommandContext,
 } from "./context.js"
 
-type DescriptionMissing<A> = [A] extends [
-  {
-    readonly type: Exclude<Discord.ApplicationCommandType, 1>
-  },
-]
-  ? false
-  : A extends { readonly description: string }
-  ? false
-  : true
-
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
   | GuildApplicationCommand<R, E>
@@ -36,9 +26,7 @@ export const global = <
   const A extends DeepReadonlyObject<Discord.CreateGlobalApplicationCommandParams>,
 >(
   command: A,
-  handle: [DescriptionMissing<A>] extends [true]
-    ? "command description is missing"
-    : CommandHandler<R, E, A>,
+  handle: CommandHandler<R, E, A>,
 ) =>
   new GlobalApplicationCommand<
     Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
@@ -59,9 +47,7 @@ export const guild = <
   const A extends DeepReadonlyObject<Discord.CreateGuildApplicationCommandParams>,
 >(
   command: A,
-  handle: [DescriptionMissing<A>] extends [true]
-    ? "command description is missing"
-    : CommandHandler<R, E, A>,
+  handle: CommandHandler<R, E, A>,
 ) =>
   new GuildApplicationCommand<
     Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
