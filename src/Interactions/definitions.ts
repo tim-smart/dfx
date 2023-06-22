@@ -5,9 +5,11 @@ import {
   SubCommandContext,
 } from "./context.js"
 
-type DescriptionMissing<A> = A extends {
-  type: Exclude<Discord.ApplicationCommandType, 1>
-}
+type DescriptionMissing<A> = [A] extends [
+  {
+    readonly type: Exclude<Discord.ApplicationCommandType, 1>
+  },
+]
   ? false
   : A extends { readonly description: string }
   ? false
@@ -31,10 +33,10 @@ export class GlobalApplicationCommand<R, E> {
 export const global = <
   R,
   E,
-  const A extends DeepReadonly<Discord.CreateGlobalApplicationCommandParams>,
+  const A extends DeepReadonlyObject<Discord.CreateGlobalApplicationCommandParams>,
 >(
   command: A,
-  handle: DescriptionMissing<A> extends true
+  handle: [DescriptionMissing<A>] extends [true]
     ? "command description is missing"
     : CommandHandler<R, E, A>,
 ) =>
@@ -54,10 +56,10 @@ export class GuildApplicationCommand<R, E> {
 export const guild = <
   R,
   E,
-  const A extends DeepReadonly<Discord.CreateGuildApplicationCommandParams>,
+  const A extends DeepReadonlyObject<Discord.CreateGuildApplicationCommandParams>,
 >(
   command: A,
-  handle: DescriptionMissing<A> extends true
+  handle: [DescriptionMissing<A>] extends [true]
     ? "command description is missing"
     : CommandHandler<R, E, A>,
 ) =>
@@ -130,15 +132,12 @@ export const autocomplete = <R1, R2, E1, E2>(
 
 // ==== Command handler helpers
 type DeepReadonly<T> = T extends (infer R)[]
-  ? DeepReadonlyArray<R>
+  ? ReadonlyArray<DeepReadonly<R>>
   : T extends Function
   ? T
   : T extends object
   ? DeepReadonlyObject<T>
   : T
-
-interface DeepReadonlyArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
-
 type DeepReadonlyObject<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>
 }
