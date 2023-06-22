@@ -3157,7 +3157,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<GuildOnboarding>
-  /** Returns the guild preview object for the given id. If the user is not in the guild, then the guild must be lurkable. */
+  /** Returns the guild preview object for the given id. 
+If the user is not in the guild, then the guild must be discoverable. */
   getGuildPreview: (guildId: string, options?: O) => RestResponse<GuildPreview>
   /** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. Requires the KICK_MEMBERS permission. */
   getGuildPruneCount: (
@@ -4656,7 +4657,7 @@ export interface ListJoinedPrivateArchivedThreadResponse {
   readonly has_more: boolean
 }
 export interface ListPrivateArchivedThreadParams {
-  /** returns threads before this timestamp */
+  /** returns threads archived before this timestamp */
   readonly before?: string
   /** optional maximum number of threads to return */
   readonly limit?: number
@@ -4670,7 +4671,7 @@ export interface ListPrivateArchivedThreadResponse {
   readonly has_more: boolean
 }
 export interface ListPublicArchivedThreadParams {
-  /** returns threads before this timestamp */
+  /** returns threads archived before this timestamp */
   readonly before?: string
   /** optional maximum number of threads to return */
   readonly limit?: number
@@ -6183,8 +6184,10 @@ export interface User {
   readonly id: Snowflake
   /** the user's username, not unique across the platform */
   readonly username: string
-  /** the user's 4-digit discord-tag */
+  /** the user's Discord-tag */
   readonly discriminator: string
+  /** the user's display name, if it is set. For bots, this is the application name */
+  readonly global_name?: string | null
   /** the user's avatar hash */
   readonly avatar?: string | null
   /** whether the user belongs to an OAuth2 application */
