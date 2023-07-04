@@ -24,18 +24,25 @@ export const make = Do($ => {
   const sharder = $(Sharder)
   const hub = $(Hub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>())
 
+  const sendQueue = $(
+    Queue.unbounded<Discord.GatewayPayload<Discord.SendEvent>>(),
+  )
+  const send = (payload: Discord.GatewayPayload<Discord.SendEvent>) =>
+    sendQueue.offer(payload)
+
   const dispatch = Stream.fromHub(hub)
   const fromDispatch = fromDispatchFactory(dispatch)
   const handleDispatch = handleDispatchFactory(hub)
 
-  const run = sharder.run(hub)
+  const run = sharder.run(hub, sendQueue)
 
   return {
     run,
     dispatch,
     fromDispatch,
     handleDispatch,
-  }
+    send,
+  } as const
 })
 
 export interface DiscordGateway extends Effect.Success<typeof make> {}

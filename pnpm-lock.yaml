@@ -59,10 +59,10 @@ devDependencies:
     version: 7.0.0
   madge:
     specifier: ^6.1.0
-    version: 6.1.0(typescript@5.0.0-tsplus.20230224)
+    version: 6.1.0(typescript@5.2.0-tsplus.20230603)
   typescript:
-    specifier: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.171/compiler/typescript.tgz
-    version: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.171/compiler/typescript.tgz'
+    specifier: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz
+    version: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz'
 
 packages:
 
@@ -2985,7 +2985,7 @@ packages:
     engines: {node: 14 || >=16.14}
     dev: true
 
-  /madge@6.1.0(typescript@5.0.0-tsplus.20230224):
+  /madge@6.1.0(typescript@5.2.0-tsplus.20230603):
     resolution: {integrity: sha512-irWhT5RpFOc6lkzGHKLihonCVgM0YtfNUh4IrFeW3EqHpnt/JHUG3z26j8PeJEktCGB4tmGOOOJi1Rl/ACWucQ==}
     engines: {node: '>=14'}
     hasBin: true
@@ -3016,7 +3016,7 @@ packages:
       rc: 1.2.8
       stream-to-array: 2.3.0
       ts-graphviz: 1.8.0
-      typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.171/compiler/typescript.tgz'
+      typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz'
       walkdir: 0.4.1
     transitivePeerDependencies:
       - supports-color
@@ -5122,11 +5122,11 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.171/compiler/typescript.tgz':
-    resolution: {tarball: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.171/compiler/typescript.tgz}
+  '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz':
+    resolution: {tarball: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz}
     name: typescript
-    version: 5.0.0-tsplus.20230224
-    engines: {node: '>=4.2.0'}
+    version: 5.2.0-tsplus.20230603
+    engines: {node: '>=14.17'}
     hasBin: true
     dev: true
 

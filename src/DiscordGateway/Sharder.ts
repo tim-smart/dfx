@@ -55,7 +55,10 @@ const make = Do($ => {
       ),
   )
 
-  const run = (hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
+  const run = (
+    hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
+    sendQueue: Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
+  ) =>
     Do($ => {
       const deferred = $(
         Deferred.make<WebSocketError | WebSocketCloseError, never>(),
@@ -75,7 +78,7 @@ const make = Do($ => {
             config.identifyRateLimit[1],
           ),
         )
-        .flatMap(c => shard.connect([c.id, c.totalCount], hub))
+        .flatMap(c => shard.connect([c.id, c.totalCount], hub, sendQueue))
         .flatMap(
           shard => shard.run.catchAllCause(_ => deferred.failCause(_)).fork,
         ).forever

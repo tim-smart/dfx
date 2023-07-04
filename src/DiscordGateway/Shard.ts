@@ -23,6 +23,7 @@ export const make = Do($ => {
   const connect = (
     shard: [id: number, count: number],
     hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
+    sendQueue: Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
   ) =>
     Do($ => {
       const outboundQueue = $(Queue.unbounded<Message>())
@@ -155,16 +156,15 @@ export const make = Do($ => {
           $(effect)
         })
 
+      const drainSendQueue = sendQueue.take().tap(send).forever
+
       const run = socket.take
         .flatMap(onPayload)
         .forever.zipParLeft(heartbeats)
+        .zipParLeft(drainSendQueue)
         .zipParLeft(socket.run)
 
-      return {
-        run,
-        send: (p: Discord.GatewayPayload) => send(p),
-        reconnect: send(Reconnect),
-      } as const
+      return { run } as const
     })
 
   return { connect } as const

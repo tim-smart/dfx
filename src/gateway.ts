@@ -10,6 +10,7 @@ export { DiscordGateway, LiveDiscordGateway } from "./DiscordGateway.js"
 export * as DiscordWS from "./DiscordGateway/DiscordWS.js"
 export * as Shard from "./DiscordGateway/Shard.js"
 export * as ShardStore from "./DiscordGateway/ShardStore.js"
+export * as SendEvent from "./DiscordGateway/Shard/sendEvents.js"
 export * as WS from "./DiscordGateway/WS.js"
 export {
   InteractionsRegistry,
