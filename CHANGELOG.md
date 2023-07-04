@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.49.0](https://github.com/tim-smart/dfx/compare/dfx@0.48.3...dfx@0.49.0) (2023-07-04)
+
+
+### Features
+
+* add send method to DiscordGateway ([9d82b7e](https://github.com/tim-smart/dfx/commit/9d82b7e1c461c0d7d8094d2bc7a13b4605179399))
+
+
+
+
+
 ## [0.48.3](https://github.com/tim-smart/dfx/compare/dfx@0.48.2...dfx@0.48.3) (2023-06-22)
 
 **Note:** Version bump only for package dfx
