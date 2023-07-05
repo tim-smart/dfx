@@ -164,7 +164,7 @@ export const make = Do($ => {
         .zipParLeft(drainSendQueue)
         .zipParLeft(socket.run)
 
-      return { run } as const
+      return { send, run } as const
     })
 
   return { connect } as const
@@ -174,3 +174,6 @@ export interface Shard extends Effect.Success<typeof make> {}
 export const Shard = Tag<Shard>()
 export const LiveShard =
   (LiveDiscordWS + LiveRateLimiter) >> make.toLayer(Shard)
+
+export interface RunningShard
+  extends Effect.Success<ReturnType<Shard["connect"]>> {}

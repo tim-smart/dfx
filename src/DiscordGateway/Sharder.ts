@@ -2,7 +2,7 @@ import { millis } from "@effect/data/Duration"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import { DiscordREST } from "dfx/DiscordREST"
 import { LiveRateLimiter, RateLimiter } from "../RateLimit.js"
-import { LiveShard, Shard } from "./Shard.js"
+import { LiveShard, RunningShard, Shard } from "./Shard.js"
 import { ShardStore } from "./ShardStore.js"
 import { WebSocketCloseError, WebSocketError } from "./WS.js"
 import { Some } from "@effect/data/Option"
@@ -17,6 +17,7 @@ const make = Do($ => {
   const { gateway: config } = $(DiscordConfig)
   const limiter = $(RateLimiter)
   const shard = $(Shard)
+  const currentShards = $(Ref.make(HashSet.empty<RunningShard>()))
 
   const takeConfig = (totalCount: number) =>
     Do($ => {
@@ -80,7 +81,14 @@ const make = Do($ => {
         )
         .flatMap(c => shard.connect([c.id, c.totalCount], hub, sendQueue))
         .flatMap(
-          shard => shard.run.catchAllCause(_ => deferred.failCause(_)).fork,
+          shard =>
+            currentShards
+              .update(_ => _.add(shard))
+              .acquireUseRelease(
+                () => shard.run,
+                () => currentShards.update(_ => _.remove(shard)),
+              )
+              .catchAllCause(_ => deferred.failCause(_)).fork,
         ).forever
 
       const spawners = Chunk.range(
@@ -97,7 +105,7 @@ const make = Do($ => {
       )
     })
 
-  return { run } as const
+  return { shards: currentShards.get, run } as const
 })
 
 export interface Sharder extends Effect.Success<typeof make> {}

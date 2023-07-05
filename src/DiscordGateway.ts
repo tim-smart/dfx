@@ -42,6 +42,7 @@ export const make = Do($ => {
     fromDispatch,
     handleDispatch,
     send,
+    shards: sharder.shards,
   } as const
 })
 
