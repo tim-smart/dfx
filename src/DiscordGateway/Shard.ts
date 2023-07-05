@@ -164,7 +164,7 @@ export const make = Do($ => {
         .zipParLeft(drainSendQueue)
         .zipParLeft(socket.run)
 
-      return { send, run } as const
+      return { id: shard, send, run } as const
     })
 
   return { connect } as const
