@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.50.0](https://github.com/tim-smart/dfx/compare/dfx@0.49.0...dfx@0.50.0) (2023-07-05)
+
+
+### Features
+
+* expose the current shard on DiscordGateway ([e90d7da](https://github.com/tim-smart/dfx/commit/e90d7da84ecd1af47705edf74efef38d54a847d4))
+
+
+
+
+
 # [0.49.0](https://github.com/tim-smart/dfx/compare/dfx@0.48.3...dfx@0.49.0) (2023-07-04)
 
 
