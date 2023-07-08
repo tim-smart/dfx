@@ -38,5 +38,10 @@ export const send = (
 
     const run = acks.take().tap(() => ackedRef.set(true)).forever
 
-    return $(run.zipParLeft(heartbeats))
+    return $(
+      Effect.all(run, heartbeats, {
+        concurrency: "unbounded",
+        discard: true,
+      }),
+    )
   })

@@ -47,8 +47,8 @@ export const run =
             _._tag === "GuildApplicationCommand",
         ).toReadonlyArray
 
-      const gateway = $(DiscordGateway)
-      const rest = $(DiscordREST)
+      const gateway = $(DiscordGateway.accessWith(identity))
+      const rest = $(DiscordREST.accessWith(identity))
 
       const application = $(
         rest.getCurrentBotApplicationInformation().flatMap(a => a.json),
@@ -69,7 +69,7 @@ export const run =
               GuildApplicationCommand.map(_ => _.command) as any,
             ),
           )
-        : Effect.never()
+        : Effect.never
 
       const handle = handlers(ix.definitions, (i, r) =>
         rest.createInteractionResponse(i.id, i.token, r),
@@ -79,7 +79,14 @@ export const run =
         postHandler(handle[i.type](i)).provideService(Interaction, i),
       )
 
-      return $(sync ? run.zipParRight(globalSync).zipParRight(guildSync) : run)
+      return $(
+        sync
+          ? Effect.all(run, globalSync, guildSync, {
+              concurrency: "unbounded",
+              discard: true,
+            }).forever
+          : run,
+      )
     })
 
 const makeRegistry = Do($ => {
@@ -124,5 +131,7 @@ export interface InteractionsRegistry {
 }
 
 export const InteractionsRegistry = Tag<InteractionsRegistry>()
-export const InteractionsRegistryLive =
-  makeRegistry.toLayer(InteractionsRegistry)
+export const InteractionsRegistryLive = Layer.effect(
+  InteractionsRegistry,
+  makeRegistry,
+)

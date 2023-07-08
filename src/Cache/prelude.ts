@@ -120,8 +120,8 @@ export const guilds = <RM, EM, E>(
 ) =>
   Do($ => {
     const driver = $(makeDriver)
-    const gateway = $(DiscordGateway)
-    const rest = $(DiscordREST)
+    const gateway = $(DiscordGateway.accessWith(identity))
+    const rest = $(DiscordREST.accessWith(identity))
 
     return make({
       driver,
@@ -147,8 +147,8 @@ export const channels = <RM, EM, E>(
 ) =>
   Do($ => {
     const driver = $(makeDriver)
-    const gateway = $(DiscordGateway)
-    const rest = $(DiscordREST)
+    const gateway = $(DiscordGateway.accessWith(identity))
+    const rest = $(DiscordREST.accessWith(identity))
 
     return makeWithParent({
       driver,
@@ -186,8 +186,8 @@ export const roles = <RM, EM, E>(
 ) =>
   Do($ => {
     const driver = $(makeDriver)
-    const gateway = $(DiscordGateway)
-    const rest = $(DiscordREST)
+    const gateway = $(DiscordGateway.accessWith(identity))
+    const rest = $(DiscordREST.accessWith(identity))
 
     return makeWithParent({
       driver,

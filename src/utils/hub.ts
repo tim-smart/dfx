@@ -19,7 +19,7 @@ export const subscribeForEachPar = <R, E, A, X>(
             ).forever,
       ).scoped
 
-    return $(run.zipParLeft(deferred.await))
+    return $(run.zipLeft(deferred.await, { parallel: true }))
   })
 
 /**
@@ -37,11 +37,11 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       .flatMap(_ => f(_).tapErrorCause(_ => causeDeferred.failCause(_)).fork)
       .flatMap(fiber => fiberRef.getAndSet(Maybe.some(fiber)))
       .tap(_ =>
-        _.match(
-          () => Effect.unit(),
-          fiber => fiber.interrupt,
-        ),
+        _.match({
+          onNone: () => Effect.unit,
+          onSome: fiber => fiber.interrupt,
+        }),
       ).forever
 
-    return $(run.zipParLeft(causeDeferred.await))
+    return $(run.zipLeft(causeDeferred.await, { parallel: true }))
   })

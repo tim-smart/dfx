@@ -51,6 +51,7 @@ export const make = ({
   },
 })
 
-export const makeLayer = flow(make, _ => Layer.succeed(DiscordConfig, _))
+export const makeLayer = (opts: MakeOpts) =>
+  Layer.succeed(DiscordConfig, make(opts))
 export const makeFromConfig = (_: Config.Wrap<MakeOpts>) =>
-  Config.unwrap(_).config.map(make).toLayer(DiscordConfig)
+  Layer.effect(DiscordConfig, Config.unwrap(_).config.map(make))

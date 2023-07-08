@@ -51,11 +51,13 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   }).runDrain
 
   const get = (parentId: string, id: string) =>
-    driver
-      .get(parentId, id)
-      .someOrElseEffect(() =>
-        onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
-      )
+    driver.get(parentId, id).flatMap(_ =>
+      _.match({
+        onNone: () =>
+          onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
+        onSome: Effect.succeed,
+      }),
+    )
 
   const put = (_: A) =>
     id(_).flatMap(([parentId, id]) => driver.set(parentId, id, _))
@@ -77,17 +79,22 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     update,
 
     getForParent: (parentId: string) =>
-      driver.getForParent(parentId).someOrElseEffect(() =>
-        onParentMiss(parentId)
-          .tap(entries =>
-            Effect.allPar(
-              entries.map(([id, a]) => driver.set(parentId, id, a)),
-            ),
-          )
-          .map(entries => new Map(entries) as ReadonlyMap<string, A>),
+      driver.getForParent(parentId).flatMap(_ =>
+        _.match({
+          onNone: () =>
+            onParentMiss(parentId)
+              .tap(entries =>
+                Effect.all(
+                  entries.map(([id, a]) => driver.set(parentId, id, a)),
+                  { concurrency: "unbounded" },
+                ),
+              )
+              .map(entries => new Map(entries) as ReadonlyMap<string, A>),
+          onSome: Effect.succeed,
+        }),
       ),
 
-    run: sync.zipParRight(driver.run),
+    run: sync.zipRight(driver.run, { parallel: true }),
   }
 }
 
@@ -114,9 +121,12 @@ export const make = <EOps, EDriver, EMiss, A>({
   }).runDrain
 
   const get = (id: string) =>
-    driver
-      .get(id)
-      .someOrElseEffect(() => onMiss(id).tap(a => driver.set(id, a)))
+    driver.get(id).flatMap(_ =>
+      _.match({
+        onNone: () => onMiss(id).tap(a => driver.set(id, a)),
+        onSome: Effect.succeed,
+      }),
+    )
 
   const put = (_: A) => driver.set(id(_), _)
 
@@ -130,7 +140,7 @@ export const make = <EOps, EDriver, EMiss, A>({
     get,
     put,
     update,
-    run: sync.zipParRight(driver.run),
+    run: sync.zipRight(driver.run, { parallel: true }),
   }
 }
 

@@ -24,12 +24,12 @@ export class DiscordRESTError {
 export { ResponseDecodeError } from "@effect-http/client"
 
 const make = Do($ => {
-  const { token, rest } = $(DiscordConfig)
+  const { token, rest } = $(DiscordConfig.accessWith(identity))
 
-  const http = $(Http.HttpRequestExecutor)
-  const log = $(Log)
-  const store = $(RateLimitStore)
-  const { maybeWait } = $(RateLimiter)
+  const http = $(Http.HttpRequestExecutor.accessWith(identity))
+  const log = $(Log.accessWith(identity))
+  const store = $(RateLimitStore.accessWith(identity))
+  const { maybeWait } = $(RateLimiter.accessWith(identity))
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
@@ -40,15 +40,18 @@ const make = Do($ => {
   // Invalid route handling (40x)
   const badRoutesRef = $(Ref.make(HashSet.empty<string>()))
   const addBadRoute = (route: string) =>
-    Effect.allParDiscard([
-      log.info("DiscordREST", "addBadRoute", route),
-      badRoutesRef.update(s => s.add(route)),
-      store.incrementCounter(
-        "dfx.rest.invalid",
-        Duration.minutes(10).millis,
-        10000,
-      ),
-    ])
+    Effect.all(
+      [
+        log.info("DiscordREST", "addBadRoute", route),
+        badRoutesRef.update(s => s.add(route)),
+        store.incrementCounter(
+          "dfx.rest.invalid",
+          Duration.minutes(10).toMillis,
+          10000,
+        ),
+      ],
+      { discard: true, concurrency: "unbounded" },
+    )
   const isBadRoute = (route: string) => badRoutesRef.get.map(s => s.has(route))
   const removeBadRoute = (route: string) =>
     badRoutesRef.update(s => s.remove(route))
@@ -57,7 +60,7 @@ const make = Do($ => {
     isBadRoute(route).tap(invalid =>
       invalid
         ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
-        : Effect.unit(),
+        : Effect.unit,
     ).asUnit
 
   // Request rate limiting
@@ -66,16 +69,16 @@ const make = Do($ => {
       const route = routeFromConfig(path, request.method)
       const maybeBucket = $(store.getBucketForRoute(route))
 
-      const effect = maybeBucket.match(
-        () => invalidRateLimit(route),
-        bucket =>
+      const effect = maybeBucket.match({
+        onNone: () => invalidRateLimit(route),
+        onSome: bucket =>
           Do($ => {
             $(invalidRateLimit(route))
             const resetAfter = millis(bucket.resetAfter)
 
             $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
           }),
-      )
+      })
 
       $(effect)
     })
@@ -99,13 +102,13 @@ const make = Do($ => {
           store.removeCounter(`dfx.rest.?.${route}`),
           store.putBucket({
             key: bucket,
-            resetAfter: retryAfter.millis,
+            resetAfter: retryAfter.toMillis,
             limit: !hasBucket && remaining > 0 ? remaining : limit,
           }),
         )
       }
 
-      $(Effect.allParDiscard(effectsToRun))
+      $(Effect.all(effectsToRun, { concurrency: "unbounded", discard: true }))
     }).ignore
 
   const httpExecutor = http.execute.filterStatusOk
@@ -146,11 +149,14 @@ const make = Do($ => {
         case 403:
           return Do($ => {
             $(
-              Effect.allParDiscard([
-                log.info("DiscordREST", "403", request.url),
-                addBadRoute(routeFromConfig(request.url, request.method)),
-                updateBuckets(request, response),
-              ]),
+              Effect.all(
+                [
+                  log.info("DiscordREST", "403", request.url),
+                  addBadRoute(routeFromConfig(request.url, request.method)),
+                  updateBuckets(request, response),
+                ],
+                { concurrency: "unbounded", discard: true },
+              ),
             )
             return $(Effect.fail(e))
           })
@@ -158,16 +164,19 @@ const make = Do($ => {
         case 429:
           return Do($ => {
             $(
-              Effect.allParDiscard([
-                log.info("DiscordREST", "429", request.url),
-                addBadRoute(routeFromConfig(request.url, request.method)),
-                updateBuckets(request, response),
-                Effect.sleep(
-                  retryAfter(response.headers).getOrElse(() =>
-                    Duration.seconds(5),
+              Effect.all(
+                [
+                  log.info("DiscordREST", "429", request.url),
+                  addBadRoute(routeFromConfig(request.url, request.method)),
+                  updateBuckets(request, response),
+                  Effect.sleep(
+                    retryAfter(response.headers).getOrElse(() =>
+                      Duration.seconds(5),
+                    ),
                   ),
-                ),
-              ]),
+                ],
+                { concurrency: "unbounded", discard: true },
+              ),
             )
             return $(executor<A>(request))
           })

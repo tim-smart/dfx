@@ -17,11 +17,11 @@ const handleDispatchFactory =
       if (_.t === event) {
         return handle(_.d as any)
       }
-      return Effect.unit()
+      return Effect.unit
     })
 
 export const make = Do($ => {
-  const sharder = $(Sharder)
+  const sharder = $(Sharder.accessWith(identity))
   const hub = $(Hub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>())
 
   const sendQueue = $(
@@ -48,4 +48,5 @@ export const make = Do($ => {
 
 export interface DiscordGateway extends Effect.Success<typeof make> {}
 export const DiscordGateway = Tag<DiscordGateway>()
-export const LiveDiscordGateway = LiveSharder >> make.toLayer(DiscordGateway)
+export const LiveDiscordGateway =
+  LiveSharder >> Layer.effect(DiscordGateway, make)

@@ -1,5 +1,6 @@
 import * as SendEvents from "./sendEvents.js"
 import * as OS from "os"
+import * as Option from "@effect/data/Option"
 
 export interface Options {
   token: string
@@ -42,11 +43,12 @@ export const identifyOrResume = (
     const readyEvent = $(ready.get)
     const seqNumber = $(seq.get)
 
-    return Maybe.struct({
+    return Option.all({
       readyEvent,
       seqNumber,
-    }).match(
-      () => identify(opts),
-      ({ readyEvent, seqNumber }) => resume(opts.token, readyEvent, seqNumber),
-    )
+    }).match({
+      onNone: () => identify(opts),
+      onSome: ({ readyEvent, seqNumber }) =>
+        resume(opts.token, readyEvent, seqNumber),
+    })
   })

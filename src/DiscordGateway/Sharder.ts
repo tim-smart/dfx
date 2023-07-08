@@ -12,11 +12,11 @@ const claimRepeatPolicy = Schedule.fixed(Duration.minutes(3)).whileInput(
 ).passthrough as Schedule<never, Maybe<number>, Some<number>>
 
 const make = Do($ => {
-  const store = $(ShardStore)
-  const rest = $(DiscordREST)
-  const { gateway: config } = $(DiscordConfig)
-  const limiter = $(RateLimiter)
-  const shard = $(Shard)
+  const store = $(ShardStore.accessWith(identity))
+  const rest = $(DiscordREST.accessWith(identity))
+  const { gateway: config } = $(DiscordConfig.accessWith(identity))
+  const limiter = $(RateLimiter.accessWith(identity))
+  const shard = $(Shard.accessWith(identity))
   const currentShards = $(Ref.make(HashSet.empty<RunningShard>()))
 
   const takeConfig = (totalCount: number) =>
@@ -97,11 +97,11 @@ const make = Do($ => {
       ).map(() => spawner)
 
       return $(
-        Effect.allParDiscard(spawners).zipParLeft(deferred.await) as Effect<
-          never,
-          WebSocketError | WebSocketCloseError,
-          never
-        >,
+        Effect.all(
+          Effect.all(spawners, { concurrency: "unbounded", discard: true }),
+          deferred.await,
+          { concurrency: "unbounded", discard: true },
+        ) as Effect<never, WebSocketError | WebSocketCloseError, never>,
       )
     })
 
@@ -111,4 +111,4 @@ const make = Do($ => {
 export interface Sharder extends Effect.Success<typeof make> {}
 export const Sharder = Tag<Sharder>()
 export const LiveSharder =
-  (LiveRateLimiter + LiveShard) >> make.toLayer(Sharder)
+  (LiveRateLimiter + LiveShard) >> Layer.effect(Sharder, make)

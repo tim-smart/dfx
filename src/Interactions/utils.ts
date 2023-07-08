@@ -68,7 +68,7 @@ export const splitDefinitions = <R, E, TE, A>(
     }),
   )
 
-  const Commands = grouped.GlobalApplicationCommand.concat(
+  const Commands = grouped.GlobalApplicationCommand.appendAll(
     grouped.GuildApplicationCommand,
   ).reduce(
     {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,

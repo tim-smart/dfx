@@ -26,7 +26,7 @@ export class ResolvedDataNotFound {
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Interaction.flatMap(ix =>
+  Interaction.accessWithEffect(ix =>
     IxHelpers.resolveValues(f)(ix).mapError(() => new ResolvedDataNotFound(ix)),
   )
 
@@ -34,14 +34,14 @@ export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
 ) =>
-  Interaction.flatMap(ix =>
+  Interaction.accessWithEffect(ix =>
     IxHelpers.resolveOptionValue(
       name,
       f,
     )(ix).mapError(() => new ResolvedDataNotFound(ix, name)),
   )
 
-export const focusedOptionValue = FocusedOptionContext.map(
+export const focusedOptionValue = FocusedOptionContext.accessWith(
   _ => _.focusedOption.value ?? "",
 )
 
@@ -73,7 +73,7 @@ export const handleSubCommands = <
   | SubCommandNotFound,
   Discord.InteractionResponse
 > =>
-  ApplicationCommand.flatMap(data =>
+  ApplicationCommand.accessWithEffect(data =>
     Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name])
       .mapError(() => new SubCommandNotFound(data))
       .flatMap(command =>
@@ -83,9 +83,9 @@ export const handleSubCommands = <
       ),
   )
 
-export const currentSubCommand = SubCommandContext.map(_ => _.command)
+export const currentSubCommand = SubCommandContext.accessWith(_ => _.command)
 
-export const optionsMap = ApplicationCommand.map(IxHelpers.optionsMap)
+export const optionsMap = ApplicationCommand.accessWith(IxHelpers.optionsMap)
 
 export class RequiredOptionNotFound {
   readonly _tag = "RequiredOptionNotFound"
@@ -98,26 +98,26 @@ export class RequiredOptionNotFound {
 }
 
 export const option = (name: string) =>
-  ApplicationCommand.map(IxHelpers.getOption(name))
+  ApplicationCommand.accessWith(IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
   option(name).flatMap(_ =>
-    _.flatMapNullable(a => a.value).match(
-      () =>
-        ApplicationCommand.flatMap(data =>
+    _.flatMapNullable(a => a.value).match({
+      onNone: () =>
+        ApplicationCommand.accessWithEffect(data =>
           Effect.fail(new RequiredOptionNotFound(data, name)),
         ),
-      Effect.succeed,
-    ),
+      onSome: Effect.succeed,
+    }),
   )
 
 export const optionValueOptional = (name: string) =>
   option(name).map(o => o.flatMapNullable(o => o.value))
 
-export const modalValues = ModalSubmitData.map(IxHelpers.componentsMap)
+export const modalValues = ModalSubmitData.accessWith(IxHelpers.componentsMap)
 
 export const modalValueOption = (name: string) =>
-  ModalSubmitData.map(IxHelpers.componentValue(name))
+  ModalSubmitData.accessWith(IxHelpers.componentValue(name))
 
 export class ModalValueNotFound {
   readonly _tag = "ModalValueNotFound"
@@ -125,7 +125,7 @@ export class ModalValueNotFound {
 }
 
 export const modalValue = (name: string) =>
-  ModalSubmitData.flatMap(data =>
+  ModalSubmitData.accessWithEffect(data =>
     IxHelpers.componentValue(name)(data).mapError(
       () => new ModalValueNotFound(data, name),
     ),

@@ -15,10 +15,10 @@ const enum Phase {
 }
 
 export const make = Do($ => {
-  const { token, gateway } = $(DiscordConfig)
-  const limiter = $(RateLimiter)
-  const dws = $(DiscordWS)
-  const log = $(Log)
+  const { token, gateway } = $(DiscordConfig.accessWith(identity))
+  const limiter = $(RateLimiter.accessWith(identity))
+  const dws = $(DiscordWS.accessWith(identity))
+  const log = $(Log.accessWith(identity))
 
   const connect = (
     shard: [id: number, count: number],
@@ -94,10 +94,11 @@ export const make = Do($ => {
               p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
           )
           .map(p => p.d!)
-          .match(
-            () => Effect.unit(),
-            a => socket.setUrl(a.resume_gateway_url),
-          )
+          .match({
+            onNone: () => Effect.unit,
+            onSome: ({ resume_gateway_url }) =>
+              socket.setUrl(resume_gateway_url),
+          })
 
       const hellos = $(Queue.unbounded<Discord.GatewayPayload>())
       const acks = $(Queue.unbounded<Discord.GatewayPayload>())
@@ -126,17 +127,19 @@ export const make = Do($ => {
         Do($ => {
           $(
             updateLatestReady(p)
-              .zipPar(updateLatestSequence(p))
-              .zipPar(maybeUpdateUrl(p)),
+              .zip(updateLatestSequence(p), { parallel: true })
+              .zip(maybeUpdateUrl(p)),
           )
 
-          let effect = Effect.unit()
+          let effect = Effect.unit
 
           switch (p.op) {
             case Discord.GatewayOpcode.HELLO:
               effect = identify
                 .tap(prioritySend)
-                .zipPar(setPhase(Phase.Handshake).zipRight(hellos.offer(p)))
+                .zip(setPhase(Phase.Handshake).zipRight(hellos.offer(p)), {
+                  parallel: true,
+                })
               break
             case Discord.GatewayOpcode.HEARTBEAT_ACK:
               effect = acks.offer(p)
@@ -158,11 +161,13 @@ export const make = Do($ => {
 
       const drainSendQueue = sendQueue.take().tap(send).forever
 
-      const run = socket.take
-        .flatMap(onPayload)
-        .forever.zipParLeft(heartbeats)
-        .zipParLeft(drainSendQueue)
-        .zipParLeft(socket.run)
+      const run = Effect.all(
+        socket.take.flatMap(onPayload).forever,
+        heartbeats,
+        drainSendQueue,
+        socket.run,
+        { discard: true, concurrency: "unbounded" },
+      )
 
       return { id: shard, send, run } as const
     })
@@ -173,7 +178,7 @@ export const make = Do($ => {
 export interface Shard extends Effect.Success<typeof make> {}
 export const Shard = Tag<Shard>()
 export const LiveShard =
-  (LiveDiscordWS + LiveRateLimiter) >> make.toLayer(Shard)
+  (LiveDiscordWS + LiveRateLimiter) >> Layer.effect(Shard, make)
 
 export interface RunningShard
   extends Effect.Success<ReturnType<Shard["connect"]>> {}

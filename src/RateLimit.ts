@@ -35,8 +35,8 @@ export const RateLimitStore = Tag<RateLimitStore>()
 export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Do($ => {
-  const store = $(RateLimitStore)
-  const log = $(Log)
+  const store = $(RateLimitStore.accessWith(identity))
+  const log = $(Log.accessWith(identity))
 
   const maybeWait = (
     key: string,
@@ -44,7 +44,7 @@ const makeLimiter = Do($ => {
     limit: number,
     multiplier = 1.05,
   ) => {
-    const windowMs = window.millis * multiplier
+    const windowMs = window.toMillis * multiplier
 
     return store
       .incrementCounter(key, windowMs, limit)
@@ -52,13 +52,13 @@ const makeLimiter = Do($ => {
       .tap(d =>
         log.debug("RateLimitStore maybeWait", {
           key,
-          window: window.millis,
+          window: window.toMillis,
           windowMs,
           limit,
-          delay: d.millis,
+          delay: d.toMillis,
         }),
       )
-      .tap(_ => (_.millis === 0 ? Effect.unit() : Effect.sleep(_))).asUnit
+      .tap(_ => (_.toMillis === 0 ? Effect.unit : Effect.sleep(_))).asUnit
   }
 
   return { maybeWait }

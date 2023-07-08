@@ -1,3 +1,5 @@
+import * as Option from "@effect/data/Option"
+
 const majorResources = ["channels", "guilds", "webhooks"] as const
 
 export const routeFromConfig = (path: string, method: string) => {
@@ -24,7 +26,7 @@ export const retryAfter = (headers: Headers) =>
     .map(Duration.seconds)
 
 export const rateLimitFromHeaders = (headers: Headers) =>
-  Maybe.struct({
+  Option.all({
     bucket: Maybe.fromNullable(headers.get("x-ratelimit-bucket")),
     retryAfter: retryAfter(headers),
     limit: numberHeader(headers)("x-ratelimit-limit"),

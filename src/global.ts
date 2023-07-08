@@ -37,7 +37,7 @@ import { Tag, Discord } from "dfx/_common"
 /**
  * @tsplus global
  */
-import { pipe, flow, identity } from "@effect/data/Function"
+import { pipe, identity } from "@effect/data/Function"
 
 /**
  * @tsplus global

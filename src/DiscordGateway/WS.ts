@@ -45,7 +45,7 @@ const offer = (
         run(
           queue
             .offer(message.data)
-            .zipLeft(log.debug("WS", "offer", message.data)),
+            .zipLeft(log.debug("WS", "offer", message.data), {}),
         )
       })
 
@@ -62,15 +62,18 @@ const offer = (
 const waitForOpen = (ws: globalThis.WebSocket, timeout: Duration) =>
   Effect.suspend(() => {
     if (ws.readyState === WebSocket.OPEN) {
-      return Effect.unit()
+      return Effect.unit
     }
 
     return Effect.async<never, never, void>(resume => {
-      ws.addEventListener("open", () => resume(Effect.unit()), {
+      ws.addEventListener("open", () => resume(Effect.unit), {
         once: true,
       })
     })
-  }).timeoutFail(() => new WebSocketError("open-timeout"), timeout)
+  }).timeoutFail({
+    onTimeout: () => new WebSocketError("open-timeout"),
+    duration: timeout,
+  })
 
 const send = (
   ws: globalThis.WebSocket,
@@ -93,12 +96,12 @@ const send = (
     }).forever
 
 const make = Do($ => {
-  const log = $(Log)
+  const log = $(Log.accessWith(identity))
 
   const connect = (
     url: Ref<string>,
     takeOutbound: Effect<never, never, Message>,
-    onConnecting = Effect.unit(),
+    onConnecting = Effect.unit,
     openTimeout = Duration.seconds(3),
   ) =>
     Do($ => {
@@ -107,8 +110,9 @@ const make = Do($ => {
       const run = onConnecting
         .zipRight(socket(url))
         .flatMap(ws =>
-          offer(ws, queue, log).zipParLeft(
+          offer(ws, queue, log).zipLeft(
             waitForOpen(ws, openTimeout).zipRight(send(ws, takeOutbound, log)),
+            { parallel: true },
           ),
         )
         .scoped.retryWhile(isReconnect)
@@ -121,4 +125,4 @@ const make = Do($ => {
 
 export interface WS extends Effect.Success<typeof make> {}
 export const WS = Tag<WS>()
-export const LiveWS = make.toLayer(WS)
+export const LiveWS = Layer.effect(WS, make)

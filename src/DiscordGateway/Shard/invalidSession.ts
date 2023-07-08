@@ -5,6 +5,6 @@ export const fromPayload = (
   p: Discord.GatewayPayload,
   latestReady: Ref<Maybe<Discord.ReadyEvent>>,
 ) =>
-  (p.d ? Effect.unit() : latestReady.set(Maybe.none())).map(
+  (p.d ? Effect.unit : latestReady.set(Maybe.none())).map(
     (): Message => Reconnect,
   )

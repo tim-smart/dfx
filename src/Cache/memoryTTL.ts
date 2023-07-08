@@ -35,14 +35,14 @@ const make = <T>({
   strategy = "usage",
 }: MemoryTTLOpts) => {
   const additionalMilliseconds =
-    (Math.floor(ttl.millis / resolution.millis) + 1) * resolution.millis
+    (Math.floor(ttl.toMillis / resolution.toMillis) + 1) * resolution.toMillis
 
   const items = new Map<string, WeakRef<CacheItem<T>>>()
   const buckets: TTLBucket<T>[] = []
 
   const refreshTTL = (item: CacheItem<T>) => {
     const now = Date.now()
-    const remainder = now % resolution.millis
+    const remainder = now % resolution.toMillis
     const expires = now - remainder + additionalMilliseconds
     let currentBucket = buckets[buckets.length - 1]
 
@@ -59,7 +59,7 @@ const make = <T>({
 
   const sweep = () => {
     const now = Date.now()
-    const remainder = now % resolution.millis
+    const remainder = now % resolution.toMillis
     const currentExpires = now - remainder
 
     while (buckets.length && buckets[0].expires <= currentExpires) {
@@ -156,7 +156,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             )
           })
 
-          const results = $(Effect.allPar(toGet))
+          const results = $(Effect.all(toGet, { concurrency: "unbounded" }))
           const map = results.reduce(
             (map, [id, a]) => (a._tag === "Some" ? map.set(id, a.value) : map),
             new Map<string, T>(),
@@ -193,7 +193,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
             })
           }
 
-          $(Effect.allParDiscard(effects))
+          $(Effect.all(effects, { concurrency: "unbounded", discard: true }))
         }),
 
       run: store.run,

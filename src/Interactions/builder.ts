@@ -34,7 +34,7 @@ export class InteractionBuilder<R, E, TE> {
 
   concat<R1, E1, TE1>(builder: InteractionBuilder<R1, E1, TE1>) {
     return new InteractionBuilder<R | R1, E | E1, TE | TE1>(
-      this.definitions.concat(builder.definitions),
+      this.definitions.appendAll(builder.definitions),
       this.transform,
     )
   }
@@ -120,7 +120,7 @@ export class InteractionBuilder<R, E, TE> {
       )
       .map(c => c.command)
 
-    return DiscordREST.flatMap(rest =>
+    return DiscordREST.accessWithEffect(rest =>
       rest
         .getCurrentBotApplicationInformation()
         .flatMap(r => r.json)
@@ -141,7 +141,7 @@ export class InteractionBuilder<R, E, TE> {
       )
       .map(c => c.command)
 
-    return DiscordREST.flatMap(rest =>
+    return DiscordREST.accessWithEffect(rest =>
       rest.bulkOverwriteGuildApplicationCommands(
         appId,
         guildId,

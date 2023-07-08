@@ -43,9 +43,9 @@ export const createWithParent = <T>() =>
           map.delete(parentId)
         }),
 
-      refreshTTL: () => Effect.unit(),
+      refreshTTL: () => Effect.unit,
 
-      run: Effect.never(),
+      run: Effect.never,
     })
   })
 
@@ -69,8 +69,8 @@ export const create = <T>() =>
           map.delete(resourceId)
         }),
 
-      refreshTTL: () => Effect.unit(),
+      refreshTTL: () => Effect.unit,
 
-      run: Effect.never(),
+      run: Effect.never,
     })
   })

@@ -1,4 +1,4 @@
-import { Option as Maybe, Product } from "@effect/data/Option"
+import { Option as Maybe } from "@effect/data/Option"
 import * as Arr from "@effect/data/ReadonlyArray"
 
 /**
@@ -29,14 +29,16 @@ export const findSubCommand =
 /**
  * If the sub-command exists return `true`, else `false`.
  */
-export const isSubCommand = (name: string) =>
-  flow(findSubCommand(name), o => o.isSome())
+export const isSubCommand =
+  (name: string) => (_: Discord.ApplicationCommandDatum) =>
+    findSubCommand(name)(_).isSome()
 
 /**
  * Maybe get the options for a sub-command
  */
-export const subCommandOptions = (name: string) =>
-  flow(findSubCommand(name), o => o.flatMapNullable(o => o.options))
+export const subCommandOptions =
+  (name: string) => (_: Discord.ApplicationCommandDatum) =>
+    findSubCommand(name)(_).flatMapNullable(o => o.options)
 
 /**
  * A lens for accessing nested options in a interaction.
@@ -49,7 +51,7 @@ export const optionsWithNested = (
   ): Discord.ApplicationCommandInteractionDataOption[] =>
     Maybe.fromNullable(opt.options)
       .map(opts => [...opts, ...opts.flatMap(optsFromOption)])
-      .match(() => [], identity)
+      .match({ onNone: () => [], onSome: identity })
 
   return Maybe.fromNullable(data.options)
     .map(opts => [...opts, ...opts.flatMap(optsFromOption)])
@@ -70,30 +72,30 @@ export const transformOptions = (
 /**
  * Return the interaction options as a name / value map.
  */
-export const optionsMap = flow(optionsWithNested, transformOptions)
+export const optionsMap = (
+  data: Pick<Discord.ApplicationCommandDatum, "options">,
+) => transformOptions(optionsWithNested(data))
 
 /**
  * Try find a matching option from the interaction.
  */
-export const getOption = (name: string) =>
-  flow(
-    optionsWithNested,
-    Arr.findFirst(o => o.name === name),
-  )
+export const getOption =
+  (name: string) => (data: Pick<Discord.ApplicationCommandDatum, "options">) =>
+    Arr.findFirst(optionsWithNested(data), o => o.name === name)
 
 /**
  * Try find a matching option from the interaction.
  */
-export const focusedOption = flow(
-  optionsWithNested,
-  Arr.findFirst(o => o.focused === true),
-)
+export const focusedOption = (
+  data: Pick<Discord.ApplicationCommandDatum, "options">,
+) => Arr.findFirst(optionsWithNested(data), o => o.focused === true)
 
 /**
  * Try find a matching option value from the interaction.
  */
-export const optionValue = (name: string) =>
-  flow(getOption(name), o => o.flatMapNullable(o => o.value))
+export const optionValue =
+  (name: string) => (data: Pick<Discord.ApplicationCommandDatum, "options">) =>
+    getOption(name)(data).flatMapNullable(o => o.value)
 
 /**
  * Try extract resolved data
@@ -140,9 +142,7 @@ export const resolveValues =
         ).flatMapNullable(a => a.values as unknown as string[]),
       )
       const r = $(resolved(a))
-      return $(
-        Product.productAll(values.map(a => Maybe.fromNullable(f(a as any, r)))),
-      )
+      return Arr.compact(values.map(a => Maybe.fromNullable(f(a as any, r))))
     })
 
 const extractComponents = (c: Discord.Component): Discord.Component[] => {
@@ -166,10 +166,8 @@ export const components = (
 /**
  * A lens for accessing the components in a interaction.
  */
-export const componentsWithValue = flow(
-  components,
-  Arr.filter(c => "value" in c && c.value !== undefined),
-)
+export const componentsWithValue = (data: Discord.ModalSubmitDatum) =>
+  Arr.filter(components(data), c => "value" in c && c.value !== undefined)
 
 /**
  * Return the interaction components as an id / value map.
@@ -183,24 +181,24 @@ export const transformComponents = (options: Discord.Component[]) =>
 /**
  * Return the interaction components as an id / value map.
  */
-export const componentsMap = flow(components, transformComponents)
+export const componentsMap = (data: Discord.ModalSubmitDatum) =>
+  transformComponents(components(data))
 
 /**
  * Try find a matching component from the interaction.
  */
-export const getComponent = (id: string) =>
-  flow(
-    components,
-    Arr.findFirst(o => (o as Discord.TextInput).custom_id === id),
+export const getComponent = (id: string) => (data: Discord.ModalSubmitDatum) =>
+  Arr.findFirst(
+    components(data),
+    o => (o as Discord.TextInput).custom_id === id,
   )
 
 /**
  * Try find a matching component value from the interaction.
  */
-export const componentValue = (id: string) =>
-  flow(getComponent(id), o =>
-    o.flatMapNullable(o => (o as Discord.TextInput).value),
-  )
+export const componentValue =
+  (id: string) => (data: Discord.ModalSubmitDatum) =>
+    getComponent(id)(data).flatMapNullable(o => (o as Discord.TextInput).value)
 
 export type InteractionResponse =
   | {

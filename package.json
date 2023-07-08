@@ -25,21 +25,21 @@
   },
   "devDependencies": {
     "@tim-smart/discord-api-docs-parser": "^0.5.5",
-    "@tsplus-types/effect__data": "0.12.5-11739c0",
-    "@tsplus-types/effect__io": "0.26.0-11739c0",
-    "@tsplus-types/effect__stream": "0.22.0-11739c0",
+    "@tsplus-types/effect__data": "0.13.5-11739c0",
+    "@tsplus-types/effect__io": "0.31.3-11739c0",
+    "@tsplus-types/effect__stream": "0.25.1-11739c0",
     "@types/ws": "^8.5.5",
-    "dotenv": "^16.1.4",
-    "lerna": "^7.0.0",
+    "dotenv": "^16.3.1",
+    "lerna": "^7.1.1",
     "madge": "^6.1.0",
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz"
   },
   "dependencies": {
-    "@effect-http/client": "^0.27.0",
-    "@effect/data": "^0.12.5",
-    "@effect/io": "~0.26.0",
-    "@effect/stream": "~0.22.0",
-    "discord-verify": "^1.1.0"
+    "@effect-http/client": "^0.29.0",
+    "@effect/data": "^0.13.5",
+    "@effect/io": "~0.31.3",
+    "@effect/stream": "~0.25.1",
+    "discord-verify": "^1.2.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.7",

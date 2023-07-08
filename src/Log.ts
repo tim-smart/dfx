@@ -8,7 +8,7 @@ const make = (debug = false) => ({
       ? Effect.sync(() => {
           console.error("DEBUG", ...args)
         })
-      : Effect.unit(),
+      : Effect.unit,
 })
 
 export interface Log extends ReturnType<typeof make> {}

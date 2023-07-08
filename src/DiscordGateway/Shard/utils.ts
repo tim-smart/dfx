@@ -3,10 +3,13 @@ export const opCode =
   <T = any>(code: Discord.GatewayOpcode) =>
     source.filter((p): p is Discord.GatewayPayload<T> => p.op === code)
 
-const maybeUpdateRef = <T>(
-  f: (p: Discord.GatewayPayload) => Maybe<T>,
-  ref: Ref<Maybe<T>>,
-) => flow(f, o => o.match(Effect.unit, a => ref.set(Maybe.some(a))))
+const maybeUpdateRef =
+  <T>(f: (p: Discord.GatewayPayload) => Maybe<T>, ref: Ref<Maybe<T>>) =>
+  (_: Discord.GatewayPayload) =>
+    f(_).match({
+      onNone: () => Effect.unit,
+      onSome: a => ref.set(Maybe.some(a)),
+    })
 
 export const latest = <T>(f: (p: Discord.GatewayPayload) => Maybe<T>) =>
   Ref.make<Maybe<T>>(Maybe.none()).map(

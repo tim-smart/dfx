@@ -30,8 +30,8 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
 })
 
 const make = Do($ => {
-  const ws = $(WS)
-  const encoding = $(DiscordWSCodec)
+  const ws = $(WS.accessWith(identity))
+  const encoding = $(DiscordWSCodec.accessWith(identity))
 
   const connect = ({
     url = "wss://gateway.discord.gg/",
@@ -69,4 +69,4 @@ const make = Do($ => {
 
 export interface DiscordWS extends Effect.Success<typeof make> {}
 export const DiscordWS = Tag<DiscordWS>()
-export const LiveDiscordWS = LiveWS >> make.toLayer(DiscordWS)
+export const LiveDiscordWS = LiveWS >> Layer.effect(DiscordWS, make)
