@@ -14,7 +14,7 @@
     "strict": true,
     "target": "ES2022",
     "incremental": true,
-    "tsPlusConfig": "./tsplus.config.json",
+    "plugins": [{ "name": "@effect/language-service" }],
     "paths": {
       "dfx": ["./src/index.js"],
       "dfx/*": ["./src/*.js"]

@@ -1,9 +1,18 @@
-import * as Verify from "discord-verify"
-import * as D from "./definitions.js"
-import { DefinitionNotFound, handlers } from "./handlers.js"
-import { InteractionBuilder, Interaction } from "./index.js"
+import * as Chunk from "@effect/data/Chunk"
+import { Tag } from "@effect/data/Context"
+import { identity } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
+import * as Cause from "@effect/io/Cause"
+import * as Config from "@effect/io/Config"
+import * as ConfigError from "@effect/io/Config/Error"
+import * as ConfigSecret from "@effect/io/Config/Secret"
 import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import * as D from "dfx/Interactions/definitions"
+import { DefinitionNotFound, handlers } from "dfx/Interactions/handlers"
+import { Interaction, InteractionBuilder } from "dfx/Interactions/index"
+import * as Discord from "dfx/types"
+import * as Verify from "discord-verify"
 
 export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
@@ -19,10 +28,10 @@ const checkSignature = (
   algorithm: any,
 ) =>
   Option.all({
-    signature: Maybe.fromNullable(headers["x-signature-ed25519"]),
-    timestamp: Maybe.fromNullable(headers["x-signature-timestamp"]),
-  })
-    .flatMap(_ =>
+    signature: Option.fromNullable(headers["x-signature-ed25519"]),
+    timestamp: Option.fromNullable(headers["x-signature-timestamp"]),
+  }).pipe(
+    Effect.flatMap(_ =>
       Effect.promise(() =>
         Verify.verify(
           body,
@@ -33,15 +42,17 @@ const checkSignature = (
           algorithm,
         ),
       ),
-    )
-    .filterOrFail(identity, () => new BadWebhookSignature())
-    .catchAllCause(() => Effect.fail(new BadWebhookSignature())).asUnit
+    ),
+    Effect.filterOrFail(identity, () => new BadWebhookSignature()),
+    Effect.catchAllCause(() => Effect.fail(new BadWebhookSignature())),
+    Effect.asUnit,
+  )
 
 export interface MakeConfigOpts {
-  applicationId: string
-  publicKey: ConfigSecret
-  crypto: SubtleCrypto
-  algorithm: keyof typeof Verify.PlatformAlgorithm
+  readonly applicationId: string
+  readonly publicKey: ConfigSecret.ConfigSecret
+  readonly crypto: SubtleCrypto
+  readonly algorithm: keyof typeof Verify.PlatformAlgorithm
 }
 const makeConfig = ({
   applicationId,
@@ -50,16 +61,22 @@ const makeConfig = ({
   algorithm,
 }: MakeConfigOpts) => ({
   applicationId,
-  publicKey: publicKey.value,
+  publicKey: ConfigSecret.value(publicKey),
   crypto,
   algorithm: Verify.PlatformAlgorithm[algorithm],
 })
+
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
+
 export const makeConfigLayer = (opts: MakeConfigOpts) =>
   Layer.succeed(WebhookConfig, makeConfig(opts))
-export const makeFromConfig = (a: Config<MakeConfigOpts>) =>
-  Layer.effect(WebhookConfig, a.config.map(makeConfig))
+
+export const makeFromConfig: (
+  a: Config.Config<MakeConfigOpts>,
+) => Layer.Layer<never, ConfigError.ConfigError, WebhookConfig> = (
+  a: Config.Config<MakeConfigOpts>,
+) => Layer.effect(WebhookConfig, Effect.map(Effect.config(a), makeConfig))
 
 export class WebhookParseError {
   readonly _tag = "WebhookParseError"
@@ -67,21 +84,19 @@ export class WebhookParseError {
 }
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
-  Do($ => {
-    const { publicKey, crypto, algorithm } = $(
-      WebhookConfig.accessWith(identity),
-    )
-    $(checkSignature(publicKey, headers, body, crypto, algorithm))
-    return $(
+  Effect.tap(WebhookConfig, ({ publicKey, crypto, algorithm }) =>
+    checkSignature(publicKey, headers, body, crypto, algorithm),
+  ).pipe(
+    Effect.flatMap(() =>
       Effect.try({
         try: () => JSON.parse(body) as Discord.Interaction,
         catch: reason => new WebhookParseError(reason),
       }),
-    )
-  })
+    ),
+  )
 
 const run = <R, E>(
-  definitions: Chunk<
+  definitions: Chunk.Chunk<
     readonly [
       handler: D.InteractionDefinition<R, E>,
       transform: (
@@ -96,30 +111,37 @@ const run = <R, E>(
 ) => {
   const handler = handlers(definitions, handleResponse)
   return (headers: Headers, body: string) =>
-    Do($ => {
-      const interaction = $(fromHeadersAndBody(headers, body))
-      return $(
-        handler[interaction.type](interaction).provideService(
-          Interaction,
-          interaction,
-        ),
-      )
-    })
+    Effect.flatMap(fromHeadersAndBody(headers, body), interaction =>
+      Effect.provideService(
+        handler[interaction.type](interaction),
+        Interaction,
+        interaction,
+      ),
+    )
 }
 
 export interface HandleWebhookOpts<E> {
   headers: Headers
   body: string
   success: (a: Discord.InteractionResponse) => Effect.Effect<never, never, void>
-  error: (e: Cause<E>) => Effect.Effect<never, never, void>
+  error: (e: Cause.Cause<E>) => Effect.Effect<never, never, void>
 }
 
 /**
  * @tsplus getter dfx/InteractionBuilder webhookHandler
  */
-export const makeHandler = <R, E, TE>(ix: InteractionBuilder<R, E, TE>) => {
+export const makeHandler = <R, E, TE>(
+  ix: InteractionBuilder<R, E, TE>,
+): (({
+  headers,
+  body,
+  success,
+  error,
+}: HandleWebhookOpts<
+  E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
+>) => Effect.Effect<WebhookConfig, never, void>) => {
   const handle = run(
-    ix.definitions.map(([d]) => [d, identity] as any),
+    Chunk.map(ix.definitions, ([d]) => [d, identity] as any),
     (_i, r) => Effect.succeed(r),
   )
 
@@ -130,7 +152,11 @@ export const makeHandler = <R, E, TE>(ix: InteractionBuilder<R, E, TE>) => {
     error,
   }: HandleWebhookOpts<
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
-  >) => handle(headers, body).flatMap(success).catchAllCause(error)
+  >): Effect.Effect<WebhookConfig, never, void> =>
+    handle(headers, body).pipe(
+      Effect.flatMap(success),
+      Effect.catchAllCause(error),
+    )
 }
 
 /**
@@ -138,9 +164,19 @@ export const makeHandler = <R, E, TE>(ix: InteractionBuilder<R, E, TE>) => {
  */
 export const makeSimpleHandler = <R, E, TE>(
   ix: InteractionBuilder<R, E, TE>,
-) => {
+): (({
+  headers,
+  body,
+}: {
+  headers: Headers
+  body: string
+}) => Effect.Effect<
+  WebhookConfig,
+  BadWebhookSignature | WebhookParseError | DefinitionNotFound,
+  Discord.InteractionResponse
+>) => {
   const handle = run(
-    ix.definitions.map(([d]) => [d, identity] as any),
+    Chunk.map(ix.definitions, ([d]) => [d, identity] as any),
     (_i, r) => Effect.succeed(r),
   )
 

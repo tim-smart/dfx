@@ -1,4 +1,5 @@
 import * as Option from "@effect/data/Option"
+import * as Duration from "@effect/data/Duration"
 
 const majorResources = ["channels", "guilds", "webhooks"] as const
 
@@ -16,18 +17,20 @@ export const routeFromConfig = (path: string, method: string) => {
 }
 
 export const numberHeader = (headers: Headers) => (key: string) =>
-  Maybe.fromNullable(headers.get(key))
-    .map(parseFloat)
-    .filter(n => !isNaN(n))
+  Option.fromNullable(headers.get(key)).pipe(
+    Option.map(parseFloat),
+    Option.filter(n => !isNaN(n)),
+  )
 
 export const retryAfter = (headers: Headers) =>
-  numberHeader(headers)("x-ratelimit-reset-after")
-    .orElse(() => numberHeader(headers)("retry-after"))
-    .map(Duration.seconds)
+  numberHeader(headers)("x-ratelimit-reset-after").pipe(
+    Option.orElse(() => numberHeader(headers)("retry-after")),
+    Option.map(Duration.seconds),
+  )
 
 export const rateLimitFromHeaders = (headers: Headers) =>
   Option.all({
-    bucket: Maybe.fromNullable(headers.get("x-ratelimit-bucket")),
+    bucket: Option.fromNullable(headers.get("x-ratelimit-bucket")),
     retryAfter: retryAfter(headers),
     limit: numberHeader(headers)("x-ratelimit-limit"),
     remaining: numberHeader(headers)("x-ratelimit-remaining"),

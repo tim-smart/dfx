@@ -1,30 +1,39 @@
+import { Tag } from "@effect/data/Context"
+import * as Duration from "@effect/data/Duration"
+import * as Config from "@effect/io/Config"
+import * as ConfigError from "@effect/io/Config/Error"
+import * as ConfigSecret from "@effect/io/Config/Secret"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import * as Discord from "dfx/types"
+
 const VERSION = 10
 
 export interface DiscordConfig {
-  token: ConfigSecret
-  debug: boolean
-  rest: {
-    baseUrl: string
-    globalRateLimit: {
-      limit: number
-      window: Duration
+  readonly token: ConfigSecret.ConfigSecret
+  readonly debug: boolean
+  readonly rest: {
+    readonly baseUrl: string
+    readonly globalRateLimit: {
+      readonly limit: number
+      readonly window: Duration.DurationInput
     }
   }
-  gateway: {
-    intents: number
-    presence?: Discord.UpdatePresence
-    shardCount?: number
+  readonly gateway: {
+    readonly intents: number
+    readonly presence?: Discord.UpdatePresence
+    readonly shardCount?: number
 
-    identifyRateLimit: readonly [window: number, limit: number]
+    readonly identifyRateLimit: readonly [window: number, limit: number]
   }
 }
 export const DiscordConfig = Tag<DiscordConfig>()
 
 export interface MakeOpts {
-  token: ConfigSecret
-  debug?: boolean
-  rest?: Partial<DiscordConfig["rest"]>
-  gateway?: Partial<DiscordConfig["gateway"]>
+  readonly token: ConfigSecret.ConfigSecret
+  readonly debug?: boolean
+  readonly rest?: Partial<DiscordConfig["rest"]>
+  readonly gateway?: Partial<DiscordConfig["gateway"]>
 }
 
 export const make = ({
@@ -51,7 +60,12 @@ export const make = ({
   },
 })
 
-export const makeLayer = (opts: MakeOpts) =>
+export const makeLayer = (
+  opts: MakeOpts,
+): Layer.Layer<never, never, DiscordConfig> =>
   Layer.succeed(DiscordConfig, make(opts))
-export const makeFromConfig = (_: Config.Wrap<MakeOpts>) =>
-  Layer.effect(DiscordConfig, Config.unwrap(_).config.map(make))
+
+export const makeFromConfig = (
+  _: Config.Config.Wrap<MakeOpts>,
+): Layer.Layer<never, ConfigError.ConfigError, DiscordConfig> =>
+  Layer.effect(DiscordConfig, Effect.map(Effect.config(Config.unwrap(_)), make))

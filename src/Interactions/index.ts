@@ -1,4 +1,5 @@
-import { Discord, Effect } from "dfx/_common"
+import * as Effect from "@effect/io/Effect"
+import * as Discord from "dfx/types"
 
 export { response } from "../Helpers/interactions.js"
 export * from "./builder.js"

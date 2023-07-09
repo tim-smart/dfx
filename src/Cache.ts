@@ -1,4 +1,7 @@
-import { CacheDriver, ParentCacheDriver } from "./Cache/driver.js"
+import { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
+import * as Effect from "@effect/io/Effect"
+import * as Option from "@effect/data/Option"
+import * as Stream from "@effect/stream/Stream"
 
 export * from "./Cache/driver.js"
 export {
@@ -29,47 +32,53 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   onParentMiss,
 }: {
   driver: ParentCacheDriver<EDriver, A>
-  ops?: Stream<never, EOps, ParentCacheOp<A>>
-  id: (_: A) => Effect<never, EMiss, readonly [parentId: string, id: string]>
-  onMiss: (parentId: string, id: string) => Effect<never, EMiss, A>
+  ops?: Stream.Stream<never, EOps, ParentCacheOp<A>>
+  id: (
+    _: A,
+  ) => Effect.Effect<never, EMiss, readonly [parentId: string, id: string]>
+  onMiss: (parentId: string, id: string) => Effect.Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
-  ) => Effect<never, EPMiss, [id: string, resource: A][]>
+  ) => Effect.Effect<never, EPMiss, [id: string, resource: A][]>
 }) => {
-  const sync = ops.tap((op): Effect<never, EDriver, void> => {
-    switch (op.op) {
-      case "create":
-      case "update":
-        return driver.set(op.parentId, op.resourceId, op.resource)
+  const sync = Stream.runDrain(
+    Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
+      switch (op.op) {
+        case "create":
+        case "update":
+          return driver.set(op.parentId, op.resourceId, op.resource)
 
-      case "delete":
-        return driver.delete(op.parentId, op.resourceId)
+        case "delete":
+          return driver.delete(op.parentId, op.resourceId)
 
-      case "parentDelete":
-        return driver.parentDelete(op.parentId)
-    }
-  }).runDrain
+        case "parentDelete":
+          return driver.parentDelete(op.parentId)
+      }
+    }),
+  )
 
   const get = (parentId: string, id: string) =>
-    driver.get(parentId, id).flatMap(_ =>
-      _.match({
+    Effect.flatMap(
+      driver.get(parentId, id),
+      Option.match({
         onNone: () =>
-          onMiss(parentId, id).tap(a => driver.set(parentId, id, a)),
+          Effect.tap(onMiss(parentId, id), a => driver.set(parentId, id, a)),
         onSome: Effect.succeed,
       }),
     )
 
   const put = (_: A) =>
-    id(_).flatMap(([parentId, id]) => driver.set(parentId, id, _))
+    Effect.flatMap(id(_), ([parentId, id]) => driver.set(parentId, id, _))
 
   const update = <R, E>(
     parentId: string,
     id: string,
-    f: (_: A) => Effect<R, E, A>,
+    f: (_: A) => Effect.Effect<R, E, A>,
   ) =>
-    get(parentId, id)
-      .flatMap(f)
-      .tap(_ => driver.set(parentId, id, _))
+    get(parentId, id).pipe(
+      Effect.flatMap(f),
+      Effect.tap(_ => driver.set(parentId, id, _)),
+    )
 
   return {
     ...driver,
@@ -79,22 +88,24 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     update,
 
     getForParent: (parentId: string) =>
-      driver.getForParent(parentId).flatMap(_ =>
-        _.match({
+      Effect.flatMap(
+        driver.getForParent(parentId),
+        Option.match({
           onNone: () =>
-            onParentMiss(parentId)
-              .tap(entries =>
+            onParentMiss(parentId).pipe(
+              Effect.tap(entries =>
                 Effect.all(
                   entries.map(([id, a]) => driver.set(parentId, id, a)),
                   { concurrency: "unbounded" },
                 ),
-              )
-              .map(entries => new Map(entries) as ReadonlyMap<string, A>),
+              ),
+              Effect.map(entries => new Map(entries) as ReadonlyMap<string, A>),
+            ),
           onSome: Effect.succeed,
         }),
       ),
 
-    run: sync.zipRight(driver.run, { parallel: true }),
+    run: Effect.zipRight(sync, driver.run, { parallel: true }),
   }
 }
 
@@ -105,42 +116,46 @@ export const make = <EOps, EDriver, EMiss, A>({
   onMiss,
 }: {
   driver: CacheDriver<EDriver, A>
-  ops?: Stream<never, EOps, CacheOp<A>>
+  ops?: Stream.Stream<never, EOps, CacheOp<A>>
   id: (_: A) => string
-  onMiss: (id: string) => Effect<never, EMiss, A>
+  onMiss: (id: string) => Effect.Effect<never, EMiss, A>
 }) => {
-  const sync = ops.tap((op): Effect<never, EDriver, void> => {
-    switch (op.op) {
-      case "create":
-      case "update":
-        return driver.set(op.resourceId, op.resource)
+  const sync = Stream.runDrain(
+    Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
+      switch (op.op) {
+        case "create":
+        case "update":
+          return driver.set(op.resourceId, op.resource)
 
-      case "delete":
-        return driver.delete(op.resourceId)
-    }
-  }).runDrain
+        case "delete":
+          return driver.delete(op.resourceId)
+      }
+    }),
+  )
 
   const get = (id: string) =>
-    driver.get(id).flatMap(_ =>
-      _.match({
-        onNone: () => onMiss(id).tap(a => driver.set(id, a)),
+    Effect.flatMap(
+      driver.get(id),
+      Option.match({
+        onNone: () => Effect.tap(onMiss(id), a => driver.set(id, a)),
         onSome: Effect.succeed,
       }),
     )
 
   const put = (_: A) => driver.set(id(_), _)
 
-  const update = <R, E>(id: string, f: (_: A) => Effect<R, E, A>) =>
-    get(id)
-      .flatMap(f)
-      .tap(_ => driver.set(id, _))
+  const update = <R, E>(id: string, f: (_: A) => Effect.Effect<R, E, A>) =>
+    get(id).pipe(
+      Effect.flatMap(f),
+      Effect.tap(_ => driver.set(id, _)),
+    )
 
   return {
     ...driver,
     get,
     put,
     update,
-    run: sync.zipRight(driver.run, { parallel: true }),
+    run: Effect.zipRight(sync, driver.run, { parallel: true }),
   }
 }
 

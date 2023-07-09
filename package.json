@@ -24,6 +24,7 @@
     "./*": "./*.js"
   },
   "devDependencies": {
+    "@effect/language-service": "^0.0.19",
     "@tim-smart/discord-api-docs-parser": "^0.5.5",
     "@tsplus-types/effect__data": "0.13.5-11739c0",
     "@tsplus-types/effect__io": "0.31.3-11739c0",
@@ -32,7 +33,7 @@
     "dotenv": "^16.3.1",
     "lerna": "^7.1.1",
     "madge": "^6.1.0",
-    "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz"
+    "typescript": "5.1.6"
   },
   "dependencies": {
     "@effect-http/client": "^0.29.0",

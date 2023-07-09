@@ -1,9 +1,11 @@
-import { Effect, EffectTypeId } from "@effect/io/Effect"
+import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
 import {
   FocusedOptionContext,
   ResolvedDataNotFound,
   SubCommandContext,
-} from "./context.js"
+} from "dfx/Interactions/context"
+import * as Discord from "dfx/types"
 
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
@@ -57,13 +59,13 @@ export const guild = <
 export class MessageComponent<R, E> {
   readonly _tag = "MessageComponent"
   constructor(
-    readonly predicate: (customId: string) => Effect<R, E, boolean>,
-    readonly handle: Effect<R, E, Discord.InteractionResponse>,
+    readonly predicate: (customId: string) => Effect.Effect<R, E, boolean>,
+    readonly handle: Effect.Effect<R, E, Discord.InteractionResponse>,
   ) {}
 }
 
 export const messageComponent = <R1, R2, E1, E2>(
-  pred: (customId: string) => Effect<R1, E1, boolean>,
+  pred: (customId: string) => Effect.Effect<R1, E1, boolean>,
   handle: CommandHandler<R2, E2, Discord.InteractionResponse>,
 ) =>
   new MessageComponent<
@@ -74,14 +76,14 @@ export const messageComponent = <R1, R2, E1, E2>(
 export class ModalSubmit<R, E> {
   readonly _tag = "ModalSubmit"
   constructor(
-    readonly predicate: (customId: string) => Effect<R, E, boolean>,
-    readonly handle: Effect<R, E, Discord.InteractionResponse>,
+    readonly predicate: (customId: string) => Effect.Effect<R, E, boolean>,
+    readonly handle: Effect.Effect<R, E, Discord.InteractionResponse>,
   ) {}
 }
 
 export const modalSubmit = <R1, R2, E1, E2>(
-  pred: (customId: string) => Effect<R1, E1, boolean>,
-  handle: Effect<R2, E2, Discord.InteractionResponse>,
+  pred: (customId: string) => Effect.Effect<R1, E1, boolean>,
+  handle: Effect.Effect<R2, E2, Discord.InteractionResponse>,
 ) =>
   new ModalSubmit<
     Exclude<R1 | R2, Discord.Interaction | Discord.ModalSubmitDatum>,
@@ -94,8 +96,8 @@ export class Autocomplete<R, E> {
     readonly predicate: (
       data: Discord.ApplicationCommandDatum,
       focusedOption: Discord.ApplicationCommandInteractionDataOption,
-    ) => Effect<R, E, boolean>,
-    readonly handle: Effect<R, E, Discord.InteractionResponse>,
+    ) => Effect.Effect<R, E, boolean>,
+    readonly handle: Effect.Effect<R, E, Discord.InteractionResponse>,
   ) {}
 }
 
@@ -103,8 +105,8 @@ export const autocomplete = <R1, R2, E1, E2>(
   pred: (
     data: Discord.ApplicationCommandDatum,
     focusedOption: Discord.ApplicationCommandInteractionDataOption,
-  ) => Effect<R1, E1, boolean>,
-  handle: Effect<R2, E2, Discord.InteractionResponse>,
+  ) => Effect.Effect<R1, E1, boolean>,
+  handle: Effect.Effect<R2, E2, Discord.InteractionResponse>,
 ) =>
   new Autocomplete<
     Exclude<
@@ -129,44 +131,48 @@ type DeepReadonlyObject<T> = {
 }
 
 export type CommandHandler<R, E, A = any> =
-  | Effect<R, E, Discord.InteractionResponse>
+  | Effect.Effect<R, E, Discord.InteractionResponse>
   | CommandHandlerFn<R, E, A>
 
 export interface CommandHelper<A> {
   resolve: <T>(
     name: AllResolvables<A>["name"],
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
-  ) => Effect<Discord.Interaction, ResolvedDataNotFound, T>
+  ) => Effect.Effect<Discord.Interaction, ResolvedDataNotFound, T>
 
   option: (
     name: AllCommandOptions<A>["name"],
-  ) => Effect<
+  ) => Effect.Effect<
     Discord.ApplicationCommandDatum,
     never,
-    Maybe<Discord.ApplicationCommandInteractionDataOption>
+    Option.Option<Discord.ApplicationCommandInteractionDataOption>
   >
 
   optionValue: <N extends AllRequiredCommandOptions<A>["name"]>(
     name: N,
-  ) => Effect<Discord.ApplicationCommandDatum, never, CommandValue<A, N>>
+  ) => Effect.Effect<Discord.ApplicationCommandDatum, never, CommandValue<A, N>>
 
   optionValueOptional: <N extends AllCommandOptions<A>["name"]>(
     name: N,
-  ) => Effect<Discord.ApplicationCommandDatum, never, Maybe<CommandValue<A, N>>>
+  ) => Effect.Effect<
+    Discord.ApplicationCommandDatum,
+    never,
+    Option.Option<CommandValue<A, N>>
+  >
 
   subCommands: <
     NER extends SubCommandNames<A> extends never
       ? never
       : Record<
           SubCommandNames<A>,
-          Effect<any, any, Discord.InteractionResponse>
+          Effect.Effect<any, any, Discord.InteractionResponse>
         >,
   >(
     commands: NER,
-  ) => Effect<
+  ) => Effect.Effect<
     | Exclude<
         [NER[keyof NER]] extends [
-          { [EffectTypeId]: { _R: (_: never) => infer R } },
+          { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
         ]
           ? R
           : never,
@@ -174,7 +180,9 @@ export interface CommandHelper<A> {
       >
     | Discord.Interaction
     | Discord.ApplicationCommandDatum,
-    [NER[keyof NER]] extends [{ [EffectTypeId]: { _E: (_: never) => infer E } }]
+    [NER[keyof NER]] extends [
+      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
+    ]
       ? E
       : never,
     Discord.InteractionResponse
@@ -183,7 +191,7 @@ export interface CommandHelper<A> {
 
 export type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
-) => Effect<R, E, Discord.InteractionResponse>
+) => Effect.Effect<R, E, Discord.InteractionResponse>
 
 interface CommandOption {
   readonly type: any

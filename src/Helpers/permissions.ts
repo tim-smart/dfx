@@ -1,5 +1,8 @@
+import { pipe } from "@effect/data/Function"
+import * as Effect from "@effect/io/Effect"
 import * as Flags from "dfx/Helpers/flags"
 import * as Members from "dfx/Helpers/members"
+import * as Discord from "dfx/types"
 
 /**
  * A constant of all the permissions
@@ -109,7 +112,7 @@ export const applyOverwrites =
 interface RolesCache<E> {
   getForParent: (
     parentId: string,
-  ) => Effect<never, E, ReadonlyMap<string, Discord.Role>>
+  ) => Effect.Effect<never, E, ReadonlyMap<string, Discord.Role>>
 }
 
 export const hasInChannel =
@@ -118,8 +121,7 @@ export const hasInChannel =
     channel: Discord.Channel,
     memberOrRole: Discord.GuildMember | Discord.Role,
   ) =>
-    Do($ => {
-      const roles = $(rolesCache.getForParent(channel.guild_id!))
+    Effect.map(rolesCache.getForParent(channel.guild_id!), roles => {
       const channelPerms = forChannel([...roles.values()])(channel)(
         memberOrRole,
       )
@@ -129,8 +131,7 @@ export const hasInChannel =
 export const hasInGuild =
   <E>(rolesCache: RolesCache<E>, permission: bigint) =>
   (guildId: Discord.Snowflake, member: Discord.GuildMember) =>
-    Do($ => {
-      const roles = $(rolesCache.getForParent(guildId))
+    Effect.map(rolesCache.getForParent(guildId), roles => {
       const hasPerm = has(permission)
 
       return member.roles.some(id => {

@@ -1,19 +1,24 @@
 import * as Http from "@effect-http/client"
+import { Tag } from "@effect/data/Context"
+import * as Duration from "@effect/data/Duration"
 import { millis } from "@effect/data/Duration"
-import { DiscordConfig } from "./DiscordConfig.js"
-import { ResponseWithData, RestResponse } from "./DiscordREST/types.js"
+import { pipe } from "@effect/data/Function"
+import * as HashSet from "@effect/data/HashSet"
+import * as Option from "@effect/data/Option"
+import * as ConfigSecret from "@effect/io/Config/Secret"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import * as Ref from "@effect/io/Ref"
+import { DiscordConfig } from "dfx/DiscordConfig"
+import { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
 import {
   rateLimitFromHeaders,
   retryAfter,
   routeFromConfig,
-} from "./DiscordREST/utils.js"
-import { Log } from "./Log.js"
-import {
-  BucketDetails,
-  LiveRateLimiter,
-  RateLimitStore,
-  RateLimiter,
-} from "./RateLimit.js"
+} from "dfx/DiscordREST/utils"
+import { Log } from "dfx/Log"
+import { LiveRateLimiter, RateLimitStore, RateLimiter } from "dfx/RateLimit"
+import * as Discord from "dfx/types"
 import Pkg from "./package.json" assert { type: "json" }
 
 export class DiscordRESTError {
@@ -23,132 +28,149 @@ export class DiscordRESTError {
 
 export { ResponseDecodeError } from "@effect-http/client"
 
-const make = Do($ => {
-  const { token, rest } = $(DiscordConfig.accessWith(identity))
+const make = Effect.gen(function* (_) {
+  const { token, rest } = yield* _(DiscordConfig)
 
-  const http = $(Http.HttpRequestExecutor.accessWith(identity))
-  const log = $(Log.accessWith(identity))
-  const store = $(RateLimitStore.accessWith(identity))
-  const { maybeWait } = $(RateLimiter.accessWith(identity))
+  const http = yield* _(Http.HttpRequestExecutor)
+  const log = yield* _(Log)
+  const store = yield* _(RateLimitStore)
+  const { maybeWait } = yield* _(RateLimiter)
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
-    rest.globalRateLimit.window,
+    Duration.decode(rest.globalRateLimit.window),
     rest.globalRateLimit.limit,
   )
 
   // Invalid route handling (40x)
-  const badRoutesRef = $(Ref.make(HashSet.empty<string>()))
+  const badRoutesRef = yield* _(Ref.make(HashSet.empty<string>()))
+  const tenMinutes = Duration.toMillis(Duration.minutes(10))
   const addBadRoute = (route: string) =>
     Effect.all(
-      [
-        log.info("DiscordREST", "addBadRoute", route),
-        badRoutesRef.update(s => s.add(route)),
-        store.incrementCounter(
-          "dfx.rest.invalid",
-          Duration.minutes(10).toMillis,
-          10000,
-        ),
-      ],
+      log.info("DiscordREST", "addBadRoute", route),
+      Ref.update(badRoutesRef, HashSet.add(route)),
+      store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
       { discard: true, concurrency: "unbounded" },
     )
-  const isBadRoute = (route: string) => badRoutesRef.get.map(s => s.has(route))
+  const isBadRoute = (route: string) =>
+    Effect.map(Ref.get(badRoutesRef), HashSet.has(route))
   const removeBadRoute = (route: string) =>
-    badRoutesRef.update(s => s.remove(route))
+    Ref.update(badRoutesRef, HashSet.remove(route))
 
   const invalidRateLimit = (route: string) =>
-    isBadRoute(route).tap(invalid =>
-      invalid
-        ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
-        : Effect.unit,
-    ).asUnit
+    isBadRoute(route).pipe(
+      Effect.tap(invalid =>
+        invalid
+          ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
+          : Effect.unit,
+      ),
+      Effect.asUnit,
+    )
 
   // Request rate limiting
   const requestRateLimit = (path: string, request: Http.Request) =>
-    Do($ => {
-      const route = routeFromConfig(path, request.method)
-      const maybeBucket = $(store.getBucketForRoute(route))
-
-      const effect = maybeBucket.match({
-        onNone: () => invalidRateLimit(route),
-        onSome: bucket =>
-          Do($ => {
-            $(invalidRateLimit(route))
-            const resetAfter = millis(bucket.resetAfter)
-
-            $(maybeWait(`dfx.rest.${bucket.key}`, resetAfter, bucket.limit))
-          }),
-      })
-
-      $(effect)
-    })
+    Effect.Do.pipe(
+      Effect.let("route", () => routeFromConfig(path, request.method)),
+      Effect.bind("maybeBucket", ({ route }) => store.getBucketForRoute(route)),
+      Effect.flatMap(({ route, maybeBucket }) =>
+        Option.match(maybeBucket, {
+          onNone: () => invalidRateLimit(route),
+          onSome: bucket =>
+            Effect.zipRight(
+              invalidRateLimit(route),
+              maybeWait(
+                `dfx.rest.${bucket.key}`,
+                millis(bucket.resetAfter),
+                bucket.limit,
+              ),
+            ),
+        }),
+      ),
+    )
 
   // Update rate limit buckets
   const updateBuckets = (request: Http.Request, response: Http.Response) =>
-    Do($ => {
-      const route = routeFromConfig(request.url, request.method)
-      const { bucket, retryAfter, limit, remaining } = $(
-        rateLimitFromHeaders(response.headers),
-      )
+    Effect.Do.pipe(
+      Effect.let("route", () => routeFromConfig(request.url, request.method)),
+      Effect.bind("rateLimit", () => rateLimitFromHeaders(response.headers)),
+      Effect.bind("hasBucket", ({ rateLimit }) =>
+        store.hasBucket(rateLimit.bucket),
+      ),
+      Effect.flatMap(({ route, rateLimit, hasBucket }) => {
+        const effectsToRun = [
+          removeBadRoute(route),
+          store.putBucketRoute(route, rateLimit.bucket),
+        ]
 
-      const effectsToRun = [
-        removeBadRoute(route),
-        store.putBucketRoute(route, bucket),
-      ]
+        if (!hasBucket || rateLimit.limit - 1 === rateLimit.remaining) {
+          effectsToRun.push(
+            store.removeCounter(`dfx.rest.?.${route}`),
+            store.putBucket({
+              key: rateLimit.bucket,
+              resetAfter: Duration.toMillis(rateLimit.retryAfter),
+              limit:
+                !hasBucket && rateLimit.remaining > 0
+                  ? rateLimit.remaining
+                  : rateLimit.limit,
+            }),
+          )
+        }
 
-      const hasBucket = $(store.hasBucket(bucket))
-      if (!hasBucket || limit - 1 === remaining) {
-        effectsToRun.push(
-          store.removeCounter(`dfx.rest.?.${route}`),
-          store.putBucket({
-            key: bucket,
-            resetAfter: retryAfter.toMillis,
-            limit: !hasBucket && remaining > 0 ? remaining : limit,
-          }),
-        )
-      }
-
-      $(Effect.all(effectsToRun, { concurrency: "unbounded", discard: true }))
-    }).ignore
-
-  const httpExecutor = http.execute.filterStatusOk
-    .contramap(_ =>
-      _.updateUrl(_ => `${rest.baseUrl}${_}`).setHeaders({
-        Authorization: `Bot ${token.value}`,
-        "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
+        return Effect.all(effectsToRun, {
+          concurrency: "unbounded",
+          discard: true,
+        })
       }),
+      Effect.ignore,
     )
-    .catchAll(error =>
+
+  const httpExecutor = pipe(
+    http.execute,
+    Http.executor.filterStatusOk,
+    Http.executor.contramap(req =>
+      pipe(
+        Http.updateUrl(req, _ => `${rest.baseUrl}${_}`),
+        Http.setHeaders({
+          Authorization: `Bot ${ConfigSecret.value(token)}`,
+          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
+        }),
+      ),
+    ),
+    Http.executor.catchAll(error =>
       error._tag === "StatusCodeError"
-        ? error.response.json
-            .mapError(_ => new DiscordRESTError(_))
-            .flatMap(body => Effect.fail(new DiscordRESTError(error, body)))
+        ? error.response.json.pipe(
+            Effect.mapError(_ => new DiscordRESTError(_)),
+            Effect.flatMap(body =>
+              Effect.fail(new DiscordRESTError(error, body)),
+            ),
+          )
         : Effect.fail(new DiscordRESTError(error)),
-    )
+    ),
+  )
 
   const executor = <A = unknown>(
     request: Http.Request,
-  ): Effect<never, DiscordRESTError, ResponseWithData<A>> =>
-    Do($ => {
-      $(requestRateLimit(request.url, request))
-      $(globalRateLimit)
+  ): Effect.Effect<never, DiscordRESTError, ResponseWithData<A>> =>
+    requestRateLimit(request.url, request).pipe(
+      Effect.zipLeft(globalRateLimit),
+      Effect.zipRight(
+        httpExecutor(request) as Effect.Effect<
+          never,
+          DiscordRESTError,
+          ResponseWithData<A>
+        >,
+      ),
+      Effect.tap(response => updateBuckets(request, response)),
+      Effect.catchTag("DiscordRESTError", e => {
+        if (e.error._tag !== "StatusCodeError") {
+          return Effect.fail(e)
+        }
 
-      const response = $(httpExecutor(request))
+        const response = e.error.response
 
-      $(updateBuckets(request, response))
-
-      return response as ResponseWithData<A>
-    }).catchTag("DiscordRESTError", e => {
-      if (e.error._tag !== "StatusCodeError") {
-        return Effect.fail(e)
-      }
-
-      const response = e.error.response
-
-      switch (e.error.status) {
-        case 403:
-          return Do($ => {
-            $(
+        switch (e.error.status) {
+          case 403:
+            return Effect.zipRight(
               Effect.all(
                 [
                   log.info("DiscordREST", "403", request.url),
@@ -157,33 +179,29 @@ const make = Do($ => {
                 ],
                 { concurrency: "unbounded", discard: true },
               ),
+              Effect.fail(e),
             )
-            return $(Effect.fail(e))
-          })
 
-        case 429:
-          return Do($ => {
-            $(
+          case 429:
+            return Effect.zipRight(
               Effect.all(
-                [
-                  log.info("DiscordREST", "429", request.url),
-                  addBadRoute(routeFromConfig(request.url, request.method)),
-                  updateBuckets(request, response),
-                  Effect.sleep(
-                    retryAfter(response.headers).getOrElse(() =>
-                      Duration.seconds(5),
-                    ),
+                log.info("DiscordREST", "429", request.url),
+                addBadRoute(routeFromConfig(request.url, request.method)),
+                updateBuckets(request, response),
+                Effect.sleep(
+                  Option.getOrElse(retryAfter(response.headers), () =>
+                    Duration.seconds(5),
                   ),
-                ],
+                ),
                 { concurrency: "unbounded", discard: true },
               ),
+              executor<A>(request),
             )
-            return $(executor<A>(request))
-          })
-      }
+        }
 
-      return Effect.fail(e)
-    })
+        return Effect.fail(e)
+      }),
+    )
 
   const routes = Discord.createRoutes<Partial<Http.MakeOptions>>(
     <R, P>({
@@ -197,7 +215,7 @@ const make = Do($ => {
 
       if (!hasBody) {
         if (params) {
-          request = request.appendParams(params as any)
+          request = Http.appendParams(request, params as any)
         }
       } else if (
         params &&
@@ -206,7 +224,7 @@ const make = Do($ => {
       ) {
         request.body.value.value.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        request = request.jsonBody(params)
+        request = Http.jsonBody(request, params)
       }
 
       return executor(request)
@@ -223,9 +241,11 @@ export interface DiscordREST
   extends Discord.Endpoints<Partial<Http.MakeOptions>> {
   readonly executor: <A = unknown>(
     request: Http.Request,
-  ) => Effect<never, DiscordRESTError, ResponseWithData<A>>
+  ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>
 }
 
 export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST =
-  LiveRateLimiter >> Layer.effect(DiscordREST, make)
+export const LiveDiscordREST = Layer.provide(
+  LiveRateLimiter,
+  Layer.effect(DiscordREST, make),
+)

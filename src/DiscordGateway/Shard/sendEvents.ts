@@ -1,4 +1,4 @@
-import { Discord } from "dfx/_common"
+import * as Discord from "dfx/types"
 
 export const heartbeat = (
   d: Discord.Heartbeat,

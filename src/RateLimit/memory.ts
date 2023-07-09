@@ -1,4 +1,6 @@
-import { BucketDetails, RateLimitStore } from "../RateLimit.js"
+import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
+import { BucketDetails, RateLimitStore } from "dfx/RateLimit"
 
 interface Counter {
   count: number
@@ -11,10 +13,13 @@ export const make = (): RateLimitStore => {
   const counters = new Map<string, Counter>()
 
   const getCounter = (key: string) =>
-    Maybe.fromNullable(counters.get(key)).filter(c => c.expires > Date.now())
+    Option.filter(
+      Option.fromNullable(counters.get(key)),
+      c => c.expires > Date.now(),
+    )
 
   const getBucketForRoute = (route: string) =>
-    Effect.sync(() => Maybe.fromNullable(buckets.get(routes.get(route)!)))
+    Effect.sync(() => Option.fromNullable(buckets.get(routes.get(route)!)))
 
   return {
     hasBucket: key => Effect.sync(() => buckets.has(key)),
@@ -40,7 +45,8 @@ export const make = (): RateLimitStore => {
       Effect.sync(() => {
         const now = Date.now()
         const perRequest = Math.ceil(window / limit)
-        const counter = getCounter(key).getOrElse(
+        const counter = Option.getOrElse(
+          getCounter(key),
           (): Counter => ({
             expires: now,
             count: 0,

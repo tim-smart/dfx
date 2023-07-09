@@ -1,6 +1,11 @@
-import { delayFrom } from "./RateLimit/utils.js"
-import * as Memory from "./RateLimit/memory.js"
+import { Tag } from "@effect/data/Context"
+import * as Duration from "@effect/data/Duration"
+import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
 import { Log } from "dfx/Log"
+import * as Memory from "dfx/RateLimit/memory"
+import { delayFrom } from "dfx/RateLimit/utils"
 
 export type BucketDetails = {
   key: "global" | string
@@ -9,61 +14,69 @@ export type BucketDetails = {
 }
 
 export interface RateLimitStore {
-  hasBucket: (bucketKey: string) => Effect<never, never, boolean>
+  readonly hasBucket: (
+    bucketKey: string,
+  ) => Effect.Effect<never, never, boolean>
 
-  putBucket: (bucket: BucketDetails) => Effect<never, never, void>
+  readonly putBucket: (
+    bucket: BucketDetails,
+  ) => Effect.Effect<never, never, void>
 
-  getBucketForRoute: (
+  readonly getBucketForRoute: (
     route: string,
-  ) => Effect<never, never, Maybe<BucketDetails>>
+  ) => Effect.Effect<never, never, Option.Option<BucketDetails>>
 
-  putBucketRoute: (
+  readonly putBucketRoute: (
     route: string,
     bucketKey: string,
-  ) => Effect<never, never, void>
+  ) => Effect.Effect<never, never, void>
 
-  incrementCounter: (
+  readonly incrementCounter: (
     key: string,
     window: number,
     limit: number,
-  ) => Effect<never, never, readonly [count: number, ttl: number]>
+  ) => Effect.Effect<never, never, readonly [count: number, ttl: number]>
 
-  removeCounter: (key: string) => Effect<never, never, void>
+  readonly removeCounter: (key: string) => Effect.Effect<never, never, void>
 }
 
 export const RateLimitStore = Tag<RateLimitStore>()
 export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
-const makeLimiter = Do($ => {
-  const store = $(RateLimitStore.accessWith(identity))
-  const log = $(Log.accessWith(identity))
+const makeLimiter = Effect.gen(function* (_) {
+  const store = yield* _(RateLimitStore)
+  const log = yield* _(Log)
 
   const maybeWait = (
     key: string,
-    window: Duration,
+    window: Duration.Duration,
     limit: number,
     multiplier = 1.05,
   ) => {
-    const windowMs = window.toMillis * multiplier
+    const windowMs = Duration.toMillis(window) * multiplier
 
-    return store
-      .incrementCounter(key, windowMs, limit)
-      .map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl))
-      .tap(d =>
+    return store.incrementCounter(key, windowMs, limit).pipe(
+      Effect.map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl)),
+      Effect.tap(d =>
         log.debug("RateLimitStore maybeWait", {
           key,
-          window: window.toMillis,
+          window: Duration.toMillis(window),
           windowMs,
           limit,
-          delay: d.toMillis,
+          delay: Duration.toMillis(d),
         }),
-      )
-      .tap(_ => (_.toMillis === 0 ? Effect.unit : Effect.sleep(_))).asUnit
+      ),
+      Effect.tap(_ =>
+        Duration.toMillis(_) === 0 ? Effect.unit : Effect.sleep(_),
+      ),
+      Effect.asUnit,
+    )
   }
 
   return { maybeWait }
 })
 
-export interface RateLimiter extends Effect.Success<typeof makeLimiter> {}
+export interface RateLimiter
+  extends Effect.Effect.Success<typeof makeLimiter> {}
 export const RateLimiter = Tag<RateLimiter>()
 export const LiveRateLimiter = Layer.effect(RateLimiter, makeLimiter)

@@ -1,17 +1,20 @@
-import * as SendEvents from "./sendEvents.js"
-import * as OS from "os"
 import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
+import * as Ref from "@effect/io/Ref"
+import * as Discord from "dfx/types"
+import * as OS from "os"
+import * as SendEvents from "./sendEvents.js"
 
 export interface Options {
-  token: string
-  intents: number
-  shard: [number, number]
-  presence?: Discord.UpdatePresence
+  readonly token: string
+  readonly intents: number
+  readonly shard: [number, number]
+  readonly presence?: Discord.UpdatePresence
 }
 
 export interface Requirements {
-  latestReady: Ref<Maybe<Discord.ReadyEvent>>
-  latestSequence: Ref<Maybe<number>>
+  readonly latestReady: Ref.Ref<Option.Option<Discord.ReadyEvent>>
+  readonly latestSequence: Ref.Ref<Option.Option<number>>
 }
 
 const identify = ({ token, intents, shard, presence }: Options) =>
@@ -36,19 +39,20 @@ const resume = (token: string, ready: Discord.ReadyEvent, seq: number) =>
 
 export const identifyOrResume = (
   opts: Options,
-  ready: Ref<Maybe<Discord.ReadyEvent>>,
-  seq: Ref<Maybe<number>>,
-) =>
-  Do($ => {
-    const readyEvent = $(ready.get)
-    const seqNumber = $(seq.get)
-
-    return Option.all({
-      readyEvent,
-      seqNumber,
-    }).match({
-      onNone: () => identify(opts),
-      onSome: ({ readyEvent, seqNumber }) =>
-        resume(opts.token, readyEvent, seqNumber),
-    })
-  })
+  ready: Ref.Ref<Option.Option<Discord.ReadyEvent>>,
+  seq: Ref.Ref<Option.Option<number>>,
+): Effect.Effect<
+  never,
+  never,
+  | Discord.GatewayPayload<Discord.Identify>
+  | Discord.GatewayPayload<Discord.Resume>
+> =>
+  Effect.map(
+    Effect.all(Ref.get(ready), Ref.get(seq)),
+    ([readyEvent, seqNumber]) =>
+      Option.match(Option.all({ readyEvent, seqNumber }), {
+        onNone: () => identify(opts),
+        onSome: ({ readyEvent, seqNumber }) =>
+          resume(opts.token, readyEvent, seqNumber),
+      }),
+  )

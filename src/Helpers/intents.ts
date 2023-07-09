@@ -1,4 +1,5 @@
 import * as Flags from "dfx/Helpers/flags"
+import * as Discord from "dfx/types"
 
 /**
  * All the intents

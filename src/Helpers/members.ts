@@ -1,3 +1,5 @@
+import * as Discord from "dfx/types"
+
 /**
  * From a list of roles, filter out the ones the guild member has.
  */

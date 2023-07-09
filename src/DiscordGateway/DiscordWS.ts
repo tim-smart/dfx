@@ -1,11 +1,10 @@
-import {
-  LiveWS,
-  Reconnect,
-  WS,
-  WebSocketCloseError,
-  WebSocketError,
-} from "dfx/DiscordGateway/WS"
+import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
 import WebSocket from "isomorphic-ws"
+import * as Discord from "dfx/types"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import { Tag } from "@effect/data/Context"
+import * as Ref from "@effect/io/Ref"
 
 export type Message = Discord.GatewayPayload | Reconnect
 
@@ -13,8 +12,8 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: DiscordWSCodec
-  outbound: Effect<never, never, Message>
-  onConnecting?: Effect<never, never, void>
+  outbound: Effect.Effect<never, never, Message>
+  onConnecting?: Effect.Effect<never, never, void>
 }
 
 export interface DiscordWSCodec {
@@ -29,9 +28,9 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
   decode: p => JSON.parse(p.toString("utf8")),
 })
 
-const make = Do($ => {
-  const ws = $(WS.accessWith(identity))
-  const encoding = $(DiscordWSCodec.accessWith(identity))
+const make = Effect.gen(function* (_) {
+  const ws = yield* _(WS)
+  const encoding = yield* _(DiscordWSCodec)
 
   const connect = ({
     url = "wss://gateway.discord.gg/",
@@ -39,22 +38,23 @@ const make = Do($ => {
     outbound,
     onConnecting,
   }: OpenOpts) =>
-    Do($ => {
-      const urlRef = $(
+    Effect.gen(function* (_) {
+      const urlRef = yield* _(
         Ref.make(`${url}?v=${version}&encoding=${encoding.type}`),
       )
       const setUrl = (url: string) =>
-        urlRef.set(`${url}?v=${version}&encoding=${encoding.type}`)
-      const takeOutbound = outbound.map(a =>
-        a === Reconnect ? a : encoding.encode(a),
+        Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
+      const takeOutbound = Effect.map(outbound, msg =>
+        msg === Reconnect ? msg : encoding.encode(msg),
       )
-      const socket = $(ws.connect(urlRef, takeOutbound, onConnecting))
-      const take = socket.take.map(encoding.decode)
+      const socket = yield* _(ws.connect(urlRef, takeOutbound, onConnecting))
+      const take = Effect.map(socket.take, encoding.decode)
 
-      const run = socket.run.retryWhile(
-        _ =>
-          (_._tag === "WebSocketCloseError" && _.code < 2000) ||
-          (_._tag === "WebSocketError" && _.reason === "open-timeout"),
+      const run = Effect.retryWhile(
+        socket.run,
+        e =>
+          (e._tag === "WebSocketCloseError" && e.code < 2000) ||
+          (e._tag === "WebSocketError" && e.reason === "open-timeout"),
       )
 
       return {
@@ -67,6 +67,9 @@ const make = Do($ => {
   return { connect } as const
 })
 
-export interface DiscordWS extends Effect.Success<typeof make> {}
+export interface DiscordWS extends Effect.Effect.Success<typeof make> {}
 export const DiscordWS = Tag<DiscordWS>()
-export const LiveDiscordWS = LiveWS >> Layer.effect(DiscordWS, make)
+export const LiveDiscordWS = Layer.provide(
+  LiveWS,
+  Layer.effect(DiscordWS, make),
+)

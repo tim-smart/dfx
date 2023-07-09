@@ -1,12 +1,19 @@
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import { Tag } from "@effect/data/Context"
+import * as Option from "@effect/data/Option"
+
 export interface ClaimIdContext {
   sharderCount: number
   totalCount: number
 }
 
 export interface ShardStore {
-  claimId: (ctx: ClaimIdContext) => Effect<never, never, Maybe<number>>
-  allClaimed: (totalCount: number) => Effect<never, never, boolean>
-  heartbeat?: (shardId: number) => Effect<never, never, void>
+  claimId: (
+    ctx: ClaimIdContext,
+  ) => Effect.Effect<never, never, Option.Option<number>>
+  allClaimed: (totalCount: number) => Effect.Effect<never, never, boolean>
+  heartbeat?: (shardId: number) => Effect.Effect<never, never, void>
 }
 export const ShardStore = Tag<ShardStore>()
 
@@ -18,12 +25,12 @@ const memoryStore = (): ShardStore => {
     claimId: ({ totalCount }) =>
       Effect.sync(() => {
         if (currentId >= totalCount) {
-          return Maybe.none()
+          return Option.none()
         }
 
         const id = currentId
         currentId++
-        return Maybe.some(id)
+        return Option.some(id)
       }),
 
     allClaimed: totalCount => Effect.sync(() => currentId >= totalCount),

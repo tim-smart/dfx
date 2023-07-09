@@ -1,5 +1,8 @@
-import * as D from "./definitions.js"
-import * as Ctx from "./context.js"
+import * as Chunk from "@effect/data/Chunk"
+import * as Effect from "@effect/io/Effect"
+import * as Ctx from "dfx/Interactions/context"
+import * as D from "dfx/Interactions/definitions"
+import * as Discord from "dfx/types"
 
 export type DefinitionFlattened<R, E, TE, A> = D.InteractionDefinition<
   R,
@@ -7,7 +10,7 @@ export type DefinitionFlattened<R, E, TE, A> = D.InteractionDefinition<
 > extends infer D
   ? {
       [K in keyof D]: K extends "handle"
-        ? (_: Discord.Interaction) => Effect<R, TE, A>
+        ? (_: Discord.Interaction) => Effect.Effect<R, TE, A>
         : D[K]
     }
   : never
@@ -26,31 +29,36 @@ const context: D.CommandHelper<any> = {
 } as any
 
 export const flattenDefinitions = <R, E, TE, A, B>(
-  definitions: Chunk<
+  definitions: Chunk.Chunk<
     readonly [
       handler: D.InteractionDefinition<R, E>,
-      transform: (self: Effect<R, E, A>) => Effect<R, TE, B>,
+      transform: (self: Effect.Effect<R, E, A>) => Effect.Effect<R, TE, B>,
     ]
   >,
   handleResponse: (
     ix: Discord.Interaction,
     _: Discord.InteractionResponse,
-  ) => Effect<R, E, A>,
+  ) => Effect.Effect<R, E, A>,
 ) =>
-  definitions.map(([definition, transform]) => ({
+  Chunk.map(definitions, ([definition, transform]) => ({
     ...definition,
     handle: (i: Discord.Interaction) =>
       Effect.isEffect(definition.handle)
-        ? transform(definition.handle.flatMap(_ => handleResponse(i, _)))
+        ? transform(
+            Effect.flatMap(definition.handle, _ => handleResponse(i, _)),
+          )
         : transform(
-            definition.handle(context).flatMap(_ => handleResponse(i, _)),
+            Effect.flatMap(definition.handle(context), _ =>
+              handleResponse(i, _),
+            ),
           ),
   }))
 
 export const splitDefinitions = <R, E, TE, A>(
-  definitions: Chunk<DefinitionFlattened<R, E, TE, A>>,
+  definitions: Chunk.Chunk<DefinitionFlattened<R, E, TE, A>>,
 ) => {
-  const grouped = definitions.reduce(
+  const grouped = Chunk.reduce(
+    definitions,
     {
       Autocomplete: Chunk.empty(),
       GlobalApplicationCommand: Chunk.empty(),
@@ -58,25 +66,28 @@ export const splitDefinitions = <R, E, TE, A>(
       MessageComponent: Chunk.empty(),
       ModalSubmit: Chunk.empty(),
     } as {
-      [K in D.InteractionDefinition<R, E>["_tag"]]: Chunk<
+      [K in D.InteractionDefinition<R, E>["_tag"]]: Chunk.Chunk<
         Extract<DefinitionFlattened<R, E, TE, A>, { _tag: K }>
       >
     },
     (acc, d) => ({
       ...acc,
-      [d._tag]: (acc[d._tag] as Chunk<any>).append(d),
+      [d._tag]: Chunk.append(acc[d._tag] as Chunk.Chunk<any>, d),
     }),
   )
 
-  const Commands = grouped.GlobalApplicationCommand.appendAll(
+  const Commands = Chunk.appendAll(
+    grouped.GlobalApplicationCommand,
     grouped.GuildApplicationCommand,
-  ).reduce(
-    {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
-    (acc, d) =>
-      ({
-        ...acc,
-        [d.command.name]: d,
-      } as any),
+  ).pipe(
+    Chunk.reduce(
+      {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
+      (acc, d) =>
+        ({
+          ...acc,
+          [d.command.name]: d,
+        } as any),
+    ),
   )
 
   return {

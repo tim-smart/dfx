@@ -1,30 +1,34 @@
+import * as Chunk from "@effect/data/Chunk"
+import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
-import * as Ctx from "./context.js"
-import * as D from "./definitions.js"
-import { flattenDefinitions, splitDefinitions } from "./utils.js"
+import * as Ctx from "dfx/Interactions/context"
+import * as D from "dfx/Interactions/definitions"
+import { flattenDefinitions, splitDefinitions } from "dfx/Interactions/utils"
+import * as Discord from "dfx/types"
 
 export class DefinitionNotFound {
   readonly _tag = "DefinitionNotFound"
   constructor(readonly interaction: Discord.Interaction) {}
 }
 
-type Handler<R, E, A> = Effect<
+type Handler<R, E, A> = Effect.Effect<
   R | Discord.Interaction,
   E | DefinitionNotFound,
   A
 >
 
 export const handlers = <R, E, TE, A, B>(
-  definitions: Chunk<
+  definitions: Chunk.Chunk<
     readonly [
       handler: D.InteractionDefinition<R, E>,
-      transform: (self: Effect<R, E, A>) => Effect<R, TE, B>,
+      transform: (self: Effect.Effect<R, E, A>) => Effect.Effect<R, TE, B>,
     ]
   >,
   handleResponse: (
     ix: Discord.Interaction,
     _: Discord.InteractionResponse,
-  ) => Effect<R, E, A>,
+  ) => Effect.Effect<R, E, A>,
 ): Record<
   Discord.InteractionType,
   (i: Discord.Interaction) => Handler<R, E, B>
@@ -43,68 +47,81 @@ export const handlers = <R, E, TE, A, B>(
     [Discord.InteractionType.APPLICATION_COMMAND]: i => {
       const data = i.data as Discord.ApplicationCommandDatum
 
-      return Maybe.fromNullable(Commands[data.name]).match({
+      return Option.match(Option.fromNullable(Commands[data.name]), {
         onNone: () => Effect.fail(new DefinitionNotFound(i)),
         onSome: command =>
-          command
-            .handle(i)
-            .provideService(Ctx.ApplicationCommand, data) as Handler<R, E, B>,
+          Effect.provideService(
+            command.handle(i),
+            Ctx.ApplicationCommand,
+            data,
+          ) as Handler<R, E, B>,
       })
     },
 
     [Discord.InteractionType.MODAL_SUBMIT]: i => {
       const data = i.data as Discord.ModalSubmitDatum
 
-      return ModalSubmit.findFirst(_ => _.predicate(data.custom_id)).flatMap(
-        _ =>
-          _.match({
+      return Effect.findFirst(ModalSubmit, _ =>
+        _.predicate(data.custom_id),
+      ).pipe(
+        Effect.flatMap(
+          Option.match({
             onNone: () => Effect.fail(new DefinitionNotFound(i)),
             onSome: match =>
-              match
-                .handle(i)
-                .provideService(Ctx.ModalSubmitData, data) as Handler<R, E, B>,
+              Effect.provideService(
+                match.handle(i),
+                Ctx.ModalSubmitData,
+                data,
+              ) as Handler<R, E, B>,
           }),
+        ),
       )
     },
 
     [Discord.InteractionType.MESSAGE_COMPONENT]: i => {
       const data = i.data as Discord.MessageComponentDatum
 
-      return MessageComponent.findFirst(_ =>
+      return Effect.findFirst(MessageComponent, _ =>
         _.predicate(data.custom_id),
-      ).flatMap(_ =>
-        _.match({
-          onNone: () => Effect.fail(new DefinitionNotFound(i)),
-          onSome: match =>
-            match
-              .handle(i)
-              .provideService(Ctx.MessageComponentData, data) as Handler<
-              R,
-              E,
-              B
-            >,
-        }),
+      ).pipe(
+        Effect.flatMap(
+          Option.match({
+            onNone: () => Effect.fail(new DefinitionNotFound(i)),
+            onSome: match =>
+              Effect.provideService(
+                match.handle(i),
+                Ctx.MessageComponentData,
+                data,
+              ) as Handler<R, E, B>,
+          }),
+        ),
       )
     },
 
     [Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE]: i => {
       const data = i.data as Discord.ApplicationCommandDatum
 
-      return IxHelpers.focusedOption(data).match({
+      return Option.match(IxHelpers.focusedOption(data), {
         onNone: () => Effect.fail(new DefinitionNotFound(i)),
         onSome: focusedOption =>
-          Autocomplete.findFirst(_ => _.predicate(data, focusedOption)).flatMap(
-            _ =>
-              _.match({
+          Effect.findFirst(Autocomplete, _ =>
+            _.predicate(data, focusedOption),
+          ).pipe(
+            Effect.flatMap(
+              Option.match({
                 onNone: () => Effect.fail(new DefinitionNotFound(i)),
                 onSome: match =>
-                  match
-                    .handle(i)
-                    .provideService(Ctx.ApplicationCommand, data)
-                    .provideService(Ctx.FocusedOptionContext, {
+                  Effect.provideService(
+                    match.handle(i),
+                    Ctx.ApplicationCommand,
+                    data,
+                  ).pipe(
+                    Effect.provideService(Ctx.FocusedOptionContext, {
                       focusedOption,
-                    }) as Handler<R, E, B>,
+                    }),
+                  ) as Handler<R, E, B>,
               }),
+            ),
           ),
       })
     },

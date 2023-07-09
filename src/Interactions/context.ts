@@ -1,6 +1,10 @@
+import { Tag } from "@effect/data/Context"
+import * as HashMap from "@effect/data/HashMap"
+import * as Option from "@effect/data/Option"
 import * as Arr from "@effect/data/ReadonlyArray"
-import { Effect, EffectTypeId } from "@effect/io/Effect"
+import * as Effect from "@effect/io/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
+import * as Discord from "dfx/types"
 import { ModalSubmitDatum } from "dfx/types"
 
 export const Interaction = Tag<Discord.Interaction>()
@@ -25,23 +29,27 @@ export class ResolvedDataNotFound {
 
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-) =>
-  Interaction.accessWithEffect(ix =>
-    IxHelpers.resolveValues(f)(ix).mapError(() => new ResolvedDataNotFound(ix)),
+): Effect.Effect<Discord.Interaction, ResolvedDataNotFound, readonly A[]> =>
+  Effect.flatMap(Interaction, ix =>
+    Effect.mapError(
+      IxHelpers.resolveValues(f)(ix),
+      () => new ResolvedDataNotFound(ix),
+    ),
   )
 
 export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-) =>
-  Interaction.accessWithEffect(ix =>
-    IxHelpers.resolveOptionValue(
-      name,
-      f,
-    )(ix).mapError(() => new ResolvedDataNotFound(ix, name)),
+): Effect.Effect<Discord.Interaction, ResolvedDataNotFound, A> =>
+  Effect.flatMap(Interaction, ix =>
+    Effect.mapError(
+      IxHelpers.resolveOptionValue(name, f)(ix),
+      () => new ResolvedDataNotFound(ix, name),
+    ),
   )
 
-export const focusedOptionValue = FocusedOptionContext.accessWith(
+export const focusedOptionValue = Effect.map(
+  FocusedOptionContext,
   _ => _.focusedOption.value ?? "",
 )
 
@@ -51,13 +59,16 @@ export class SubCommandNotFound {
 }
 
 export const handleSubCommands = <
-  NER extends Record<string, Effect<any, any, Discord.InteractionResponse>>,
+  NER extends Record<
+    string,
+    Effect.Effect<any, any, Discord.InteractionResponse>
+  >,
 >(
   commands: NER,
-): Effect<
+): Effect.Effect<
   | Exclude<
       [NER[keyof NER]] extends [
-        { [EffectTypeId]: { _R: (_: never) => infer R } },
+        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
       ]
         ? R
         : never,
@@ -66,26 +77,38 @@ export const handleSubCommands = <
   | Discord.Interaction
   | Discord.ApplicationCommandDatum,
   | ([NER[keyof NER]] extends [
-      { [EffectTypeId]: { _E: (_: never) => infer E } },
+      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
     ]
       ? E
       : never)
   | SubCommandNotFound,
   Discord.InteractionResponse
 > =>
-  ApplicationCommand.accessWithEffect(data =>
-    Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name])
-      .mapError(() => new SubCommandNotFound(data))
-      .flatMap(command =>
-        commands[command.name].provideService(SubCommandContext, {
-          command,
-        }),
+  ApplicationCommand.pipe(
+    Effect.flatMap(data =>
+      Effect.mapError(
+        Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name]),
+        () => new SubCommandNotFound(data),
       ),
+    ),
+    Effect.flatMap(command =>
+      Effect.provideService(commands[command.name], SubCommandContext, {
+        command,
+      }),
+    ),
   )
 
-export const currentSubCommand = SubCommandContext.accessWith(_ => _.command)
+export const currentSubCommand: Effect.Effect<
+  SubCommandContext,
+  never,
+  Discord.ApplicationCommandInteractionDataOption
+> = Effect.map(SubCommandContext, _ => _.command)
 
-export const optionsMap = ApplicationCommand.accessWith(IxHelpers.optionsMap)
+export const optionsMap: Effect.Effect<
+  Discord.ApplicationCommandDatum,
+  never,
+  HashMap.HashMap<string, string | undefined>
+> = Effect.map(ApplicationCommand, IxHelpers.optionsMap)
 
 export class RequiredOptionNotFound {
   readonly _tag = "RequiredOptionNotFound"
@@ -98,26 +121,32 @@ export class RequiredOptionNotFound {
 }
 
 export const option = (name: string) =>
-  ApplicationCommand.accessWith(IxHelpers.getOption(name))
+  Effect.map(ApplicationCommand, IxHelpers.getOption(name))
 
 export const optionValue = (name: string) =>
-  option(name).flatMap(_ =>
-    _.flatMapNullable(a => a.value).match({
-      onNone: () =>
-        ApplicationCommand.accessWithEffect(data =>
-          Effect.fail(new RequiredOptionNotFound(data, name)),
-        ),
-      onSome: Effect.succeed,
-    }),
+  Effect.flatMap(option(name), _ =>
+    Option.match(
+      Option.flatMapNullable(_, a => a.value),
+      {
+        onNone: () =>
+          Effect.flatMap(ApplicationCommand, data =>
+            Effect.fail(new RequiredOptionNotFound(data, name)),
+          ),
+        onSome: Effect.succeed,
+      },
+    ),
   )
 
 export const optionValueOptional = (name: string) =>
-  option(name).map(o => o.flatMapNullable(o => o.value))
+  Effect.map(
+    option(name),
+    Option.flatMapNullable(o => o.value),
+  )
 
-export const modalValues = ModalSubmitData.accessWith(IxHelpers.componentsMap)
+export const modalValues = Effect.map(ModalSubmitData, IxHelpers.componentsMap)
 
 export const modalValueOption = (name: string) =>
-  ModalSubmitData.accessWith(IxHelpers.componentValue(name))
+  Effect.map(ModalSubmitData, IxHelpers.componentValue(name))
 
 export class ModalValueNotFound {
   readonly _tag = "ModalValueNotFound"
@@ -125,8 +154,9 @@ export class ModalValueNotFound {
 }
 
 export const modalValue = (name: string) =>
-  ModalSubmitData.accessWithEffect(data =>
-    IxHelpers.componentValue(name)(data).mapError(
+  Effect.flatMap(ModalSubmitData, data =>
+    Effect.mapError(
+      IxHelpers.componentValue(name)(data),
       () => new ModalValueNotFound(data, name),
     ),
   )

@@ -1,41 +1,80 @@
-import { LiveFetchRequestExecutor } from "@effect-http/client"
-import { DiscordConfig, LiveDiscordREST, Log } from "dfx"
-import { LiveDiscordGateway } from "./DiscordGateway.js"
-import { LiveJsonDiscordWSCodec } from "./DiscordGateway/DiscordWS.js"
-import { LiveMemoryShardStore } from "./DiscordGateway/ShardStore.js"
-import { LiveMemoryRateLimitStore, LiveRateLimiter } from "./RateLimit.js"
+import {
+  HttpRequestExecutor,
+  LiveFetchRequestExecutor,
+} from "@effect-http/client"
+import * as Config from "@effect/io/Config"
+import * as ConfigError from "@effect/io/Config/Error"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import { DiscordConfig, DiscordREST, LiveDiscordREST, Log } from "dfx"
+import { DiscordGateway, LiveDiscordGateway } from "dfx/DiscordGateway"
+import { LiveJsonDiscordWSCodec } from "dfx/DiscordGateway/DiscordWS"
+import { LiveMemoryShardStore } from "dfx/DiscordGateway/ShardStore"
+import {
+  LiveMemoryRateLimitStore,
+  LiveRateLimiter,
+  RateLimiter,
+} from "dfx/RateLimit"
 
-export * as CachePrelude from "./Cache/prelude.js"
-export { DiscordGateway, LiveDiscordGateway } from "./DiscordGateway.js"
-export * as DiscordWS from "./DiscordGateway/DiscordWS.js"
-export * as Shard from "./DiscordGateway/Shard.js"
-export * as ShardStore from "./DiscordGateway/ShardStore.js"
-export * as SendEvent from "./DiscordGateway/Shard/sendEvents.js"
-export * as WS from "./DiscordGateway/WS.js"
+export * as CachePrelude from "dfx/Cache/prelude"
+export { DiscordGateway, LiveDiscordGateway } from "dfx/DiscordGateway"
+export * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
+export * as Shard from "dfx/DiscordGateway/Shard"
+export * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
+export * as ShardStore from "dfx/DiscordGateway/ShardStore"
+export * as WS from "dfx/DiscordGateway/WS"
 export {
   InteractionsRegistry,
   InteractionsRegistryLive,
   run as runIx,
-} from "./Interactions/gateway.js"
+} from "dfx/Interactions/gateway"
 
-export const MemoryRateLimit = LiveMemoryRateLimitStore >> LiveRateLimiter
+export const MemoryRateLimit = Layer.provide(
+  LiveMemoryRateLimitStore,
+  LiveRateLimiter,
+)
 
-export const MemoryBot =
-  (LiveMemoryShardStore + LiveMemoryRateLimitStore + LiveJsonDiscordWSCodec) >>
-  ((LiveDiscordREST > LiveDiscordGateway) + MemoryRateLimit)
-
+export const MemoryBot = Layer.provide(
+  Layer.mergeAll(
+    LiveMemoryShardStore,
+    LiveMemoryRateLimitStore,
+    LiveJsonDiscordWSCodec,
+  ),
+  Layer.merge(
+    Layer.provideMerge(LiveDiscordREST, LiveDiscordGateway),
+    MemoryRateLimit,
+  ),
+)
 export const makeLiveWithoutFetch = (
-  config: Config.Wrap<DiscordConfig.MakeOpts>,
-) =>
+  config: Config.Config.Wrap<DiscordConfig.MakeOpts>,
+): Layer.Layer<
+  HttpRequestExecutor,
+  ConfigError.ConfigError,
+  | RateLimiter
+  | Log.Log
+  | DiscordREST
+  | DiscordConfig.DiscordConfig
+  | DiscordGateway
+> =>
   Layer.unwrapEffect(
-    Config.unwrap(config)
-      .config.map(DiscordConfig.make)
-      .map(config => {
+    Effect.config(Config.unwrap(config)).pipe(
+      Effect.map(DiscordConfig.make),
+      Effect.map(config => {
         const LiveLog = config.debug ? Log.LiveLogDebug : Log.LiveLog
         const LiveConfig = Layer.succeed(DiscordConfig.DiscordConfig, config)
-        return LiveLog + LiveConfig > MemoryBot
+        return Layer.provideMerge(Layer.merge(LiveLog, LiveConfig), MemoryBot)
       }),
+    ),
   )
 
-export const makeLive = (config: Config.Wrap<DiscordConfig.MakeOpts>) =>
-  LiveFetchRequestExecutor >> makeLiveWithoutFetch(config)
+export const makeLive = (
+  config: Config.Config.Wrap<DiscordConfig.MakeOpts>,
+): Layer.Layer<
+  never,
+  ConfigError.ConfigError,
+  | RateLimiter
+  | Log.Log
+  | DiscordREST
+  | DiscordConfig.DiscordConfig
+  | DiscordGateway
+> => Layer.provide(LiveFetchRequestExecutor, makeLiveWithoutFetch(config))

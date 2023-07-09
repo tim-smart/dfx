@@ -8,7 +8,7 @@ import {
   SelectOption,
   TextInput,
   TextInputStyle,
-} from "../types.js"
+} from "dfx/types"
 
 export type UIComponent = Exclude<Component, ActionRow>
 

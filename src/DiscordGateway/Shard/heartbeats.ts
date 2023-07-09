@@ -1,44 +1,64 @@
 import { millis } from "@effect/data/Duration"
-import * as SendEvents from "./sendEvents.js"
+import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
+import * as Queue from "@effect/io/Queue"
+import * as Ref from "@effect/io/Ref"
+import * as Schedule from "@effect/io/Schedule"
 import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
+import * as Discord from "dfx/types"
+import * as EffectU from "dfx/utils/Effect"
 import { Reconnect } from "../WS.js"
+import * as SendEvents from "./sendEvents.js"
 
-const payload = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
-  seqRef.get
-    .map(a => SendEvents.heartbeat(a.getOrNull))
-    .tap(() => ref.set(false))
+const payload = (
+  ref: Ref.Ref<boolean>,
+  seqRef: Ref.Ref<Option.Option<number>>,
+) =>
+  Ref.get(seqRef).pipe(
+    Effect.map(o => SendEvents.heartbeat(Option.getOrNull(o))),
+    Effect.tap(() => Ref.set(ref, false)),
+  )
 
-const payloadOrReconnect = (ref: Ref<boolean>, seqRef: Ref<Maybe<number>>) =>
-  ref.get.flatMap(
-    (acked): Effect<never, never, DiscordWS.Message> =>
+const payloadOrReconnect = (
+  ref: Ref.Ref<boolean>,
+  seqRef: Ref.Ref<Option.Option<number>>,
+) =>
+  Effect.flatMap(
+    Ref.get(ref),
+    (acked): Effect.Effect<never, never, DiscordWS.Message> =>
       acked ? payload(ref, seqRef) : Effect.succeed(Reconnect),
   )
 
 export const send = (
-  hellos: Dequeue<Discord.GatewayPayload>,
-  acks: Dequeue<Discord.GatewayPayload>,
-  seqRef: Ref<Maybe<number>>,
-  send: (p: DiscordWS.Message) => Effect<never, never, boolean>,
+  hellos: Queue.Dequeue<Discord.GatewayPayload>,
+  acks: Queue.Dequeue<Discord.GatewayPayload>,
+  seqRef: Ref.Ref<Option.Option<number>>,
+  send: (p: DiscordWS.Message) => Effect.Effect<never, never, boolean>,
 ) =>
-  Do($ => {
-    const ackedRef = $(Ref.make(true))
+  Effect.gen(function* (_) {
+    const ackedRef = yield* _(Ref.make(true))
 
-    const heartbeats = hellos
-      .take()
-      .tap(() => ackedRef.set(true))
-      .foreverSwitch(p =>
-        payloadOrReconnect(ackedRef, seqRef)
-          .tap(send)
-          .schedule(
+    const heartbeats = EffectU.foreverSwitch(
+      Queue.take(hellos).pipe(Effect.tap(() => Ref.set(ackedRef, true))),
+      p =>
+        payloadOrReconnect(ackedRef, seqRef).pipe(
+          Effect.tap(send),
+          Effect.schedule(
             Schedule.duration(
               millis(p.d!.heartbeat_interval * Math.random()),
-            ).andThen(Schedule.fixed(millis(p.d!.heartbeat_interval))),
+            ).pipe(
+              Schedule.andThen(Schedule.fixed(millis(p.d!.heartbeat_interval))),
+            ),
           ),
-      )
+        ),
+    )
 
-    const run = acks.take().tap(() => ackedRef.set(true)).forever
+    const run = Queue.take(acks).pipe(
+      Effect.tap(() => Ref.set(ackedRef, true)),
+      Effect.forever,
+    )
 
-    return $(
+    return yield* _(
       Effect.all(run, heartbeats, {
         concurrency: "unbounded",
         discard: true,

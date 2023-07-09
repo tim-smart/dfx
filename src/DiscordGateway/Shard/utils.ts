@@ -1,17 +1,41 @@
+import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
+import * as Ref from "@effect/io/Ref"
+import * as Discord from "dfx/types"
+import * as Stream from "@effect/stream/Stream"
+
 export const opCode =
-  <R, E>(source: Stream<R, E, Discord.GatewayPayload>) =>
-  <T = any>(code: Discord.GatewayOpcode) =>
-    source.filter((p): p is Discord.GatewayPayload<T> => p.op === code)
+  <R, E>(source: Stream.Stream<R, E, Discord.GatewayPayload>) =>
+  <T = any>(
+    code: Discord.GatewayOpcode,
+  ): Stream.Stream<R, E, Discord.GatewayPayload<T>> =>
+    source.pipe(
+      Stream.filter((p): p is Discord.GatewayPayload<T> => p.op === code),
+    )
 
 const maybeUpdateRef =
-  <T>(f: (p: Discord.GatewayPayload) => Maybe<T>, ref: Ref<Maybe<T>>) =>
-  (_: Discord.GatewayPayload) =>
-    f(_).match({
+  <T>(
+    f: (p: Discord.GatewayPayload) => Option.Option<T>,
+    ref: Ref.Ref<Option.Option<T>>,
+  ) =>
+  (_: Discord.GatewayPayload): Effect.Effect<never, never, void> =>
+    Option.match(f(_), {
       onNone: () => Effect.unit,
-      onSome: a => ref.set(Maybe.some(a)),
+      onSome: a => Ref.set(ref, Option.some(a)),
     })
 
-export const latest = <T>(f: (p: Discord.GatewayPayload) => Maybe<T>) =>
-  Ref.make<Maybe<T>>(Maybe.none()).map(
+export const latest = <T>(
+  f: (p: Discord.GatewayPayload) => Option.Option<T>,
+): Effect.Effect<
+  never,
+  never,
+  readonly [
+    Ref.Ref<Option.Option<T>>,
+    (_: Discord.GatewayPayload<any>) => Effect.Effect<never, never, void>,
+  ]
+> =>
+  Effect.map(
+    Ref.make<Option.Option<T>>(Option.none()),
+
     ref => [ref, maybeUpdateRef(f, ref)] as const,
   )

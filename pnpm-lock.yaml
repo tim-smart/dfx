@@ -36,6 +36,9 @@ optionalDependencies:
     version: 8.13.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
 
 devDependencies:
+  '@effect/language-service':
+    specifier: ^0.0.19
+    version: 0.0.19
   '@tim-smart/discord-api-docs-parser':
     specifier: ^0.5.5
     version: 0.5.5
@@ -59,10 +62,10 @@ devDependencies:
     version: 7.1.1
   madge:
     specifier: ^6.1.0
-    version: 6.1.0(typescript@5.2.0-tsplus.20230603)
+    version: 6.1.0(typescript@5.1.6)
   typescript:
-    specifier: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz
-    version: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz'
+    specifier: 5.1.6
+    version: 5.1.6
 
 packages:
 
@@ -135,6 +138,13 @@ packages:
     dependencies:
       '@effect/data': 0.13.5
 
+  /@effect/language-service@0.0.19:
+    resolution: {integrity: sha512-sKNVo031dkwLfe1jHZzdTiF1UXgLq1lAYd2JG7q416dlmMoxRcMXrZWyw6a/SxIDM0hyIJAEmrz5iUkQPcPdBQ==}
+    dependencies:
+      '@fp-ts/core': 0.0.11
+      '@fp-ts/data': 0.0.41
+    dev: true
+
   /@effect/schema@0.25.0:
     resolution: {integrity: sha512-nJ674r65cqlv6+5jgjUT28oeNnfG/xkk/XduVb0ZF6Cd5rX7GqZp8cKObNwVLTNLJjMqS4N2rHhS8JtgLv88aw==}
     dependencies:
@@ -148,6 +158,16 @@ packages:
     dependencies:
       '@effect/data': 0.13.5
       '@effect/io': 0.31.3
+
+  /@fp-ts/core@0.0.11:
+    resolution: {integrity: sha512-BCAJBYzghwoJpcUOARJ1tui50HoYJFlV2pJlVMlsEkDFhD8MTtq8xQVpZCRF66RmtkxtGBYINCQ+5H1lRaL35Q==}
+    dev: true
+
+  /@fp-ts/data@0.0.41:
+    resolution: {integrity: sha512-0S93kOQ91D7wp60q/PSVWvMsJjSWJutjt4qX/BvVNV7+fymuC2hTfW2HlE2OcMK11xCNiI6Rq2AkvyzoMhOlpg==}
+    dependencies:
+      '@fp-ts/core': 0.0.11
+    dev: true
 
   /@hutson/parse-repository-url@3.0.2:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
@@ -2953,7 +2973,7 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /madge@6.1.0(typescript@5.2.0-tsplus.20230603):
+  /madge@6.1.0(typescript@5.1.6):
     resolution: {integrity: sha512-irWhT5RpFOc6lkzGHKLihonCVgM0YtfNUh4IrFeW3EqHpnt/JHUG3z26j8PeJEktCGB4tmGOOOJi1Rl/ACWucQ==}
     engines: {node: '>=14'}
     hasBin: true
@@ -2984,7 +3004,7 @@ packages:
       rc: 1.2.8
       stream-to-array: 2.3.0
       ts-graphviz: 1.8.0
-      typescript: '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz'
+      typescript: 5.1.6
       walkdir: 0.4.1
     transitivePeerDependencies:
       - supports-color
@@ -5045,14 +5065,6 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
-    dev: true
-
-  '@cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz':
-    resolution: {tarball: https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.177/compiler/typescript.tgz}
-    name: typescript
-    version: 5.2.0-tsplus.20230603
-    engines: {node: '>=14.17'}
-    hasBin: true
     dev: true
 
 publishDirectory: dist

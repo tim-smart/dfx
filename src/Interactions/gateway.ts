@@ -1,12 +1,28 @@
 import * as Http from "@effect-http/client"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
-import { DefinitionNotFound, handlers } from "./handlers.js"
-import { Interaction, InteractionBuilder, builder } from "./index.js"
+import { DefinitionNotFound, handlers } from "dfx/Interactions/handlers"
+import {
+  Interaction,
+  InteractionBuilder,
+  builder,
+} from "dfx/Interactions/index"
 import type {
   GlobalApplicationCommand,
   GuildApplicationCommand,
-} from "./definitions.js"
+} from "dfx/Interactions/definitions"
+import * as Discord from "dfx/types"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import { Tag } from "@effect/data/Context"
+import { Cause } from "@effect/io/Cause"
+import * as Chunk from "@effect/data/Chunk"
+import * as Ref from "@effect/io/Ref"
+import * as Queue from "@effect/io/Queue"
+import * as EffectUtils from "dfx/utils/Effect"
+import * as Duration from "@effect/data/Duration"
+import * as Gateway from "dfx/Interactions/gateway"
+import { pipe } from "@effect/data/Function"
 
 export interface RunOpts {
   sync?: boolean
@@ -18,47 +34,50 @@ export interface RunOpts {
 export const run =
   <R, R2, E, TE, E2>(
     postHandler: (
-      effect: Effect<
+      effect: Effect.Effect<
         R | DiscordREST | Discord.Interaction,
         TE | DiscordRESTError | DefinitionNotFound,
         void
       >,
-    ) => Effect<R2, E2, void>,
+    ) => Effect.Effect<R2, E2, void>,
     { sync = true }: RunOpts = {},
   ) =>
   (
     ix: InteractionBuilder<R, E, TE>,
-  ): Effect<
+  ): Effect.Effect<
     DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
     E2 | DiscordRESTError | Http.ResponseDecodeError,
     never
   > =>
-    Do($ => {
-      const GlobalApplicationCommand = ix.definitions
-        .map(_ => _[0])
-        .filter(
+    Effect.gen(function* (_) {
+      const GlobalApplicationCommand = ix.definitions.pipe(
+        Chunk.map(_ => _[0]),
+        Chunk.filter(
           (_): _ is GlobalApplicationCommand<R, E> =>
             _._tag === "GlobalApplicationCommand",
-        ).toReadonlyArray
-      const GuildApplicationCommand = ix.definitions
-        .map(_ => _[0])
-        .filter(
+        ),
+        Chunk.toReadonlyArray,
+      )
+      const GuildApplicationCommand = ix.definitions.pipe(
+        Chunk.map(_ => _[0]),
+        Chunk.filter(
           (_): _ is GuildApplicationCommand<R, E> =>
             _._tag === "GuildApplicationCommand",
-        ).toReadonlyArray
+        ),
+        Chunk.toReadonlyArray,
+      )
 
-      const gateway = $(DiscordGateway.accessWith(identity))
-      const rest = $(DiscordREST.accessWith(identity))
+      const gateway = yield* _(DiscordGateway)
+      const rest = yield* _(DiscordREST)
 
-      const application = $(
-        rest.getCurrentBotApplicationInformation().flatMap(a => a.json),
+      const application = yield* _(
+        rest.getCurrentBotApplicationInformation(),
+        Effect.flatMap(a => a.json),
       )
 
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
-        {
-          body: Http.body.json(GlobalApplicationCommand.map(_ => _.command)),
-        },
+        { body: Http.body.json(GlobalApplicationCommand.map(_ => _.command)) },
       )
 
       const guildSync = GuildApplicationCommand.length
@@ -76,39 +95,47 @@ export const run =
       )
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
-        postHandler(handle[i.type](i)).provideService(Interaction, i),
+        Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
       )
 
-      return $(
+      return yield* _(
         sync
-          ? Effect.all(run, globalSync, guildSync, {
-              concurrency: "unbounded",
-              discard: true,
-            }).forever
+          ? Effect.forever(
+              Effect.all(run, globalSync, guildSync, {
+                concurrency: "unbounded",
+                discard: true,
+              }),
+            )
           : run,
       )
     })
 
-const makeRegistry = Do($ => {
-  const ref = $(Ref.make(builder as InteractionBuilder<never, never, never>))
-  const queue = $(Queue.sliding<InteractionBuilder<never, never, never>>(1))
+const makeRegistry = Effect.gen(function* (_) {
+  const ref = yield* _(
+    Ref.make(builder as InteractionBuilder<never, never, never>),
+  )
+  const queue = yield* _(
+    Queue.sliding<InteractionBuilder<never, never, never>>(1),
+  )
 
   const register = <E>(ix: InteractionBuilder<never, E, never>) =>
-    ref.updateAndGet(_ => _.concat(ix as any)).flatMap(_ => queue.offer(_))
+    Effect.flatMap(
+      Ref.updateAndGet(ref, _ => _.concat(ix as any)),
+      _ => Queue.offer(queue, _),
+    )
 
   const run = <R, E>(
     onError: (
       _: Cause<DiscordRESTError | DefinitionNotFound>,
-    ) => Effect<R, E, void>,
+    ) => Effect.Effect<R, E, void>,
     opts?: RunOpts,
   ) =>
-    queue
-      .take()
-      .foreverSwitch(ix =>
-        ix
-          .runGateway(_ => _.catchAllCause(onError), opts)
-          .delay(Duration.seconds(0.1)),
-      )
+    EffectUtils.foreverSwitch(Queue.take(queue), ix =>
+      Effect.delay(
+        pipe(ix, Gateway.run(Effect.catchAllCause(onError), opts)),
+        Duration.seconds(0.1),
+      ),
+    )
 
   return { register, run } as const
 })
@@ -116,14 +143,14 @@ const makeRegistry = Do($ => {
 export interface InteractionsRegistry {
   readonly register: <E>(
     ix: InteractionBuilder<never, E, never>,
-  ) => Effect<never, never, void>
+  ) => Effect.Effect<never, never, void>
 
   readonly run: <R, E>(
     onError: (
       _: Cause<DiscordRESTError | DefinitionNotFound>,
-    ) => Effect<R, E, void>,
+    ) => Effect.Effect<R, E, void>,
     opts?: RunOpts,
-  ) => Effect<
+  ) => Effect.Effect<
     DiscordREST | DiscordGateway | Exclude<R, Discord.Interaction>,
     DiscordRESTError | Http.ResponseDecodeError | E,
     never

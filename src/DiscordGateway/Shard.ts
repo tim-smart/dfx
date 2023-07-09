@@ -1,12 +1,25 @@
 import { DiscordConfig } from "dfx/DiscordConfig"
 import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
-import { DiscordWS, LiveDiscordWS, Message } from "./DiscordWS.js"
-import * as Heartbeats from "./Shard/heartbeats.js"
-import * as Identify from "./Shard/identify.js"
-import * as InvalidSession from "./Shard/invalidSession.js"
-import * as Utils from "./Shard/utils.js"
-import { Reconnect } from "./WS.js"
+import { DiscordWS, LiveDiscordWS, Message } from "dfx/DiscordGateway/DiscordWS"
+import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
+import * as Identify from "dfx/DiscordGateway/Shard/identify"
+import * as InvalidSession from "dfx/DiscordGateway/Shard/invalidSession"
+import * as Utils from "dfx/DiscordGateway/Shard/utils"
+import { Reconnect } from "dfx/DiscordGateway/WS"
 import { Log } from "dfx/Log"
+import * as Discord from "dfx/types"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import { Tag } from "@effect/data/Context"
+import * as Option from "@effect/data/Option"
+import * as Stream from "@effect/stream/Stream"
+import { pipe, identity } from "@effect/data/Function"
+import * as Hub from "@effect/io/Hub"
+import * as Queue from "@effect/io/Queue"
+import * as Ref from "@effect/io/Ref"
+import * as Duration from "@effect/data/Duration"
+import * as Chunk from "@effect/data/Chunk"
+import * as ConfigSecret from "@effect/io/Config/Secret"
 
 const enum Phase {
   Connecting,
@@ -14,54 +27,56 @@ const enum Phase {
   Connected,
 }
 
-export const make = Do($ => {
-  const { token, gateway } = $(DiscordConfig.accessWith(identity))
-  const limiter = $(RateLimiter.accessWith(identity))
-  const dws = $(DiscordWS.accessWith(identity))
-  const log = $(Log.accessWith(identity))
+export const make = Effect.gen(function* (_) {
+  const { token, gateway } = yield* _(DiscordConfig)
+  const limiter = yield* _(RateLimiter)
+  const dws = yield* _(DiscordWS)
+  const log = yield* _(Log)
 
   const connect = (
     shard: [id: number, count: number],
-    hub: Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
-    sendQueue: Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
+    hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
+    sendQueue: Queue.Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
   ) =>
-    Do($ => {
-      const outboundQueue = $(Queue.unbounded<Message>())
-      const pendingQueue = $(Queue.unbounded<Message>())
-      const phase = $(Ref.make(Phase.Connecting))
+    Effect.gen(function* (_) {
+      const outboundQueue = yield* _(Queue.unbounded<Message>())
+      const pendingQueue = yield* _(Queue.unbounded<Message>())
+      const phase = yield* _(Ref.make(Phase.Connecting))
       const setPhase = (p: Phase) =>
-        phase.set(p).zipLeft(log.debug("Shard", shard, "phase", p))
-      const outbound = outboundQueue
-        .take()
-        .tap(() =>
-          limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
-        )
+        Effect.zipLeft(Ref.set(phase, p), log.debug("Shard", shard, "phase", p))
+      const outbound = Effect.zipLeft(
+        Queue.take(outboundQueue),
+        limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
+      )
 
       const send = (p: Message) =>
-        phase.get.flatMap(_ =>
-          _ === Phase.Connected
-            ? outboundQueue.offer(p)
-            : pendingQueue.offer(p),
+        Effect.flatMap(Ref.get(phase), phase =>
+          phase === Phase.Connected
+            ? Queue.offer(outboundQueue, p)
+            : Queue.offer(pendingQueue, p),
         )
 
       const heartbeatSend = (p: Message) =>
-        phase.get.flatMap(_ =>
-          _ !== Phase.Connecting
-            ? outboundQueue.offer(p)
+        Effect.flatMap(Ref.get(phase), phase =>
+          phase === Phase.Connecting
+            ? Queue.offer(outboundQueue, p)
             : Effect.succeed(false),
         )
 
-      const prioritySend = (p: Message) => outboundQueue.offer(p)
+      const prioritySend = (p: Message) => Queue.offer(outboundQueue, p)
 
-      const resume = setPhase(Phase.Connected)
-        .zipRight(pendingQueue.takeAll())
-        .tap(_ => outboundQueue.offerAll(_)).asUnit
+      const resume = setPhase(Phase.Connected).pipe(
+        Effect.zipRight(Queue.takeAll(pendingQueue)),
+        Effect.tap(_ => Queue.offerAll(outboundQueue, _)),
+        Effect.asUnit,
+      )
 
-      const onConnecting = outboundQueue
-        .takeAll()
-        .tap(_ =>
-          pendingQueue.offerAll(
-            _.filter(
+      const onConnecting = Queue.takeAll(outboundQueue).pipe(
+        Effect.tap(msgs =>
+          Queue.offerAll(
+            pendingQueue,
+            Chunk.filter(
+              msgs,
               msg =>
                 msg !== Reconnect &&
                 msg.op !== Discord.GatewayOpcode.IDENTIFY &&
@@ -69,39 +84,42 @@ export const make = Do($ => {
                 msg.op !== Discord.GatewayOpcode.HEARTBEAT,
             ),
           ),
-        )
-        .zipRight(setPhase(Phase.Connecting))
+        ),
+        Effect.zipRight(setPhase(Phase.Connecting)),
+      )
 
-      const socket = $(dws.connect({ outbound, onConnecting }))
+      const socket = yield* _(dws.connect({ outbound, onConnecting }))
 
-      const [latestReady, updateLatestReady] = $(
+      const [latestReady, updateLatestReady] = yield* _(
         Utils.latest(p =>
-          Maybe.some(p)
-            .filter(
+          Option.some(p).pipe(
+            Option.filter(
               (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
                 p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
-            )
-            .map(p => p.d!),
+            ),
+            Option.map(p => p.d!),
+          ),
         ),
       )
-      const [latestSequence, updateLatestSequence] = $(
-        Utils.latest(p => Maybe.fromNullable(p.s)),
+      const [latestSequence, updateLatestSequence] = yield* _(
+        Utils.latest(p => Option.fromNullable(p.s)),
       )
       const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
-        Maybe.some(p)
-          .filter(
+        Option.some(p).pipe(
+          Option.filter(
             (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
               p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
-          )
-          .map(p => p.d!)
-          .match({
+          ),
+          Option.map(p => p.d!),
+          Option.match({
             onNone: () => Effect.unit,
             onSome: ({ resume_gateway_url }) =>
               socket.setUrl(resume_gateway_url),
-          })
+          }),
+        )
 
-      const hellos = $(Queue.unbounded<Discord.GatewayPayload>())
-      const acks = $(Queue.unbounded<Discord.GatewayPayload>())
+      const hellos = yield* _(Queue.unbounded<Discord.GatewayPayload>())
+      const acks = yield* _(Queue.unbounded<Discord.GatewayPayload>())
 
       // heartbeats
       const heartbeats = Heartbeats.send(
@@ -114,7 +132,7 @@ export const make = Do($ => {
       // identify
       const identify = Identify.identifyOrResume(
         {
-          token: token.value,
+          token: ConfigSecret.value(token),
           shard,
           intents: gateway.intents,
           presence: gateway.presence,
@@ -124,45 +142,47 @@ export const make = Do($ => {
       )
 
       const onPayload = (p: Discord.GatewayPayload) =>
-        Do($ => {
-          $(
-            updateLatestReady(p)
-              .zip(updateLatestSequence(p), { parallel: true })
-              .zip(maybeUpdateUrl(p)),
-          )
+        Effect.tap(
+          Effect.all(
+            updateLatestReady(p),
+            updateLatestSequence(p),
+            maybeUpdateUrl(p),
+            { discard: true },
+          ),
+          () => {
+            switch (p.op) {
+              case Discord.GatewayOpcode.HELLO:
+                return Effect.all(
+                  Effect.tap(identify, prioritySend),
+                  setPhase(Phase.Handshake),
+                  Queue.offer(hellos, p),
+                  { discard: true },
+                )
+              case Discord.GatewayOpcode.HEARTBEAT_ACK:
+                return Queue.offer(acks, p)
+              case Discord.GatewayOpcode.INVALID_SESSION:
+                return Effect.tap(
+                  InvalidSession.fromPayload(p, latestReady),
+                  send,
+                )
+              case Discord.GatewayOpcode.DISPATCH:
+                if (p.t === "READY" || p.t === "RESUMED") {
+                  return Effect.zipRight(resume, Hub.publish(hub, p))
+                }
+                return Hub.publish(hub, p)
+            }
 
-          let effect = Effect.unit
+            return Effect.unit
+          },
+        )
 
-          switch (p.op) {
-            case Discord.GatewayOpcode.HELLO:
-              effect = identify
-                .tap(prioritySend)
-                .zip(setPhase(Phase.Handshake).zipRight(hellos.offer(p)), {
-                  parallel: true,
-                })
-              break
-            case Discord.GatewayOpcode.HEARTBEAT_ACK:
-              effect = acks.offer(p)
-              break
-            case Discord.GatewayOpcode.INVALID_SESSION:
-              effect = InvalidSession.fromPayload(p, latestReady).tap(send)
-              break
-            case Discord.GatewayOpcode.DISPATCH:
-              if (p.t === "READY" || p.t === "RESUMED") {
-                effect = resume.zipRight(hub.publish(p))
-              } else {
-                effect = hub.publish(p)
-              }
-              break
-          }
-
-          $(effect)
-        })
-
-      const drainSendQueue = sendQueue.take().tap(send).forever
+      const drainSendQueue = Queue.take(sendQueue).pipe(
+        Effect.tap(send),
+        Effect.forever,
+      )
 
       const run = Effect.all(
-        socket.take.flatMap(onPayload).forever,
+        socket.take.pipe(Effect.flatMap(onPayload), Effect.forever),
         heartbeats,
         drainSendQueue,
         socket.run,
@@ -175,10 +195,12 @@ export const make = Do($ => {
   return { connect } as const
 })
 
-export interface Shard extends Effect.Success<typeof make> {}
+export interface Shard extends Effect.Effect.Success<typeof make> {}
 export const Shard = Tag<Shard>()
-export const LiveShard =
-  (LiveDiscordWS + LiveRateLimiter) >> Layer.effect(Shard, make)
+export const LiveShard = Layer.provide(
+  Layer.merge(LiveDiscordWS, LiveRateLimiter),
+  Layer.effect(Shard, make),
+)
 
 export interface RunningShard
-  extends Effect.Success<ReturnType<Shard["connect"]>> {}
+  extends Effect.Effect.Success<ReturnType<Shard["connect"]>> {}

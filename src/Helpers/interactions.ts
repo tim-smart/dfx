@@ -1,8 +1,11 @@
-import { Option as Maybe } from "@effect/data/Option"
+import * as Option from "@effect/data/Option"
 import * as Arr from "@effect/data/ReadonlyArray"
+import * as Discord from "dfx/types"
+import { identity, pipe } from "@effect/data/Function"
+import * as HashMap from "@effect/data/HashMap"
 
 /**
- * Maybe find a sub-command within the interaction options.
+ * Option find a sub-command within the interaction options.
  */
 export const allSubCommands = (interaction: Discord.ApplicationCommandDatum) =>
   pipe(
@@ -13,7 +16,7 @@ export const allSubCommands = (interaction: Discord.ApplicationCommandDatum) =>
   )
 
 /**
- * Maybe find a sub-command within the interaction options.
+ * Option find a sub-command within the interaction options.
  */
 export const findSubCommand =
   (name: string) => (interaction: Discord.ApplicationCommandDatum) =>
@@ -31,14 +34,14 @@ export const findSubCommand =
  */
 export const isSubCommand =
   (name: string) => (_: Discord.ApplicationCommandDatum) =>
-    findSubCommand(name)(_).isSome()
+    Option.isSome(findSubCommand(name)(_))
 
 /**
- * Maybe get the options for a sub-command
+ * Option get the options for a sub-command
  */
 export const subCommandOptions =
   (name: string) => (_: Discord.ApplicationCommandDatum) =>
-    findSubCommand(name)(_).flatMapNullable(o => o.options)
+    Option.flatMapNullable(findSubCommand(name)(_), o => o.options)
 
 /**
  * A lens for accessing nested options in a interaction.
@@ -49,13 +52,15 @@ export const optionsWithNested = (
   const optsFromOption = (
     opt: Discord.ApplicationCommandInteractionDataOption,
   ): Discord.ApplicationCommandInteractionDataOption[] =>
-    Maybe.fromNullable(opt.options)
-      .map(opts => [...opts, ...opts.flatMap(optsFromOption)])
-      .match({ onNone: () => [], onSome: identity })
+    Option.fromNullable(opt.options).pipe(
+      Option.map(opts => [...opts, ...opts.flatMap(optsFromOption)]),
+      Option.match({ onNone: () => [], onSome: identity }),
+    )
 
-  return Maybe.fromNullable(data.options)
-    .map(opts => [...opts, ...opts.flatMap(optsFromOption)])
-    .getOrElse(() => [])
+  return Option.fromNullable(data.options).pipe(
+    Option.map(opts => [...opts, ...opts.flatMap(optsFromOption)]),
+    Option.getOrElse(() => []),
+  )
 }
 
 /**
@@ -65,7 +70,7 @@ export const transformOptions = (
   options: Discord.ApplicationCommandInteractionDataOption[],
 ) =>
   options.reduce(
-    (map, option) => map.set(option.name, option.value),
+    (map, option) => HashMap.set(map, option.name, option.value),
     HashMap.empty<string, string | undefined>(),
   )
 
@@ -95,13 +100,14 @@ export const focusedOption = (
  */
 export const optionValue =
   (name: string) => (data: Pick<Discord.ApplicationCommandDatum, "options">) =>
-    getOption(name)(data).flatMapNullable(o => o.value)
+    Option.flatMapNullable(getOption(name)(data), o => o.value)
 
 /**
  * Try extract resolved data
  */
 export const resolved = (data: Discord.Interaction) =>
-  Maybe.fromNullable(data.data).flatMapNullable(
+  Option.flatMapNullable(
+    Option.fromNullable(data.data),
     a => (a as Discord.ApplicationCommandDatum).resolved,
   )
 
@@ -113,19 +119,20 @@ export const resolveOptionValue =
     name: string,
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
-  (a: Discord.Interaction): Maybe<T> =>
-    Do($ => {
-      const data = $(
-        Maybe.fromNullable(a.data as Discord.ApplicationCommandDatum),
-      )
-      const id = $(
-        getOption(name)(data).flatMapNullable(
+  (a: Discord.Interaction): Option.Option<T> =>
+    Option.Do().pipe(
+      Option.bind("data", () =>
+        Option.fromNullable(a.data as Discord.ApplicationCommandDatum),
+      ),
+      Option.bind("id", ({ data }) =>
+        Option.flatMapNullable(
+          getOption(name)(data),
           ({ value }) => value as Discord.Snowflake,
         ),
-      )
-      const r = $(resolved(a))
-      return $(Maybe.fromNullable(f(id, r)))
-    })
+      ),
+      Option.bind("r", () => resolved(a)),
+      Option.flatMapNullable(({ id, r }) => f(id, r)),
+    )
 
 /**
  * Try find matching option values from the interaction.
@@ -134,16 +141,19 @@ export const resolveValues =
   <T>(
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
-  (a: Discord.Interaction): Maybe<readonly T[]> =>
-    Do($ => {
-      const values = $(
-        Maybe.fromNullable(
-          a.data as Discord.MessageComponentDatum,
-        ).flatMapNullable(a => a.values as unknown as string[]),
-      )
-      const r = $(resolved(a))
-      return Arr.compact(values.map(a => Maybe.fromNullable(f(a as any, r))))
-    })
+  (a: Discord.Interaction): Option.Option<readonly T[]> =>
+    Option.Do().pipe(
+      Option.bind("values", () =>
+        Option.flatMapNullable(
+          Option.fromNullable(a.data as Discord.MessageComponentDatum),
+          a => a.values as unknown as string[],
+        ),
+      ),
+      Option.bind("r", () => resolved(a)),
+      Option.map(({ values, r }) =>
+        Arr.compact(values.map(a => Option.fromNullable(f(a as any, r)))),
+      ),
+    )
 
 const extractComponents = (c: Discord.Component): Discord.Component[] => {
   if ("components" in c) {
@@ -174,7 +184,7 @@ export const componentsWithValue = (data: Discord.ModalSubmitDatum) =>
  */
 export const transformComponents = (options: Discord.Component[]) =>
   (options as Discord.TextInput[]).reduce(
-    (map, c) => (c.custom_id ? map.set(c.custom_id, c.value) : map),
+    (map, c) => (c.custom_id ? HashMap.set(map, c.custom_id, c.value) : map),
     HashMap.empty<string, string | undefined>(),
   )
 
@@ -198,7 +208,10 @@ export const getComponent = (id: string) => (data: Discord.ModalSubmitDatum) =>
  */
 export const componentValue =
   (id: string) => (data: Discord.ModalSubmitDatum) =>
-    getComponent(id)(data).flatMapNullable(o => (o as Discord.TextInput).value)
+    Option.flatMapNullable(
+      getComponent(id)(data),
+      o => (o as Discord.TextInput).value,
+    )
 
 export type InteractionResponse =
   | {
