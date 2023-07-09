@@ -12,8 +12,6 @@ import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import { Tag } from "@effect/data/Context"
 import * as Option from "@effect/data/Option"
-import * as Stream from "@effect/stream/Stream"
-import { pipe, identity } from "@effect/data/Function"
 import * as Hub from "@effect/io/Hub"
 import * as Queue from "@effect/io/Queue"
 import * as Ref from "@effect/io/Ref"
@@ -58,7 +56,7 @@ export const make = Effect.gen(function* (_) {
 
       const heartbeatSend = (p: Message) =>
         Effect.flatMap(Ref.get(phase), phase =>
-          phase === Phase.Connecting
+          phase !== Phase.Connecting
             ? Queue.offer(outboundQueue, p)
             : Effect.succeed(false),
         )
