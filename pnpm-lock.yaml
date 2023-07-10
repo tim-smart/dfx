@@ -17,14 +17,12 @@ dependencies:
   '@effect/stream':
     specifier: ~0.25.1
     version: 0.25.1
-  discord-verify:
-    specifier: ^1.2.0
-    version: 1.2.0
-
-optionalDependencies:
   bufferutil:
     specifier: ^4.0.7
     version: 4.0.7
+  discord-verify:
+    specifier: ^1.2.0
+    version: 1.2.0
   isomorphic-ws:
     specifier: ^5.0.0
     version: 5.0.0(ws@8.13.0)
@@ -2508,7 +2506,6 @@ packages:
     dependencies:
       node-gyp-build: 4.6.0
     dev: false
-    optional: true
 
   /builtins@1.0.3:
     resolution: {integrity: sha512-uYBjakWipfaO/bXI7E8rq6kpwHRZK5cNYrUv2OzZSI/FvmdMyXJ2tG9dKcjEC5YHmHpUAwsargWIZNWdxb/bnQ==}
@@ -5532,7 +5529,6 @@ packages:
     dependencies:
       ws: 8.13.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
     dev: false
-    optional: true
 
   /istanbul-lib-coverage@3.2.0:
     resolution: {integrity: sha512-eOeJ5BHCmHYvQK7xt9GkdHuzuCGS1Y6g9Gvnx3Ym33fz/HpLRYxiS0wHNr+m/MBC8B647Xt608vCDEvhl9c6Mw==}
@@ -8879,7 +8875,6 @@ packages:
     dependencies:
       node-gyp-build: 4.6.0
     dev: false
-    optional: true
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -9237,7 +9232,6 @@ packages:
       bufferutil: 4.0.7
       utf-8-validate: 6.0.3
     dev: false
-    optional: true
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
