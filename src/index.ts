@@ -1,8 +1,16 @@
-export * as Cache from "dfx/Cache"
-export * as DiscordConfig from "dfx/DiscordConfig"
+import * as Cache from "dfx/Cache"
+import * as DiscordConfig from "dfx/DiscordConfig"
+import * as Flags from "dfx/Helpers/flags"
+import * as Intents from "dfx/Helpers/intents"
+import * as IxHelpers from "dfx/Helpers/interactions"
+import * as Members from "dfx/Helpers/members"
+import * as Perms from "dfx/Helpers/permissions"
+import * as UI from "dfx/Helpers/ui"
+import * as Ix from "dfx/Interactions/index"
+import * as Log from "dfx/Log"
+import * as Discord from "dfx/types"
+
 export { DiscordREST, LiveDiscordREST } from "dfx/DiscordREST"
-export * as Ix from "dfx/Interactions/index"
-export * as Log from "dfx/Log"
 export {
   BucketDetails,
   LiveMemoryRateLimitStore,
@@ -10,11 +18,17 @@ export {
   RateLimitStore,
   RateLimiter,
 } from "dfx/RateLimit"
-export * as Discord from "dfx/types"
 
-export * as Flags from "dfx/Helpers/flags"
-export * as Intents from "dfx/Helpers/intents"
-export * as IxHelpers from "dfx/Helpers/interactions"
-export * as Members from "dfx/Helpers/members"
-export * as Perms from "dfx/Helpers/permissions"
-export * as UI from "dfx/Helpers/ui"
+export {
+  Cache,
+  Discord,
+  DiscordConfig,
+  Flags,
+  Intents,
+  Ix,
+  IxHelpers,
+  Log,
+  Members,
+  Perms,
+  UI,
+}

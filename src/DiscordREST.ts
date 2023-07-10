@@ -10,7 +10,7 @@ import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Ref from "@effect/io/Ref"
 import { DiscordConfig } from "dfx/DiscordConfig"
-import { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
+import type { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
 import {
   rateLimitFromHeaders,
   retryAfter,
@@ -19,7 +19,7 @@ import {
 import { Log } from "dfx/Log"
 import { LiveRateLimiter, RateLimitStore, RateLimiter } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
-import Pkg from "./package.json" assert { type: "json" }
+import { LIB_VERSION } from "dfx/version"
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
@@ -29,7 +29,7 @@ export class DiscordRESTError {
 export { ResponseDecodeError } from "@effect-http/client"
 
 const make = Effect.gen(function* (_) {
-  const { token, rest } = yield* _(DiscordConfig)
+  const { rest, token } = yield* _(DiscordConfig)
 
   const http = yield* _(Http.HttpRequestExecutor)
   const log = yield* _(Log)
@@ -72,7 +72,7 @@ const make = Effect.gen(function* (_) {
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(path, request.method)),
       Effect.bind("maybeBucket", ({ route }) => store.getBucketForRoute(route)),
-      Effect.flatMap(({ route, maybeBucket }) =>
+      Effect.flatMap(({ maybeBucket, route }) =>
         Option.match(maybeBucket, {
           onNone: () => invalidRateLimit(route),
           onSome: bucket =>
@@ -96,7 +96,7 @@ const make = Effect.gen(function* (_) {
       Effect.bind("hasBucket", ({ rateLimit }) =>
         store.hasBucket(rateLimit.bucket),
       ),
-      Effect.flatMap(({ route, rateLimit, hasBucket }) => {
+      Effect.flatMap(({ hasBucket, rateLimit, route }) => {
         const effectsToRun = [
           removeBadRoute(route),
           store.putBucketRoute(route, rateLimit.bucket),
@@ -132,7 +132,7 @@ const make = Effect.gen(function* (_) {
         Http.updateUrl(req, _ => `${rest.baseUrl}${_}`),
         Http.setHeaders({
           Authorization: `Bot ${ConfigSecret.value(token)}`,
-          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${Pkg.version})`,
+          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       ),
     ),
@@ -206,9 +206,9 @@ const make = Effect.gen(function* (_) {
   const routes = Discord.createRoutes<Partial<Http.MakeOptions>>(
     <R, P>({
       method,
-      url,
-      params,
       options = {},
+      params,
+      url,
     }: Discord.Route<P, Partial<Http.MakeOptions>>): RestResponse<R> => {
       const hasBody = method !== "GET" && method !== "DELETE"
       let request = Http.make(method as any)(url, options)

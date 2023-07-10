@@ -14,26 +14,71 @@
   },
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "make build",
-    "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=RestResponse|dfx/DiscordREST/types' 'endpointReturnType=RestResponse' > src/types.ts && prettier -w src/types.ts"
+    "prepublishOnly": "pnpm build",
+    "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=RestResponse|dfx/DiscordREST/types' 'endpointReturnType=RestResponse' > src/types.ts && prettier -w src/types.ts",
+    "clean": "rimraf build tsbuildinfo dist .cache",
+    "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "build": "pnpm prebuild && pnpm build-all && pnpm build-pack",
+    "build-cjs": "babel build/esm --config-file ./.babel.cjs.json --out-dir build/cjs --out-file-extension .js --source-maps",
+    "build-mjs": "babel build/esm --config-file ./.babel.mjs.json --out-dir build/mjs --out-file-extension .mjs --source-maps",
+    "build-post": "build-utils pack-v4",
+    "build-pack": "concurrently \"pnpm build-cjs\" \"pnpm build-mjs\" && pnpm build-post",
+    "build-all": "tsc -b tsconfig.json",
+    "build-watch": "tsc -b tsconfig.json --watch",
+    "lint": "eslint src/**/* test/**/* examples/**/*",
+    "autofix": "pnpm lint --fix",
+    "tc": "tsc --noEmit",
+    "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "exports": {
-    ".": "./index.js",
-    "./gateway": "./gateway.js",
-    "./webhooks": "./webhooks.js",
-    "./*": "./*.js"
+    ".": {
+      "require": "./build/cjs/index.js"
+    },
+    "./*": {
+      "require": "./build/cjs/*.js"
+    }
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.6",
+    "@babel/core": "^7.22.8",
+    "@babel/plugin-syntax-import-attributes": "^7.22.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.2",
+    "@effect-ts/build-utils": "0.40.7",
+    "@effect-ts/core": "^0.60.5",
+    "@effect/babel-plugin": "^0.2.0",
     "@effect/language-service": "^0.0.19",
     "@tim-smart/discord-api-docs-parser": "^0.5.5",
-    "@tsplus-types/effect__data": "0.13.5-11739c0",
-    "@tsplus-types/effect__io": "0.31.3-11739c0",
-    "@tsplus-types/effect__stream": "0.25.1-11739c0",
+    "@types/chai": "^4.3.5",
+    "@types/node": "^20.4.0",
     "@types/ws": "^8.5.5",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "@vitejs/plugin-react": "^4.0.2",
+    "@vitest/coverage-v8": "^0.33.0",
+    "babel-plugin-annotate-pure-calls": "^0.4.0",
+    "concurrently": "^8.2.0",
     "dotenv": "^16.3.1",
+    "error-stack-parser": "^2.1.4",
+    "eslint": "^8.44.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-codegen": "0.17.0",
+    "eslint-plugin-deprecation": "^1.4.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sort-destructure-keys": "^1.5.0",
+    "fast-check": "^3.11.0",
     "lerna": "^7.1.1",
     "madge": "^6.1.0",
-    "typescript": "5.1.6"
+    "rimraf": "^5.0.1",
+    "stackframe": "^1.3.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.2",
+    "vitest": "0.33.0"
   },
   "dependencies": {
     "@effect-http/client": "^0.29.0",
@@ -49,5 +94,10 @@
     "ws": "^8.13.0"
   },
   "sideEffects": false,
+  "config": {
+    "side": [],
+    "modules": [],
+    "global": []
+  },
   "gitHead": "46015105671184b9dc26919b633fc03b2152c7b7"
 }

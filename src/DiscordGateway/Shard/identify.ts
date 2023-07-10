@@ -1,9 +1,9 @@
 import * as Option from "@effect/data/Option"
 import * as Effect from "@effect/io/Effect"
 import * as Ref from "@effect/io/Ref"
-import * as Discord from "dfx/types"
+import * as SendEvents from "dfx/DiscordGateway/Shard/sendEvents"
+import type * as Discord from "dfx/types"
 import * as OS from "os"
-import * as SendEvents from "./sendEvents.js"
 
 export interface Options {
   readonly token: string
@@ -17,7 +17,7 @@ export interface Requirements {
   readonly latestSequence: Ref.Ref<Option.Option<number>>
 }
 
-const identify = ({ token, intents, shard, presence }: Options) =>
+const identify = ({ intents, presence, shard, token }: Options) =>
   SendEvents.identify({
     token,
     intents,

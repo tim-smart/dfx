@@ -1,28 +1,26 @@
 import * as Http from "@effect-http/client"
+import * as Chunk from "@effect/data/Chunk"
+import { Tag } from "@effect/data/Context"
+import * as Duration from "@effect/data/Duration"
+import { pipe } from "@effect/data/Function"
+import type { Cause } from "@effect/io/Cause"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import * as Queue from "@effect/io/Queue"
+import * as Ref from "@effect/io/Ref"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { DiscordREST, DiscordRESTError } from "dfx/DiscordREST"
-import { DefinitionNotFound, handlers } from "dfx/Interactions/handlers"
-import {
-  Interaction,
-  InteractionBuilder,
-  builder,
-} from "dfx/Interactions/index"
+import type { DiscordRESTError } from "dfx/DiscordREST"
+import { DiscordREST } from "dfx/DiscordREST"
 import type {
   GlobalApplicationCommand,
   GuildApplicationCommand,
 } from "dfx/Interactions/definitions"
-import * as Discord from "dfx/types"
-import * as Effect from "@effect/io/Effect"
-import * as Layer from "@effect/io/Layer"
-import { Tag } from "@effect/data/Context"
-import { Cause } from "@effect/io/Cause"
-import * as Chunk from "@effect/data/Chunk"
-import * as Ref from "@effect/io/Ref"
-import * as Queue from "@effect/io/Queue"
+import type { DefinitionNotFound } from "dfx/Interactions/handlers"
+import { handlers } from "dfx/Interactions/handlers"
+import type { InteractionBuilder } from "dfx/Interactions/index"
+import { Interaction, builder } from "dfx/Interactions/index"
+import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
-import * as Duration from "@effect/data/Duration"
-import * as Gateway from "dfx/Interactions/gateway"
-import { pipe } from "@effect/data/Function"
 
 export interface RunOpts {
   sync?: boolean
@@ -124,7 +122,7 @@ const makeRegistry = Effect.gen(function* (_) {
       _ => Queue.offer(queue, _),
     )
 
-  const run = <R, E>(
+  const run_ = <R, E>(
     onError: (
       _: Cause<DiscordRESTError | DefinitionNotFound>,
     ) => Effect.Effect<R, E, void>,
@@ -132,12 +130,12 @@ const makeRegistry = Effect.gen(function* (_) {
   ) =>
     EffectUtils.foreverSwitch(Queue.take(queue), ix =>
       Effect.delay(
-        pipe(ix, Gateway.run(Effect.catchAllCause(onError), opts)),
+        pipe(ix, run(Effect.catchAllCause(onError), opts)),
         Duration.seconds(0.1),
       ),
     )
 
-  return { register, run } as const
+  return { register, run: run_ } as const
 })
 
 export interface InteractionsRegistry {

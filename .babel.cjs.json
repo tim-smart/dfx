@@ -1,0 +1,11 @@
+{
+  "plugins": [
+    ["@effect/babel-plugin"],
+    ["@babel/transform-modules-commonjs"],
+    [
+      "@babel/plugin-syntax-import-attributes",
+      { "deprecatedAssertSyntax": true }
+    ],
+    ["annotate-pure-calls"]
+  ]
+}

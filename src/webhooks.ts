@@ -1,24 +1,17 @@
-import {
-  HttpRequestExecutor,
-  LiveFetchRequestExecutor,
-} from "@effect-http/client"
+import type { HttpRequestExecutor } from "@effect-http/client"
+import { LiveFetchRequestExecutor } from "@effect-http/client"
 import * as Config from "@effect/io/Config"
-import * as ConfigError from "@effect/io/Config/Error"
+import type * as ConfigError from "@effect/io/Config/Error"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as DiscordConfig from "dfx/DiscordConfig"
-import { DiscordREST, LiveDiscordREST } from "dfx/DiscordREST"
-import {
-  MakeConfigOpts,
-  WebhookConfig,
-  makeConfigLayer,
-} from "dfx/Interactions/webhook"
+import type { DiscordREST } from "dfx/DiscordREST"
+import { LiveDiscordREST } from "dfx/DiscordREST"
+import type { MakeConfigOpts, WebhookConfig } from "dfx/Interactions/webhook"
+import { makeConfigLayer } from "dfx/Interactions/webhook"
 import * as Log from "dfx/Log"
-import {
-  LiveMemoryRateLimitStore,
-  LiveRateLimiter,
-  RateLimiter,
-} from "dfx/RateLimit"
+import type { RateLimiter } from "dfx/RateLimit"
+import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
 
 export {
   BadWebhookSignature,

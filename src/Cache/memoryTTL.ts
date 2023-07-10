@@ -2,7 +2,7 @@ import * as Duration from "@effect/data/Duration"
 import * as Option from "@effect/data/Option"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 import * as Effect from "@effect/io/Effect"
-import { createDriver, createParentDriver } from "./driver.js"
+import { createDriver, createParentDriver } from "dfx/Cache/driver"
 
 export interface MemoryTTLOpts {
   /** The approx. number of milliseconds to keep items */
@@ -30,20 +30,20 @@ interface CacheItem<T> {
 
 interface TTLBucket<T> {
   readonly expires: number
-  readonly items: CacheItem<T>[]
+  readonly items: Array<CacheItem<T>>
 }
 
 const make = <T>({
-  ttl,
   resolution = Duration.minutes(1),
   strategy = "usage",
+  ttl,
 }: MemoryTTLOpts) => {
   const resolutionMs = Duration.toMillis(resolution)
   const additionalMilliseconds =
     (Math.floor(Duration.toMillis(ttl) / resolutionMs) + 1) * resolutionMs
 
   const items = new Map<string, WeakRef<CacheItem<T>>>()
-  const buckets: TTLBucket<T>[] = []
+  const buckets: Array<TTLBucket<T>> = []
 
   const refreshTTL = (item: CacheItem<T>) => {
     const now = Date.now()
@@ -199,7 +199,7 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
           const ids = parentIds.get(parentId)
           parentIds.delete(parentId)
 
-          const effects: Effect.Effect<never, never, void>[] = []
+          const effects: Array<Effect.Effect<never, never, void>> = []
           if (ids) {
             ids.forEach(id => {
               effects.push(store.delete(id))

@@ -1,33 +1,31 @@
-import {
-  HttpRequestExecutor,
-  LiveFetchRequestExecutor,
-} from "@effect-http/client"
+import type { HttpRequestExecutor } from "@effect-http/client"
+import { LiveFetchRequestExecutor } from "@effect-http/client"
 import * as Config from "@effect/io/Config"
-import * as ConfigError from "@effect/io/Config/Error"
+import type * as ConfigError from "@effect/io/Config/Error"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
-import { DiscordConfig, DiscordREST, LiveDiscordREST, Log } from "dfx"
-import { DiscordGateway, LiveDiscordGateway } from "dfx/DiscordGateway"
+import type { DiscordREST } from "dfx"
+import { DiscordConfig, LiveDiscordREST, Log } from "dfx"
+import * as CachePrelude from "dfx/Cache/prelude"
+import type { DiscordGateway } from "dfx/DiscordGateway"
+import { LiveDiscordGateway } from "dfx/DiscordGateway"
+import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
 import { LiveJsonDiscordWSCodec } from "dfx/DiscordGateway/DiscordWS"
+import * as Shard from "dfx/DiscordGateway/Shard"
+import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
+import * as ShardStore from "dfx/DiscordGateway/ShardStore"
 import { LiveMemoryShardStore } from "dfx/DiscordGateway/ShardStore"
-import {
-  LiveMemoryRateLimitStore,
-  LiveRateLimiter,
-  RateLimiter,
-} from "dfx/RateLimit"
+import * as WS from "dfx/DiscordGateway/WS"
+import type { RateLimiter } from "dfx/RateLimit"
+import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
 
-export * as CachePrelude from "dfx/Cache/prelude"
 export { DiscordGateway, LiveDiscordGateway } from "dfx/DiscordGateway"
-export * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
-export * as Shard from "dfx/DiscordGateway/Shard"
-export * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
-export * as ShardStore from "dfx/DiscordGateway/ShardStore"
-export * as WS from "dfx/DiscordGateway/WS"
 export {
   InteractionsRegistry,
   InteractionsRegistryLive,
   run as runIx,
 } from "dfx/Interactions/gateway"
+export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore, WS }
 
 export const MemoryRateLimit = Layer.provide(
   LiveMemoryRateLimitStore,

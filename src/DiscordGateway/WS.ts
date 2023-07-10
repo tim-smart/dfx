@@ -10,7 +10,7 @@ import * as Duration from "@effect/data/Duration"
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
-export type Message = string | Buffer | ArrayBuffer | Reconnect
+export type Message = string | Uint8Array | ArrayBuffer | Reconnect
 
 export class WebSocketError {
   readonly _tag = "WebSocketError"
@@ -35,6 +35,7 @@ const socket = (urlRef: Ref.Ref<string>) =>
     Effect.map(_ => new WebSocket(_) as any as globalThis.WebSocket),
     Effect.acquireRelease(ws =>
       Effect.sync(() => {
+        // eslint-disable-next-line @typescript-eslint/no-extra-semi
         ;(ws as any).removeAllListeners?.()
         ws.close()
       }),

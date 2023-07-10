@@ -4,11 +4,11 @@ import * as Effect from "@effect/io/Effect"
 import * as Queue from "@effect/io/Queue"
 import * as Ref from "@effect/io/Ref"
 import * as Schedule from "@effect/io/Schedule"
-import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
-import * as Discord from "dfx/types"
+import type * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
+import * as SendEvents from "dfx/DiscordGateway/Shard/sendEvents"
+import { Reconnect } from "dfx/DiscordGateway/WS"
+import type * as Discord from "dfx/types"
 import * as EffectU from "dfx/utils/Effect"
-import { Reconnect } from "../WS.js"
-import * as SendEvents from "./sendEvents.js"
 
 const payload = (
   ref: Ref.Ref<boolean>,

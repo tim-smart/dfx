@@ -1,5 +1,10 @@
-import { Ix } from "dfx"
-import { makeLive, DiscordGateway } from "dfx/gateway"
+import { pipe } from "@effect/data/Function"
+import * as Option from "@effect/data/Option"
+import * as Cause from "@effect/io/Cause"
+import * as Config from "@effect/io/Config"
+import * as Effect from "@effect/io/Effect"
+import { Discord, Ix } from "dfx"
+import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 
 Dotenv.config()
@@ -46,37 +51,46 @@ const greeting = Ix.global(
   _ =>
     Effect.all({
       who: _.optionValue("who"),
-      greeting: _.optionValueOptional("greeting").someOrElse(() => "Hello"),
+      greeting: Effect.map(
+        _.optionValueOptional("greeting"),
+        Option.getOrElse(() => "Hello"),
+      ),
       // fail: _.optionValue("fail"), // <- this would be a type error
-    }).map(({ who, greeting }) => ({
-      type: 4,
-      data: {
-        content: `${greeting} ${who}!`,
-      },
-    })),
+    }).pipe(
+      Effect.map(({ greeting, who }) => ({
+        type: 4,
+        data: {
+          content: `${greeting} ${who}!`,
+        },
+      })),
+    ),
 )
 
 // Build your program use `Ix.builder`
-const program = Do($ => {
-  const gateway = $(DiscordGateway)
+const program = Effect.gen(function* (_) {
+  const gateway = yield* _(DiscordGateway)
 
-  const interactions = Ix.builder
-    .add(hello)
-    .add(greeting)
-    .runGateway(_ =>
-      _.catchAll(e =>
+  const interactions = pipe(
+    Ix.builder.add(hello).add(greeting),
+    runIx(
+      Effect.catchAll(e =>
         Effect.sync(() => {
           console.error("CAUGHT INTERACTION ERROR", e)
         }),
       ),
-    )
+    ),
+  )
 
-  $(Effect.allPar(gateway.run, interactions))
+  yield* _(Effect.all(gateway.run, interactions, { concurrency: "unbounded" }))
 })
 
 // Run it
-program.provideLayer(LiveEnv).tapErrorCause(_ =>
-  Effect(() => {
-    console.error(_.squash)
-  }),
-).runFork
+program.pipe(
+  Effect.provideLayer(LiveEnv),
+  Effect.tapErrorCause(_ =>
+    Effect.sync(() => {
+      console.error(Cause.squash(_))
+    }),
+  ),
+  Effect.runFork,
+)

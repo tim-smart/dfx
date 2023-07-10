@@ -1,29 +1,22 @@
+import * as Effect from "@effect/io/Effect"
+import * as Stream from "@effect/stream/Stream"
 import { DiscordREST } from "dfx"
-import { DiscordGateway } from "dfx/gateway"
-import {
+import type {
   CacheDriver,
-  CacheMissError,
   CacheOp,
   ParentCacheDriver,
   ParentCacheOp,
-  make,
-  makeWithParent,
 } from "dfx/Cache"
-import * as Effect from "@effect/io/Effect"
-import * as Layer from "@effect/io/Layer"
-import { Tag } from "@effect/data/Context"
-import * as Option from "@effect/data/Option"
-import * as Stream from "@effect/stream/Stream"
-import { pipe, identity } from "@effect/data/Function"
-import * as Ref from "@effect/io/Ref"
-import * as Discord from "dfx/types"
+import { CacheMissError, make, makeWithParent } from "dfx/Cache"
+import { DiscordGateway } from "dfx/DiscordGateway"
+import type * as Discord from "dfx/types"
 
 export interface OptsWithParentOptions<E, A> {
   readonly id: (a: A) => string
   readonly fromParent: Stream.Stream<
     never,
     E,
-    [parentId: string, resources: A[]]
+    [parentId: string, resources: Array<A>]
   >
   readonly create: Stream.Stream<never, E, [parentId: string, resource: A]>
   readonly update: Stream.Stream<never, E, [parentId: string, resource: A]>
@@ -32,12 +25,12 @@ export interface OptsWithParentOptions<E, A> {
 }
 
 export const opsWithParent = <E, T>({
-  id,
-  fromParent,
   create,
-  update,
-  remove,
+  fromParent,
+  id,
   parentRemove,
+  remove,
+  update,
 }: OptsWithParentOptions<E, T>) => {
   const fromParentOps = Stream.flatMap(fromParent, ([parentId, a]) =>
     Stream.fromIterable(
@@ -103,7 +96,7 @@ export interface OpsOptions<E, A> {
   remove: Stream.Stream<never, E, string>
 }
 
-export const ops = <E, T>({ id, create, update, remove }: OpsOptions<E, T>) => {
+export const ops = <E, T>({ create, id, remove, update }: OpsOptions<E, T>) => {
   const createOps = Stream.map(
     create,
     (resource): CacheOp<T> => ({

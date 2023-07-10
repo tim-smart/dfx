@@ -5,3 +5,4 @@ _old/
 tsconfig.tsbuildinfo
 .DS_Store
 build/
+src/version.ts

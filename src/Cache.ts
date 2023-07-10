@@ -1,17 +1,17 @@
-import { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
+import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 import * as Effect from "@effect/io/Effect"
 import * as Option from "@effect/data/Option"
 import * as Stream from "@effect/stream/Stream"
 
-export * from "./Cache/driver.js"
+export * from "dfx/Cache/driver"
 export {
   create as memoryDriver,
   createWithParent as memoryParentDriver,
-} from "./Cache/memory.js"
+} from "dfx/Cache/memory"
 export {
   create as memoryTTLDriver,
   createWithParent as memoryTTLParentDriver,
-} from "./Cache/memoryTTL.js"
+} from "dfx/Cache/memoryTTL"
 
 export type ParentCacheOp<T> =
   | { op: "create"; parentId: string; resourceId: string; resource: T }
@@ -26,10 +26,10 @@ export type CacheOp<T> =
 
 export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   driver,
-  ops = Stream.empty,
   id,
   onMiss,
   onParentMiss,
+  ops = Stream.empty,
 }: {
   driver: ParentCacheDriver<EDriver, A>
   ops?: Stream.Stream<never, EOps, ParentCacheOp<A>>
@@ -39,7 +39,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   onMiss: (parentId: string, id: string) => Effect.Effect<never, EMiss, A>
   onParentMiss: (
     parentId: string,
-  ) => Effect.Effect<never, EPMiss, [id: string, resource: A][]>
+  ) => Effect.Effect<never, EPMiss, Array<[id: string, resource: A]>>
 }) => {
   const sync = Stream.runDrain(
     Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
@@ -111,9 +111,9 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
 
 export const make = <EOps, EDriver, EMiss, A>({
   driver,
-  ops = Stream.empty,
   id,
   onMiss,
+  ops = Stream.empty,
 }: {
   driver: CacheDriver<EDriver, A>
   ops?: Stream.Stream<never, EOps, CacheOp<A>>

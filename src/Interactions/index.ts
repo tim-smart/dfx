@@ -1,9 +1,9 @@
 import * as Effect from "@effect/io/Effect"
-import * as Discord from "dfx/types"
+import type * as Discord from "dfx/types"
 
-export { response } from "../Helpers/interactions.js"
-export * from "./builder.js"
-export * from "./context.js"
+export { response } from "dfx/Helpers/interactions"
+export * from "dfx/Interactions/builder"
+export * from "dfx/Interactions/context"
 export {
   InteractionDefinition,
   autocomplete,
@@ -11,7 +11,7 @@ export {
   guild,
   messageComponent,
   modalSubmit,
-} from "./definitions.js"
+} from "dfx/Interactions/definitions"
 
 // Filters
 export const id = (query: string) => (customId: string) =>

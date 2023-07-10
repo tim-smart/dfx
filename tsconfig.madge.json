@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "dfx": ["./build/esm/index.js"],
+      "dfx/*": ["./build/esm/*"]
+    }
+  },
+  "include": ["./build/esm/**/*"]
+}
