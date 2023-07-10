@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.51.1](https://github.com/tim-smart/dfx/compare/dfx@0.51.0...dfx@0.51.1) (2023-07-10)
+
+
+### Bug Fixes
+
+* heartbeats ([fe79c89](https://github.com/tim-smart/dfx/commit/fe79c898e8ba52d88c193360bb81d0e1599c3ff5))
+
+
+
+
+
 # [0.51.0](https://github.com/tim-smart/dfx/compare/dfx@0.50.1...dfx@0.51.0) (2023-07-08)
 
 **Note:** Version bump only for package dfx
