@@ -35,7 +35,7 @@ const socket = (urlRef: Ref.Ref<string>) =>
     Effect.map(_ => new WebSocket(_) as any as globalThis.WebSocket),
     Effect.acquireRelease(ws =>
       Effect.sync(() => {
-        // eslint-disable-next-line @typescript-eslint/no-extra-semi
+        // eslint-disable-next-line no-extra-semi
         ;(ws as any).removeAllListeners?.()
         ws.close()
       }),
@@ -55,8 +55,10 @@ const offer = (
           ws.addEventListener("message", message => {
             run(
               Effect.all(
-                log.debug("WS", "receive", message.data),
-                Queue.offer(queue, message.data),
+                [
+                  log.debug("WS", "receive", message.data),
+                  Queue.offer(queue, message.data),
+                ],
                 { concurrency: "unbounded", discard: true },
               ),
             )
@@ -131,10 +133,12 @@ const make = Effect.gen(function* (_) {
         Effect.zipRight(socket(url)),
         Effect.flatMap(ws =>
           Effect.all(
-            offer(ws, queue, log),
-            waitForOpen(ws, openTimeout).pipe(
-              Effect.zipRight(send(ws, takeOutbound, log)),
-            ),
+            [
+              offer(ws, queue, log),
+              waitForOpen(ws, openTimeout).pipe(
+                Effect.zipRight(send(ws, takeOutbound, log)),
+              ),
+            ],
             { concurrency: "unbounded", discard: true },
           ),
         ),

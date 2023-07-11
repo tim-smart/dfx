@@ -26,7 +26,7 @@ export const subscribeForEachPar = <R, E, A, X>(
       Effect.scoped,
     )
 
-    return Effect.all(run, Deferred.await(deferred), {
+    return Effect.all([run, Deferred.await(deferred)], {
       concurrency: "unbounded",
       discard: true,
     }).pipe(Effect.forever)
@@ -40,10 +40,10 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
   f: (_: A) => Effect.Effect<R1, E1, X>,
 ): Effect.Effect<R | R1, E | E1, never> =>
   Effect.flatMap(
-    Effect.all(
+    Effect.all([
       Deferred.make<E1, never>(),
       Ref.make<Option.Option<Fiber.RuntimeFiber<E1, X>>>(Option.none()),
-    ),
+    ]),
     ([causeDeferred, fiberRef]) => {
       const run = Effect.flatMap(self, _ =>
         f(_).pipe(
@@ -61,7 +61,7 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
         Effect.forever,
       )
 
-      return Effect.all(run, Deferred.await(causeDeferred), {
+      return Effect.all([run, Deferred.await(causeDeferred)], {
         concurrency: "unbounded",
         discard: true,
       }).pipe(Effect.forever)

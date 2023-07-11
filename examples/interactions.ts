@@ -81,7 +81,12 @@ const program = Effect.gen(function* (_) {
     ),
   )
 
-  yield* _(Effect.all(gateway.run, interactions, { concurrency: "unbounded" }))
+  yield* _(
+    Effect.all([gateway.run, interactions], {
+      concurrency: "unbounded",
+      discard: true,
+    }),
+  )
 })
 
 // Run it

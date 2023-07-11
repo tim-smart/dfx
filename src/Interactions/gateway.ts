@@ -99,7 +99,7 @@ export const run =
       return yield* _(
         sync
           ? Effect.forever(
-              Effect.all(run, globalSync, guildSync, {
+              Effect.all([run, globalSync, guildSync], {
                 concurrency: "unbounded",
                 discard: true,
               }),

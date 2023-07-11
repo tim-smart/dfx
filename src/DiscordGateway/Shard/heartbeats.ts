@@ -59,7 +59,7 @@ export const send = (
     )
 
     return yield* _(
-      Effect.all(run, heartbeats, {
+      Effect.all([run, heartbeats], {
         concurrency: "unbounded",
         discard: true,
       }),

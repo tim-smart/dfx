@@ -105,7 +105,10 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
         }),
       ),
 
-    run: Effect.zipRight(sync, driver.run, { parallel: true }),
+    run: Effect.all([sync, driver.run], {
+      concurrency: "unbounded",
+      discard: true,
+    }),
   }
 }
 
@@ -155,7 +158,10 @@ export const make = <EOps, EDriver, EMiss, A>({
     get,
     put,
     update,
-    run: Effect.zipRight(sync, driver.run, { parallel: true }),
+    run: Effect.all([sync, driver.run], {
+      concurrency: "unbounded",
+      discard: true,
+    }),
   }
 }
 

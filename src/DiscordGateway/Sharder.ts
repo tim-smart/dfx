@@ -2,21 +2,22 @@ import * as Chunk from "@effect/data/Chunk"
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
 import * as HashSet from "@effect/data/HashSet"
-import * as Option from "@effect/data/Option"
+import type * as Option from "@effect/data/Option"
 import * as Deferred from "@effect/io/Deferred"
 import * as Effect from "@effect/io/Effect"
-import * as Hub from "@effect/io/Hub"
+import type * as Hub from "@effect/io/Hub"
 import * as Layer from "@effect/io/Layer"
-import * as Queue from "@effect/io/Queue"
+import type * as Queue from "@effect/io/Queue"
 import * as Ref from "@effect/io/Ref"
 import * as Schedule from "@effect/io/Schedule"
 import { DiscordConfig } from "dfx/DiscordConfig"
-import { LiveShard, RunningShard, Shard } from "dfx/DiscordGateway/Shard"
+import type { RunningShard } from "dfx/DiscordGateway/Shard"
+import { LiveShard, Shard } from "dfx/DiscordGateway/Shard"
 import { ShardStore } from "dfx/DiscordGateway/ShardStore"
-import { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
+import type { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
 import { DiscordREST } from "dfx/DiscordREST"
 import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
-import * as Discord from "dfx/types"
+import type * as Discord from "dfx/types"
 
 const claimRepeatPolicy = Schedule.fixed("3 minutes").pipe(
   Schedule.whileInput((_: Option.Option<number>) => _._tag === "None"),
@@ -87,7 +88,7 @@ const make = Effect.gen(function* (_) {
           url: gateway.url,
           concurrency: gateway.session_start_limit.max_concurrency,
         })),
-        Effect.tap(({ id, concurrency }) =>
+        Effect.tap(({ concurrency, id }) =>
           limiter.maybeWait(
             `dfx.sharder.${id % concurrency}`,
             Duration.millis(config.identifyRateLimit[0]),
@@ -117,8 +118,10 @@ const make = Effect.gen(function* (_) {
 
       return yield* _(
         Effect.all(
-          Effect.all(spawners, { concurrency: "unbounded", discard: true }),
-          Deferred.await(deferred),
+          [
+            Effect.all(spawners, { concurrency: "unbounded", discard: true }),
+            Deferred.await(deferred),
+          ],
           { concurrency: "unbounded", discard: true },
         ) as Effect.Effect<never, WebSocketError | WebSocketCloseError, never>,
       )

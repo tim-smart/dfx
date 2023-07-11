@@ -48,7 +48,7 @@ export const identifyOrResume = (
   | Discord.GatewayPayload<Discord.Resume>
 > =>
   Effect.map(
-    Effect.all(Ref.get(ready), Ref.get(seq)),
+    Effect.all([Ref.get(ready), Ref.get(seq)]),
     ([readyEvent, seqNumber]) =>
       Option.match(Option.all({ readyEvent, seqNumber }), {
         onNone: () => identify(opts),

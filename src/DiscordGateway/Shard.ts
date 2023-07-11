@@ -1,6 +1,7 @@
 import { DiscordConfig } from "dfx/DiscordConfig"
 import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
-import { DiscordWS, LiveDiscordWS, Message } from "dfx/DiscordGateway/DiscordWS"
+import type { Message } from "dfx/DiscordGateway/DiscordWS"
+import { DiscordWS, LiveDiscordWS } from "dfx/DiscordGateway/DiscordWS"
 import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
 import * as Identify from "dfx/DiscordGateway/Shard/identify"
 import * as InvalidSession from "dfx/DiscordGateway/Shard/invalidSession"
@@ -26,7 +27,7 @@ const enum Phase {
 }
 
 export const make = Effect.gen(function* (_) {
-  const { token, gateway } = yield* _(DiscordConfig)
+  const { gateway, token } = yield* _(DiscordConfig)
   const limiter = yield* _(RateLimiter)
   const dws = yield* _(DiscordWS)
   const log = yield* _(Log)
@@ -142,18 +143,18 @@ export const make = Effect.gen(function* (_) {
       const onPayload = (p: Discord.GatewayPayload) =>
         Effect.tap(
           Effect.all(
-            updateLatestReady(p),
-            updateLatestSequence(p),
-            maybeUpdateUrl(p),
+            [updateLatestReady(p), updateLatestSequence(p), maybeUpdateUrl(p)],
             { discard: true },
           ),
           () => {
             switch (p.op) {
               case Discord.GatewayOpcode.HELLO:
                 return Effect.all(
-                  Effect.tap(identify, prioritySend),
-                  setPhase(Phase.Handshake),
-                  Queue.offer(hellos, p),
+                  [
+                    Effect.tap(identify, prioritySend),
+                    setPhase(Phase.Handshake),
+                    Queue.offer(hellos, p),
+                  ],
                   { discard: true },
                 )
               case Discord.GatewayOpcode.HEARTBEAT_ACK:
@@ -180,10 +181,12 @@ export const make = Effect.gen(function* (_) {
       )
 
       const run = Effect.all(
-        socket.take.pipe(Effect.flatMap(onPayload), Effect.forever),
-        heartbeats,
-        drainSendQueue,
-        socket.run,
+        [
+          socket.take.pipe(Effect.flatMap(onPayload), Effect.forever),
+          heartbeats,
+          drainSendQueue,
+          socket.run,
+        ],
         { discard: true, concurrency: "unbounded" },
       )
 

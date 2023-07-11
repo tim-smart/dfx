@@ -47,9 +47,11 @@ const make = Effect.gen(function* (_) {
   const tenMinutes = Duration.toMillis(Duration.minutes(10))
   const addBadRoute = (route: string) =>
     Effect.all(
-      log.info("DiscordREST", "addBadRoute", route),
-      Ref.update(badRoutesRef, HashSet.add(route)),
-      store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
+      [
+        log.info("DiscordREST", "addBadRoute", route),
+        Ref.update(badRoutesRef, HashSet.add(route)),
+        store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
+      ],
       { discard: true, concurrency: "unbounded" },
     )
   const isBadRoute = (route: string) =>
@@ -185,14 +187,16 @@ const make = Effect.gen(function* (_) {
           case 429:
             return Effect.zipRight(
               Effect.all(
-                log.info("DiscordREST", "429", request.url),
-                addBadRoute(routeFromConfig(request.url, request.method)),
-                updateBuckets(request, response),
-                Effect.sleep(
-                  Option.getOrElse(retryAfter(response.headers), () =>
-                    Duration.seconds(5),
+                [
+                  log.info("DiscordREST", "429", request.url),
+                  addBadRoute(routeFromConfig(request.url, request.method)),
+                  updateBuckets(request, response),
+                  Effect.sleep(
+                    Option.getOrElse(retryAfter(response.headers), () =>
+                      Duration.seconds(5),
+                    ),
                   ),
-                ),
+                ],
                 { concurrency: "unbounded", discard: true },
               ),
               executor<A>(request),
