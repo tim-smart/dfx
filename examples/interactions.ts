@@ -1,11 +1,7 @@
-import { pipe } from "@effect/data/Function"
-import * as Option from "@effect/data/Option"
-import * as Cause from "@effect/io/Cause"
-import * as Config from "@effect/io/Config"
-import * as Effect from "@effect/io/Effect"
 import { Discord, Ix } from "dfx"
 import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
+import { Cause, Config, Effect, Option, pipe } from "effect"
 
 Dotenv.config()
 
