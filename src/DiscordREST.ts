@@ -46,14 +46,14 @@ const make = Effect.gen(function* (_) {
   const badRoutesRef = yield* _(Ref.make(HashSet.empty<string>()))
   const tenMinutes = Duration.toMillis(Duration.minutes(10))
   const addBadRoute = (route: string) =>
-    Effect.all(
-      [
-        log.info("DiscordREST", "addBadRoute", route),
-        Ref.update(badRoutesRef, HashSet.add(route)),
-        store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
-      ],
-      { discard: true, concurrency: "unbounded" },
-    )
+    log
+      .info("DiscordREST", "addBadRoute", route)
+      .pipe(
+        Effect.zipRight(Ref.update(badRoutesRef, HashSet.add(route))),
+        Effect.zipRight(
+          store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
+        ),
+      )
   const isBadRoute = (route: string) =>
     Effect.map(Ref.get(badRoutesRef), HashSet.has(route))
   const removeBadRoute = (route: string) =>
@@ -185,22 +185,22 @@ const make = Effect.gen(function* (_) {
             )
 
           case 429:
-            return Effect.zipRight(
-              Effect.all(
-                [
-                  log.info("DiscordREST", "429", request.url),
+            return log
+              .info("DiscordREST", "429", request.url)
+              .pipe(
+                Effect.zipRight(
                   addBadRoute(routeFromConfig(request.url, request.method)),
-                  updateBuckets(request, response),
+                ),
+                Effect.zipRight(updateBuckets(request, response)),
+                Effect.zipRight(
                   Effect.sleep(
                     Option.getOrElse(retryAfter(response.headers), () =>
                       Duration.seconds(5),
                     ),
                   ),
-                ],
-                { concurrency: "unbounded", discard: true },
-              ),
-              executor<A>(request),
-            )
+                ),
+                Effect.zipRight(executor<A>(request)),
+              )
         }
 
         return Effect.fail(e)

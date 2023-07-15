@@ -141,21 +141,15 @@ export const make = Effect.gen(function* (_) {
       )
 
       const onPayload = (p: Discord.GatewayPayload) =>
-        Effect.tap(
-          Effect.all(
-            [updateLatestReady(p), updateLatestSequence(p), maybeUpdateUrl(p)],
-            { discard: true },
-          ),
-          () => {
+        updateLatestReady(p).pipe(
+          Effect.zipRight(updateLatestSequence(p)),
+          Effect.zipRight(maybeUpdateUrl(p)),
+          Effect.tap(() => {
             switch (p.op) {
               case Discord.GatewayOpcode.HELLO:
-                return Effect.all(
-                  [
-                    Effect.tap(identify, prioritySend),
-                    setPhase(Phase.Handshake),
-                    Queue.offer(hellos, p),
-                  ],
-                  { discard: true },
+                return Effect.tap(identify, prioritySend).pipe(
+                  Effect.zipRight(setPhase(Phase.Handshake)),
+                  Effect.zipRight(Queue.offer(hellos, p)),
                 )
               case Discord.GatewayOpcode.HEARTBEAT_ACK:
                 return Queue.offer(acks, p)
@@ -172,7 +166,7 @@ export const make = Effect.gen(function* (_) {
             }
 
             return Effect.unit
-          },
+          }),
         )
 
       const drainSendQueue = Queue.take(sendQueue).pipe(
