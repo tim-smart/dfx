@@ -32,7 +32,7 @@ export const MemoryREST = Layer.provide(
   LiveDiscordREST,
 )
 
-export const makeLiveWithoutFetch = (
+export const webhookLayerWithoutHttp = (
   options: Config.Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
 ): Layer.Layer<
   HttpRequestExecutor,
@@ -54,15 +54,15 @@ export const makeLiveWithoutFetch = (
     }),
   )
 
-export const makeLive = (
+export const webhookLayerConfig = (
   config: Config.Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
 ): Layer.Layer<
   never,
   ConfigError.ConfigError,
   RateLimiter | DiscordREST | WebhookConfig
-> => Layer.provide(LiveFetchRequestExecutor, makeLiveWithoutFetch(config))
+> => Layer.provide(LiveFetchRequestExecutor, webhookLayerWithoutHttp(config))
 
-export const makeLiveWithoutConfig = (
+export const webhookLayer = (
   options: DiscordConfig.MakeOpts & MakeConfigOpts,
 ): Layer.Layer<never, never, RateLimiter | DiscordREST | WebhookConfig> => {
   const config = DiscordConfig.make(options)

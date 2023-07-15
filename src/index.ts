@@ -1,3 +1,4 @@
+import * as Http from "@effect-http/client"
 import * as Cache from "dfx/Cache"
 import * as DiscordConfig from "dfx/DiscordConfig"
 import * as Flags from "dfx/Helpers/flags"
@@ -11,6 +12,7 @@ import * as Log from "dfx/Log"
 import * as Discord from "dfx/types"
 
 export { DiscordREST, LiveDiscordREST } from "dfx/DiscordREST"
+
 export {
   BucketDetails,
   LiveMemoryRateLimitStore,
@@ -24,6 +26,7 @@ export {
   Discord,
   DiscordConfig,
   Flags,
+  Http,
   Intents,
   Ix,
   IxHelpers,

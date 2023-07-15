@@ -1,7 +1,6 @@
 {
   "name": "dfx",
   "version": "0.52.1",
-  "type": "module",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
@@ -14,6 +13,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "example": "ts-node --project tsconfig.examples.json",
     "prepublishOnly": "pnpm build",
     "types": "discord-api-codegen ./discord-api-docs -l typescript -o 'imports=RestResponse|dfx/DiscordREST/types' 'endpointReturnType=RestResponse' > src/types.ts && prettier -w src/types.ts",
     "clean": "rimraf build tsbuildinfo dist .cache",
@@ -41,8 +41,8 @@
     }
   },
   "devDependencies": {
-    "@babel/cli": "^7.22.6",
-    "@babel/core": "^7.22.8",
+    "@babel/cli": "^7.22.9",
+    "@babel/core": "^7.22.9",
     "@babel/plugin-syntax-import-attributes": "^7.22.5",
     "@babel/plugin-transform-modules-commonjs": "^7.22.5",
     "@changesets/changelog-github": "^0.4.8",
@@ -53,7 +53,7 @@
     "@effect/language-service": "^0.0.19",
     "@tim-smart/discord-api-docs-parser": "^0.5.5",
     "@types/chai": "^4.3.5",
-    "@types/node": "^20.4.0",
+    "@types/node": "^20.4.2",
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -64,7 +64,7 @@
     "dotenv": "^16.3.1",
     "effect": "2.0.0-next.16",
     "error-stack-parser": "^2.1.4",
-    "eslint": "^8.44.0",
+    "eslint": "^8.45.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-codegen": "0.17.0",
     "eslint-plugin-deprecation": "^1.4.1",
@@ -72,19 +72,19 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
     "fast-check": "^3.11.0",
-    "lerna": "^7.1.1",
+    "lerna": "^7.1.3",
     "madge": "^6.1.0",
     "rimraf": "^5.0.1",
     "stackframe": "^1.3.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6",
-    "vite": "^4.4.3",
+    "vite": "^4.4.4",
     "vitest": "0.33.0"
   },
   "dependencies": {
-    "@effect-http/client": "^0.30.0",
+    "@effect-http/client": "^0.31.0",
     "@effect/data": "^0.14.1",
-    "@effect/io": "~0.32.1",
+    "@effect/io": "~0.32.2",
     "@effect/stream": "~0.26.0",
     "bufferutil": "^4.0.7",
     "discord-verify": "^1.2.0",

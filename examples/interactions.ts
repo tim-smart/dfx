@@ -1,12 +1,12 @@
 import { Discord, Ix } from "dfx"
-import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
+import { DiscordGateway, gatewayLayer, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Cause, Config, Effect, Option, pipe } from "effect"
 
 Dotenv.config()
 
 // Create the dependencies layer
-const LiveEnv = makeLive({
+const DiscordLive = gatewayLayer({
   token: Config.secret("DISCORD_BOT_TOKEN"),
 })
 
@@ -44,11 +44,11 @@ const greeting = Ix.global(
       },
     ],
   },
-  _ =>
+  ix =>
     Effect.all({
-      who: _.optionValue("who"),
+      who: ix.optionValue("who"),
       greeting: Effect.map(
-        _.optionValueOptional("greeting"),
+        ix.optionValueOptional("greeting"),
         Option.getOrElse(() => "Hello"),
       ),
       // fail: _.optionValue("fail"), // <- this would be a type error
@@ -87,7 +87,7 @@ const program = Effect.gen(function* (_) {
 
 // Run it
 program.pipe(
-  Effect.provideLayer(LiveEnv),
+  Effect.provideLayer(DiscordLive),
   Effect.tapErrorCause(_ =>
     Effect.sync(() => {
       console.error(Cause.squash(_))

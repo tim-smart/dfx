@@ -18,13 +18,17 @@ import { LiveMemoryShardStore } from "dfx/DiscordGateway/ShardStore"
 import * as WS from "dfx/DiscordGateway/WS"
 import type { RateLimiter } from "dfx/RateLimit"
 import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
+import { InteractionsRegistryLive } from "dfx/gateway"
+import type { InteractionsRegistry } from "dfx/gateway"
 
 export { DiscordGateway, LiveDiscordGateway } from "dfx/DiscordGateway"
+
 export {
   InteractionsRegistry,
   InteractionsRegistryLive,
   run as runIx,
 } from "dfx/Interactions/gateway"
+
 export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore, WS }
 
 export const MemoryRateLimit = Layer.provide(
@@ -38,21 +42,24 @@ export const MemoryBot = Layer.provide(
     LiveMemoryRateLimitStore,
     LiveJsonDiscordWSCodec,
   ),
-  Layer.merge(
+  Layer.mergeAll(
     Layer.provideMerge(LiveDiscordREST, LiveDiscordGateway),
     MemoryRateLimit,
+    InteractionsRegistryLive,
   ),
 )
-export const makeLiveWithoutFetch = (
+
+export const gatewayLayerWithoutHttp = (
   config: Config.Config.Wrap<DiscordConfig.MakeOpts>,
 ): Layer.Layer<
   HttpRequestExecutor,
   ConfigError.ConfigError,
   | RateLimiter
   | Log.Log
+  | InteractionsRegistry
   | DiscordREST
-  | DiscordConfig.DiscordConfig
   | DiscordGateway
+  | DiscordConfig.DiscordConfig
 > =>
   Layer.unwrapEffect(
     Effect.config(Config.unwrap(config)).pipe(
@@ -65,14 +72,15 @@ export const makeLiveWithoutFetch = (
     ),
   )
 
-export const makeLive = (
+export const gatewayLayer = (
   config: Config.Config.Wrap<DiscordConfig.MakeOpts>,
 ): Layer.Layer<
   never,
   ConfigError.ConfigError,
   | RateLimiter
   | Log.Log
+  | InteractionsRegistry
   | DiscordREST
-  | DiscordConfig.DiscordConfig
   | DiscordGateway
-> => Layer.provide(LiveFetchRequestExecutor, makeLiveWithoutFetch(config))
+  | DiscordConfig.DiscordConfig
+> => Layer.provide(LiveFetchRequestExecutor, gatewayLayerWithoutHttp(config))
