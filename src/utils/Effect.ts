@@ -52,8 +52,8 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
         ),
       ).pipe(
         Effect.flatMap(fiber => Ref.getAndSet(fiberRef, Option.some(fiber))),
-        Effect.tap(
-          Option.match({
+        Effect.tap(_ =>
+          Option.match(_, {
             onNone: () => Effect.unit,
             onSome: fiber => Fiber.interrupt(fiber),
           }),
