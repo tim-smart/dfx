@@ -43,7 +43,7 @@ const makeGreetService = Effect.gen(function* (_) {
   )
 
   // create a builder
-  const ix = Ix.builder.add(greet).catchAllCause(Effect.logCause("Error"))
+  const ix = Ix.builder.add(greet).catchAllCause(Effect.logError)
 
   // register the interactions
   yield* _(registry.register(ix))
@@ -61,7 +61,7 @@ const main = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
 
   yield* _(
-    Effect.all([registry.run(Effect.logCause("Error")), gateway.run], {
+    Effect.all([registry.run(Effect.logError), gateway.run], {
       concurrency: "unbounded",
       discard: true,
     }),
@@ -78,6 +78,6 @@ const MainLive = Layer.provideMerge(DiscordLive, GreetLive)
 
 main.pipe(
   Effect.provideLayer(MainLive),
-  Effect.catchAllCause(Effect.logCause("Error")),
+  Effect.catchAllCause(Effect.logError),
   Effect.runFork,
 )
