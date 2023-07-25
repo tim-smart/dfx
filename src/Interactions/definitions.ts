@@ -1,11 +1,11 @@
-import * as Option from "@effect/data/Option"
-import * as Effect from "@effect/io/Effect"
-import {
+import type * as Option from "@effect/data/Option"
+import type * as Effect from "@effect/io/Effect"
+import type {
   FocusedOptionContext,
   ResolvedDataNotFound,
   SubCommandContext,
 } from "dfx/Interactions/context"
-import * as Discord from "dfx/types"
+import type * as Discord from "dfx/types"
 
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
@@ -119,7 +119,7 @@ export const autocomplete = <R1, R2, E1, E2>(
   >(pred as any, handle as any)
 
 // ==== Command handler helpers
-type DeepReadonly<T> = T extends (infer R)[]
+type DeepReadonly<T> = T extends Array<infer R>
   ? ReadonlyArray<DeepReadonly<R>>
   : T extends Function
   ? T

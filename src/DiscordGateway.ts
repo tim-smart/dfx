@@ -1,14 +1,14 @@
 import { Tag } from "@effect/data/Context"
-import * as HashSet from "@effect/data/HashSet"
+import type * as HashSet from "@effect/data/HashSet"
 import * as Effect from "@effect/io/Effect"
 import * as Hub from "@effect/io/Hub"
 import * as Layer from "@effect/io/Layer"
 import * as Queue from "@effect/io/Queue"
 import * as Stream from "@effect/stream/Stream"
-import { RunningShard } from "dfx/DiscordGateway/Shard"
+import type { RunningShard } from "dfx/DiscordGateway/Shard"
 import { LiveSharder, Sharder } from "dfx/DiscordGateway/Sharder"
-import { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
-import * as Discord from "dfx/types"
+import type { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
+import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
 
 const fromDispatchFactory =

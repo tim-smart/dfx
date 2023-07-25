@@ -1,6 +1,6 @@
 import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
-import WebSocket from "isomorphic-ws"
-import * as Discord from "dfx/types"
+import type WebSocket from "isomorphic-ws"
+import type * as Discord from "dfx/types"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import { Tag } from "@effect/data/Context"
@@ -33,10 +33,10 @@ const make = Effect.gen(function* (_) {
   const encoding = yield* _(DiscordWSCodec)
 
   const connect = ({
+    onConnecting,
+    outbound,
     url = "wss://gateway.discord.gg/",
     version = 10,
-    outbound,
-    onConnecting,
   }: OpenOpts) =>
     Effect.gen(function* (_) {
       const urlRef = yield* _(

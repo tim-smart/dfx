@@ -1,11 +1,10 @@
 import { Tag } from "@effect/data/Context"
-import * as HashMap from "@effect/data/HashMap"
+import type * as HashMap from "@effect/data/HashMap"
 import * as Option from "@effect/data/Option"
 import * as Arr from "@effect/data/ReadonlyArray"
 import * as Effect from "@effect/io/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
-import * as Discord from "dfx/types"
-import { ModalSubmitDatum } from "dfx/types"
+import type * as Discord from "dfx/types"
 
 export const Interaction = Tag<Discord.Interaction>()
 export const ApplicationCommand = Tag<Discord.ApplicationCommandDatum>()
@@ -29,7 +28,7 @@ export class ResolvedDataNotFound {
 
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-): Effect.Effect<Discord.Interaction, ResolvedDataNotFound, readonly A[]> =>
+): Effect.Effect<Discord.Interaction, ResolvedDataNotFound, ReadonlyArray<A>> =>
   Effect.flatMap(Interaction, ix =>
     Effect.mapError(
       IxHelpers.resolveValues(f)(ix),
@@ -150,7 +149,7 @@ export const modalValueOption = (name: string) =>
 
 export class ModalValueNotFound {
   readonly _tag = "ModalValueNotFound"
-  constructor(readonly data: ModalSubmitDatum, readonly name: string) {}
+  constructor(readonly data: Discord.ModalSubmitDatum, readonly name: string) {}
 }
 
 export const modalValue = (name: string) =>

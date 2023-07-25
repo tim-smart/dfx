@@ -14,18 +14,18 @@ export function all(flags: Flags<any>): any {
  */
 export function toList<T extends Flags<number>>(
   flags: T,
-): (bitfield: number) => (keyof T)[]
+): (bitfield: number) => Array<keyof T>
 export function toList<T extends Flags<bigint>>(
   flags: T,
-): (bitfield: bigint) => (keyof T)[]
+): (bitfield: bigint) => Array<keyof T>
 export function toList<T extends Flags<any>>(
   flags: T,
-): (bitfield: any) => (keyof T)[] {
+): (bitfield: any) => Array<keyof T> {
   const entries = Object.entries(flags)
   return val =>
     entries.reduce(
       (acc, [key, flag]) => ((val & flag) === flag ? [...acc, key] : acc),
-      [] as (keyof T)[],
+      [] as Array<keyof T>,
     )
 }
 
@@ -34,7 +34,7 @@ export function toList<T extends Flags<any>>(
  */
 export const fromListBigint =
   <T extends Flags<bigint>>(flags: T) =>
-  (list: (keyof T)[]) =>
+  (list: Array<keyof T>) =>
     list.reduce((acc, key) => acc | flags[key], BigInt(0))
 
 /**
@@ -42,7 +42,7 @@ export const fromListBigint =
  */
 export const fromList =
   <T extends Flags<number>>(flags: T) =>
-  (list: (keyof T)[]) =>
+  (list: Array<keyof T>) =>
     list.reduce((acc, key) => acc | flags[key], 0)
 
 /**

@@ -1,6 +1,6 @@
 import * as Option from "@effect/data/Option"
 import * as Effect from "@effect/io/Effect"
-import { BucketDetails, RateLimitStore } from "dfx/RateLimit"
+import type { BucketDetails, RateLimitStore } from "dfx/RateLimit"
 
 interface Counter {
   count: number

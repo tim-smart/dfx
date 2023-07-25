@@ -1,4 +1,5 @@
-import { Duration, millis, zero } from "@effect/data/Duration"
+import type { Duration } from "@effect/data/Duration"
+import { millis, zero } from "@effect/data/Duration"
 
 export const delayFrom = (
   window: number,

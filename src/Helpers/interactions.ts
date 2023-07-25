@@ -48,10 +48,10 @@ export const subCommandOptions =
  */
 export const optionsWithNested = (
   data: Pick<Discord.ApplicationCommandDatum, "options">,
-): Discord.ApplicationCommandInteractionDataOption[] => {
+): Array<Discord.ApplicationCommandInteractionDataOption> => {
   const optsFromOption = (
     opt: Discord.ApplicationCommandInteractionDataOption,
-  ): Discord.ApplicationCommandInteractionDataOption[] =>
+  ): Array<Discord.ApplicationCommandInteractionDataOption> =>
     Option.fromNullable(opt.options).pipe(
       Option.map(opts => [...opts, ...opts.flatMap(optsFromOption)]),
       Option.match({ onNone: () => [], onSome: identity }),
@@ -67,7 +67,7 @@ export const optionsWithNested = (
  * Return the interaction options as a name / value map.
  */
 export const transformOptions = (
-  options: Discord.ApplicationCommandInteractionDataOption[],
+  options: Array<Discord.ApplicationCommandInteractionDataOption>,
 ) =>
   options.reduce(
     (map, option) => HashMap.set(map, option.name, option.value),
@@ -141,21 +141,21 @@ export const resolveValues =
   <T>(
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
-  (a: Discord.Interaction): Option.Option<readonly T[]> =>
+  (a: Discord.Interaction): Option.Option<ReadonlyArray<T>> =>
     Option.Do().pipe(
       Option.bind("values", () =>
         Option.flatMapNullable(
           Option.fromNullable(a.data as Discord.MessageComponentDatum),
-          a => a.values as unknown as string[],
+          a => a.values as unknown as Array<string>,
         ),
       ),
       Option.bind("r", () => resolved(a)),
-      Option.map(({ values, r }) =>
+      Option.map(({ r, values }) =>
         Arr.compact(values.map(a => Option.fromNullable(f(a as any, r)))),
       ),
     )
 
-const extractComponents = (c: Discord.Component): Discord.Component[] => {
+const extractComponents = (c: Discord.Component): Array<Discord.Component> => {
   if ("components" in c) {
     return [...c.components, ...c.components.flatMap(extractComponents)]
   }
@@ -168,7 +168,7 @@ const extractComponents = (c: Discord.Component): Discord.Component[] => {
  */
 export const components = (
   a: Discord.ModalSubmitDatum,
-): Discord.Component[] => [
+): Array<Discord.Component> => [
   ...a.components,
   ...a.components.flatMap(extractComponents),
 ]
@@ -182,8 +182,8 @@ export const componentsWithValue = (data: Discord.ModalSubmitDatum) =>
 /**
  * Return the interaction components as an id / value map.
  */
-export const transformComponents = (options: Discord.Component[]) =>
-  (options as Discord.TextInput[]).reduce(
+export const transformComponents = (options: Array<Discord.Component>) =>
+  (options as Array<Discord.TextInput>).reduce(
     (map, c) => (c.custom_id ? HashMap.set(map, c.custom_id, c.value) : map),
     HashMap.empty<string, string | undefined>(),
   )

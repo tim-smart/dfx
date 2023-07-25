@@ -27,7 +27,7 @@ export const fromList = Flags.fromListBigint(Discord.PermissionFlag)
 /**
  * Reduce a list of roles to a bitfield of all the permissions added together.
  */
-export const forRoles = (roles: Discord.Role[]) =>
+export const forRoles = (roles: Array<Discord.Role>) =>
   roles.reduce(
     (permissions, role) => permissions | BigInt(role.permissions),
     BigInt(0),
@@ -37,7 +37,7 @@ export const forRoles = (roles: Discord.Role[]) =>
  * From a list of roles, calculate the permissions bitfield for the member.
  */
 export const forMember =
-  (roles: Discord.Role[]) => (member: Discord.GuildMember) =>
+  (roles: Array<Discord.Role>) => (member: Discord.GuildMember) =>
     pipe(Members.roles(roles)(member), forRoles)
 
 const overwriteIsForMember =
@@ -66,12 +66,12 @@ const overwriteIsForRole =
  * the guild member or role for that channel.
  */
 export const forChannel =
-  (roles: Discord.Role[]) =>
+  (roles: Array<Discord.Role>) =>
   ({ guild_id, permission_overwrites: overwrites = [] }: Discord.Channel) =>
   (memberOrRole: Discord.GuildMember | Discord.Role) => {
     const hasAdmin = has(Discord.PermissionFlag.ADMINISTRATOR)
     let basePermissions: bigint
-    let filteredOverwrites: Discord.Overwrite[]
+    let filteredOverwrites: Array<Discord.Overwrite>
 
     if (Members.is(memberOrRole)) {
       if (memberOrRole.permissions) return BigInt(memberOrRole.permissions)
@@ -102,7 +102,7 @@ export const forChannel =
  * Apply permission overwrites to a bitfield.
  */
 export const applyOverwrites =
-  (permissions: bigint) => (overwrites: Discord.Overwrite[]) =>
+  (permissions: bigint) => (overwrites: Array<Discord.Overwrite>) =>
     overwrites.reduce(
       (permissions, overwrite) =>
         (permissions & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow),

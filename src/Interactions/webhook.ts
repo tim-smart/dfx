@@ -2,23 +2,25 @@ import * as Chunk from "@effect/data/Chunk"
 import { Tag } from "@effect/data/Context"
 import { identity } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
-import * as Cause from "@effect/io/Cause"
-import * as Config from "@effect/io/Config"
-import * as ConfigError from "@effect/io/Config/Error"
+import type * as Cause from "@effect/io/Cause"
+import type * as Config from "@effect/io/Config"
+import type * as ConfigError from "@effect/io/Config/Error"
 import * as ConfigSecret from "@effect/io/Config/Secret"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
-import * as D from "dfx/Interactions/definitions"
-import { DefinitionNotFound, handlers } from "dfx/Interactions/handlers"
-import { Interaction, InteractionBuilder } from "dfx/Interactions/index"
-import * as Discord from "dfx/types"
+import type * as D from "dfx/Interactions/definitions"
+import type { DefinitionNotFound } from "dfx/Interactions/handlers"
+import { handlers } from "dfx/Interactions/handlers"
+import type { InteractionBuilder } from "dfx/Interactions/index"
+import { Interaction } from "dfx/Interactions/index"
+import type * as Discord from "dfx/types"
 import * as Verify from "discord-verify"
 
 export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
 }
 
-export type Headers = Record<string, string | string[] | undefined>
+export type Headers = Record<string, string | Array<string> | undefined>
 
 const checkSignature = (
   publicKey: string,
@@ -55,10 +57,10 @@ export interface MakeConfigOpts {
   readonly algorithm: keyof typeof Verify.PlatformAlgorithm
 }
 const makeConfig = ({
-  applicationId,
-  publicKey,
-  crypto,
   algorithm,
+  applicationId,
+  crypto,
+  publicKey,
 }: MakeConfigOpts) => ({
   applicationId,
   publicKey: ConfigSecret.value(publicKey),
@@ -84,7 +86,7 @@ export class WebhookParseError {
 }
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
-  Effect.tap(WebhookConfig, ({ publicKey, crypto, algorithm }) =>
+  Effect.tap(WebhookConfig, ({ algorithm, crypto, publicKey }) =>
     checkSignature(publicKey, headers, body, crypto, algorithm),
   ).pipe(
     Effect.flatMap(() =>
@@ -133,10 +135,10 @@ export interface HandleWebhookOpts<E> {
 export const makeHandler = <R, E, TE>(
   ix: InteractionBuilder<R, E, TE>,
 ): (({
-  headers,
   body,
-  success,
   error,
+  headers,
+  success,
 }: HandleWebhookOpts<
   E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
 >) => Effect.Effect<WebhookConfig, never, void>) => {
@@ -146,10 +148,10 @@ export const makeHandler = <R, E, TE>(
   )
 
   return ({
-    headers,
     body,
-    success,
     error,
+    headers,
+    success,
   }: HandleWebhookOpts<
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
   >): Effect.Effect<WebhookConfig, never, void> =>
@@ -165,8 +167,8 @@ export const makeHandler = <R, E, TE>(
 export const makeSimpleHandler = <R, E, TE>(
   ix: InteractionBuilder<R, E, TE>,
 ): (({
-  headers,
   body,
+  headers,
 }: {
   headers: Headers
   body: string
@@ -180,6 +182,6 @@ export const makeSimpleHandler = <R, E, TE>(
     (_i, r) => Effect.succeed(r),
   )
 
-  return ({ headers, body }: { headers: Headers; body: string }) =>
+  return ({ body, headers }: { headers: Headers; body: string }) =>
     handle(headers, body)
 }

@@ -1,6 +1,6 @@
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
-import * as Option from "@effect/data/Option"
+import type * as Option from "@effect/data/Option"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import { Log } from "dfx/Log"

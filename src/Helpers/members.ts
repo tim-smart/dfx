@@ -1,12 +1,13 @@
-import * as Discord from "dfx/types"
+import type * as Discord from "dfx/types"
 
 /**
  * From a list of roles, filter out the ones the guild member has.
  */
-export const roles = (roles: Discord.Role[]) => (member: Discord.GuildMember) =>
-  roles.filter(
-    role => member.roles.includes(role.id) || role.name === "@everyone",
-  )
+export const roles =
+  (roles: Array<Discord.Role>) => (member: Discord.GuildMember) =>
+    roles.filter(
+      role => member.roles.includes(role.id) || role.name === "@everyone",
+    )
 
 /**
  * Type-guard function for checking if the object is a guild member

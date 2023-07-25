@@ -1,9 +1,9 @@
 import * as Option from "@effect/data/Option"
 import * as Effect from "@effect/io/Effect"
 import * as Ref from "@effect/io/Ref"
-import { Message } from "dfx/DiscordGateway/DiscordWS"
+import type { Message } from "dfx/DiscordGateway/DiscordWS"
 import { Reconnect } from "dfx/DiscordGateway/WS"
-import * as Discord from "dfx/types"
+import type * as Discord from "dfx/types"
 
 export const fromPayload = (
   p: Discord.GatewayPayload,

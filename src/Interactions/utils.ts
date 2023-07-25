@@ -1,8 +1,8 @@
 import * as Chunk from "@effect/data/Chunk"
 import * as Effect from "@effect/io/Effect"
 import * as Ctx from "dfx/Interactions/context"
-import * as D from "dfx/Interactions/definitions"
-import * as Discord from "dfx/types"
+import type * as D from "dfx/Interactions/definitions"
+import type * as Discord from "dfx/types"
 
 export type DefinitionFlattened<R, E, TE, A> = D.InteractionDefinition<
   R,

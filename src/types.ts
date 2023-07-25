@@ -1,4 +1,5 @@
-import { RestResponse } from "dfx/DiscordREST/types"
+import type { RestResponse } from "dfx/DiscordREST/types"
+
 export interface ActionMetadatum {
   /** SEND_ALERT_MESSAGE */
   readonly channel_id: Snowflake
@@ -11,7 +12,7 @@ export interface ActionRow {
   /** component type */
   readonly type: ComponentType
   /** a list of child components */
-  readonly components: Component[]
+  readonly components: Array<Component>
 }
 export const enum ActionType {
   /** blocks a member's message and prevents it from being posted. A custom explanation can be specified and shown to members whenever their message is blocked. */
@@ -51,7 +52,7 @@ export interface Activity {
   /** Activity flags ORd together, describes what the payload includes */
   readonly flags?: number
   /** Custom buttons shown in the Rich Presence (max 2) */
-  readonly buttons?: ActivityButton[]
+  readonly buttons?: Array<ActivityButton>
 }
 export interface ActivityAsset {
   /** See Activity Asset Image */
@@ -92,7 +93,7 @@ export interface ActivityParty {
   /** ID of the party */
   readonly id?: string
   /** Used to show the party's current and maximum size */
-  readonly size?: number[]
+  readonly size?: Array<number>
 }
 export interface ActivitySecret {
   /** Secret for joining a party */
@@ -122,7 +123,7 @@ export interface AddGuildMemberParams {
   /** value to set user's nickname to */
   readonly nick: string
   /** array of role ids the member is assigned */
-  readonly roles: Snowflake[]
+  readonly roles: Array<Snowflake>
   /** whether the user is muted in voice channels */
   readonly mute: boolean
   /** whether the user is deafened in voice channels */
@@ -130,11 +131,11 @@ export interface AddGuildMemberParams {
 }
 export interface AllowedMention {
   /** An array of allowed mention types to parse from the content. */
-  readonly parse: AllowedMentionType[]
+  readonly parse: Array<AllowedMentionType>
   /** Array of role_ids to mention (Max size of 100) */
-  readonly roles: Snowflake[]
+  readonly roles: Array<Snowflake>
   /** Array of user_ids to mention (Max size of 100) */
-  readonly users: Snowflake[]
+  readonly users: Array<Snowflake>
   /** For replies, whether to mention the author of the message being replied to (default false) */
   readonly replied_user: boolean
 }
@@ -156,7 +157,7 @@ export interface Application {
   /** the description of the app */
   readonly description: string
   /** an array of rpc origin urls, if rpc is enabled */
-  readonly rpc_origins?: string[]
+  readonly rpc_origins?: Array<string>
   /** when false only app owner can join the app's bot to guilds */
   readonly bot_public: boolean
   /** when true the app's bot will only join upon completion of the full oauth2 code grant flow */
@@ -188,7 +189,7 @@ export interface Application {
   /** an approximate count of the app's guild membership. */
   readonly approximate_guild_count?: number
   /** up to 5 tags describing the content and functionality of the application */
-  readonly tags?: string[]
+  readonly tags?: Array<string>
   /** settings for the application's default in-app authorization link, if enabled */
   readonly install_params?: InstallParam
   /** the application's default custom authorization link, if enabled */
@@ -214,7 +215,7 @@ export interface ApplicationCommand {
   /** Localization dictionary for description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
   /** Parameters for the command, max of 25 */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
@@ -236,7 +237,7 @@ export interface ApplicationCommandDatum {
   /** converted users + roles + channels + attachments */
   readonly resolved?: ResolvedDatum
   /** the params + values from the user */
-  readonly options?: ApplicationCommandInteractionDataOption[]
+  readonly options?: Array<ApplicationCommandInteractionDataOption>
   /** the id of the guild the command is registered to */
   readonly guild_id?: Snowflake
   /** id of the user or message targeted by a user or message command */
@@ -250,7 +251,7 @@ export interface ApplicationCommandInteractionDataOption {
   /** Value of the option resulting from user input */
   readonly value?: string
   /** Present if this option is a group or subcommand */
-  readonly options?: ApplicationCommandInteractionDataOption[]
+  readonly options?: Array<ApplicationCommandInteractionDataOption>
   /** true if this option is the currently focused option for autocomplete */
   readonly focused?: boolean
 }
@@ -268,11 +269,11 @@ export interface ApplicationCommandOption {
   /** If the parameter is required or optional--default false */
   readonly required?: boolean
   /** Choices for STRING, INTEGER, and NUMBER types for the user to pick from, max 25 */
-  readonly choices?: ApplicationCommandOptionChoice[]
+  readonly choices?: Array<ApplicationCommandOptionChoice>
   /** If the option is a subcommand or subcommand group type, these nested options will be the parameters */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** If the option is a channel type, the channels shown will be restricted to these types */
-  readonly channel_types?: ChannelType[]
+  readonly channel_types?: Array<ChannelType>
   /** If the option is an INTEGER or NUMBER type, the minimum value permitted */
   readonly min_value?: number
   /** If the option is an INTEGER or NUMBER type, the maximum value permitted */
@@ -448,21 +449,21 @@ export interface AuditEntryInfo {
 }
 export interface AuditLog {
   /** List of application commands referenced in the audit log */
-  readonly application_commands: ApplicationCommand[]
+  readonly application_commands: Array<ApplicationCommand>
   /** List of audit log entries, sorted from most to least recent */
-  readonly audit_log_entries: AuditLogEntry[]
+  readonly audit_log_entries: Array<AuditLogEntry>
   /** List of auto moderation rules referenced in the audit log */
-  readonly auto_moderation_rules: AutoModerationRule[]
+  readonly auto_moderation_rules: Array<AutoModerationRule>
   /** List of guild scheduled events referenced in the audit log */
-  readonly guild_scheduled_events: GuildScheduledEvent[]
+  readonly guild_scheduled_events: Array<GuildScheduledEvent>
   /** List of partial integration objects */
-  readonly integrations: Integration[]
+  readonly integrations: Array<Integration>
   /** List of threads referenced in the audit log* */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** List of users referenced in the audit log */
-  readonly users: User[]
+  readonly users: Array<User>
   /** List of webhooks referenced in the audit log */
-  readonly webhooks: Webhook[]
+  readonly webhooks: Array<Webhook>
 }
 export interface AuditLogChange {
   /** New value of the key */
@@ -476,7 +477,7 @@ export interface AuditLogEntry {
   /** ID of the affected entity (webhook, user, role, etc.) */
   readonly target_id?: string | null
   /** Changes made to the target_id */
-  readonly changes?: AuditLogChange[]
+  readonly changes?: Array<AuditLogChange>
   /** User or app that made the changes */
   readonly user_id?: Snowflake | null
   /** ID of the entry */
@@ -648,13 +649,13 @@ export interface AutoModerationRule {
   /** the rule trigger metadata */
   readonly trigger_metadata: TriggerMetadatum
   /** the actions which will execute when the rule is triggered */
-  readonly actions: AutoModerationAction[]
+  readonly actions: Array<AutoModerationAction>
   /** whether the rule is enabled */
   readonly enabled: boolean
   /** the role ids that should not be affected by the rule (Maximum of 20) */
-  readonly exempt_roles: Snowflake[]
+  readonly exempt_roles: Array<Snowflake>
   /** the channel ids that should not be affected by the rule (Maximum of 50) */
-  readonly exempt_channels: Snowflake[]
+  readonly exempt_channels: Array<Snowflake>
 }
 export type AutoModerationRuleCreateEvent = AutoModerationRule
 export type AutoModerationRuleDeleteEvent = AutoModerationRule
@@ -671,13 +672,13 @@ export interface BeginGuildPruneParams {
   /** whether pruned is returned, discouraged for large guilds */
   readonly compute_prune_count: boolean
   /** role(s) to include */
-  readonly include_roles: Snowflake[]
+  readonly include_roles: Array<Snowflake>
   /** reason for the prune (deprecated) */
   readonly reason?: string
 }
 export interface BulkDeleteMessageParams {
   /** an array of message ids to delete (2-100) */
-  readonly messages: Snowflake[]
+  readonly messages: Array<Snowflake>
 }
 export interface BulkOverwriteGuildApplicationCommandParams {
   /** ID of the command, if known */
@@ -691,7 +692,7 @@ export interface BulkOverwriteGuildApplicationCommandParams {
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
   /** Parameters for the command */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
@@ -736,7 +737,7 @@ export interface Channel {
   /** sorting position of the channel */
   readonly position?: number
   /** explicit permission overwrites for members and roles */
-  readonly permission_overwrites?: Overwrite[]
+  readonly permission_overwrites?: Array<Overwrite>
   /** the name of the channel (1-100 characters) */
   readonly name?: string | null
   /** the channel topic (0-4096 characters for GUILD_FORUM channels, 0-1024 characters for all others) */
@@ -752,7 +753,7 @@ export interface Channel {
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected */
   readonly rate_limit_per_user?: number
   /** the recipients of the DM */
-  readonly recipients?: User[]
+  readonly recipients?: Array<User>
   /** icon hash of the group DM */
   readonly icon?: string | null
   /** id of the creator of the group DM or thread */
@@ -786,9 +787,9 @@ export interface Channel {
   /** number of messages ever sent in a thread, it's similar to message_count on message creation, but will not decrement the number when a message is deleted */
   readonly total_message_sent?: number
   /** the set of tags that can be used in a GUILD_FORUM channel */
-  readonly available_tags?: ForumTag[]
+  readonly available_tags?: Array<ForumTag>
   /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
-  readonly applied_tags?: Snowflake[]
+  readonly applied_tags?: Array<Snowflake>
   /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
   readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
@@ -888,7 +889,7 @@ export interface Connection {
   /** whether the connection is revoked */
   readonly revoked?: boolean
   /** an array of partial server integrations */
-  readonly integrations?: Integration[]
+  readonly integrations?: Array<Integration>
   /** whether the connection is verified */
   readonly verified: boolean
   /** whether friend sync is enabled for this connection */
@@ -910,13 +911,13 @@ export interface CreateAutoModerationRuleParams {
   /** the trigger metadata */
   readonly trigger_metadata?: TriggerMetadatum
   /** the actions which will execute when the rule is triggered */
-  readonly actions: AutoModerationAction[]
+  readonly actions: Array<AutoModerationAction>
   /** whether the rule is enabled (False by default) */
   readonly enabled?: boolean
   /** the role ids that should not be affected by the rule (Maximum of 20) */
-  readonly exempt_roles?: Snowflake[]
+  readonly exempt_roles?: Array<Snowflake>
   /** the channel ids that should not be affected by the rule (Maximum of 50) */
-  readonly exempt_channels?: Snowflake[]
+  readonly exempt_channels?: Array<Snowflake>
 }
 export interface CreateChannelInviteParams {
   /** duration of invite in seconds before expiry, or 0 for never. between 0 and 604800 (7 days) */
@@ -948,7 +949,7 @@ export interface CreateGlobalApplicationCommandParams {
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
   /** the parameters for the command */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
@@ -962,7 +963,7 @@ export interface CreateGlobalApplicationCommandParams {
 }
 export interface CreateGroupDmParams {
   /** access tokens of users that have granted your app the gdm.join scope */
-  readonly access_tokens: string[]
+  readonly access_tokens: Array<string>
   /** a dictionary of user ids to their respective nicknames */
   readonly nicks: Record<string, string>
 }
@@ -976,7 +977,7 @@ export interface CreateGuildApplicationCommandParams {
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
   /** Parameters for the command */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
@@ -1008,7 +1009,7 @@ export interface CreateGuildChannelParams {
   /** sorting position of the channel */
   readonly position: number
   /** the channel's permission overwrites */
-  readonly permission_overwrites: Overwrite[]
+  readonly permission_overwrites: Array<Overwrite>
   /** id of the parent category for a channel */
   readonly parent_id: Snowflake
   /** whether the channel is nsfw */
@@ -1022,7 +1023,7 @@ export interface CreateGuildChannelParams {
   /** emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
   readonly default_reaction_emoji: DefaultReaction
   /** set of tags that can be used in a GUILD_FORUM channel */
-  readonly available_tags: ForumTag[]
+  readonly available_tags: Array<ForumTag>
   /** the default sort order type used to order posts in GUILD_FORUM channels */
   readonly default_sort_order: SortOrderType
   /** the default forum layout view used to display posts in GUILD_FORUM channels */
@@ -1034,7 +1035,7 @@ export interface CreateGuildEmojiParams {
   /** the 128x128 emoji image */
   readonly image: string
   /** roles allowed to use this emoji */
-  readonly roles: Snowflake[]
+  readonly roles: Array<Snowflake>
 }
 export interface CreateGuildFromGuildTemplateParams {
   /** name of the guild (2-100 characters) */
@@ -1056,9 +1057,9 @@ export interface CreateGuildParams {
   /** explicit content filter level */
   readonly explicit_content_filter?: ExplicitContentFilterLevel
   /** new guild roles */
-  readonly roles?: Role[]
+  readonly roles?: Array<Role>
   /** new guild's channels */
-  readonly channels?: Channel[]
+  readonly channels?: Array<Channel>
   /** id for afk channel */
   readonly afk_channel_id?: Snowflake
   /** afk timeout in seconds, can be set to: 60, 300, 900, 1800, 3600 */
@@ -1128,21 +1129,21 @@ export interface CreateMessageParams {
   /** true if this is a TTS message */
   readonly tts?: boolean
   /** Up to 10 rich embeds (up to 6000 characters) */
-  readonly embeds?: Embed[]
+  readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
   /** Include to make your message a reply */
   readonly message_reference?: MessageReference
   /** Components to include with the message */
-  readonly components?: Component[]
+  readonly components?: Array<Component>
   /** IDs of up to 3 stickers in the server to send in the message */
-  readonly sticker_ids?: Snowflake[]
+  readonly sticker_ids?: Array<Snowflake>
   /** Contents of the file being sent. See Uploading Files */
   readonly files?: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
   readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
-  readonly attachments?: Attachment[]
+  readonly attachments?: Array<Attachment>
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
 }
@@ -2435,7 +2436,7 @@ export interface DeleteWebhookMessageParams {
 }
 export interface EditApplicationCommandPermissionParams {
   /** Permissions for the command in the guild */
-  readonly permissions: ApplicationCommandPermission[]
+  readonly permissions: Array<ApplicationCommandPermission>
 }
 export interface EditChannelPermissionParams {
   /** the bitwise value of all allowed permissions (default "0") */
@@ -2455,7 +2456,7 @@ export interface EditGlobalApplicationCommandParams {
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
   /** the parameters for the command */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
   /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
@@ -2475,7 +2476,7 @@ export interface EditGuildApplicationCommandParams {
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
   /** Parameters for the command */
-  readonly options?: ApplicationCommandOption[]
+  readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
@@ -2487,35 +2488,35 @@ export interface EditMessageParams {
   /** Message contents (up to 2000 characters) */
   readonly content: string
   /** Up to 10 rich embeds (up to 6000 characters) */
-  readonly embeds: Embed[]
+  readonly embeds: Array<Embed>
   /** Edit the flags of a message (only SUPPRESS_EMBEDS can currently be set/unset) */
   readonly flags: number
   /** Allowed mentions for the message */
   readonly allowed_mentions: AllowedMention
   /** Components to include with the message */
-  readonly components: Component[]
+  readonly components: Array<Component>
   /** Contents of the file being sent/edited. See Uploading Files */
   readonly files: string
   /** JSON-encoded body of non-file params (multipart/form-data only). See Uploading Files */
   readonly payload_json: string
   /** Attached files to keep and possible descriptions for new files. See Uploading Files */
-  readonly attachments: Attachment[]
+  readonly attachments: Array<Attachment>
 }
 export interface EditWebhookMessageParams {
   /** the message contents (up to 2000 characters) */
   readonly content: string
   /** embedded rich content */
-  readonly embeds: Embed[]
+  readonly embeds: Array<Embed>
   /** allowed mentions for the message */
   readonly allowed_mentions: AllowedMention
   /** the components to include with the message */
-  readonly components: Component[]
+  readonly components: Array<Component>
   /** the contents of the file being sent/edited */
   readonly files: string
   /** JSON encoded body of non-file params (multipart/form-data only) */
   readonly payload_json: string
   /** attached files to keep and possible descriptions for new files */
-  readonly attachments: Attachment[]
+  readonly attachments: Array<Attachment>
 }
 export interface Embed {
   /** title of embed */
@@ -2543,7 +2544,7 @@ export interface Embed {
   /** author information */
   readonly author?: EmbedAuthor
   /** fields information */
-  readonly fields?: EmbedField[]
+  readonly fields?: Array<EmbedField>
 }
 export interface EmbedAuthor {
   /** name of author */
@@ -2627,7 +2628,7 @@ export interface Emoji {
   /** emoji name */
   readonly name?: string | null
   /** roles allowed to use this emoji */
-  readonly roles?: Snowflake[]
+  readonly roles?: Array<Snowflake>
   /** user that created this emoji */
   readonly user?: User
   /** whether this emoji must be wrapped in colons */
@@ -2681,14 +2682,14 @@ export interface Endpoints<O> {
   bulkOverwriteGlobalApplicationCommands: (
     applicationId: string,
     options?: O,
-  ) => RestResponse<ApplicationCommand[]>
+  ) => RestResponse<Array<ApplicationCommand>>
   /** Takes a list of application commands, overwriting the existing command list for this application for the targeted guild. Returns 200 and a list of application command objects. */
   bulkOverwriteGuildApplicationCommands: (
     applicationId: string,
     guildId: string,
     params?: Partial<BulkOverwriteGuildApplicationCommandParams>,
     options?: O,
-  ) => RestResponse<ApplicationCommand[]>
+  ) => RestResponse<Array<ApplicationCommand>>
   /** Create a new rule. Returns an auto moderation rule on success. Fires an Auto Moderation Rule Create Gateway event. */
   createAutoModerationRule: (
     guildId: string,
@@ -3048,7 +3049,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getApplicationRoleConnectionMetadataRecords: (
     applicationId: string,
     options?: O,
-  ) => RestResponse<ApplicationRoleConnectionMetadatum[]>
+  ) => RestResponse<Array<ApplicationRoleConnectionMetadatum>>
   /** Get a single rule. Returns an auto moderation rule object. */
   getAutoModerationRule: (
     guildId: string,
@@ -3058,7 +3059,10 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   /** Get a channel by ID. Returns a channel object.  If the channel is a thread, a thread member object is included in the returned result. */
   getChannel: (channelId: string, options?: O) => RestResponse<Channel>
   /** Returns a list of invite objects (with invite metadata) for the channel. Only usable for guild channels. Requires the MANAGE_CHANNELS permission. */
-  getChannelInvites: (channelId: string, options?: O) => RestResponse<Invite[]>
+  getChannelInvites: (
+    channelId: string,
+    options?: O,
+  ) => RestResponse<Array<Invite>>
   /** Retrieves a specific message in the channel. Returns a message object on success. */
   getChannelMessage: (
     channelId: string,
@@ -3070,12 +3074,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     channelId: string,
     params?: Partial<GetChannelMessageParams>,
     options?: O,
-  ) => RestResponse<Message[]>
+  ) => RestResponse<Array<Message>>
   /** Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission. */
   getChannelWebhooks: (
     channelId: string,
     options?: O,
-  ) => RestResponse<Webhook[]>
+  ) => RestResponse<Array<Webhook>>
   /** Returns the application object associated with the requesting bot user. */
   getCurrentApplication: (options?: O) => RestResponse<Application>
   /** Returns info about the current authorization. Requires authentication with a bearer token. */
@@ -3097,7 +3101,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getCurrentUserGuilds: (
     params?: Partial<GetCurrentUserGuildParams>,
     options?: O,
-  ) => RestResponse<Guild[]>
+  ) => RestResponse<Array<Guild>>
   /** Returns a followup message for an Interaction. Functions the same as Get Webhook Message. */
   getFollowupMessage: (
     applicationId: string,
@@ -3118,7 +3122,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     applicationId: string,
     params?: Partial<GetGlobalApplicationCommandParams>,
     options?: O,
-  ) => RestResponse<ApplicationCommand[]>
+  ) => RestResponse<Array<ApplicationCommand>>
   /** Returns the guild object for the given id. If with_counts is set to true, this endpoint will also return approximate_member_count and approximate_presence_count for the guild. */
   getGuild: (
     guildId: string,
@@ -3137,13 +3141,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     applicationId: string,
     guildId: string,
     options?: O,
-  ) => RestResponse<GuildApplicationCommandPermission[]>
+  ) => RestResponse<Array<GuildApplicationCommandPermission>>
   getGuildApplicationCommands: (
     applicationId: string,
     guildId: string,
     params?: Partial<GetGuildApplicationCommandParams>,
     options?: O,
-  ) => RestResponse<ApplicationCommand[]>
+  ) => RestResponse<Array<ApplicationCommand>>
   /** Returns an audit log object for the guild. Requires the VIEW_AUDIT_LOG permission. */
   getGuildAuditLog: (
     guildId: string,
@@ -3161,9 +3165,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     params?: Partial<GetGuildBanParams>,
     options?: O,
-  ) => RestResponse<Ban[]>
+  ) => RestResponse<Array<Ban>>
   /** Returns a list of guild channel objects. Does not include threads. */
-  getGuildChannels: (guildId: string, options?: O) => RestResponse<Channel[]>
+  getGuildChannels: (
+    guildId: string,
+    options?: O,
+  ) => RestResponse<Array<Channel>>
   /** Returns an emoji object for the given guild and emoji IDs. */
   getGuildEmoji: (
     guildId: string,
@@ -3174,9 +3181,9 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getGuildIntegrations: (
     guildId: string,
     options?: O,
-  ) => RestResponse<Integration[]>
+  ) => RestResponse<Array<Integration>>
   /** Returns a list of invite objects (with invite metadata) for the guild. Requires the MANAGE_GUILD permission. */
-  getGuildInvites: (guildId: string, options?: O) => RestResponse<Invite[]>
+  getGuildInvites: (guildId: string, options?: O) => RestResponse<Array<Invite>>
   /** Returns a guild member object for the specified user. */
   getGuildMember: (
     guildId: string,
@@ -3198,7 +3205,7 @@ If the user is not in the guild, then the guild must be discoverable. */
     options?: O,
   ) => RestResponse<any>
   /** Returns a list of role objects for the guild. */
-  getGuildRoles: (guildId: string, options?: O) => RestResponse<Role[]>
+  getGuildRoles: (guildId: string, options?: O) => RestResponse<Array<Role>>
   /** Get a guild scheduled event. Returns a guild scheduled event object on success. */
   getGuildScheduledEvent: (
     guildId: string,
@@ -3212,7 +3219,7 @@ If the user is not in the guild, then the guild must be discoverable. */
     guildScheduledEventId: string,
     params?: Partial<GetGuildScheduledEventUserParams>,
     options?: O,
-  ) => RestResponse<GuildScheduledEventUser[]>
+  ) => RestResponse<Array<GuildScheduledEventUser>>
   /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the MANAGE_GUILD_EXPRESSIONS permission. */
   getGuildSticker: (
     guildId: string,
@@ -3228,16 +3235,19 @@ If the user is not in the guild, then the guild must be discoverable. */
   getGuildTemplates: (
     guildId: string,
     options?: O,
-  ) => RestResponse<GuildTemplate[]>
+  ) => RestResponse<Array<GuildTemplate>>
   /** Returns a partial invite object for guilds with that feature enabled. Requires the MANAGE_GUILD permission. code will be null if a vanity url for the guild is not set. */
   getGuildVanityUrl: (guildId: string, options?: O) => RestResponse<Invite>
   /** Returns a list of voice region objects for the guild. Unlike the similar /voice route, this returns VIP servers when the guild is VIP-enabled. */
   getGuildVoiceRegions: (
     guildId: string,
     options?: O,
-  ) => RestResponse<VoiceRegion[]>
+  ) => RestResponse<Array<VoiceRegion>>
   /** Returns a list of guild webhook objects. Requires the MANAGE_WEBHOOKS permission. */
-  getGuildWebhooks: (guildId: string, options?: O) => RestResponse<Webhook[]>
+  getGuildWebhooks: (
+    guildId: string,
+    options?: O,
+  ) => RestResponse<Array<Webhook>>
   /** Returns the Welcome Screen object for the guild. If the welcome screen is not enabled, the MANAGE_GUILD permission is required. */
   getGuildWelcomeScreen: (
     guildId: string,
@@ -3270,7 +3280,10 @@ If the user is not in the guild, then the guild must be discoverable. */
     options?: O,
   ) => RestResponse<Message>
   /** Returns all pinned messages in the channel as an array of message objects. */
-  getPinnedMessages: (channelId: string, options?: O) => RestResponse<Message[]>
+  getPinnedMessages: (
+    channelId: string,
+    options?: O,
+  ) => RestResponse<Array<Message>>
   /** Get a list of users that reacted with this emoji. Returns an array of user objects on success.
 The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id. */
   getReactions: (
@@ -3279,7 +3292,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     emoji: string,
     params?: Partial<GetReactionParams>,
     options?: O,
-  ) => RestResponse<User[]>
+  ) => RestResponse<Array<User>>
   /** Gets the stage instance associated with the Stage channel, if it exists. */
   getStageInstance: (channelId: string, options?: O) => RestResponse<any>
   /** Returns a sticker object for the given sticker ID. */
@@ -3299,7 +3312,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     options?: O,
   ) => RestResponse<ApplicationRoleConnection>
   /** Returns a list of connection objects. Requires the connections OAuth2 scope. */
-  getUserConnections: (options?: O) => RestResponse<Connection[]>
+  getUserConnections: (options?: O) => RestResponse<Array<Connection>>
   /** Returns the new webhook object for the given id. */
   getWebhook: (webhookId: string, options?: O) => RestResponse<Webhook>
   /** Returns a previously-sent webhook message from the same token. Returns a message object on success. */
@@ -3344,17 +3357,20 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   listAutoModerationRulesForGuild: (
     guildId: string,
     options?: O,
-  ) => RestResponse<AutoModerationRule[]>
+  ) => RestResponse<Array<AutoModerationRule>>
   /** Returns a list of emoji objects for the given guild. */
-  listGuildEmojis: (guildId: string, options?: O) => RestResponse<Emoji[]>
+  listGuildEmojis: (guildId: string, options?: O) => RestResponse<Array<Emoji>>
   /** Returns a list of guild member objects that are members of the guild. */
   listGuildMembers: (
     guildId: string,
     params?: Partial<ListGuildMemberParams>,
     options?: O,
-  ) => RestResponse<GuildMember[]>
+  ) => RestResponse<Array<GuildMember>>
   /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the MANAGE_GUILD_EXPRESSIONS permission. */
-  listGuildStickers: (guildId: string, options?: O) => RestResponse<Sticker[]>
+  listGuildStickers: (
+    guildId: string,
+    options?: O,
+  ) => RestResponse<Array<Sticker>>
   /** Returns archived threads in the channel that are of type PRIVATE_THREAD, and the user has joined. Threads are ordered by their id, in descending order. Requires the READ_MESSAGE_HISTORY permission. */
   listJoinedPrivateArchivedThreads: (
     channelId: string,
@@ -3380,14 +3396,14 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     params?: Partial<ListScheduledEventsForGuildParams>,
     options?: O,
-  ) => RestResponse<GuildScheduledEvent[]>
+  ) => RestResponse<Array<GuildScheduledEvent>>
   listThreadMembers: (
     channelId: string,
     params?: Partial<ListThreadMemberParams>,
     options?: O,
-  ) => RestResponse<ThreadMember[]>
+  ) => RestResponse<Array<ThreadMember>>
   /** Returns an array of voice region objects that can be used when setting a voice or stage channel's rtc_region. */
-  listVoiceRegions: (options?: O) => RestResponse<VoiceRegion[]>
+  listVoiceRegions: (options?: O) => RestResponse<Array<VoiceRegion>>
   /** Modify an existing rule. Returns an auto moderation rule on success. Fires an Auto Moderation Rule Update Gateway event. */
   modifyAutoModerationRule: (
     guildId: string,
@@ -3473,7 +3489,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     params?: Partial<ModifyGuildRolePositionParams>,
     options?: O,
-  ) => RestResponse<Role[]>
+  ) => RestResponse<Array<Role>>
   /** Modify a guild scheduled event. Returns the modified guild scheduled event object on success. Fires a Guild Scheduled Event Update Gateway event. */
   modifyGuildScheduledEvent: (
     guildId: string,
@@ -3567,7 +3583,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     params?: Partial<SearchGuildMemberParams>,
     options?: O,
-  ) => RestResponse<GuildMember[]>
+  ) => RestResponse<Array<GuildMember>>
   /** Creates a new thread from an existing message. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create and a Message Update Gateway event. */
   startThreadFromMessage: (
     channelId: string,
@@ -3605,7 +3621,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   updateApplicationRoleConnectionMetadataRecords: (
     applicationId: string,
     options?: O,
-  ) => RestResponse<ApplicationRoleConnectionMetadatum[]>
+  ) => RestResponse<Array<ApplicationRoleConnectionMetadatum>>
   /** Updates and returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
   updateUserApplicationRoleConnection: (
     applicationId: string,
@@ -3627,17 +3643,17 @@ export interface ExecuteWebhookParams {
   /** true if this is a TTS message */
   readonly tts: boolean
   /** embedded rich content */
-  readonly embeds: Embed[]
+  readonly embeds: Array<Embed>
   /** allowed mentions for the message */
   readonly allowed_mentions: AllowedMention
   /** the components to include with the message */
-  readonly components: Component[]
+  readonly components: Array<Component>
   /** the contents of the file being sent */
   readonly files: string
   /** JSON encoded body of non-file params */
   readonly payload_json: string
   /** attachment objects with filename and description */
-  readonly attachments: Attachment[]
+  readonly attachments: Array<Attachment>
   /** message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
   readonly flags: number
   /** name of thread to create (requires the webhook channel to be a forum channel) */
@@ -3685,19 +3701,19 @@ export interface ForumThreadMessageParam {
   /** Message contents (up to 2000 characters) */
   readonly content?: string
   /** Up to 10 rich embeds (up to 6000 characters) */
-  readonly embeds?: Embed[]
+  readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
   /** Components to include with the message */
-  readonly components?: Component[]
+  readonly components?: Array<Component>
   /** IDs of up to 3 stickers in the server to send in the message */
-  readonly sticker_ids?: Snowflake[]
+  readonly sticker_ids?: Array<Snowflake>
   /** Contents of the file being sent. See Uploading Files */
   readonly files: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
   readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
-  readonly attachments?: Attachment[]
+  readonly attachments?: Array<Attachment>
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
 }
@@ -3778,7 +3794,7 @@ export interface GetCurrentAuthorizationInformationResponse {
   /** the current application */
   readonly application: Application
   /** the scopes the user has authorized the application for */
-  readonly scopes: string[]
+  readonly scopes: Array<string>
   /** when the access token expires */
   readonly expires: string
   /** the user who has authorized, if the user has authorized with the identify scope */
@@ -3838,7 +3854,7 @@ export interface GetGuildPruneCountParams {
   /** number of days to count prune for (1-30) */
   readonly days: number
   /** role(s) to include */
-  readonly include_roles: Snowflake[]
+  readonly include_roles: Array<Snowflake>
 }
 export interface GetGuildScheduledEventParams {
   /** include number of users subscribed to this event */
@@ -3922,11 +3938,11 @@ export interface Guild {
   /** explicit content filter level */
   readonly explicit_content_filter: ExplicitContentFilterLevel
   /** roles in the guild */
-  readonly roles: Role[]
+  readonly roles: Array<Role>
   /** custom guild emojis */
-  readonly emojis: Emoji[]
+  readonly emojis: Array<Emoji>
   /** enabled guild features */
-  readonly features: GuildFeature[]
+  readonly features: Array<GuildFeature>
   /** required MFA level for the guild */
   readonly mfa_level: MfaLevel
   /** application id of the guild creator if it is bot-created */
@@ -3968,7 +3984,7 @@ export interface Guild {
   /** guild NSFW level */
   readonly nsfw_level: GuildNsfwLevel
   /** custom guild stickers */
-  readonly stickers?: Sticker[]
+  readonly stickers?: Array<Sticker>
   /** whether the guild has the boost progress bar enabled */
   readonly premium_progress_bar_enabled: boolean
   /** the id of the channel where admins and moderators of Community guilds receive safety alerts from Discord */
@@ -3982,7 +3998,7 @@ export interface GuildApplicationCommandPermission {
   /** ID of the guild */
   readonly guild_id: Snowflake
   /** Permissions for the command in the guild, max of 100 */
-  readonly permissions: ApplicationCommandPermission[]
+  readonly permissions: Array<ApplicationCommandPermission>
 }
 export type GuildAuditLogEntryCreateEvent = AuditLogEntry
 export interface GuildBanAddEvent {
@@ -4008,26 +4024,26 @@ export interface GuildCreateExtra {
   /** Total number of members in this guild */
   readonly member_count: number
   /** States of members currently in voice channels; lacks the guild_id key */
-  readonly voice_states: VoiceState[]
+  readonly voice_states: Array<VoiceState>
   /** Users in the guild */
-  readonly members: GuildMember[]
+  readonly members: Array<GuildMember>
   /** Channels in the guild */
-  readonly channels: Channel[]
+  readonly channels: Array<Channel>
   /** All active threads in the guild that current user has permission to view */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** Presences of the members in the guild, will only include non-offline members if the size is greater than large threshold */
-  readonly presences: PresenceUpdateEvent[]
+  readonly presences: Array<PresenceUpdateEvent>
   /** Stage instances in the guild */
-  readonly stage_instances: StageInstance[]
+  readonly stage_instances: Array<StageInstance>
   /** Scheduled events in the guild */
-  readonly guild_scheduled_events: GuildScheduledEvent[]
+  readonly guild_scheduled_events: Array<GuildScheduledEvent>
 }
 export type GuildDeleteEvent = UnavailableGuild
 export interface GuildEmojisUpdateEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
   /** Array of emojis */
-  readonly emojis: Emoji[]
+  readonly emojis: Array<Emoji>
 }
 export const enum GuildFeature {
   /** guild has access to set an animated guild banner image */
@@ -4097,7 +4113,7 @@ export interface GuildMember {
   /** the member's guild avatar hash */
   readonly avatar?: string | null
   /** array of role object ids */
-  readonly roles: Snowflake[]
+  readonly roles: Array<Snowflake>
   /** when the user joined the guild */
   readonly joined_at: string
   /** when the user started boosting the guild */
@@ -4140,15 +4156,15 @@ export interface GuildMembersChunkEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
   /** Set of guild members */
-  readonly members: GuildMember[]
+  readonly members: Array<GuildMember>
   /** Chunk index in the expected chunks for this response (0 <= chunk_index < chunk_count) */
   readonly chunk_index: number
   /** Total number of expected chunks for this response */
   readonly chunk_count: number
   /** When passing an invalid ID to REQUEST_GUILD_MEMBERS, it will be returned here */
-  readonly not_found?: any[]
+  readonly not_found?: Array<any>
   /** When passing true to REQUEST_GUILD_MEMBERS, presences of the returned members will be here */
-  readonly presences?: PresenceUpdateEvent[]
+  readonly presences?: Array<PresenceUpdateEvent>
   /** Nonce used in the Guild Members Request */
   readonly nonce?: string
 }
@@ -4156,7 +4172,7 @@ export interface GuildMemberUpdateEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
   /** User role ids */
-  readonly roles: Snowflake[]
+  readonly roles: Array<Snowflake>
   /** User */
   readonly user: User
   /** Nickname of the user in the guild */
@@ -4186,9 +4202,9 @@ export interface GuildOnboarding {
   /** ID of the guild this onboarding is part of */
   readonly guild_id: Snowflake
   /** Prompts shown during onboarding and in customize community */
-  readonly prompts: OnboardingPrompt[]
+  readonly prompts: Array<OnboardingPrompt>
   /** Channel IDs that members get opted into automatically */
-  readonly default_channel_ids: Snowflake[]
+  readonly default_channel_ids: Array<Snowflake>
   /** Whether onboarding is enabled in the guild */
   readonly enabled: boolean
   /** Current mode of onboarding */
@@ -4206,9 +4222,9 @@ export interface GuildPreview {
   /** discovery splash hash */
   readonly discovery_splash?: string | null
   /** custom guild emojis */
-  readonly emojis: Emoji[]
+  readonly emojis: Array<Emoji>
   /** enabled guild features */
-  readonly features: GuildFeature[]
+  readonly features: Array<GuildFeature>
   /** approximate number of members in this guild */
   readonly approximate_member_count: number
   /** approximate number of online members in this guild */
@@ -4216,7 +4232,7 @@ export interface GuildPreview {
   /** the description for the guild */
   readonly description?: string | null
   /** custom guild stickers */
-  readonly stickers: Sticker[]
+  readonly stickers: Array<Sticker>
 }
 export interface GuildRoleCreateEvent {
   /** ID of the guild */
@@ -4320,7 +4336,7 @@ export interface GuildStickersUpdateEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
   /** Array of stickers */
-  readonly stickers: Sticker[]
+  readonly stickers: Array<Sticker>
 }
 export interface GuildTemplate {
   /** the template code (unique ID) */
@@ -4355,9 +4371,9 @@ export interface GuildWidget {
   /** instant invite for the guilds specified widget invite channel */
   readonly instant_invite?: string | null
   /** voice and stage channels which are accessible by @everyone */
-  readonly channels: Channel[]
+  readonly channels: Array<Channel>
   /** special widget user objects that includes users presence (Limit 100) */
-  readonly members: User[]
+  readonly members: Array<User>
   /** number of online members in this guild */
   readonly presence_count: number
 }
@@ -4382,7 +4398,7 @@ export interface Identify {
   /** Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list */
   readonly large_threshold?: number
   /** Used for Guild Sharding */
-  readonly shard?: number[]
+  readonly shard?: Array<number>
   /** Presence structure for initial presence information */
   readonly presence?: UpdatePresence
   /** Gateway Intents you wish to receive */
@@ -4398,7 +4414,7 @@ export interface IdentifyConnectionProperty {
 }
 export interface InstallParam {
   /** the scopes to add the application to the server with */
-  readonly scopes: OAuth2Scope[]
+  readonly scopes: Array<OAuth2Scope>
   /** the permissions to request for the bot role */
   readonly permissions: string
 }
@@ -4434,7 +4450,7 @@ export interface Integration {
   /** The bot/OAuth2 application for discord integrations */
   readonly application?: IntegrationApplication
   /** the scopes the application has been authorized for */
-  readonly scopes?: OAuth2Scope[]
+  readonly scopes?: Array<OAuth2Scope>
 }
 export interface IntegrationAccount {
   /** id of the account */
@@ -4512,7 +4528,7 @@ export interface Interaction {
 }
 export interface InteractionCallbackAutocomplete {
   /** autocomplete choices (max of 25 choices) */
-  readonly choices: ApplicationCommandOptionChoice[]
+  readonly choices: Array<ApplicationCommandOptionChoice>
 }
 export type InteractionCallbackDatum =
   | InteractionCallbackAutocomplete
@@ -4524,15 +4540,15 @@ export interface InteractionCallbackMessage {
   /** message content */
   readonly content?: string
   /** supports up to 10 embeds */
-  readonly embeds?: Embed[]
+  readonly embeds?: Array<Embed>
   /** allowed mentions object */
   readonly allowed_mentions?: AllowedMention
   /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and EPHEMERAL can be set) */
   readonly flags?: number
   /** message components */
-  readonly components?: Component[]
+  readonly components?: Array<Component>
   /** attachment objects with filename and description */
-  readonly attachments?: Attachment[]
+  readonly attachments?: Array<Attachment>
 }
 export interface InteractionCallbackModal {
   /** a developer-defined identifier for the modal, max 100 characters */
@@ -4540,7 +4556,7 @@ export interface InteractionCallbackModal {
   /** the title of the popup modal, max 45 characters */
   readonly title: string
   /** between 1 and 5 (inclusive) components that make up the modal */
-  readonly components: Component[]
+  readonly components: Array<Component>
 }
 export const enum InteractionCallbackType {
   /** ACK a Ping */
@@ -4651,7 +4667,7 @@ export interface InviteMetadatum {
 }
 export interface InviteStageInstance {
   /** the members speaking in the Stage */
-  readonly members: GuildMember[]
+  readonly members: Array<GuildMember>
   /** the number of users in the Stage */
   readonly participant_count: number
   /** the number of users speaking in the Stage */
@@ -4673,9 +4689,9 @@ export const enum KeywordPresetType {
 }
 export interface ListActiveGuildThreadResponse {
   /** the active threads */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
-  readonly members: ThreadMember[]
+  readonly members: Array<ThreadMember>
 }
 export interface ListGuildMemberParams {
   /** max number of members to return (1-1000) */
@@ -4691,9 +4707,9 @@ export interface ListJoinedPrivateArchivedThreadParams {
 }
 export interface ListJoinedPrivateArchivedThreadResponse {
   /** the private, archived threads the current user has joined */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
-  readonly members: ThreadMember[]
+  readonly members: Array<ThreadMember>
   /** whether there are potentially additional threads that could be returned on a subsequent call */
   readonly has_more: boolean
 }
@@ -4705,9 +4721,9 @@ export interface ListPrivateArchivedThreadParams {
 }
 export interface ListPrivateArchivedThreadResponse {
   /** the private, archived threads */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
-  readonly members: ThreadMember[]
+  readonly members: Array<ThreadMember>
   /** whether there are potentially additional threads that could be returned on a subsequent call */
   readonly has_more: boolean
 }
@@ -4719,9 +4735,9 @@ export interface ListPublicArchivedThreadParams {
 }
 export interface ListPublicArchivedThreadResponse {
   /** the public, archived threads */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
-  readonly members: ThreadMember[]
+  readonly members: Array<ThreadMember>
   /** whether there are potentially additional threads that could be returned on a subsequent call */
   readonly has_more: boolean
 }
@@ -4821,17 +4837,17 @@ export interface Message {
   /** whether this message mentions everyone */
   readonly mention_everyone: boolean
   /** users specifically mentioned in the message */
-  readonly mentions: User[]
+  readonly mentions: Array<User>
   /** roles specifically mentioned in this message */
-  readonly mention_roles: Snowflake[]
+  readonly mention_roles: Array<Snowflake>
   /** channels specifically mentioned in this message */
-  readonly mention_channels?: ChannelMention[]
+  readonly mention_channels?: Array<ChannelMention>
   /** any attached files */
-  readonly attachments: Attachment[]
+  readonly attachments: Array<Attachment>
   /** any embedded content */
-  readonly embeds: Embed[]
+  readonly embeds: Array<Embed>
   /** reactions to the message */
-  readonly reactions?: Reaction[]
+  readonly reactions?: Array<Reaction>
   /** used for validating a message was sent */
   readonly nonce?: string
   /** whether this message is pinned */
@@ -4857,11 +4873,11 @@ export interface Message {
   /** the thread that was started from this message, includes thread member object */
   readonly thread?: Channel
   /** sent if the message contains components like buttons, action rows, or other interactive components */
-  readonly components?: Component[]
+  readonly components?: Array<Component>
   /** sent if the message contains stickers */
-  readonly sticker_items?: StickerItem[]
+  readonly sticker_items?: Array<StickerItem>
   /** Deprecated the stickers sent with the message */
-  readonly stickers?: Sticker[]
+  readonly stickers?: Array<Sticker>
   /** A generally increasing integer (there may be gaps or duplicates) that represents the approximate position of the message in a thread, it can be used to estimate the relative position of the message in a thread in company with total_message_sent on parent thread */
   readonly position?: number
   /** data of the role subscription purchase or renewal that prompted this ROLE_SUBSCRIPTION_PURCHASE message */
@@ -4885,7 +4901,7 @@ export interface MessageComponentDatum {
   /** the type of the component */
   readonly component_type: ComponentType
   /** values the user selected in a select menu component */
-  readonly values?: SelectOption[]
+  readonly values?: Array<SelectOption>
 }
 export type MessageCreateEvent = Message & MessageCreateExtra
 export interface MessageCreateExtra {
@@ -4894,11 +4910,11 @@ export interface MessageCreateExtra {
   /** Member properties for this message's author. Missing for ephemeral messages and messages from webhooks */
   readonly member?: GuildMember
   /** Users specifically mentioned in the message */
-  readonly mentions: User[]
+  readonly mentions: Array<User>
 }
 export interface MessageDeleteBulkEvent {
   /** IDs of the messages */
-  readonly ids: Snowflake[]
+  readonly ids: Array<Snowflake>
   /** ID of the channel */
   readonly channel_id: Snowflake
   /** ID of the guild */
@@ -5048,7 +5064,7 @@ export interface ModalSubmitDatum {
   /** the custom_id of the modal */
   readonly custom_id: string
   /** the values submitted by the user */
-  readonly components: Component[]
+  readonly components: Array<Component>
 }
 export interface ModifyAutoModerationRuleParams {
   /** the rule name */
@@ -5058,13 +5074,13 @@ export interface ModifyAutoModerationRuleParams {
   /** the trigger metadata */
   readonly trigger_metadata?: TriggerMetadatum
   /** the actions which will execute when the rule is triggered */
-  readonly actions: AutoModerationAction[]
+  readonly actions: Array<AutoModerationAction>
   /** whether the rule is enabled */
   readonly enabled: boolean
   /** the role ids that should not be affected by the rule (Maximum of 20) */
-  readonly exempt_roles: Snowflake[]
+  readonly exempt_roles: Array<Snowflake>
   /** the channel ids that should not be affected by the rule (Maximum of 50) */
-  readonly exempt_channels: Snowflake[]
+  readonly exempt_channels: Array<Snowflake>
 }
 export interface ModifyChannelGroupDmParams {
   /** 1-100 character channel name */
@@ -5090,7 +5106,7 @@ export interface ModifyChannelGuildChannelParams {
   /** the user limit of the voice or stage channel, max 99 for voice channels and 10,000 for stage channels (0 refers to no limit) */
   readonly user_limit?: number | null
   /** channel or category-specific permissions */
-  readonly permission_overwrites?: Overwrite[] | null
+  readonly permission_overwrites?: Array<Overwrite> | null
   /** id of the new parent category for a channel */
   readonly parent_id?: Snowflake | null
   /** channel voice region id, automatic when set to null */
@@ -5102,7 +5118,7 @@ export interface ModifyChannelGuildChannelParams {
   /** channel flags combined as a bitfield. Currently only REQUIRE_TAG (1 << 4) is supported. */
   readonly flags?: number
   /** the set of tags that can be used in a GUILD_FORUM channel; limited to 20 */
-  readonly available_tags?: ForumTag[]
+  readonly available_tags?: Array<ForumTag>
   /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
   readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
@@ -5132,7 +5148,7 @@ export interface ModifyChannelThreadParams {
   /** channel flags combined as a bitfield; PINNED can only be set for threads in forum channels */
   readonly flags?: number
   /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel; limited to 5 */
-  readonly applied_tags?: Snowflake[]
+  readonly applied_tags?: Array<Snowflake>
 }
 export interface ModifyCurrentMemberParams {
   /** value to set user's nickname to */
@@ -5170,13 +5186,13 @@ export interface ModifyGuildEmojiParams {
   /** name of the emoji */
   readonly name: string
   /** roles allowed to use this emoji */
-  readonly roles?: Snowflake[] | null
+  readonly roles?: Array<Snowflake> | null
 }
 export interface ModifyGuildMemberParams {
   /** value to set user's nickname to */
   readonly nick: string
   /** array of role ids the member is assigned */
-  readonly roles: Snowflake[]
+  readonly roles: Array<Snowflake>
   /** whether the user is muted in voice channels. Will throw a 400 error if the user is not in a voice channel */
   readonly mute: boolean
   /** whether the user is deafened in voice channels. Will throw a 400 error if the user is not in a voice channel */
@@ -5194,9 +5210,9 @@ export interface ModifyGuildMfaLevelParams {
 }
 export interface ModifyGuildOnboardingParams {
   /** Prompts shown during onboarding and in customize community */
-  readonly prompts: OnboardingPrompt[]
+  readonly prompts: Array<OnboardingPrompt>
   /** Channel IDs that members get opted into automatically */
-  readonly default_channel_ids: Snowflake[]
+  readonly default_channel_ids: Array<Snowflake>
   /** Whether onboarding is enabled in the guild */
   readonly enabled: boolean
   /** Current mode of onboarding */
@@ -5238,7 +5254,7 @@ export interface ModifyGuildParams {
   /** the preferred locale of a Community guild used in server discovery and notices from Discord; defaults to "en-US" */
   readonly preferred_locale?: string | null
   /** enabled guild features */
-  readonly features: GuildFeature[]
+  readonly features: Array<GuildFeature>
   /** the description for the guild */
   readonly description?: string | null
   /** whether the guild's boost progress bar should be enabled */
@@ -5308,7 +5324,7 @@ export interface ModifyGuildWelcomeScreenParams {
   /** whether the welcome screen is enabled */
   readonly enabled: boolean
   /** channels linked in the welcome screen and their display options */
-  readonly welcome_channels: WelcomeScreenChannel[]
+  readonly welcome_channels: Array<WelcomeScreenChannel>
   /** the server description to show in the welcome screen */
   readonly description: string
 }
@@ -5408,7 +5424,7 @@ export interface OnboardingPrompt {
   /** Type of prompt */
   readonly type: PromptType
   /** Options available within the prompt */
-  readonly options: PromptOption[]
+  readonly options: Array<PromptOption>
   /** Title of the prompt */
   readonly title: string
   /** Indicates whether users are limited to selecting one option for the prompt */
@@ -5544,7 +5560,7 @@ export interface PresenceUpdateEvent {
   /** Either "idle", "dnd", "online", or "offline" */
   readonly status: string
   /** User's current activities */
-  readonly activities: Activity[]
+  readonly activities: Array<Activity>
   /** User's platform-dependent status */
   readonly client_status: ClientStatus
 }
@@ -5558,9 +5574,9 @@ export interface PromptOption {
   /** ID of the prompt option */
   readonly id: Snowflake
   /** IDs for channels a member is added to when the option is selected */
-  readonly channel_ids: Snowflake[]
+  readonly channel_ids: Array<Snowflake>
   /** IDs for roles assigned to a member when the option is selected */
-  readonly role_ids: Snowflake[]
+  readonly role_ids: Array<Snowflake>
   /** Emoji of the option */
   readonly emoji: Emoji
   /** Title of the option */
@@ -5586,13 +5602,13 @@ export interface ReadyEvent {
   /** Information about the user including email */
   readonly user: User
   /** Guilds the user is in */
-  readonly guilds: UnavailableGuild[]
+  readonly guilds: Array<UnavailableGuild>
   /** Used for resuming connections */
   readonly session_id: string
   /** Gateway URL for resuming connections */
   readonly resume_gateway_url: string
   /** Shard information associated with this session, if sent when identifying */
-  readonly shard?: number[]
+  readonly shard?: Array<number>
   /** Contains id and flags */
   readonly application: Application
 }
@@ -5738,7 +5754,7 @@ export interface RequestGuildMember {
   /** used to specify if we want the presences of the matched members */
   readonly presences?: boolean
   /** used to specify which users you wish to fetch */
-  readonly user_ids?: Snowflake[]
+  readonly user_ids?: Array<Snowflake>
   /** nonce to identify the Guild Members Chunk response */
   readonly nonce?: string
 }
@@ -5760,7 +5776,7 @@ export interface Response {
   /** the current application */
   readonly application: Application
   /** the scopes the user has authorized the application for */
-  readonly scopes: string[]
+  readonly scopes: Array<string>
   /** when the access token expires */
   readonly expires: string
   /** the user who has authorized, if the user has authorized with the identify scope */
@@ -5768,9 +5784,9 @@ export interface Response {
 }
 export interface ResponseBody {
   /** the public, archived threads */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
-  readonly members: ThreadMember[]
+  readonly members: Array<ThreadMember>
   /** whether there are potentially additional threads that could be returned on a subsequent call */
   readonly has_more: boolean
 }
@@ -5855,9 +5871,9 @@ export interface SelectMenu {
   /** ID for the select menu; max 100 characters */
   readonly custom_id: string
   /** Specified choices in a select menu (only required and available for string selects (type 3); max 25 */
-  readonly options?: SelectOption[]
+  readonly options?: Array<SelectOption>
   /** List of channel types to include in the channel select component (type 8) */
-  readonly channel_types?: ChannelType[]
+  readonly channel_types?: Array<ChannelType>
   /** Placeholder text if nothing is selected; max 150 characters */
   readonly placeholder?: string
   /** Minimum number of items that must be chosen (defaults to 1); min 0, max 25 */
@@ -5942,19 +5958,19 @@ export interface StartThreadInForumChannelForumThreadMessageParams {
   /** Message contents (up to 2000 characters) */
   readonly content?: string
   /** Up to 10 rich embeds (up to 6000 characters) */
-  readonly embeds?: Embed[]
+  readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
   /** Components to include with the message */
-  readonly components?: Component[]
+  readonly components?: Array<Component>
   /** IDs of up to 3 stickers in the server to send in the message */
-  readonly sticker_ids?: Snowflake[]
+  readonly sticker_ids?: Array<Snowflake>
   /** Contents of the file being sent. See Uploading Files */
   readonly files: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
   readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
-  readonly attachments?: Attachment[]
+  readonly attachments?: Array<Attachment>
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
 }
@@ -5968,7 +5984,7 @@ export interface StartThreadInForumChannelParams {
   /** contents of the first message in the forum thread */
   readonly message: StartThreadInForumChannelForumThreadMessageParams
   /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
-  readonly applied_tags?: Snowflake[]
+  readonly applied_tags?: Array<Snowflake>
 }
 export interface StartThreadWithoutMessageParams {
   /** 1-100 character channel name */
@@ -6038,7 +6054,7 @@ export interface StickerPack {
   /** id of the sticker pack */
   readonly id: Snowflake
   /** the stickers in the pack */
-  readonly stickers: Sticker[]
+  readonly stickers: Array<Sticker>
   /** name of the sticker pack */
   readonly name: string
   /** id of the pack's SKU */
@@ -6076,7 +6092,7 @@ export interface Team {
   /** the unique id of the team */
   readonly id: Snowflake
   /** the members of the team */
-  readonly members: TeamMember[]
+  readonly members: Array<TeamMember>
   /** the name of the team */
   readonly name: string
   /** the user id of the current team owner */
@@ -6086,7 +6102,7 @@ export interface TeamMember {
   /** the user's membership state on the team */
   readonly membership_state: MembershipState
   /** will always be ["*"] */
-  readonly permissions: string[]
+  readonly permissions: Array<string>
   /** the id of the parent team of which they are a member */
   readonly team_id: Snowflake
   /** the avatar, discriminator, id, and username of the user */
@@ -6124,11 +6140,11 @@ export interface ThreadListSyncEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
   /** Parent channel IDs whose threads are being synced.  If omitted, then threads were synced for the entire guild.  This array may contain channel_ids that have no active threads as well, so you know to clear that data. */
-  readonly channel_ids?: Snowflake[]
+  readonly channel_ids?: Array<Snowflake>
   /** All active threads in the given channels that the current user can access */
-  readonly threads: Channel[]
+  readonly threads: Array<Channel>
   /** All thread member objects from the synced threads for the current user, indicating which threads the current user has been added to */
-  readonly members: ThreadMember[]
+  readonly members: Array<ThreadMember>
 }
 export interface ThreadMember {
   /** ID of the thread */
@@ -6150,9 +6166,9 @@ export interface ThreadMembersUpdateEvent {
   /** Approximate number of members in the thread, capped at 50 */
   readonly member_count: number
   /** Users who were added to the thread */
-  readonly added_members?: ThreadMember[]
+  readonly added_members?: Array<ThreadMember>
   /** ID of the users who were removed from the thread */
-  readonly removed_member_ids?: Snowflake[]
+  readonly removed_member_ids?: Array<Snowflake>
 }
 export type ThreadMemberUpdateEvent = ThreadMember
 export interface ThreadMemberUpdateEventExtra {
@@ -6176,13 +6192,13 @@ export interface ThreadMetadatum {
 export type ThreadUpdateEvent = Channel
 export interface TriggerMetadatum {
   /** KEYWORD */
-  readonly keyword_filter: string[]
+  readonly keyword_filter: Array<string>
   /** KEYWORD */
-  readonly regex_patterns: string[]
+  readonly regex_patterns: Array<string>
   /** KEYWORD_PRESET */
-  readonly presets: KeywordPresetType[]
+  readonly presets: Array<KeywordPresetType>
   /** KEYWORD, KEYWORD_PRESET */
-  readonly allow_list: string[]
+  readonly allow_list: Array<string>
   /** MENTION_SPAM */
   readonly mention_total_limit: number
   /** MENTION_SPAM */
@@ -6220,7 +6236,7 @@ export interface UpdatePresence {
   /** Unix time (in milliseconds) of when the client went idle, or null if the client is not idle */
   readonly since?: number | null
   /** User's activities */
-  readonly activities: Activity[]
+  readonly activities: Array<Activity>
   /** User's new status */
   readonly status: StatusType
   /** Whether or not the client is afk */
@@ -6454,7 +6470,7 @@ export interface WelcomeScreen {
   /** the server description shown in the welcome screen */
   readonly description?: string | null
   /** the channels shown in the welcome screen, up to 5 */
-  readonly welcome_channels: WelcomeScreenChannel[]
+  readonly welcome_channels: Array<WelcomeScreenChannel>
 }
 export interface WelcomeScreenChannel {
   /** the channel's id */

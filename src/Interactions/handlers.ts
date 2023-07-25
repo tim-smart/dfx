@@ -1,9 +1,9 @@
-import * as Chunk from "@effect/data/Chunk"
+import type * as Chunk from "@effect/data/Chunk"
 import * as Option from "@effect/data/Option"
 import * as Effect from "@effect/io/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
 import * as Ctx from "dfx/Interactions/context"
-import * as D from "dfx/Interactions/definitions"
+import type * as D from "dfx/Interactions/definitions"
 import { flattenDefinitions, splitDefinitions } from "dfx/Interactions/utils"
 import * as Discord from "dfx/types"
 
@@ -35,7 +35,7 @@ export const handlers = <R, E, TE, A, B>(
 > => {
   const flattened = flattenDefinitions(definitions, handleResponse)
 
-  const { Commands, Autocomplete, MessageComponent, ModalSubmit } =
+  const { Autocomplete, Commands, MessageComponent, ModalSubmit } =
     splitDefinitions(flattened)
 
   return {

@@ -1,21 +1,19 @@
-import {
+import type {
   ActionRow,
   Button,
-  ButtonStyle,
   Component,
-  ComponentType,
   SelectMenu,
   SelectOption,
   TextInput,
-  TextInputStyle,
 } from "dfx/types"
+import { ButtonStyle, ComponentType, TextInputStyle } from "dfx/types"
 
 export type UIComponent = Exclude<Component, ActionRow>
 
 /**
  * Helper to create an Action Row grid.
  */
-export const grid = (items: UIComponent[][]): ActionRow[] =>
+export const grid = (items: Array<Array<UIComponent>>): Array<ActionRow> =>
   items.map(
     (components): ActionRow => ({
       type: ComponentType.ACTION_ROW,
@@ -26,7 +24,7 @@ export const grid = (items: UIComponent[][]): ActionRow[] =>
 /**
  * Helper to create a single column of components
  */
-export const singleColumn = (items: UIComponent[]): ActionRow[] =>
+export const singleColumn = (items: Array<UIComponent>): Array<ActionRow> =>
   items.map(c => ({
     type: ComponentType.ACTION_ROW,
     components: [c],
@@ -44,7 +42,7 @@ export const button = (button: Partial<Button>): Button => ({
 type BasicSelect = Omit<SelectMenu, "type" | "channel_types" | "options">
 
 type StringSelect = BasicSelect & {
-  options: SelectOption[]
+  options: Array<SelectOption>
 }
 
 type ChannelSelect = Omit<SelectMenu, "type" | "options">

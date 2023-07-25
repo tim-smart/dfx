@@ -1,8 +1,8 @@
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
 import * as Config from "@effect/io/Config"
-import * as ConfigError from "@effect/io/Config/Error"
-import * as ConfigSecret from "@effect/io/Config/Secret"
+import type * as ConfigError from "@effect/io/Config/Error"
+import type * as ConfigSecret from "@effect/io/Config/Secret"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Discord from "dfx/types"
@@ -37,10 +37,10 @@ export interface MakeOpts {
 }
 
 export const make = ({
-  token,
   debug = false,
-  rest,
   gateway,
+  rest,
+  token,
 }: MakeOpts): DiscordConfig => ({
   token,
   debug,

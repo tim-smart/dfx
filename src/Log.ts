@@ -3,11 +3,11 @@ import * as Layer from "@effect/io/Layer"
 import { Tag } from "@effect/data/Context"
 
 const make = (debug = false) => ({
-  info: (...args: any[]) =>
+  info: (...args: Array<any>) =>
     Effect.sync(() => {
       console.error("INFO", ...args)
     }),
-  debug: (...args: any[]) =>
+  debug: (...args: Array<any>) =>
     debug
       ? Effect.sync(() => {
           console.error("DEBUG", ...args)
