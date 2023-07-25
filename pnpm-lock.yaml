@@ -65,8 +65,8 @@ devDependencies:
     specifier: ^0.0.19
     version: 0.0.19
   '@tim-smart/discord-api-docs-parser':
-    specifier: ^0.5.5
-    version: 0.5.5
+    specifier: ^0.5.6
+    version: 0.5.6
   '@types/chai':
     specifier: ^4.3.5
     version: 4.3.5
@@ -1274,7 +1274,7 @@ packages:
       nx: 16.5.2
       semver: 7.5.3
       tmp: 0.2.1
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /@nx/nx-darwin-arm64@16.5.2:
@@ -1542,8 +1542,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@tim-smart/discord-api-docs-parser@0.5.5:
-    resolution: {integrity: sha512-MqIVK5hJcVFLHvKAlr9eMEdR1CdEQ68CC8/em1IyLyJwNvL5AlnGGiCuM+AKLEWHXy8vweyVPaNw9L8ZpjHYvw==}
+  /@tim-smart/discord-api-docs-parser@0.5.6:
+    resolution: {integrity: sha512-hKshAmB4Wnf0DGgjgrbXAql0eQfmEJLvjZU1NeNcLsxuTi3A2sZhrzX1KashbiHadPct2QnllGoLjy9q+A/TVw==}
     hasBin: true
     dependencies:
       cheerio: 1.0.0-rc.12
@@ -2086,7 +2086,7 @@ packages:
     engines: {node: '>=14.15.0'}
     dependencies:
       js-yaml: 3.14.1
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /@zkochan/js-yaml@0.0.6:
@@ -6917,7 +6917,7 @@ packages:
       tar-stream: 2.2.0
       tmp: 0.2.1
       tsconfig-paths: 4.2.0
-      tslib: 2.6.0
+      tslib: 2.6.1
       v8-compile-cache: 2.3.0
       yargs: 17.7.2
       yargs-parser: 21.1.1
@@ -7951,7 +7951,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.6.0
+      tslib: 2.6.1
     dev: true
 
   /safe-buffer@5.1.2:
@@ -8751,6 +8751,10 @@ packages:
 
   /tslib@2.6.0:
     resolution: {integrity: sha512-7At1WUettjcSRHXCyYtTselblcHl9PJFFVKiCAy/bY97+BPZXSQ2wbq0P9s8tK2G7dFQfNnlJnPAiArVBVBsfA==}
+    dev: true
+
+  /tslib@2.6.1:
+    resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
     dev: true
 
   /tsutils@3.21.0(typescript@3.9.10):

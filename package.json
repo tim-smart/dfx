@@ -51,7 +51,7 @@
     "@effect-ts/core": "^0.60.5",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/language-service": "^0.0.19",
-    "@tim-smart/discord-api-docs-parser": "^0.5.5",
+    "@tim-smart/discord-api-docs-parser": "^0.5.6",
     "@types/chai": "^4.3.5",
     "@types/node": "^20.4.4",
     "@types/ws": "^8.5.5",

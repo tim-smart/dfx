@@ -173,8 +173,10 @@ export interface Application {
   readonly verify_key: string
   /** if the application belongs to a team, this will be a list of the members of that team */
   readonly team?: Team | null
-  /** if this application is a game sold on Discord, this field will be the guild to which it has been linked */
+  /** guild associated with the app. For example, a developer support server. */
   readonly guild_id?: Snowflake
+  /** a partial object of the associated guild */
+  readonly guild?: Guild
   /** if this application is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists */
   readonly primary_sku_id?: Snowflake
   /** if this application is a game sold on Discord, this field will be the URL slug that links to the store page */
@@ -183,6 +185,8 @@ export interface Application {
   readonly cover_image?: string
   /** the application's public flags */
   readonly flags?: number
+  /** an approximate count of the app's guild membership. */
+  readonly approximate_guild_count?: number
   /** up to 5 tags describing the content and functionality of the application */
   readonly tags?: string[]
   /** settings for the application's default in-app authorization link, if enabled */
@@ -411,7 +415,13 @@ export interface Attachment {
   readonly duration_secs?: number
   /** base64 encoded bytearray representing a sampled waveform (currently for voice messages) */
   readonly waveform?: string
+  /** attachment flags combined as a bitfield */
+  readonly flags?: number
 }
+export const AttachmentFlag = {
+  /** this attachment has been edited using the remix feature on mobile */
+  IS_REMIX: 1 << 2,
+} as const
 export interface AuditEntryInfo {
   /** ID of the app whose permissions were targeted */
   readonly application_id: Snowflake
@@ -587,6 +597,10 @@ export const enum AuditLogEvent {
   AUTO_MODERATION_FLAG_TO_CHANNEL = 144,
   /** Member was timed out by Auto Moderation */
   AUTO_MODERATION_USER_COMMUNICATION_DISABLED = 145,
+  /** Creator monetization request was created */
+  CREATOR_MONETIZATION_REQUEST_CREATED = 150,
+  /** Creator monetization terms were accepted */
+  CREATOR_MONETIZATION_TERMS_ACCEPTED = 151,
 }
 export interface AutoModerationAction {
   /** the type of action */
@@ -1011,6 +1025,8 @@ export interface CreateGuildChannelParams {
   readonly available_tags: ForumTag[]
   /** the default sort order type used to order posts in GUILD_FORUM channels */
   readonly default_sort_order: SortOrderType
+  /** the default forum layout view used to display posts in GUILD_FORUM channels */
+  readonly default_forum_layout: ForumLayoutType
 }
 export interface CreateGuildEmojiParams {
   /** name of the emoji */
@@ -1672,6 +1688,12 @@ export function createRoutes<O = any>(
         url: `/channels/${channelId}/webhooks`,
         options,
       }),
+    getCurrentApplication: options =>
+      fetch({
+        method: "GET",
+        url: `/applications/@me`,
+        options,
+      }),
     getCurrentAuthorizationInformation: options =>
       fetch({
         method: "GET",
@@ -2198,6 +2220,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "POST",
         url: `/guilds/${guildId}/mfa`,
+        params,
+        options,
+      }),
+    modifyGuildOnboarding: (guildId, params, options) =>
+      fetch({
+        method: "PUT",
+        url: `/guilds/${guildId}/onboarding`,
         params,
         options,
       }),
@@ -3047,6 +3076,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     channelId: string,
     options?: O,
   ) => RestResponse<Webhook[]>
+  /** Returns the application object associated with the requesting bot user. */
+  getCurrentApplication: (options?: O) => RestResponse<Application>
   /** Returns info about the current authorization. Requires authentication with a bearer token. */
   getCurrentAuthorizationInformation: (
     options?: O,
@@ -3424,6 +3455,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildMfaLevelParams>,
     options?: O,
   ) => RestResponse<MfaLevel>
+  /** Modifies the onboarding configuration of the guild. Returns a 200 with the Onboarding object for the guild. Requires the MANAGE_GUILD and MANAGE_ROLES permissions. */
+  modifyGuildOnboarding: (
+    guildId: string,
+    params?: Partial<ModifyGuildOnboardingParams>,
+    options?: O,
+  ) => RestResponse<GuildOnboarding>
   /** Modify a guild role. Requires the MANAGE_ROLES permission. Returns the updated role on success. Fires a Guild Role Update Gateway event. */
   modifyGuildRole: (
     guildId: string,
@@ -3464,7 +3501,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildWelcomeScreenParams>,
     options?: O,
   ) => RestResponse<WelcomeScreen>
-  /** Modify a guild widget settings object for the guild. All attributes may be passed in with JSON and modified. Requires the MANAGE_GUILD permission. Returns the updated guild widget object. */
+  /** Modify a guild widget settings object for the guild. All attributes may be passed in with JSON and modified. Requires the MANAGE_GUILD permission. Returns the updated guild widget settings object. */
   modifyGuildWidget: (
     guildId: string,
     options?: O,
@@ -3754,6 +3791,8 @@ export interface GetCurrentUserGuildParams {
   readonly after: Snowflake
   /** max number of guilds to return (1-200) */
   readonly limit: number
+  /** include approximate member and presence counts in response */
+  readonly with_counts: boolean
 }
 export interface GetGatewayBotResponse {
   /** WSS URL that can be used for connecting to the Gateway */
@@ -3920,9 +3959,9 @@ export interface Guild {
   readonly max_video_channel_users?: number
   /** the maximum amount of users in a stage video channel */
   readonly max_stage_video_channel_users?: number
-  /** approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true */
+  /** approximate number of members in this guild, returned from the GET /guilds/<id> and /users/@me/guilds endpoints when with_counts is true */
   readonly approximate_member_count?: number
-  /** approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true */
+  /** approximate number of non-offline members in this guild, returned from the GET /guilds/<id> and /users/@me/guilds  endpoints when with_counts is true */
   readonly approximate_presence_count?: number
   /** the welcome screen of a Community guild, shown to new members, returned in an Invite's guild object */
   readonly welcome_screen?: WelcomeScreen
@@ -4152,6 +4191,8 @@ export interface GuildOnboarding {
   readonly default_channel_ids: Snowflake[]
   /** Whether onboarding is enabled in the guild */
   readonly enabled: boolean
+  /** Current mode of onboarding */
+  readonly mode: OnboardingMode
 }
 export interface GuildPreview {
   /** guild id */
@@ -4920,6 +4961,8 @@ export interface MessageReactionAddEvent {
   readonly member?: GuildMember
   /** Emoji used to react - example */
   readonly emoji: Emoji
+  /** ID of the user who authored the message which was reacted to */
+  readonly message_author_id?: Snowflake
 }
 export interface MessageReactionRemoveAllEvent {
   /** ID of the channel */
@@ -5149,6 +5192,16 @@ export interface ModifyGuildMfaLevelParams {
   /** MFA level */
   readonly level: MfaLevel
 }
+export interface ModifyGuildOnboardingParams {
+  /** Prompts shown during onboarding and in customize community */
+  readonly prompts: OnboardingPrompt[]
+  /** Channel IDs that members get opted into automatically */
+  readonly default_channel_ids: Snowflake[]
+  /** Whether onboarding is enabled in the guild */
+  readonly enabled: boolean
+  /** Current mode of onboarding */
+  readonly mode: OnboardingMode
+}
 export interface ModifyGuildParams {
   /** guild name */
   readonly name: string
@@ -5342,6 +5395,12 @@ export const enum OAuth2Scope {
   VOICE = "voice",
   /** this generates a webhook that is returned in the oauth token response for authorization code grants */
   WEBHOOK_INCOMING = "webhook.incoming",
+}
+export const enum OnboardingMode {
+  /** Counts only Default Channels towards constraints */
+  ONBOARDING_DEFAULT = 0,
+  /** Counts Default Channels and Questions towards constraints */
+  ONBOARDING_ADVANCED = 1,
 }
 export interface OnboardingPrompt {
   /** ID of the prompt */
@@ -5747,7 +5806,13 @@ export interface Role {
   readonly mentionable: boolean
   /** the tags this role has */
   readonly tags?: RoleTag
+  /** role flags combined as a bitfield */
+  readonly flags: number
 }
+export const RoleFlag = {
+  /** role can be selected by members in an onboarding prompt */
+  IN_PROMPT: 1 << 0,
+} as const
 export interface RoleSubscriptionDatum {
   /** the id of the sku and listing that the user is subscribed to */
   readonly role_subscription_listing_id: Snowflake
@@ -6212,6 +6277,8 @@ export interface User {
   readonly premium_type?: PremiumType
   /** the public flags on a user's account */
   readonly public_flags?: number
+  /** the user's avatar decoration hash */
+  readonly avatar_decoration?: string | null
 }
 export const UserFlag = {
   /** Discord Employee */
