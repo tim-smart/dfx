@@ -120,7 +120,7 @@ export const resolveOptionValue =
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
   (a: Discord.Interaction): Option.Option<T> =>
-    Option.Do().pipe(
+    Option.Do.pipe(
       Option.bind("data", () =>
         Option.fromNullable(a.data as Discord.ApplicationCommandDatum),
       ),
@@ -142,7 +142,7 @@ export const resolveValues =
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
   ) =>
   (a: Discord.Interaction): Option.Option<ReadonlyArray<T>> =>
-    Option.Do().pipe(
+    Option.Do.pipe(
       Option.bind("values", () =>
         Option.flatMapNullable(
           Option.fromNullable(a.data as Discord.MessageComponentDatum),
