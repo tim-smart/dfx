@@ -3,328 +3,175 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.58.1](https://github.com/tim-smart/dfx/compare/dfx@0.58.0...dfx@0.58.1) (2023-07-25)
+# [0.59.0](https://github.com/tim-smart/dfx/compare/dfx@0.58.1...dfx@0.59.0) (2023-07-27)
 
+**Note:** Version bump only for package dfx
+
+## [0.58.1](https://github.com/tim-smart/dfx/compare/dfx@0.58.0...dfx@0.58.1) (2023-07-25)
 
 ### Bug Fixes
 
-* lint ([984135e](https://github.com/tim-smart/dfx/commit/984135e44880af7b800c02bf89dc02fba49bed1d))
-
-
-
-
+- lint ([984135e](https://github.com/tim-smart/dfx/commit/984135e44880af7b800c02bf89dc02fba49bed1d))
 
 # [0.58.0](https://github.com/tim-smart/dfx/compare/dfx@0.57.0...dfx@0.58.0) (2023-07-25)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.57.0](https://github.com/tim-smart/dfx/compare/dfx@0.56.1...dfx@0.57.0) (2023-07-25)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.56.1](https://github.com/tim-smart/dfx/compare/dfx@0.56.0...dfx@0.56.1) (2023-07-20)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.56.0](https://github.com/tim-smart/dfx/compare/dfx@0.55.0...dfx@0.56.0) (2023-07-19)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.55.0](https://github.com/tim-smart/dfx/compare/dfx@0.54.0...dfx@0.55.0) (2023-07-18)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.54.0](https://github.com/tim-smart/dfx/compare/dfx@0.53.0...dfx@0.54.0) (2023-07-17)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.53.0](https://github.com/tim-smart/dfx/compare/dfx@0.52.1...dfx@0.53.0) (2023-07-15)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.52.1](https://github.com/tim-smart/dfx/compare/dfx@0.52.0...dfx@0.52.1) (2023-07-15)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 # [0.52.0](https://github.com/tim-smart/dfx/compare/dfx@0.51.2...dfx@0.52.0) (2023-07-11)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.51.2](https://github.com/tim-smart/dfx/compare/dfx@0.51.1...dfx@0.51.2) (2023-07-10)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.51.1](https://github.com/tim-smart/dfx/compare/dfx@0.51.0...dfx@0.51.1) (2023-07-10)
-
 
 ### Bug Fixes
 
-* heartbeats ([fe79c89](https://github.com/tim-smart/dfx/commit/fe79c898e8ba52d88c193360bb81d0e1599c3ff5))
-
-
-
-
+- heartbeats ([fe79c89](https://github.com/tim-smart/dfx/commit/fe79c898e8ba52d88c193360bb81d0e1599c3ff5))
 
 # [0.51.0](https://github.com/tim-smart/dfx/compare/dfx@0.50.1...dfx@0.51.0) (2023-07-08)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.50.1](https://github.com/tim-smart/dfx/compare/dfx@0.50.0...dfx@0.50.1) (2023-07-05)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.50.0](https://github.com/tim-smart/dfx/compare/dfx@0.49.0...dfx@0.50.0) (2023-07-05)
-
 
 ### Features
 
-* expose the current shard on DiscordGateway ([e90d7da](https://github.com/tim-smart/dfx/commit/e90d7da84ecd1af47705edf74efef38d54a847d4))
-
-
-
-
+- expose the current shard on DiscordGateway ([e90d7da](https://github.com/tim-smart/dfx/commit/e90d7da84ecd1af47705edf74efef38d54a847d4))
 
 # [0.49.0](https://github.com/tim-smart/dfx/compare/dfx@0.48.3...dfx@0.49.0) (2023-07-04)
 
-
 ### Features
 
-* add send method to DiscordGateway ([9d82b7e](https://github.com/tim-smart/dfx/commit/9d82b7e1c461c0d7d8094d2bc7a13b4605179399))
-
-
-
-
+- add send method to DiscordGateway ([9d82b7e](https://github.com/tim-smart/dfx/commit/9d82b7e1c461c0d7d8094d2bc7a13b4605179399))
 
 ## [0.48.3](https://github.com/tim-smart/dfx/compare/dfx@0.48.2...dfx@0.48.3) (2023-06-22)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.48.2](https://github.com/tim-smart/dfx/compare/dfx@0.48.1...dfx@0.48.2) (2023-06-22)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.48.1](https://github.com/tim-smart/dfx/compare/dfx@0.48.0...dfx@0.48.1) (2023-06-10)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.48.0](https://github.com/tim-smart/dfx/compare/dfx@0.47.5...dfx@0.48.0) (2023-06-02)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.47.5](https://github.com/tim-smart/dfx/compare/dfx@0.47.4...dfx@0.47.5) (2023-05-30)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.47.4](https://github.com/tim-smart/dfx/compare/dfx@0.47.3...dfx@0.47.4) (2023-05-29)
-
 
 ### Bug Fixes
 
-* rate limiting ([0e02504](https://github.com/tim-smart/dfx/commit/0e02504b225e7c559de54b5b04029da3cc54d4ef))
-
-
-
-
+- rate limiting ([0e02504](https://github.com/tim-smart/dfx/commit/0e02504b225e7c559de54b5b04029da3cc54d4ef))
 
 ## [0.47.3](https://github.com/tim-smart/dfx/compare/dfx@0.47.2...dfx@0.47.3) (2023-05-29)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.47.2](https://github.com/tim-smart/dfx/compare/dfx@0.47.1...dfx@0.47.2) (2023-05-28)
-
 
 ### Bug Fixes
 
-* ix command sync ([b579f0f](https://github.com/tim-smart/dfx/commit/b579f0f8e43afe6d25d0768e151c66028ab029ff))
-
-
-
-
+- ix command sync ([b579f0f](https://github.com/tim-smart/dfx/commit/b579f0f8e43afe6d25d0768e151c66028ab029ff))
 
 ## [0.47.1](https://github.com/tim-smart/dfx/compare/dfx@0.47.0...dfx@0.47.1) (2023-05-28)
 
-
 ### Bug Fixes
 
-* discord-verify import ([0e546e8](https://github.com/tim-smart/dfx/commit/0e546e8d7d3b18286c65a5acec7a565d706471d1))
-
-
-
-
+- discord-verify import ([0e546e8](https://github.com/tim-smart/dfx/commit/0e546e8d7d3b18286c65a5acec7a565d706471d1))
 
 # [0.47.0](https://github.com/tim-smart/dfx/compare/dfx@0.46.1...dfx@0.47.0) (2023-05-28)
 
-
 ### Features
 
-* webhook makeLiveWithoutConfig ([e86948d](https://github.com/tim-smart/dfx/commit/e86948dff233feb9a1d6b73817f406654fe6f8fd))
-
-
-
-
+- webhook makeLiveWithoutConfig ([e86948d](https://github.com/tim-smart/dfx/commit/e86948dff233feb9a1d6b73817f406654fe6f8fd))
 
 ## [0.46.1](https://github.com/tim-smart/dfx/compare/dfx@0.46.0...dfx@0.46.1) (2023-05-28)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 # [0.46.0](https://github.com/tim-smart/dfx/compare/dfx@0.45.10...dfx@0.46.0) (2023-05-27)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.45.10](https://github.com/tim-smart/dfx/compare/dfx@0.45.9...dfx@0.45.10) (2023-05-25)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.45.9](https://github.com/tim-smart/dfx/compare/dfx@0.45.8...dfx@0.45.9) (2023-05-23)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.45.8](https://github.com/tim-smart/dfx/compare/dfx@0.45.7...dfx@0.45.8) (2023-05-22)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.45.7](https://github.com/tim-smart/dfx/compare/dfx@0.45.6...dfx@0.45.7) (2023-05-15)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.45.6](https://github.com/tim-smart/dfx/compare/dfx@0.45.5...dfx@0.45.6) (2023-05-15)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.45.5](https://github.com/tim-smart/dfx/compare/dfx@0.45.4...dfx@0.45.5) (2023-05-14)
-
 
 ### Bug Fixes
 
-* small memory leak ([bfccc06](https://github.com/tim-smart/dfx/commit/bfccc064845b63d0a019b779c1ce629297523032))
-
-
-
-
+- small memory leak ([bfccc06](https://github.com/tim-smart/dfx/commit/bfccc064845b63d0a019b779c1ce629297523032))
 
 ## [0.45.4](https://github.com/tim-smart/dfx/compare/dfx@0.45.3...dfx@0.45.4) (2023-05-12)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.45.3](https://github.com/tim-smart/dfx/compare/dfx@0.45.2...dfx@0.45.3) (2023-05-09)
 
 **Note:** Version bump only for package dfx
 
-
-
-
-
 ## [0.45.2](https://github.com/tim-smart/dfx/compare/dfx@0.45.1...dfx@0.45.2) (2023-05-08)
 
 **Note:** Version bump only for package dfx
-
-
-
-
 
 ## [0.45.1](https://github.com/tim-smart/dfx/compare/dfx@0.45.0...dfx@0.45.1) (2023-05-08)
 
