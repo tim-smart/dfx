@@ -1,10 +1,10 @@
-import * as Effect from "@effect/io/Effect"
 import * as Option from "@effect/data/Option"
-import * as Ref from "@effect/io/Ref"
-import * as Queue from "@effect/io/Queue"
-import * as Hub from "@effect/io/Hub"
 import * as Deferred from "@effect/io/Deferred"
+import * as Effect from "@effect/io/Effect"
 import * as Fiber from "@effect/io/Fiber"
+import * as Hub from "@effect/io/Hub"
+import * as Queue from "@effect/io/Queue"
+import * as Ref from "@effect/io/Ref"
 
 export const subscribeForEachPar = <R, E, A, X>(
   self: Hub.Hub<A>,
@@ -18,10 +18,10 @@ export const subscribeForEachPar = <R, E, A, X>(
             effect(_).pipe(
               Effect.catchAllCause(_ => Deferred.failCause(deferred, _)),
               Effect.fork,
-            ),
+            )
           ),
           Effect.forever,
-        ),
+        )
       ),
       Effect.scoped,
     )
@@ -49,17 +49,16 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
         f(_).pipe(
           Effect.tapErrorCause(_ => Deferred.failCause(causeDeferred, _)),
           Effect.fork,
-        ),
-      ).pipe(
-        Effect.flatMap(fiber => Ref.getAndSet(fiberRef, Option.some(fiber))),
-        Effect.tap(_ =>
-          Option.match(_, {
-            onNone: () => Effect.unit,
-            onSome: fiber => Fiber.interrupt(fiber),
-          }),
-        ),
-        Effect.forever,
-      )
+        )).pipe(
+          Effect.flatMap(fiber => Ref.getAndSet(fiberRef, Option.some(fiber))),
+          Effect.tap(_ =>
+            Option.match(_, {
+              onNone: () => Effect.unit,
+              onSome: fiber => Fiber.interrupt(fiber),
+            })
+          ),
+          Effect.forever,
+        )
 
       return Effect.all([run, Deferred.await(causeDeferred)], {
         concurrency: "unbounded",

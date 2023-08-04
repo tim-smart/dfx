@@ -1,6 +1,6 @@
+import { Tag } from "@effect/data/Context"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
-import { Tag } from "@effect/data/Context"
 
 const make = (debug = false) => ({
   info: (...args: Array<any>) =>
@@ -10,8 +10,8 @@ const make = (debug = false) => ({
   debug: (...args: Array<any>) =>
     debug
       ? Effect.sync(() => {
-          console.error("DEBUG", ...args)
-        })
+        console.error("DEBUG", ...args)
+      })
       : Effect.unit,
 })
 

@@ -17,8 +17,8 @@ export {
   BucketDetails,
   LiveMemoryRateLimitStore,
   LiveRateLimiter,
-  RateLimitStore,
   RateLimiter,
+  RateLimitStore,
 } from "dfx/RateLimit"
 
 export {

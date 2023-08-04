@@ -1,7 +1,7 @@
-import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
-import * as Effect from "@effect/io/Effect"
 import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
 import * as Stream from "@effect/stream/Stream"
+import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 
 export * from "dfx/Cache/driver"
 export {
@@ -97,7 +97,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
                 Effect.all(
                   entries.map(([id, a]) => driver.set(parentId, id, a)),
                   { concurrency: "unbounded" },
-                ),
+                )
               ),
               Effect.map(entries => new Map(entries) as ReadonlyMap<string, A>),
             ),

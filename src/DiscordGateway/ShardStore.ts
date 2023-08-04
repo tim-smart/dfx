@@ -1,7 +1,7 @@
-import * as Effect from "@effect/io/Effect"
-import * as Layer from "@effect/io/Layer"
 import { Tag } from "@effect/data/Context"
 import * as Option from "@effect/data/Option"
+import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
 
 export interface ClaimIdContext {
   sharderCount: number

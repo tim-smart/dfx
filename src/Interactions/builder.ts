@@ -5,13 +5,11 @@ import type * as Cause from "@effect/io/Cause"
 import * as Effect from "@effect/io/Effect"
 import { catchTag } from "@effect/io/Effect"
 import { DiscordREST, type DiscordRESTError } from "dfx/DiscordREST"
-import type * as Discord from "dfx/types"
 import type * as D from "dfx/Interactions/definitions"
+import type * as Discord from "dfx/types"
 
-type ExtractTag<A> = A extends { _tag: infer Tag }
-  ? Tag extends string
-    ? Tag
-    : never
+type ExtractTag<A> = A extends { _tag: infer Tag } ? Tag extends string ? Tag
+  : never
   : never
 
 /**
@@ -132,15 +130,17 @@ export class InteractionBuilder<R, E, TE> {
       Chunk.map(c => c.command),
     )
 
-    return Effect.flatMap(DiscordREST, rest =>
-      rest.getCurrentBotApplicationInformation().pipe(
-        Effect.flatMap(r => r.json),
-        Effect.flatMap(app =>
-          rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-            body: Http.body.json(Chunk.toReadonlyArray(commands)),
-          }),
+    return Effect.flatMap(
+      DiscordREST,
+      rest =>
+        rest.getCurrentBotApplicationInformation().pipe(
+          Effect.flatMap(r => r.json),
+          Effect.flatMap(app =>
+            rest.bulkOverwriteGlobalApplicationCommands(app.id, {
+              body: Http.body.json(Chunk.toReadonlyArray(commands)),
+            })
+          ),
         ),
-      ),
     )
   }
 
@@ -154,12 +154,14 @@ export class InteractionBuilder<R, E, TE> {
       Chunk.map(c => c.command),
     )
 
-    return Effect.flatMap(DiscordREST, rest =>
-      rest.bulkOverwriteGuildApplicationCommands(
-        appId,
-        guildId,
-        Chunk.toReadonlyArray(commands) as any,
-      ),
+    return Effect.flatMap(
+      DiscordREST,
+      rest =>
+        rest.bulkOverwriteGuildApplicationCommands(
+          appId,
+          guildId,
+          Chunk.toReadonlyArray(commands) as any,
+        ),
     )
   }
 }

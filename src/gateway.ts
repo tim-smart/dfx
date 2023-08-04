@@ -16,10 +16,10 @@ import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
 import * as ShardStore from "dfx/DiscordGateway/ShardStore"
 import { LiveMemoryShardStore } from "dfx/DiscordGateway/ShardStore"
 import * as WS from "dfx/DiscordGateway/WS"
-import type { RateLimiter } from "dfx/RateLimit"
-import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
 import { InteractionsRegistryLive } from "dfx/gateway"
 import type { InteractionsRegistry } from "dfx/gateway"
+import type { RateLimiter } from "dfx/RateLimit"
+import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
 
 export { DiscordGateway, LiveDiscordGateway } from "dfx/DiscordGateway"
 

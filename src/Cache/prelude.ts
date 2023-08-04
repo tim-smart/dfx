@@ -32,17 +32,19 @@ export const opsWithParent = <E, T>({
   remove,
   update,
 }: OptsWithParentOptions<E, T>) => {
-  const fromParentOps = Stream.flatMap(fromParent, ([parentId, a]) =>
-    Stream.fromIterable(
-      a.map(
-        (resource): ParentCacheOp<T> => ({
-          op: "create",
-          parentId,
-          resourceId: id(resource),
-          resource,
-        }),
+  const fromParentOps = Stream.flatMap(
+    fromParent,
+    ([parentId, a]) =>
+      Stream.fromIterable(
+        a.map(
+          (resource): ParentCacheOp<T> => ({
+            op: "create",
+            parentId,
+            resourceId: id(resource),
+            resource,
+          }),
+        ),
       ),
-    ),
   )
 
   const createOps = Stream.map(
@@ -129,7 +131,7 @@ export const ops = <E, T>({ create, id, remove, update }: OpsOptions<E, T>) => {
 export const guilds = <RM, EM, E>(
   makeDriver: Effect.Effect<RM, EM, CacheDriver<E, Discord.Guild>>,
 ) =>
-  Effect.gen(function* (_) {
+  Effect.gen(function*(_) {
     const driver = yield* _(makeDriver)
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
@@ -156,7 +158,7 @@ export const guilds = <RM, EM, E>(
 export const channels = <RM, EM, E>(
   makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Channel>>,
 ) =>
-  Effect.gen(function* (_) {
+  Effect.gen(function*(_) {
     const driver = yield* _(makeDriver)
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
@@ -199,7 +201,7 @@ export const channels = <RM, EM, E>(
 export const roles = <RM, EM, E>(
   makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Role>>,
 ) =>
-  Effect.gen(function* (_) {
+  Effect.gen(function*(_) {
     const driver = yield* _(makeDriver)
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)

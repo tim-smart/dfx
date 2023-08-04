@@ -1,8 +1,8 @@
+import { identity, pipe } from "@effect/data/Function"
+import * as HashMap from "@effect/data/HashMap"
 import * as Option from "@effect/data/Option"
 import * as Arr from "@effect/data/ReadonlyArray"
 import * as Discord from "dfx/types"
-import { identity, pipe } from "@effect/data/Function"
-import * as HashMap from "@effect/data/HashMap"
 
 /**
  * Option find a sub-command within the interaction options.
@@ -24,8 +24,8 @@ export const findSubCommand =
       optionsWithNested(interaction),
       Arr.findFirst(
         o =>
-          o.type === Discord.ApplicationCommandOptionType.SUB_COMMAND &&
-          o.name === name,
+          o.type === Discord.ApplicationCommandOptionType.SUB_COMMAND
+          && o.name === name,
       ),
     )
 
@@ -114,46 +114,42 @@ export const resolved = (data: Discord.Interaction) =>
 /**
  * Try find a matching option value from the interaction.
  */
-export const resolveOptionValue =
-  <T>(
-    name: string,
-    f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
-  ) =>
-  (a: Discord.Interaction): Option.Option<T> =>
-    Option.Do.pipe(
-      Option.bind("data", () =>
-        Option.fromNullable(a.data as Discord.ApplicationCommandDatum),
-      ),
-      Option.bind("id", ({ data }) =>
-        Option.flatMapNullable(
-          getOption(name)(data),
-          ({ value }) => value as Discord.Snowflake,
-        ),
-      ),
-      Option.bind("r", () => resolved(a)),
-      Option.flatMapNullable(({ id, r }) => f(id, r)),
-    )
+export const resolveOptionValue = <T>(
+  name: string,
+  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
+) =>
+(a: Discord.Interaction): Option.Option<T> =>
+  Option.Do.pipe(
+    Option.bind("data", () =>
+      Option.fromNullable(a.data as Discord.ApplicationCommandDatum)),
+    Option.bind("id", ({ data }) =>
+      Option.flatMapNullable(
+        getOption(name)(data),
+        ({ value }) =>
+          value as Discord.Snowflake,
+      )),
+    Option.bind("r", () => resolved(a)),
+    Option.flatMapNullable(({ id, r }) => f(id, r)),
+  )
 
 /**
  * Try find matching option values from the interaction.
  */
-export const resolveValues =
-  <T>(
-    f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
-  ) =>
-  (a: Discord.Interaction): Option.Option<ReadonlyArray<T>> =>
-    Option.Do.pipe(
-      Option.bind("values", () =>
-        Option.flatMapNullable(
-          Option.fromNullable(a.data as Discord.MessageComponentDatum),
-          a => a.values as unknown as Array<string>,
-        ),
-      ),
-      Option.bind("r", () => resolved(a)),
-      Option.map(({ r, values }) =>
-        Arr.compact(values.map(a => Option.fromNullable(f(a as any, r)))),
-      ),
-    )
+export const resolveValues = <T>(
+  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
+) =>
+(a: Discord.Interaction): Option.Option<ReadonlyArray<T>> =>
+  Option.Do.pipe(
+    Option.bind("values", () =>
+      Option.flatMapNullable(
+        Option.fromNullable(a.data as Discord.MessageComponentDatum),
+        a => a.values as unknown as Array<string>,
+      )),
+    Option.bind("r", () => resolved(a)),
+    Option.map(({ r, values }) =>
+      Arr.compact(values.map(a => Option.fromNullable(f(a as any, r))))
+    ),
+  )
 
 const extractComponents = (c: Discord.Component): Array<Discord.Component> => {
   if ("components" in c) {
@@ -215,26 +211,27 @@ export const componentValue =
 
 export type InteractionResponse =
   | {
-      type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE
-      data: Discord.InteractionCallbackMessage
-    }
+    type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE
+    data: Discord.InteractionCallbackMessage
+  }
   | {
-      type: Discord.InteractionCallbackType.UPDATE_MESSAGE
-      data: Discord.InteractionCallbackMessage
-    }
+    type: Discord.InteractionCallbackType.UPDATE_MESSAGE
+    data: Discord.InteractionCallbackMessage
+  }
   | {
-      type: Discord.InteractionCallbackType.MODAL
-      data: Discord.InteractionCallbackModal
-    }
+    type: Discord.InteractionCallbackType.MODAL
+    data: Discord.InteractionCallbackModal
+  }
   | {
-      type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
-    }
+    type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
+  }
   | {
-      type: Discord.InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
-    }
+    type: Discord.InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+  }
   | {
-      type: Discord.InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
-      data: Discord.InteractionCallbackAutocomplete
-    }
+    type:
+      Discord.InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
+    data: Discord.InteractionCallbackAutocomplete
+  }
 
 export const response = (r: InteractionResponse) => r

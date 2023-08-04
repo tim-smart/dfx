@@ -15,11 +15,11 @@ import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
 
 export {
   BadWebhookSignature,
-  WebhookConfig,
-  WebhookParseError,
   makeConfigLayer,
   makeHandler,
   makeSimpleHandler,
+  WebhookConfig,
+  WebhookParseError,
 } from "dfx/Interactions/webhook"
 
 export const MemoryRateLimit = Layer.provide(

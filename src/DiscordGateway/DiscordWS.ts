@@ -1,10 +1,10 @@
-import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
-import type WebSocket from "isomorphic-ws"
-import type * as Discord from "dfx/types"
+import { Tag } from "@effect/data/Context"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
-import { Tag } from "@effect/data/Context"
 import * as Ref from "@effect/io/Ref"
+import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
+import type * as Discord from "dfx/types"
+import type WebSocket from "isomorphic-ws"
 
 export type Message = Discord.GatewayPayload | Reconnect
 
@@ -28,7 +28,7 @@ export const LiveJsonDiscordWSCodec = Layer.succeed(DiscordWSCodec, {
   decode: p => JSON.parse(p.toString("utf8")),
 })
 
-const make = Effect.gen(function* (_) {
+const make = Effect.gen(function*(_) {
   const ws = yield* _(WS)
   const encoding = yield* _(DiscordWSCodec)
 
@@ -38,23 +38,22 @@ const make = Effect.gen(function* (_) {
     url = "wss://gateway.discord.gg/",
     version = 10,
   }: OpenOpts) =>
-    Effect.gen(function* (_) {
+    Effect.gen(function*(_) {
       const urlRef = yield* _(
         Ref.make(`${url}?v=${version}&encoding=${encoding.type}`),
       )
       const setUrl = (url: string) =>
         Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
       const takeOutbound = Effect.map(outbound, msg =>
-        msg === Reconnect ? msg : encoding.encode(msg),
-      )
+        msg === Reconnect ? msg : encoding.encode(msg))
       const socket = yield* _(ws.connect(urlRef, takeOutbound, onConnecting))
       const take = Effect.map(socket.take, encoding.decode)
 
       const run = Effect.retryWhile(
         socket.run,
         e =>
-          (e._tag === "WebSocketCloseError" && e.code < 2000) ||
-          (e._tag === "WebSocketError" && e.reason === "open-timeout"),
+          (e._tag === "WebSocketCloseError" && e.code < 2000)
+          || (e._tag === "WebSocketError" && e.reason === "open-timeout"),
       )
 
       return {

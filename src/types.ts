@@ -1173,7 +1173,8 @@ export function createRoutes<O = any>(
     batchEditApplicationCommandPermissions: (applicationId, guildId, options) =>
       fetch({
         method: "PUT",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
         options,
       }),
     beginGuildPrune: (guildId, params, options) =>
@@ -1342,7 +1343,8 @@ export function createRoutes<O = any>(
     createReaction: (channelId, messageId, emoji, options) =>
       fetch({
         method: "PUT",
-        url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
+        url:
+          `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
         options,
       }),
     createStageInstance: (params, options) =>
@@ -1403,7 +1405,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "DELETE",
-        url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        url:
+          `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         options,
       }),
     deleteGlobalApplicationCommand: (applicationId, commandId, options) =>
@@ -1426,7 +1429,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "DELETE",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
         options,
       }),
     deleteGuildEmoji: (guildId, emojiId, options) =>
@@ -1484,13 +1488,15 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "DELETE",
-        url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        url:
+          `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
         options,
       }),
     deleteOwnReaction: (channelId, messageId, emoji, options) =>
       fetch({
         method: "DELETE",
-        url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
+        url:
+          `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
         options,
       }),
     deleteStageInstance: (channelId, options) =>
@@ -1502,7 +1508,8 @@ export function createRoutes<O = any>(
     deleteUserReaction: (channelId, messageId, emoji, userId, options) =>
       fetch({
         method: "DELETE",
-        url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/${userId}`,
+        url:
+          `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/${userId}`,
         options,
       }),
     deleteWebhook: (webhookId, options) =>
@@ -1539,7 +1546,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PUT",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
         params,
         options,
       }),
@@ -1559,7 +1567,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PATCH",
-        url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        url:
+          `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         params,
         options,
       }),
@@ -1579,7 +1588,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PATCH",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
         params,
         options,
       }),
@@ -1598,7 +1608,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PATCH",
-        url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        url:
+          `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
         params,
         options,
       }),
@@ -1643,7 +1654,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
         options,
       }),
     getApplicationRoleConnectionMetadataRecords: (applicationId, options) =>
@@ -1735,7 +1747,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        url:
+          `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         params,
         options,
       }),
@@ -1774,13 +1787,15 @@ export function createRoutes<O = any>(
     getGuildApplicationCommand: (applicationId, guildId, commandId, options) =>
       fetch({
         method: "GET",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
         options,
       }),
     getGuildApplicationCommandPermissions: (applicationId, guildId, options) =>
       fetch({
         method: "GET",
-        url: `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
+        url:
+          `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
         options,
       }),
     getGuildApplicationCommands: (applicationId, guildId, params, options) =>
@@ -1880,7 +1895,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url: `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
+        url:
+          `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
         params,
         options,
       }),
@@ -1960,7 +1976,8 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        url:
+          `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
         params,
         options,
       }),
@@ -3195,7 +3212,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<GuildOnboarding>
-  /** Returns the guild preview object for the given id. 
+  /** Returns the guild preview object for the given id.
 If the user is not in the guild, then the guild must be discoverable. */
   getGuildPreview: (guildId: string, options?: O) => RestResponse<GuildPreview>
   /** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. Requires the KICK_MEMBERS permission. */
@@ -4087,7 +4104,8 @@ export const enum GuildFeature {
   /** guild is able to set role icons */
   ROLE_ICONS = "ROLE_ICONS",
   /** guild has role subscriptions that can be purchased */
-  ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE = "ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE",
+  ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE =
+    "ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE",
   /** guild has enabled role subscriptions */
   ROLE_SUBSCRIPTIONS_ENABLED = "ROLE_SUBSCRIPTIONS_ENABLED",
   /** guild has enabled ticketed events */
@@ -4470,8 +4488,9 @@ export interface IntegrationApplication {
   /** the bot associated with this application */
   readonly bot?: User
 }
-export type IntegrationCreateEvent = Integration &
-  IntegrationCreateEventAdditional
+export type IntegrationCreateEvent =
+  & Integration
+  & IntegrationCreateEventAdditional
 export interface IntegrationCreateEventAdditional {
   /** ID of the guild */
   readonly guild_id: Snowflake
@@ -4488,8 +4507,9 @@ export const enum IntegrationExpireBehavior {
   REMOVE_ROLE = 0,
   KICK = 1,
 }
-export type IntegrationUpdateEvent = Integration &
-  IntegrationUpdateEventAdditional
+export type IntegrationUpdateEvent =
+  & Integration
+  & IntegrationUpdateEventAdditional
 export interface IntegrationUpdateEventAdditional {
   /** ID of the guild */
   readonly guild_id: Snowflake
@@ -5226,7 +5246,9 @@ export interface ModifyGuildParams {
   /** verification level */
   readonly verification_level?: VerificationLevel | null
   /** default message notification level */
-  readonly default_message_notifications?: DefaultMessageNotificationLevel | null
+  readonly default_message_notifications?:
+    | DefaultMessageNotificationLevel
+    | null
   /** explicit content filter level */
   readonly explicit_content_filter?: ExplicitContentFilterLevel | null
   /** id for afk channel */
@@ -5368,7 +5390,8 @@ export const enum OAuth2Scope {
   /** allows your app to update its commands using a Bearer token - client credentials grant only */
   APPLICATIONS_COMMANDS_UPDATE = "applications.commands.update",
   /** allows your app to update permissions for its commands in a guild a user has permissions to */
-  APPLICATIONS_COMMANDS_PERMISSIONS_UPDATE = "applications.commands.permissions.update",
+  APPLICATIONS_COMMANDS_PERMISSIONS_UPDATE =
+    "applications.commands.permissions.update",
   /** allows your app to read entitlements for a user's applications */
   APPLICATIONS_ENTITLEMENTS = "applications.entitlements",
   /** allows your app to read and update store data (SKUs, store listings, achievements, etc.) for a user's applications */
@@ -5683,7 +5706,8 @@ export interface ReceiveEvents {
   RESUMED: ResumedEvent
   RECONNECT: ReconnectEvent
   INVALID_SESSION: InvalidSessionEvent
-  APPLICATION_COMMAND_PERMISSIONS_UPDATE: ApplicationCommandPermissionsUpdateEvent
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE:
+    ApplicationCommandPermissionsUpdateEvent
   AUTO_MODERATION_RULE_CREATE: AutoModerationRuleCreateEvent
   AUTO_MODERATION_RULE_UPDATE: AutoModerationRuleUpdateEvent
   AUTO_MODERATION_RULE_DELETE: AutoModerationRuleDeleteEvent

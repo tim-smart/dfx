@@ -35,7 +35,7 @@ export const send = (
   seqRef: Ref.Ref<Option.Option<number>>,
   send: (p: DiscordWS.Message) => Effect.Effect<never, never, boolean>,
 ) =>
-  Effect.gen(function* (_) {
+  Effect.gen(function*(_) {
     const ackedRef = yield* _(Ref.make(true))
 
     const heartbeats = EffectU.foreverSwitch(

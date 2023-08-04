@@ -63,7 +63,7 @@ const greeting = Ix.global(
 )
 
 // Build your program use `Ix.builder`
-const program = Effect.gen(function* (_) {
+const program = Effect.gen(function*(_) {
   const gateway = yield* _(DiscordGateway)
 
   const interactions = pipe(
@@ -72,7 +72,7 @@ const program = Effect.gen(function* (_) {
       Effect.catchAll(e =>
         Effect.sync(() => {
           console.error("CAUGHT INTERACTION ERROR", e)
-        }),
+        })
       ),
     ),
   )
@@ -91,7 +91,7 @@ program.pipe(
   Effect.tapErrorCause(_ =>
     Effect.sync(() => {
       console.error(Cause.squash(_))
-    }),
+    })
   ),
   Effect.runFork,
 )

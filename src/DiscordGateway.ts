@@ -11,14 +11,13 @@ import type { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
 import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
 
-const fromDispatchFactory =
-  <R, E>(
-    source: Stream.Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
-  ) =>
-  <K extends keyof Discord.ReceiveEvents>(
-    event: K,
-  ): Stream.Stream<R, E, Discord.ReceiveEvents[K]> =>
-    Stream.filter(source, p => p.t === event).pipe(Stream.map(p => p.d! as any))
+const fromDispatchFactory = <R, E>(
+  source: Stream.Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
+) =>
+<K extends keyof Discord.ReceiveEvents>(
+  event: K,
+): Stream.Stream<R, E, Discord.ReceiveEvents[K]> =>
+  Stream.filter(source, p => p.t === event).pipe(Stream.map(p => p.d! as any))
 
 const handleDispatchFactory =
   (hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
@@ -58,7 +57,7 @@ export interface DiscordGateway {
 }
 export const DiscordGateway = Tag<DiscordGateway>()
 
-export const make = Effect.gen(function* (_) {
+export const make = Effect.gen(function*(_) {
   const sharder = yield* _(Sharder)
   const hub = yield* _(
     Hub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),

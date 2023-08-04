@@ -1,5 +1,14 @@
+import * as Chunk from "@effect/data/Chunk"
+import { Tag } from "@effect/data/Context"
+import * as Duration from "@effect/data/Duration"
+import * as Option from "@effect/data/Option"
+import * as ConfigSecret from "@effect/io/Config/Secret"
+import * as Effect from "@effect/io/Effect"
+import * as Hub from "@effect/io/Hub"
+import * as Layer from "@effect/io/Layer"
+import * as Queue from "@effect/io/Queue"
+import * as Ref from "@effect/io/Ref"
 import { DiscordConfig } from "dfx/DiscordConfig"
-import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
 import type { Message } from "dfx/DiscordGateway/DiscordWS"
 import { DiscordWS, LiveDiscordWS } from "dfx/DiscordGateway/DiscordWS"
 import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
@@ -8,17 +17,8 @@ import * as InvalidSession from "dfx/DiscordGateway/Shard/invalidSession"
 import * as Utils from "dfx/DiscordGateway/Shard/utils"
 import { Reconnect } from "dfx/DiscordGateway/WS"
 import { Log } from "dfx/Log"
+import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
-import * as Effect from "@effect/io/Effect"
-import * as Layer from "@effect/io/Layer"
-import { Tag } from "@effect/data/Context"
-import * as Option from "@effect/data/Option"
-import * as Hub from "@effect/io/Hub"
-import * as Queue from "@effect/io/Queue"
-import * as Ref from "@effect/io/Ref"
-import * as Duration from "@effect/data/Duration"
-import * as Chunk from "@effect/data/Chunk"
-import * as ConfigSecret from "@effect/io/Config/Secret"
 
 const enum Phase {
   Connecting,
@@ -26,7 +26,7 @@ const enum Phase {
   Connected,
 }
 
-export const make = Effect.gen(function* (_) {
+export const make = Effect.gen(function*(_) {
   const { gateway, token } = yield* _(DiscordConfig)
   const limiter = yield* _(RateLimiter)
   const dws = yield* _(DiscordWS)
@@ -37,7 +37,7 @@ export const make = Effect.gen(function* (_) {
     hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
     sendQueue: Queue.Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
   ) =>
-    Effect.gen(function* (_) {
+    Effect.gen(function*(_) {
       const outboundQueue = yield* _(Queue.unbounded<Message>())
       const pendingQueue = yield* _(Queue.unbounded<Message>())
       const phase = yield* _(Ref.make(Phase.Connecting))
@@ -52,15 +52,13 @@ export const make = Effect.gen(function* (_) {
         Effect.flatMap(Ref.get(phase), phase =>
           phase === Phase.Connected
             ? Queue.offer(outboundQueue, p)
-            : Queue.offer(pendingQueue, p),
-        )
+            : Queue.offer(pendingQueue, p))
 
       const heartbeatSend = (p: Message) =>
         Effect.flatMap(Ref.get(phase), phase =>
           phase !== Phase.Connecting
             ? Queue.offer(outboundQueue, p)
-            : Effect.succeed(false),
-        )
+            : Effect.succeed(false))
 
       const prioritySend = (p: Message) => Queue.offer(outboundQueue, p)
 
@@ -77,12 +75,12 @@ export const make = Effect.gen(function* (_) {
             Chunk.filter(
               msgs,
               msg =>
-                msg !== Reconnect &&
-                msg.op !== Discord.GatewayOpcode.IDENTIFY &&
-                msg.op !== Discord.GatewayOpcode.RESUME &&
-                msg.op !== Discord.GatewayOpcode.HEARTBEAT,
+                msg !== Reconnect
+                && msg.op !== Discord.GatewayOpcode.IDENTIFY
+                && msg.op !== Discord.GatewayOpcode.RESUME
+                && msg.op !== Discord.GatewayOpcode.HEARTBEAT,
             ),
-          ),
+          )
         ),
         Effect.zipRight(setPhase(Phase.Connecting)),
       )
@@ -97,7 +95,7 @@ export const make = Effect.gen(function* (_) {
                 p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
             ),
             Option.map(p => p.d!),
-          ),
+          )
         ),
       )
       const [latestSequence, updateLatestSequence] = yield* _(
@@ -198,4 +196,5 @@ export const LiveShard = Layer.provide(
 )
 
 export interface RunningShard
-  extends Effect.Effect.Success<ReturnType<Shard["connect"]>> {}
+  extends Effect.Effect.Success<ReturnType<Shard["connect"]>>
+{}

@@ -1,9 +1,9 @@
 import { Discord, Ix } from "dfx"
 import {
   DiscordGateway,
+  gatewayLayer,
   InteractionsRegistry,
   InteractionsRegistryLive,
-  gatewayLayer,
 } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Config, Effect, Layer } from "effect"
@@ -11,7 +11,7 @@ import { Config, Effect, Layer } from "effect"
 Dotenv.config()
 
 // Create your service and register your interactions
-const makeGreetService = Effect.gen(function* (_) {
+const makeGreetService = Effect.gen(function*(_) {
   const registry = yield* _(InteractionsRegistry)
 
   const greet = Ix.global(
@@ -37,7 +37,7 @@ const makeGreetService = Effect.gen(function* (_) {
             data: {
               content: `Hello ${name}!`,
             },
-          }),
+          })
         ),
       ),
   )
@@ -56,7 +56,7 @@ const GreetLive = Layer.provide(
 )
 
 // main program
-const main = Effect.gen(function* (_) {
+const main = Effect.gen(function*(_) {
   const gateway = yield* _(DiscordGateway)
   const registry = yield* _(InteractionsRegistry)
 

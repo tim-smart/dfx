@@ -13,5 +13,5 @@ export const roles =
  * Type-guard function for checking if the object is a guild member
  */
 export const is = (thing: unknown): thing is Discord.GuildMember =>
-  Object.prototype.hasOwnProperty.call(thing, "roles") &&
-  Object.prototype.hasOwnProperty.call(thing, "joined_at")
+  Object.prototype.hasOwnProperty.call(thing, "roles")
+  && Object.prototype.hasOwnProperty.call(thing, "joined_at")

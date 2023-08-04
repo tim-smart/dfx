@@ -1,12 +1,12 @@
-import { Log } from "dfx/Log"
-import WebSocket from "isomorphic-ws"
+import { Tag } from "@effect/data/Context"
+import * as Duration from "@effect/data/Duration"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
-import { Tag } from "@effect/data/Context"
-import * as Ref from "@effect/io/Ref"
 import * as Queue from "@effect/io/Queue"
+import * as Ref from "@effect/io/Ref"
 import * as Runtime from "@effect/io/Runtime"
-import * as Duration from "@effect/data/Duration"
+import { Log } from "dfx/Log"
+import WebSocket from "isomorphic-ws"
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
@@ -38,7 +38,7 @@ const socket = (urlRef: Ref.Ref<string>) =>
         // eslint-disable-next-line no-extra-semi
         ;(ws as any).removeAllListeners?.()
         ws.close()
-      }),
+      })
     ),
   )
 
@@ -72,7 +72,7 @@ const offer = (
             resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
           })
         },
-      ),
+      )
     ),
   )
 
@@ -117,7 +117,7 @@ const send = (
     Effect.forever,
   )
 
-const make = Effect.gen(function* (_) {
+const make = Effect.gen(function*(_) {
   const log = yield* _(Log)
 
   const connect = (
@@ -126,7 +126,7 @@ const make = Effect.gen(function* (_) {
     onConnecting = Effect.unit,
     openTimeout = Duration.seconds(3),
   ) =>
-    Effect.gen(function* (_) {
+    Effect.gen(function*(_) {
       const queue = yield* _(Queue.unbounded<WebSocket.Data>())
 
       const run = onConnecting.pipe(
@@ -140,7 +140,7 @@ const make = Effect.gen(function* (_) {
               ),
             ],
             { concurrency: "unbounded", discard: true },
-          ),
+          )
         ),
         Effect.scoped,
         Effect.retryWhile(isReconnect),

@@ -42,8 +42,8 @@ const checkSignature = (
           publicKey,
           crypto,
           algorithm,
-        ),
-      ),
+        )
+      )
     ),
     Effect.filterOrFail(identity, () => new BadWebhookSignature()),
     Effect.catchAllCause(() => Effect.fail(new BadWebhookSignature())),
@@ -86,14 +86,16 @@ export class WebhookParseError {
 }
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
-  Effect.tap(WebhookConfig, ({ algorithm, crypto, publicKey }) =>
-    checkSignature(publicKey, headers, body, crypto, algorithm),
+  Effect.tap(
+    WebhookConfig,
+    ({ algorithm, crypto, publicKey }) =>
+      checkSignature(publicKey, headers, body, crypto, algorithm),
   ).pipe(
     Effect.flatMap(() =>
       Effect.try({
         try: () => JSON.parse(body) as Discord.Interaction,
         catch: reason => new WebhookParseError(reason),
-      }),
+      })
     ),
   )
 
@@ -113,12 +115,14 @@ const run = <R, E>(
 ) => {
   const handler = handlers(definitions, handleResponse)
   return (headers: Headers, body: string) =>
-    Effect.flatMap(fromHeadersAndBody(headers, body), interaction =>
-      Effect.provideService(
-        handler[interaction.type](interaction),
-        Interaction,
-        interaction,
-      ),
+    Effect.flatMap(
+      fromHeadersAndBody(headers, body),
+      interaction =>
+        Effect.provideService(
+          handler[interaction.type](interaction),
+          Interaction,
+          interaction,
+        ),
     )
 }
 
@@ -134,14 +138,14 @@ export interface HandleWebhookOpts<E> {
  */
 export const makeHandler = <R, E, TE>(
   ix: InteractionBuilder<R, E, TE>,
-): (({
+): ({
   body,
   error,
   headers,
   success,
 }: HandleWebhookOpts<
   E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
->) => Effect.Effect<WebhookConfig, never, void>) => {
+>) => Effect.Effect<WebhookConfig, never, void> => {
   const handle = run(
     Chunk.map(ix.definitions, ([d]) => [d, identity] as any),
     (_i, r) => Effect.succeed(r),
@@ -166,7 +170,7 @@ export const makeHandler = <R, E, TE>(
  */
 export const makeSimpleHandler = <R, E, TE>(
   ix: InteractionBuilder<R, E, TE>,
-): (({
+): ({
   body,
   headers,
 }: {
@@ -176,7 +180,7 @@ export const makeSimpleHandler = <R, E, TE>(
   WebhookConfig,
   BadWebhookSignature | WebhookParseError | DefinitionNotFound,
   Discord.InteractionResponse
->) => {
+> => {
   const handle = run(
     Chunk.map(ix.definitions, ([d]) => [d, identity] as any),
     (_i, r) => Effect.succeed(r),

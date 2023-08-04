@@ -33,8 +33,7 @@ export const resolvedValues = <A>(
     Effect.mapError(
       IxHelpers.resolveValues(f)(ix),
       () => new ResolvedDataNotFound(ix),
-    ),
-  )
+    ))
 
 export const resolved = <A>(
   name: string,
@@ -44,8 +43,7 @@ export const resolved = <A>(
     Effect.mapError(
       IxHelpers.resolveOptionValue(name, f)(ix),
       () => new ResolvedDataNotFound(ix, name),
-    ),
-  )
+    ))
 
 export const focusedOptionValue = Effect.map(
   FocusedOptionContext,
@@ -66,20 +64,18 @@ export const handleSubCommands = <
   commands: NER,
 ): Effect.Effect<
   | Exclude<
-      [NER[keyof NER]] extends [
-        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-      ]
-        ? R
-        : never,
-      SubCommandContext
-    >
+    [NER[keyof NER]] extends [
+      { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
+    ] ? R
+      : never,
+    SubCommandContext
+  >
   | Discord.Interaction
   | Discord.ApplicationCommandDatum,
   | ([NER[keyof NER]] extends [
-      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-    ]
-      ? E
-      : never)
+    { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
+  ] ? E
+    : never)
   | SubCommandNotFound,
   Discord.InteractionResponse
 > =>
@@ -88,12 +84,12 @@ export const handleSubCommands = <
       Effect.mapError(
         Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name]),
         () => new SubCommandNotFound(data),
-      ),
+      )
     ),
     Effect.flatMap(command =>
       Effect.provideService(commands[command.name], SubCommandContext, {
         command,
-      }),
+      })
     ),
   )
 
@@ -129,12 +125,10 @@ export const optionValue = (name: string) =>
       {
         onNone: () =>
           Effect.flatMap(ApplicationCommand, data =>
-            Effect.fail(new RequiredOptionNotFound(data, name)),
-          ),
+            Effect.fail(new RequiredOptionNotFound(data, name))),
         onSome: Effect.succeed,
       },
-    ),
-  )
+    ))
 
 export const optionValueOptional = (name: string) =>
   Effect.map(
@@ -157,5 +151,4 @@ export const modalValue = (name: string) =>
     Effect.mapError(
       IxHelpers.componentValue(name)(data),
       () => new ModalValueNotFound(data, name),
-    ),
-  )
+    ))

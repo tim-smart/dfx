@@ -17,7 +17,7 @@ import {
   routeFromConfig,
 } from "dfx/DiscordREST/utils"
 import { Log } from "dfx/Log"
-import { LiveRateLimiter, RateLimitStore, RateLimiter } from "dfx/RateLimit"
+import { LiveRateLimiter, RateLimiter, RateLimitStore } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
 
@@ -28,7 +28,7 @@ export class DiscordRESTError {
 
 export { ResponseDecodeError } from "@effect-http/client"
 
-const make = Effect.gen(function* (_) {
+const make = Effect.gen(function*(_) {
   const { rest, token } = yield* _(DiscordConfig)
 
   const http = yield* _(Http.HttpRequestExecutor)
@@ -64,7 +64,7 @@ const make = Effect.gen(function* (_) {
       Effect.tap(invalid =>
         invalid
           ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
-          : Effect.unit,
+          : Effect.unit
       ),
       Effect.asUnit,
     )
@@ -86,7 +86,7 @@ const make = Effect.gen(function* (_) {
                 bucket.limit,
               ),
             ),
-        }),
+        })
       ),
     )
 
@@ -95,8 +95,9 @@ const make = Effect.gen(function* (_) {
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(request.url, request.method)),
       Effect.bind("rateLimit", () => rateLimitFromHeaders(response.headers)),
-      Effect.bind("hasBucket", ({ rateLimit }) =>
-        store.hasBucket(rateLimit.bucket),
+      Effect.bind(
+        "hasBucket",
+        ({ rateLimit }) => store.hasBucket(rateLimit.bucket),
       ),
       Effect.flatMap(({ hasBucket, rateLimit, route }) => {
         const effectsToRun = [
@@ -110,10 +111,9 @@ const make = Effect.gen(function* (_) {
             store.putBucket({
               key: rateLimit.bucket,
               resetAfter: Duration.toMillis(rateLimit.retryAfter),
-              limit:
-                !hasBucket && rateLimit.remaining > 0
-                  ? rateLimit.remaining
-                  : rateLimit.limit,
+              limit: !hasBucket && rateLimit.remaining > 0
+                ? rateLimit.remaining
+                : rateLimit.limit,
             }),
           )
         }
@@ -134,19 +134,20 @@ const make = Effect.gen(function* (_) {
         Http.updateUrl(req, _ => `${rest.baseUrl}${_}`),
         Http.setHeaders({
           Authorization: `Bot ${ConfigSecret.value(token)}`,
-          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
+          "User-Agent":
+            `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
-      ),
+      )
     ),
     Http.executor.catchAll(error =>
       error._tag === "StatusCodeError"
         ? error.response.json.pipe(
-            Effect.mapError(_ => new DiscordRESTError(_)),
-            Effect.flatMap(body =>
-              Effect.fail(new DiscordRESTError(error, body)),
-            ),
-          )
-        : Effect.fail(new DiscordRESTError(error)),
+          Effect.mapError(_ => new DiscordRESTError(_)),
+          Effect.flatMap(body =>
+            Effect.fail(new DiscordRESTError(error, body))
+          ),
+        )
+        : Effect.fail(new DiscordRESTError(error))
     ),
   )
 
@@ -194,8 +195,9 @@ const make = Effect.gen(function* (_) {
                 Effect.zipRight(updateBuckets(request, response)),
                 Effect.zipRight(
                   Effect.sleep(
-                    Option.getOrElse(retryAfter(response.headers), () =>
-                      Duration.seconds(5),
+                    Option.getOrElse(
+                      retryAfter(response.headers),
+                      () => Duration.seconds(5),
                     ),
                   ),
                 ),
@@ -222,9 +224,9 @@ const make = Effect.gen(function* (_) {
           request = Http.appendParams(request, params as any)
         }
       } else if (
-        params &&
-        request.body._tag === "Some" &&
-        request.body.value._tag === "FormDataBody"
+        params
+        && request.body._tag === "Some"
+        && request.body.value._tag === "FormDataBody"
       ) {
         request.body.value.value.append("payload_json", JSON.stringify(params))
       } else if (params) {
@@ -242,7 +244,8 @@ const make = Effect.gen(function* (_) {
 })
 
 export interface DiscordREST
-  extends Discord.Endpoints<Partial<Http.MakeOptions>> {
+  extends Discord.Endpoints<Partial<Http.MakeOptions>>
+{
   readonly executor: <A = unknown>(
     request: Http.Request,
   ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>

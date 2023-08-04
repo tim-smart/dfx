@@ -33,16 +33,14 @@ export function toList<T extends Flags<any>>(
  * Returns a function that converts a list of flags names to a bigint bitfield.
  */
 export const fromListBigint =
-  <T extends Flags<bigint>>(flags: T) =>
-  (list: Array<keyof T>) =>
+  <T extends Flags<bigint>>(flags: T) => (list: Array<keyof T>) =>
     list.reduce((acc, key) => acc | flags[key], BigInt(0))
 
 /**
  * Returns a function that converts a list of flags names to a bitfield.
  */
 export const fromList =
-  <T extends Flags<number>>(flags: T) =>
-  (list: Array<keyof T>) =>
+  <T extends Flags<number>>(flags: T) => (list: Array<keyof T>) =>
     list.reduce((acc, key) => acc | flags[key], 0)
 
 /**

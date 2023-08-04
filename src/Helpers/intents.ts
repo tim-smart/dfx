@@ -9,10 +9,9 @@ export const ALL = Flags.all(Discord.GatewayIntents)
 /**
  * Privileged intents
  */
-export const PRIVILEGED =
-  Discord.GatewayIntents.GUILD_PRESENCES |
-  Discord.GatewayIntents.GUILD_MEMBERS |
-  Discord.GatewayIntents.MESSAGE_CONTENT
+export const PRIVILEGED = Discord.GatewayIntents.GUILD_PRESENCES
+  | Discord.GatewayIntents.GUILD_MEMBERS
+  | Discord.GatewayIntents.MESSAGE_CONTENT
 
 /**
  * Un-privileged intents
