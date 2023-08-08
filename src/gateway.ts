@@ -1,5 +1,3 @@
-import type { HttpRequestExecutor } from "@effect-http/client"
-import { LiveFetchRequestExecutor } from "@effect-http/client"
 import * as Config from "@effect/io/Config"
 import type * as ConfigError from "@effect/io/Config/Error"
 import * as Effect from "@effect/io/Effect"
@@ -49,10 +47,10 @@ export const MemoryBot = Layer.provide(
   ),
 )
 
-export const gatewayLayerWithoutHttp = (
+export const gatewayLayer = (
   config: Config.Config.Wrap<DiscordConfig.MakeOpts>,
 ): Layer.Layer<
-  HttpRequestExecutor,
+  never,
   ConfigError.ConfigError,
   | RateLimiter
   | Log.Log
@@ -71,16 +69,3 @@ export const gatewayLayerWithoutHttp = (
       }),
     ),
   )
-
-export const gatewayLayer = (
-  config: Config.Config.Wrap<DiscordConfig.MakeOpts>,
-): Layer.Layer<
-  never,
-  ConfigError.ConfigError,
-  | RateLimiter
-  | Log.Log
-  | InteractionsRegistry
-  | DiscordREST
-  | DiscordGateway
-  | DiscordConfig.DiscordConfig
-> => Layer.provide(LiveFetchRequestExecutor, gatewayLayerWithoutHttp(config))

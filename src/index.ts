@@ -1,4 +1,3 @@
-import * as Http from "@effect-http/client"
 import * as Cache from "dfx/Cache"
 import * as DiscordConfig from "dfx/DiscordConfig"
 import * as Flags from "dfx/Helpers/flags"
@@ -26,7 +25,6 @@ export {
   Discord,
   DiscordConfig,
   Flags,
-  Http,
   Intents,
   Ix,
   IxHelpers,

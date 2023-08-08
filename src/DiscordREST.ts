@@ -1,4 +1,3 @@
-import * as Http from "@effect-http/client"
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
 import { millis } from "@effect/data/Duration"
@@ -9,6 +8,7 @@ import * as ConfigSecret from "@effect/io/Config/Secret"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Ref from "@effect/io/Ref"
+import * as Http from "@effect/platform/HttpClient"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import type { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
 import {
@@ -23,15 +23,16 @@ import { LIB_VERSION } from "dfx/version"
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
-  constructor(readonly error: Http.HttpClientError, readonly body?: unknown) {}
+  constructor(
+    readonly error: Http.error.HttpClientError,
+    readonly body?: unknown,
+  ) {}
 }
-
-export { ResponseDecodeError } from "@effect-http/client"
 
 const make = Effect.gen(function*(_) {
   const { rest, token } = yield* _(DiscordConfig)
 
-  const http = yield* _(Http.HttpRequestExecutor)
+  const http = yield* _(Http.client.Client)
   const log = yield* _(Log)
   const store = yield* _(RateLimitStore)
   const { maybeWait } = yield* _(RateLimiter)
@@ -70,7 +71,10 @@ const make = Effect.gen(function*(_) {
     )
 
   // Request rate limiting
-  const requestRateLimit = (path: string, request: Http.Request) =>
+  const requestRateLimit = (
+    path: string,
+    request: Http.request.ClientRequest,
+  ) =>
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(path, request.method)),
       Effect.bind("maybeBucket", ({ route }) => store.getBucketForRoute(route)),
@@ -91,7 +95,10 @@ const make = Effect.gen(function*(_) {
     )
 
   // Update rate limit buckets
-  const updateBuckets = (request: Http.Request, response: Http.Response) =>
+  const updateBuckets = (
+    request: Http.request.ClientRequest,
+    response: Http.response.ClientResponse,
+  ) =>
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(request.url, request.method)),
       Effect.bind("rateLimit", () => rateLimitFromHeaders(response.headers)),
@@ -127,20 +134,19 @@ const make = Effect.gen(function*(_) {
     )
 
   const httpExecutor = pipe(
-    http.execute,
-    Http.executor.filterStatusOk,
-    Http.executor.contramap(req =>
+    Http.client.filterStatusOk(http),
+    Http.client.mapRequest(req =>
       pipe(
-        Http.updateUrl(req, _ => `${rest.baseUrl}${_}`),
-        Http.setHeaders({
+        Http.request.prependUrl(req, rest.baseUrl),
+        Http.request.setHeaders({
           Authorization: `Bot ${ConfigSecret.value(token)}`,
           "User-Agent":
             `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       )
     ),
-    Http.executor.catchAll(error =>
-      error._tag === "StatusCodeError"
+    Http.client.catchAll(error =>
+      error.reason === "StatusCode"
         ? error.response.json.pipe(
           Effect.mapError(_ => new DiscordRESTError(_)),
           Effect.flatMap(body =>
@@ -152,7 +158,7 @@ const make = Effect.gen(function*(_) {
   )
 
   const executor = <A = unknown>(
-    request: Http.Request,
+    request: Http.request.ClientRequest,
   ): Effect.Effect<never, DiscordRESTError, ResponseWithData<A>> =>
     requestRateLimit(request.url, request).pipe(
       Effect.zipLeft(globalRateLimit),
@@ -165,13 +171,13 @@ const make = Effect.gen(function*(_) {
       ),
       Effect.tap(response => updateBuckets(request, response)),
       Effect.catchTag("DiscordRESTError", e => {
-        if (e.error._tag !== "StatusCodeError") {
+        if (e.error.reason !== "StatusCode") {
           return Effect.fail(e)
         }
 
         const response = e.error.response
 
-        switch (e.error.status) {
+        switch (response.status) {
           case 403:
             return Effect.zipRight(
               Effect.all(
@@ -209,28 +215,26 @@ const make = Effect.gen(function*(_) {
       }),
     )
 
-  const routes = Discord.createRoutes<Partial<Http.MakeOptions>>(
+  const routes = Discord.createRoutes<Partial<Http.request.Options.NoUrl>>(
     <R, P>({
       method,
       options = {},
       params,
       url,
-    }: Discord.Route<P, Partial<Http.MakeOptions>>): RestResponse<R> => {
+    }: Discord.Route<P, Partial<Http.request.Options.NoUrl>>): RestResponse<
+      R
+    > => {
       const hasBody = method !== "GET" && method !== "DELETE"
-      let request = Http.make(method as any)(url, options)
+      let request = Http.request.make(method as any)(url, options)
 
       if (!hasBody) {
         if (params) {
-          request = Http.appendParams(request, params as any)
+          request = Http.request.appendUrlParams(request, params as any)
         }
-      } else if (
-        params
-        && request.body._tag === "Some"
-        && request.body.value._tag === "FormDataBody"
-      ) {
-        request.body.value.value.append("payload_json", JSON.stringify(params))
+      } else if (params && request.body._tag === "FormData") {
+        request.body.formData.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        request = Http.jsonBody(request, params)
+        request = Http.request.jsonBody(request, params)
       }
 
       return executor(request)
@@ -244,15 +248,15 @@ const make = Effect.gen(function*(_) {
 })
 
 export interface DiscordREST
-  extends Discord.Endpoints<Partial<Http.MakeOptions>>
+  extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>>
 {
   readonly executor: <A = unknown>(
-    request: Http.Request,
+    request: Http.request.ClientRequest,
   ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>
 }
 
 export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST = Layer.provide(
-  LiveRateLimiter,
-  Layer.effect(DiscordREST, make),
+export const LiveDiscordREST = Layer.effect(DiscordREST, make).pipe(
+  Layer.use(LiveRateLimiter),
+  Layer.use(Http.client.fetchLayer),
 )

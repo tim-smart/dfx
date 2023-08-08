@@ -1,5 +1,3 @@
-import type { HttpRequestExecutor } from "@effect-http/client"
-import { LiveFetchRequestExecutor } from "@effect-http/client"
 import * as Config from "@effect/io/Config"
 import type * as ConfigError from "@effect/io/Config/Error"
 import * as Effect from "@effect/io/Effect"
@@ -32,39 +30,13 @@ export const MemoryREST = Layer.provide(
   LiveDiscordREST,
 )
 
-export const webhookLayerWithoutHttp = (
-  options: Config.Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
-): Layer.Layer<
-  HttpRequestExecutor,
-  ConfigError.ConfigError,
-  RateLimiter | DiscordREST | WebhookConfig
-> =>
-  Layer.unwrapEffect(
-    Effect.map(Effect.config(Config.unwrap(options)), options => {
-      const config = DiscordConfig.make(options)
-      const LiveConfig = Layer.succeed(DiscordConfig.DiscordConfig, config)
-      const LiveWebhook = makeConfigLayer(options)
-      const LiveLog = config.debug ? Log.LiveLogDebug : Log.LiveLog
-      const LiveEnv = Layer.provide(
-        Layer.merge(LiveLog, LiveConfig),
-        Layer.mergeAll(MemoryREST, LiveWebhook, MemoryRateLimit),
-      )
-
-      return LiveEnv
-    }),
-  )
-
-export const webhookLayerConfig = (
-  config: Config.Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
+export const webhookLayer = (
+  options: DiscordConfig.MakeOpts & MakeConfigOpts,
 ): Layer.Layer<
   never,
   ConfigError.ConfigError,
   RateLimiter | DiscordREST | WebhookConfig
-> => Layer.provide(LiveFetchRequestExecutor, webhookLayerWithoutHttp(config))
-
-export const webhookLayer = (
-  options: DiscordConfig.MakeOpts & MakeConfigOpts,
-): Layer.Layer<never, never, RateLimiter | DiscordREST | WebhookConfig> => {
+> => {
   const config = DiscordConfig.make(options)
   const LiveConfig = Layer.succeed(DiscordConfig.DiscordConfig, config)
   const LiveWebhook = makeConfigLayer(options)
@@ -73,5 +45,20 @@ export const webhookLayer = (
     Layer.merge(LiveLog, LiveConfig),
     Layer.mergeAll(MemoryREST, LiveWebhook, MemoryRateLimit),
   )
-  return Layer.provide(LiveFetchRequestExecutor, LiveEnv)
+
+  return LiveEnv
 }
+
+export const webhookLayerConfig = (
+  config: Config.Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
+): Layer.Layer<
+  never,
+  ConfigError.ConfigError,
+  RateLimiter | DiscordREST | WebhookConfig
+> =>
+  Layer.unwrapEffect(
+    Effect.map(
+      Effect.config(Config.unwrap(config)),
+      webhookLayer,
+    ),
+  )

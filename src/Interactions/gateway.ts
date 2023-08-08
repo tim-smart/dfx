@@ -1,4 +1,3 @@
-import * as Http from "@effect-http/client"
 import * as Chunk from "@effect/data/Chunk"
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
@@ -8,6 +7,7 @@ import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Queue from "@effect/io/Queue"
 import * as Ref from "@effect/io/Ref"
+import * as Http from "@effect/platform/HttpClient"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
@@ -43,7 +43,7 @@ export const run = <R, R2, E, TE, E2>(
   ix: InteractionBuilder<R, E, TE>,
 ): Effect.Effect<
   DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
-  E2 | DiscordRESTError | Http.ResponseDecodeError,
+  E2 | DiscordRESTError | Http.error.ResponseError,
   never
 > =>
   Effect.gen(function*(_) {
@@ -147,7 +147,7 @@ export interface InteractionsRegistry {
     opts?: RunOpts,
   ) => Effect.Effect<
     DiscordREST | DiscordGateway | Exclude<R, Discord.Interaction>,
-    DiscordRESTError | Http.ResponseDecodeError | E,
+    DiscordRESTError | Http.error.ResponseError | E,
     never
   >
 }

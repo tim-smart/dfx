@@ -71,6 +71,7 @@ const main = Effect.gen(function*(_) {
 // Create the dependencies layer
 const DiscordLive = gatewayLayer({
   token: Config.secret("DISCORD_BOT_TOKEN"),
+  debug: Config.withDefault(Config.boolean("DEBUG"), false),
 })
 
 // Add our GreetLive layer
