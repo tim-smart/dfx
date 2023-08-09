@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.61.3](https://github.com/tim-smart/dfx/compare/dfx@0.61.2...dfx@0.61.3) (2023-08-09)
+
+### Bug Fixes
+
+- used spaced Schedule for Sharder ([956b8fe](https://github.com/tim-smart/dfx/commit/956b8fea1ae9b75809a4397c3cf90f094e0a2646))
+
 ## [0.61.2](https://github.com/tim-smart/dfx/compare/dfx@0.61.1...dfx@0.61.2) (2023-08-09)
 
 ### Bug Fixes
