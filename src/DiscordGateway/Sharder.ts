@@ -19,7 +19,7 @@ import { DiscordREST } from "dfx/DiscordREST"
 import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
 import type * as Discord from "dfx/types"
 
-const claimRepeatPolicy = Schedule.fixed("3 minutes").pipe(
+const claimRepeatPolicy = Schedule.spaced("3 minutes").pipe(
   Schedule.whileInput((_: Option.Option<number>) => _._tag === "None"),
   Schedule.passthrough,
 ) as Schedule.Schedule<never, Option.Option<number>, Option.Some<number>>
