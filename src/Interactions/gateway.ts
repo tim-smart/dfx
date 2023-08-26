@@ -74,7 +74,11 @@ export const run = <R, R2, E, TE, E2>(
 
     const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
       application.id,
-      { body: Http.body.json(GlobalApplicationCommand.map(_ => _.command)) },
+      {
+        body: Http.body.unsafeJson(
+          GlobalApplicationCommand.map(_ => _.command),
+        ),
+      },
     )
 
     const guildSync = GuildApplicationCommand.length

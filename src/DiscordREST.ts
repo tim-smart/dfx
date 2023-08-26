@@ -234,7 +234,7 @@ const make = Effect.gen(function*(_) {
       } else if (params && request.body._tag === "FormData") {
         request.body.formData.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        request = Http.request.jsonBody(request, params)
+        request = Http.request.unsafeJsonBody(request, params)
       }
 
       return executor(request)

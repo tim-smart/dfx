@@ -137,7 +137,7 @@ export class InteractionBuilder<R, E, TE> {
           Effect.flatMap(r => r.json),
           Effect.flatMap(app =>
             rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-              body: Http.body.json(Chunk.toReadonlyArray(commands)),
+              body: Http.body.unsafeJson(Chunk.toReadonlyArray(commands)),
             })
           ),
         ),
