@@ -10,8 +10,8 @@ const make = (debug = false) => ({
   debug: (...args: Array<any>) =>
     debug
       ? Effect.sync(() => {
-        console.error("DEBUG", ...args)
-      })
+          console.error("DEBUG", ...args)
+        })
       : Effect.unit,
 })
 

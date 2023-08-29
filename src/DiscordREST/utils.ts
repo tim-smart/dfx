@@ -9,10 +9,8 @@ export const routeFromConfig = (path: string, method: string) => {
   // Only keep major ID's
   const routeURL = path
     .split("?")[0]
-    .replace(
-      /\/([A-Za-z]+)\/(\d{16,21}|@me)/g,
-      (match, resource) =>
-        majorResources.includes(resource) ? match : `/${resource}`,
+    .replace(/\/([A-Za-z]+)\/(\d{16,21}|@me)/g, (match, resource) =>
+      majorResources.includes(resource) ? match : `/${resource}`,
     )
     // Strip reactions
     .replace(/\/reactions\/(.*)/, "/reactions")

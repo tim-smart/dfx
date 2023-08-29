@@ -29,7 +29,7 @@ export class DiscordRESTError {
   ) {}
 }
 
-const make = Effect.gen(function*(_) {
+const make = Effect.gen(function* (_) {
   const { rest, token } = yield* _(DiscordConfig)
 
   const http = yield* _(Http.client.Client)
@@ -65,7 +65,7 @@ const make = Effect.gen(function*(_) {
       Effect.tap(invalid =>
         invalid
           ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
-          : Effect.unit
+          : Effect.unit,
       ),
       Effect.asUnit,
     )
@@ -90,7 +90,7 @@ const make = Effect.gen(function*(_) {
                 bucket.limit,
               ),
             ),
-        })
+        }),
       ),
     )
 
@@ -102,9 +102,8 @@ const make = Effect.gen(function*(_) {
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(request.url, request.method)),
       Effect.bind("rateLimit", () => rateLimitFromHeaders(response.headers)),
-      Effect.bind(
-        "hasBucket",
-        ({ rateLimit }) => store.hasBucket(rateLimit.bucket),
+      Effect.bind("hasBucket", ({ rateLimit }) =>
+        store.hasBucket(rateLimit.bucket),
       ),
       Effect.flatMap(({ hasBucket, rateLimit, route }) => {
         const effectsToRun = [
@@ -118,9 +117,10 @@ const make = Effect.gen(function*(_) {
             store.putBucket({
               key: rateLimit.bucket,
               resetAfter: Duration.toMillis(rateLimit.retryAfter),
-              limit: !hasBucket && rateLimit.remaining > 0
-                ? rateLimit.remaining
-                : rateLimit.limit,
+              limit:
+                !hasBucket && rateLimit.remaining > 0
+                  ? rateLimit.remaining
+                  : rateLimit.limit,
             }),
           )
         }
@@ -140,20 +140,19 @@ const make = Effect.gen(function*(_) {
         Http.request.prependUrl(req, rest.baseUrl),
         Http.request.setHeaders({
           Authorization: `Bot ${ConfigSecret.value(token)}`,
-          "User-Agent":
-            `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
+          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
-      )
+      ),
     ),
     Http.client.catchAll(error =>
       error.reason === "StatusCode"
         ? error.response.json.pipe(
-          Effect.mapError(_ => new DiscordRESTError(_)),
-          Effect.flatMap(body =>
-            Effect.fail(new DiscordRESTError(error, body))
-          ),
-        )
-        : Effect.fail(new DiscordRESTError(error))
+            Effect.mapError(_ => new DiscordRESTError(_)),
+            Effect.flatMap(body =>
+              Effect.fail(new DiscordRESTError(error, body)),
+            ),
+          )
+        : Effect.fail(new DiscordRESTError(error)),
     ),
   )
 
@@ -201,9 +200,8 @@ const make = Effect.gen(function*(_) {
                 Effect.zipRight(updateBuckets(request, response)),
                 Effect.zipRight(
                   Effect.sleep(
-                    Option.getOrElse(
-                      retryAfter(response.headers),
-                      () => Duration.seconds(5),
+                    Option.getOrElse(retryAfter(response.headers), () =>
+                      Duration.seconds(5),
                     ),
                   ),
                 ),
@@ -221,9 +219,10 @@ const make = Effect.gen(function*(_) {
       options = {},
       params,
       url,
-    }: Discord.Route<P, Partial<Http.request.Options.NoUrl>>): RestResponse<
-      R
-    > => {
+    }: Discord.Route<
+      P,
+      Partial<Http.request.Options.NoUrl>
+    >): RestResponse<R> => {
       const hasBody = method !== "GET" && method !== "DELETE"
       let request = Http.request.make(method as any)(url, options)
 
@@ -248,8 +247,7 @@ const make = Effect.gen(function*(_) {
 })
 
 export interface DiscordREST
-  extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>>
-{
+  extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>> {
   readonly executor: <A = unknown>(
     request: Http.request.ClientRequest,
   ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>

@@ -160,18 +160,16 @@ export const createWithParent = <T>(opts: MemoryTTLOpts) =>
                       if (item._tag === "None") {
                         ids.delete(id)
                       }
-                    })
+                    }),
                   ),
                   Effect.map(item => [id, item] as const),
                 ),
               { concurrency: "unbounded" },
-            )
+            ),
           ),
           Effect.map(
-            ReadonlyArray.reduce(
-              new Map<string, T>(),
-              (acc, [id, item]) =>
-                item._tag === "Some" ? acc.set(id, item.value) : acc,
+            ReadonlyArray.reduce(new Map<string, T>(), (acc, [id, item]) =>
+              item._tag === "Some" ? acc.set(id, item.value) : acc,
             ),
           ),
           Effect.option,

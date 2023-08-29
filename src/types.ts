@@ -14,7 +14,7 @@ export interface ActionRow {
   /** a list of child components */
   readonly components: Array<Component>
 }
-export const enum ActionType {
+export enum ActionType {
   /** blocks a member's message and prevents it from being posted. A custom explanation can be specified and shown to members whenever their message is blocked. */
   BLOCK_MESSAGE = 1,
   /** logs user content to a specified channel */
@@ -37,7 +37,7 @@ export interface Activity {
   readonly application_id?: Snowflake
   /** What the player is currently doing */
   readonly details?: string | null
-  /** User's current party status */
+  /** User's current party status, or text used for a custom status */
   readonly state?: string | null
   /** Emoji used for a custom status */
   readonly emoji?: ActivityEmoji | null
@@ -109,7 +109,7 @@ export interface ActivityTimestamp {
   /** Unix time (in milliseconds) of when the activity ends */
   readonly end?: number
 }
-export const enum ActivityType {
+export enum ActivityType {
   GAME = 0,
   STREAMING = 1,
   LISTENING = 2,
@@ -139,7 +139,7 @@ export interface AllowedMention {
   /** For replies, whether to mention the author of the message being replied to (default false) */
   readonly replied_user: boolean
 }
-export const enum AllowedMentionType {
+export enum AllowedMentionType {
   /** Controls role mentions */
   ROLE_MENTIONS = "roles",
   /** Controls user mentions */
@@ -293,7 +293,7 @@ export interface ApplicationCommandOptionChoice {
   /** Value for the choice, up to 100 characters if string */
   readonly value: string
 }
-export const enum ApplicationCommandOptionType {
+export enum ApplicationCommandOptionType {
   SUB_COMMAND = 1,
   SUB_COMMAND_GROUP = 2,
   STRING = 3,
@@ -316,12 +316,12 @@ export interface ApplicationCommandPermission {
 }
 export type ApplicationCommandPermissionsUpdateEvent =
   GuildApplicationCommandPermission
-export const enum ApplicationCommandPermissionType {
+export enum ApplicationCommandPermissionType {
   ROLE = 1,
   USER = 2,
   CHANNEL = 3,
 }
-export const enum ApplicationCommandType {
+export enum ApplicationCommandType {
   /** Slash commands; a text-based command that shows up when a user types / */
   CHAT_INPUT = 1,
   /** A UI-based command that shows up when you right click or tap on a user */
@@ -359,7 +359,7 @@ export interface ApplicationRoleConnection {
   /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
   readonly metadata: ApplicationRoleConnectionMetadatum
 }
-export const enum ApplicationRoleConnectionMetadataType {
+export enum ApplicationRoleConnectionMetadataType {
   /** the metadata value (integer) is less than or equal to the guild's configured value (integer) */
   INTEGER_LESS_THAN_OR_EQUAL = 1,
   /** the metadata value (integer) is greater than or equal to the guild's configured value (integer) */
@@ -446,6 +446,8 @@ export interface AuditEntryInfo {
   readonly role_name: string
   /** Type of overwritten entity - role ("0") or member ("1") */
   readonly type: string
+  /** The type of integration which performed the action */
+  readonly integration_type: string
 }
 export interface AuditLog {
   /** List of application commands referenced in the audit log */
@@ -489,7 +491,7 @@ export interface AuditLogEntry {
   /** Reason for the change (1-512 characters) */
   readonly reason?: string
 }
-export const enum AuditLogEvent {
+export enum AuditLogEvent {
   /** Server settings were updated */
   GUILD_UPDATE = 1,
   /** Channel was created */
@@ -720,7 +722,7 @@ export interface Button {
   /** Whether the button is disabled (defaults to false) */
   readonly disabled?: boolean
 }
-export const enum ButtonStyle {
+export enum ButtonStyle {
   PRIMARY = 1,
   SECONDARY = 2,
   SUCCESS = 3,
@@ -740,11 +742,11 @@ export interface Channel {
   readonly permission_overwrites?: Array<Overwrite>
   /** the name of the channel (1-100 characters) */
   readonly name?: string | null
-  /** the channel topic (0-4096 characters for GUILD_FORUM channels, 0-1024 characters for all others) */
+  /** the channel topic (0-4096 characters for GUILD_FORUM and GUILD_MEDIA channels, 0-1024 characters for all others) */
   readonly topic?: string | null
   /** whether the channel is nsfw */
   readonly nsfw?: boolean
-  /** the id of the last message sent in this channel (or thread for GUILD_FORUM channels) (may not point to an existing or valid message or thread) */
+  /** the id of the last message sent in this channel (or thread for GUILD_FORUM or GUILD_MEDIA channels) (may not point to an existing or valid message or thread) */
   readonly last_message_id?: Snowflake | null
   /** the bitrate (in bits) of the voice channel */
   readonly bitrate?: number
@@ -780,21 +782,21 @@ export interface Channel {
   readonly member?: ThreadMember
   /** default duration, copied onto newly created threads, in minutes, threads will stop showing in the channel list after the specified period of inactivity, can be set to: 60, 1440, 4320, 10080 */
   readonly default_auto_archive_duration?: number
-  /** computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction */
+  /** computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction. This does not include implicit permissions, which may need to be checked separately */
   readonly permissions?: string
   /** channel flags combined as a bitfield */
   readonly flags?: number
   /** number of messages ever sent in a thread, it's similar to message_count on message creation, but will not decrement the number when a message is deleted */
   readonly total_message_sent?: number
-  /** the set of tags that can be used in a GUILD_FORUM channel */
+  /** the set of tags that can be used in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly available_tags?: Array<ForumTag>
-  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
+  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly applied_tags?: Array<Snowflake>
-  /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
+  /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
   readonly default_thread_rate_limit_per_user?: number
-  /** the default sort order type used to order posts in GUILD_FORUM channels. Defaults to null, which indicates a preferred sort order hasn't been set by a channel admin */
+  /** the default sort order type used to order posts in GUILD_FORUM and GUILD_MEDIA channels. Defaults to null, which indicates a preferred sort order hasn't been set by a channel admin */
   readonly default_sort_order?: SortOrderType | null
   /** the default forum layout view used to display posts in GUILD_FORUM channels. Defaults to 0, which indicates a layout view has not been set by a channel admin */
   readonly default_forum_layout?: ForumLayoutType
@@ -802,10 +804,12 @@ export interface Channel {
 export type ChannelCreateEvent = Channel
 export type ChannelDeleteEvent = Channel
 export const ChannelFlag = {
-  /** this thread is pinned to the top of its parent GUILD_FORUM channel */
+  /** this thread is pinned to the top of its parent GUILD_FORUM or GUILD_MEDIA channel */
   PINNED: 1 << 1,
-  /** whether a tag is required to be specified when creating a thread in a GUILD_FORUM channel. Tags are specified in the applied_tags field. */
+  /** whether a tag is required to be specified when creating a thread in a GUILD_FORUM or a GUILD_MEDIA channel. Tags are specified in the applied_tags field. */
   REQUIRE_TAG: 1 << 4,
+  /** when set hides the embedded media download options. Available only for media channels */
+  HIDE_MEDIA_DOWNLOAD_OPTIONS: 1 << 15,
 } as const
 export interface ChannelMention {
   /** id of the channel */
@@ -825,7 +829,7 @@ export interface ChannelPinsUpdateEvent {
   /** Time at which the most recent pinned message was pinned */
   readonly last_pin_timestamp?: string | null
 }
-export const enum ChannelType {
+export enum ChannelType {
   /** a text channel within a server */
   GUILD_TEXT = 0,
   /** a direct message between users */
@@ -850,6 +854,8 @@ export const enum ChannelType {
   GUILD_DIRECTORY = 14,
   /** Channel that can only contain threads */
   GUILD_FORUM = 15,
+  /** Channel that can only contain threads, similar to GUILD_FORUM channels */
+  GUILD_MEDIA = 16,
 }
 export type ChannelUpdateEvent = Channel
 export interface ClientStatus {
@@ -861,7 +867,7 @@ export interface ClientStatus {
   readonly web?: string
 }
 export type Component = ActionRow | Button | TextInput | SelectMenu
-export const enum ComponentType {
+export enum ComponentType {
   /** Container for other components */
   ACTION_ROW = 1,
   /** Button object */
@@ -1020,11 +1026,11 @@ export interface CreateGuildChannelParams {
   readonly video_quality_mode: VideoQualityMode
   /** the default duration that the clients use (not the API) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity */
   readonly default_auto_archive_duration: number
-  /** emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
+  /** emoji to show in the add reaction button on a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly default_reaction_emoji: DefaultReaction
-  /** set of tags that can be used in a GUILD_FORUM channel */
+  /** set of tags that can be used in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly available_tags: Array<ForumTag>
-  /** the default sort order type used to order posts in GUILD_FORUM channels */
+  /** the default sort order type used to order posts in GUILD_FORUM and GUILD_MEDIA channels */
   readonly default_sort_order: SortOrderType
   /** the default forum layout view used to display posts in GUILD_FORUM channels */
   readonly default_forum_layout: ForumLayoutType
@@ -1173,8 +1179,7 @@ export function createRoutes<O = any>(
     batchEditApplicationCommandPermissions: (applicationId, guildId, options) =>
       fetch({
         method: "PUT",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
         options,
       }),
     beginGuildPrune: (guildId, params, options) =>
@@ -1343,8 +1348,7 @@ export function createRoutes<O = any>(
     createReaction: (channelId, messageId, emoji, options) =>
       fetch({
         method: "PUT",
-        url:
-          `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
+        url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
         options,
       }),
     createStageInstance: (params, options) =>
@@ -1405,8 +1409,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "DELETE",
-        url:
-          `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         options,
       }),
     deleteGlobalApplicationCommand: (applicationId, commandId, options) =>
@@ -1429,8 +1432,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "DELETE",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
         options,
       }),
     deleteGuildEmoji: (guildId, emojiId, options) =>
@@ -1488,15 +1490,13 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "DELETE",
-        url:
-          `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
         options,
       }),
     deleteOwnReaction: (channelId, messageId, emoji, options) =>
       fetch({
         method: "DELETE",
-        url:
-          `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
+        url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
         options,
       }),
     deleteStageInstance: (channelId, options) =>
@@ -1508,8 +1508,7 @@ export function createRoutes<O = any>(
     deleteUserReaction: (channelId, messageId, emoji, userId, options) =>
       fetch({
         method: "DELETE",
-        url:
-          `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/${userId}`,
+        url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}/${userId}`,
         options,
       }),
     deleteWebhook: (webhookId, options) =>
@@ -1546,8 +1545,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PUT",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
         params,
         options,
       }),
@@ -1567,8 +1565,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PATCH",
-        url:
-          `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         params,
         options,
       }),
@@ -1588,8 +1585,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PATCH",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
         params,
         options,
       }),
@@ -1608,8 +1604,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "PATCH",
-        url:
-          `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
         params,
         options,
       }),
@@ -1654,8 +1649,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
         options,
       }),
     getApplicationRoleConnectionMetadataRecords: (applicationId, options) =>
@@ -1747,8 +1741,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url:
-          `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
+        url: `/webhooks/${applicationId}/${interactionToken}/messages/${messageId}`,
         params,
         options,
       }),
@@ -1787,15 +1780,13 @@ export function createRoutes<O = any>(
     getGuildApplicationCommand: (applicationId, guildId, commandId, options) =>
       fetch({
         method: "GET",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
         options,
       }),
     getGuildApplicationCommandPermissions: (applicationId, guildId, options) =>
       fetch({
         method: "GET",
-        url:
-          `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
+        url: `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
         options,
       }),
     getGuildApplicationCommands: (applicationId, guildId, params, options) =>
@@ -1895,8 +1886,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url:
-          `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
+        url: `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
         params,
         options,
       }),
@@ -1976,8 +1966,7 @@ export function createRoutes<O = any>(
     ) =>
       fetch({
         method: "GET",
-        url:
-          `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
+        url: `/webhooks/${applicationId}/${interactionToken}/messages/@original`,
         params,
         options,
       }),
@@ -2119,12 +2108,6 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    listNitroStickerPacks: options =>
-      fetch({
-        method: "GET",
-        url: `/sticker-packs`,
-        options,
-      }),
     listPrivateArchivedThreads: (channelId, params, options) =>
       fetch({
         method: "GET",
@@ -2144,6 +2127,12 @@ export function createRoutes<O = any>(
         method: "GET",
         url: `/guilds/${guildId}/scheduled-events`,
         params,
+        options,
+      }),
+    listStickerPacks: options =>
+      fetch({
+        method: "GET",
+        url: `/sticker-packs`,
         options,
       }),
     listThreadMembers: (channelId, params, options) =>
@@ -2372,7 +2361,7 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
-    startThreadInForumChannel: (channelId, params, options) =>
+    startThreadInForumOrMediaChannel: (channelId, params, options) =>
       fetch({
         method: "POST",
         url: `/channels/${channelId}/threads`,
@@ -2435,7 +2424,7 @@ export interface CreateWebhookParams {
   /** image for the default webhook avatar */
   readonly avatar?: string | null
 }
-export const enum DefaultMessageNotificationLevel {
+export enum DefaultMessageNotificationLevel {
   /** members will receive notifications for all messages by default */
   ALL_MESSAGES = 0,
   /** members will receive notifications only for messages that @mention them by default */
@@ -2615,7 +2604,7 @@ export interface EmbedThumbnail {
   /** width of thumbnail */
   readonly width?: number
 }
-export const enum EmbedType {
+export enum EmbedType {
   /** generic embed rendered from embed attributes */
   RICH = "rich",
   /** image embed */
@@ -3394,8 +3383,6 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListJoinedPrivateArchivedThreadParams>,
     options?: O,
   ) => RestResponse<ListJoinedPrivateArchivedThreadResponse>
-  /** Returns the list of sticker packs available to Nitro subscribers. */
-  listNitroStickerPacks: (options?: O) => RestResponse<any>
   /** Returns archived threads in the channel that are of type PRIVATE_THREAD. Threads are ordered by archive_timestamp, in descending order. Requires both the READ_MESSAGE_HISTORY and MANAGE_THREADS permissions. */
   listPrivateArchivedThreads: (
     channelId: string,
@@ -3414,6 +3401,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListScheduledEventsForGuildParams>,
     options?: O,
   ) => RestResponse<Array<GuildScheduledEvent>>
+  /** Returns a list of available sticker packs. */
+  listStickerPacks: (options?: O) => RestResponse<any>
   listThreadMembers: (
     channelId: string,
     params?: Partial<ListThreadMemberParams>,
@@ -3608,10 +3597,10 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<StartThreadFromMessageParams>,
     options?: O,
   ) => RestResponse<Channel>
-  /** Creates a new thread in a forum channel, and sends a message within the created thread. Returns a channel, with a nested message object, on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create and Message Create Gateway event. */
-  startThreadInForumChannel: (
+  /** Creates a new thread in a forum or a media channel, and sends a message within the created thread. Returns a channel, with a nested message object, on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create and Message Create Gateway event. */
+  startThreadInForumOrMediaChannel: (
     channelId: string,
-    params?: Partial<StartThreadInForumChannelParams>,
+    params?: Partial<StartThreadInForumOrMediaChannelParams>,
     options?: O,
   ) => RestResponse<Channel>
   /** Creates a new thread that is not connected to an existing message. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create Gateway event. */
@@ -3646,7 +3635,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     options?: O,
   ) => RestResponse<ApplicationRoleConnection>
 }
-export const enum EventType {
+export enum EventType {
   /** when a member sends or edits a message in the guild */
   MESSAGE_SEND = 1,
 }
@@ -3676,7 +3665,7 @@ export interface ExecuteWebhookParams {
   /** name of thread to create (requires the webhook channel to be a forum channel) */
   readonly thread_name: string
 }
-export const enum ExplicitContentFilterLevel {
+export enum ExplicitContentFilterLevel {
   /** media content will not be scanned */
   DISABLED = 0,
   /** media content sent by members without roles will be scanned */
@@ -3694,27 +3683,7 @@ export interface FollowedChannel {
   /** created target webhook id */
   readonly webhook_id: Snowflake
 }
-export const enum ForumLayoutType {
-  /** No default has been set for forum channel */
-  NOT_SET = 0,
-  /** Display posts as a list */
-  LIST_VIEW = 1,
-  /** Display posts as a collection of tiles */
-  GALLERY_VIEW = 2,
-}
-export interface ForumTag {
-  /** the id of the tag */
-  readonly id: Snowflake
-  /** the name of the tag (0-20 characters) */
-  readonly name: string
-  /** whether this tag can only be added to or removed from threads by a member with the MANAGE_THREADS permission */
-  readonly moderated: boolean
-  /** the id of a guild's custom emoji * */
-  readonly emoji_id?: Snowflake | null
-  /** the unicode character of the emoji * */
-  readonly emoji_name?: string | null
-}
-export interface ForumThreadMessageParam {
+export interface ForumAndMediaThreadMessageParam {
   /** Message contents (up to 2000 characters) */
   readonly content?: string
   /** Up to 10 rich embeds (up to 6000 characters) */
@@ -3733,6 +3702,26 @@ export interface ForumThreadMessageParam {
   readonly attachments?: Array<Attachment>
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
+}
+export enum ForumLayoutType {
+  /** No default has been set for forum channel */
+  NOT_SET = 0,
+  /** Display posts as a list */
+  LIST_VIEW = 1,
+  /** Display posts as a collection of tiles */
+  GALLERY_VIEW = 2,
+}
+export interface ForumTag {
+  /** the id of the tag */
+  readonly id: Snowflake
+  /** the name of the tag (0-20 characters) */
+  readonly name: string
+  /** whether this tag can only be added to or removed from threads by a member with the MANAGE_THREADS permission */
+  readonly moderated: boolean
+  /** the id of a guild's custom emoji * */
+  readonly emoji_id?: Snowflake | null
+  /** the unicode character of the emoji * */
+  readonly emoji_name?: string | null
 }
 export const GatewayIntents = {
   GUILDS: 1 << 0,
@@ -3755,7 +3744,7 @@ export const GatewayIntents = {
   AUTO_MODERATION_CONFIGURATION: 1 << 20,
   AUTO_MODERATION_EXECUTION: 1 << 21,
 } as const
-export const enum GatewayOpcode {
+export enum GatewayOpcode {
   /** An event was dispatched. */
   DISPATCH = 0,
   /** Fired periodically by the client to keep the connection alive. */
@@ -3936,7 +3925,7 @@ export interface Guild {
   readonly owner?: boolean
   /** id of owner */
   readonly owner_id: Snowflake
-  /** total permissions for the user in the guild (excludes overwrites) */
+  /** total permissions for the user in the guild (excludes overwrites and implicit permissions) */
   readonly permissions?: string
   /** voice region id for the guild (deprecated) */
   readonly region?: string | null
@@ -4062,7 +4051,7 @@ export interface GuildEmojisUpdateEvent {
   /** Array of emojis */
   readonly emojis: Array<Emoji>
 }
-export const enum GuildFeature {
+export enum GuildFeature {
   /** guild has access to set an animated guild banner image */
   ANIMATED_BANNER = "ANIMATED_BANNER",
   /** guild has access to set an animated guild icon */
@@ -4104,8 +4093,7 @@ export const enum GuildFeature {
   /** guild is able to set role icons */
   ROLE_ICONS = "ROLE_ICONS",
   /** guild has role subscriptions that can be purchased */
-  ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE =
-    "ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE",
+  ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE = "ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE",
   /** guild has enabled role subscriptions */
   ROLE_SUBSCRIPTIONS_ENABLED = "ROLE_SUBSCRIPTIONS_ENABLED",
   /** guild has enabled ticketed events */
@@ -4210,7 +4198,7 @@ export interface GuildMemberUpdateEvent {
   /** When the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
   readonly communication_disabled_until?: string | null
 }
-export const enum GuildNsfwLevel {
+export enum GuildNsfwLevel {
   DEFAULT = 0,
   EXPLICIT = 1,
   SAFE = 2,
@@ -4310,16 +4298,16 @@ export interface GuildScheduledEventEntityMetadatum {
   /** location of the event (1-100 characters) */
   readonly location?: string
 }
-export const enum GuildScheduledEventEntityType {
+export enum GuildScheduledEventEntityType {
   STAGE_INSTANCE = 1,
   VOICE = 2,
   EXTERNAL = 3,
 }
-export const enum GuildScheduledEventPrivacyLevel {
+export enum GuildScheduledEventPrivacyLevel {
   /** the scheduled event is only accessible to guild members */
   GUILD_ONLY = 2,
 }
-export const enum GuildScheduledEventStatus {
+export enum GuildScheduledEventStatus {
   SCHEDULED = 1,
   ACTIVE = 2,
   COMPLETED = 3,
@@ -4488,9 +4476,8 @@ export interface IntegrationApplication {
   /** the bot associated with this application */
   readonly bot?: User
 }
-export type IntegrationCreateEvent =
-  & Integration
-  & IntegrationCreateEventAdditional
+export type IntegrationCreateEvent = Integration &
+  IntegrationCreateEventAdditional
 export interface IntegrationCreateEventAdditional {
   /** ID of the guild */
   readonly guild_id: Snowflake
@@ -4503,13 +4490,12 @@ export interface IntegrationDeleteEvent {
   /** ID of the bot/OAuth2 application for this discord integration */
   readonly application_id?: Snowflake
 }
-export const enum IntegrationExpireBehavior {
+export enum IntegrationExpireBehavior {
   REMOVE_ROLE = 0,
   KICK = 1,
 }
-export type IntegrationUpdateEvent =
-  & Integration
-  & IntegrationUpdateEventAdditional
+export type IntegrationUpdateEvent = Integration &
+  IntegrationUpdateEventAdditional
 export interface IntegrationUpdateEventAdditional {
   /** ID of the guild */
   readonly guild_id: Snowflake
@@ -4578,7 +4564,7 @@ export interface InteractionCallbackModal {
   /** between 1 and 5 (inclusive) components that make up the modal */
   readonly components: Array<Component>
 }
-export const enum InteractionCallbackType {
+export enum InteractionCallbackType {
   /** ACK a Ping */
   PONG = 1,
   /** respond to an interaction with a message */
@@ -4605,7 +4591,7 @@ export interface InteractionResponse {
   /** an optional response message */
   readonly data?: InteractionCallbackDatum
 }
-export const enum InteractionType {
+export enum InteractionType {
   PING = 1,
   APPLICATION_COMMAND = 2,
   MESSAGE_COMPONENT = 3,
@@ -4695,11 +4681,11 @@ export interface InviteStageInstance {
   /** the topic of the Stage instance (1-120 characters) */
   readonly topic: string
 }
-export const enum InviteTargetType {
+export enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
 }
-export const enum KeywordPresetType {
+export enum KeywordPresetType {
   /** words that may be considered forms of swearing or cursing */
   PROFANITY = 1,
   /** words that refer to sexually explicit behavior or activity */
@@ -4835,7 +4821,7 @@ export interface Locale {
   /** Korean */
   readonly ko?: string
 }
-export const enum MembershipState {
+export enum MembershipState {
   INVITED = 1,
   ACCEPTED = 2,
 }
@@ -4909,7 +4895,7 @@ export interface MessageActivity {
   /** party_id from a Rich Presence event */
   readonly party_id?: string
 }
-export const enum MessageActivityType {
+export enum MessageActivityType {
   JOIN = 1,
   SPECTATE = 2,
   LISTEN = 3,
@@ -5040,7 +5026,7 @@ export interface MessageReference {
   /** when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true */
   readonly fail_if_not_exists?: boolean
 }
-export const enum MessageType {
+export enum MessageType {
   DEFAULT = 0,
   RECIPIENT_ADD = 1,
   RECIPIENT_REMOVE = 2,
@@ -5074,7 +5060,7 @@ export const enum MessageType {
   GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32,
 }
 export type MessageUpdateEvent = MessageCreateEvent
-export const enum MfaLevel {
+export enum MfaLevel {
   /** guild has no MFA/2FA requirement for moderation actions */
   NONE = 0,
   /** guild has a 2FA requirement for moderation actions */
@@ -5115,7 +5101,7 @@ export interface ModifyChannelGuildChannelParams {
   readonly type: ChannelType
   /** the position of the channel in the left-hand listing */
   readonly position?: number | null
-  /** 0-1024 character channel topic (0-4096 characters for GUILD_FORUM channels) */
+  /** 0-1024 character channel topic (0-4096 characters for GUILD_FORUM and GUILD_MEDIA channels) */
   readonly topic?: string | null
   /** whether the channel is nsfw */
   readonly nsfw?: boolean | null
@@ -5135,15 +5121,15 @@ export interface ModifyChannelGuildChannelParams {
   readonly video_quality_mode?: VideoQualityMode | null
   /** the default duration that the clients use (not the API) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity */
   readonly default_auto_archive_duration?: number | null
-  /** channel flags combined as a bitfield. Currently only REQUIRE_TAG (1 << 4) is supported. */
+  /** channel flags combined as a bitfield. Currently only REQUIRE_TAG (1 << 4) is supported by GUILD_FORUM and GUILD_MEDIA channels. HIDE_MEDIA_DOWNLOAD_OPTIONS (1 << 15) is supported only by GUILD_MEDIA channels */
   readonly flags?: number
-  /** the set of tags that can be used in a GUILD_FORUM channel; limited to 20 */
+  /** the set of tags that can be used in a GUILD_FORUM or a GUILD_MEDIA channel; limited to 20 */
   readonly available_tags?: Array<ForumTag>
-  /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM channel */
+  /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
   readonly default_thread_rate_limit_per_user?: number
-  /** the default sort order type used to order posts in GUILD_FORUM channels */
+  /** the default sort order type used to order posts in GUILD_FORUM and GUILD_MEDIA channels */
   readonly default_sort_order?: SortOrderType | null
   /** the default forum layout type used to display posts in GUILD_FORUM channels */
   readonly default_forum_layout?: ForumLayoutType
@@ -5165,9 +5151,9 @@ export interface ModifyChannelThreadParams {
   readonly invitable: boolean
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages, manage_thread, or manage_channel, are unaffected */
   readonly rate_limit_per_user?: number | null
-  /** channel flags combined as a bitfield; PINNED can only be set for threads in forum channels */
+  /** channel flags combined as a bitfield; PINNED can only be set for threads in forum and media channels */
   readonly flags?: number
-  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel; limited to 5 */
+  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM or a GUILD_MEDIA channel; limited to 5 */
   readonly applied_tags?: Array<Snowflake>
 }
 export interface ModifyCurrentMemberParams {
@@ -5246,9 +5232,7 @@ export interface ModifyGuildParams {
   /** verification level */
   readonly verification_level?: VerificationLevel | null
   /** default message notification level */
-  readonly default_message_notifications?:
-    | DefaultMessageNotificationLevel
-    | null
+  readonly default_message_notifications?: DefaultMessageNotificationLevel | null
   /** explicit content filter level */
   readonly explicit_content_filter?: ExplicitContentFilterLevel | null
   /** id for afk channel */
@@ -5370,13 +5354,13 @@ export interface ModifyWebhookParams {
   /** the new channel id this webhook should be moved to */
   readonly channel_id: Snowflake
 }
-export const enum MutableGuildFeature {
+export enum MutableGuildFeature {
   COMMUNITY = "COMMUNITY",
   DISCOVERABLE = "DISCOVERABLE",
   INVITES_DISABLED = "INVITES_DISABLED",
   RAID_ALERTS_DISABLED = "RAID_ALERTS_DISABLED",
 }
-export const enum OAuth2Scope {
+export enum OAuth2Scope {
   /** allows your app to fetch data from a user's "Now Playing/Recently Played" list — not currently available for apps */
   ACTIVITIES_READ = "activities.read",
   /** allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER) */
@@ -5390,8 +5374,7 @@ export const enum OAuth2Scope {
   /** allows your app to update its commands using a Bearer token - client credentials grant only */
   APPLICATIONS_COMMANDS_UPDATE = "applications.commands.update",
   /** allows your app to update permissions for its commands in a guild a user has permissions to */
-  APPLICATIONS_COMMANDS_PERMISSIONS_UPDATE =
-    "applications.commands.permissions.update",
+  APPLICATIONS_COMMANDS_PERMISSIONS_UPDATE = "applications.commands.permissions.update",
   /** allows your app to read entitlements for a user's applications */
   APPLICATIONS_ENTITLEMENTS = "applications.entitlements",
   /** allows your app to read and update store data (SKUs, store listings, achievements, etc.) for a user's applications */
@@ -5435,7 +5418,7 @@ export const enum OAuth2Scope {
   /** this generates a webhook that is returned in the oauth token response for authorization code grants */
   WEBHOOK_INCOMING = "webhook.incoming",
 }
-export const enum OnboardingMode {
+export enum OnboardingMode {
   /** Counts only Default Channels towards constraints */
   ONBOARDING_DEFAULT = 0,
   /** Counts Default Channels and Questions towards constraints */
@@ -5559,7 +5542,7 @@ export const PermissionFlag = {
   /** Allows sending voice messages */
   SEND_VOICE_MESSAGES: BigInt(1) << BigInt(46),
 } as const
-export const enum PremiumTier {
+export enum PremiumTier {
   /** guild has not unlocked any Server Boost perks */
   NONE = 0,
   /** guild has unlocked Server Boost level 1 perks */
@@ -5569,7 +5552,7 @@ export const enum PremiumTier {
   /** guild has unlocked Server Boost level 3 perks */
   TIER_3 = 3,
 }
-export const enum PremiumType {
+export enum PremiumType {
   NONE = 0,
   NITRO_CLASSIC = 1,
   NITRO = 2,
@@ -5587,7 +5570,7 @@ export interface PresenceUpdateEvent {
   /** User's platform-dependent status */
   readonly client_status: ClientStatus
 }
-export const enum PrivacyLevel {
+export enum PrivacyLevel {
   /** The Stage instance is visible publicly. (deprecated) */
   PUBLIC = 1,
   /** The Stage instance is visible to only guild members. */
@@ -5607,17 +5590,29 @@ export interface PromptOption {
   /** Description of the option */
   readonly description?: string | null
 }
-export const enum PromptType {
+export enum PromptType {
   MULTIPLE_CHOICE = 0,
   DROPDOWN = 1,
 }
 export interface Reaction {
-  /** times this emoji has been used to react */
+  /** Total number of times this emoji has been used to react (including super reacts) */
   readonly count: number
-  /** whether the current user reacted using this emoji */
+  /** Reaction count details object */
+  readonly count_details: ReactionCountDetail
+  /** Whether the current user reacted using this emoji */
   readonly me: boolean
+  /** Whether the current user super-reacted using this emoji */
+  readonly me_burst: boolean
   /** emoji information */
   readonly emoji: Emoji
+  /** HEX colors used for super reaction */
+  readonly burst_colors: Array<any>
+}
+export interface ReactionCountDetail {
+  /** Count of super reactions */
+  readonly burst: number
+  /** Count of normal reactions */
+  readonly normal: number
 }
 export interface ReadyEvent {
   /** API version */
@@ -5706,8 +5701,7 @@ export interface ReceiveEvents {
   RESUMED: ResumedEvent
   RECONNECT: ReconnectEvent
   INVALID_SESSION: InvalidSessionEvent
-  APPLICATION_COMMAND_PERMISSIONS_UPDATE:
-    ApplicationCommandPermissionsUpdateEvent
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE: ApplicationCommandPermissionsUpdateEvent
   AUTO_MODERATION_RULE_CREATE: AutoModerationRuleCreateEvent
   AUTO_MODERATION_RULE_UPDATE: AutoModerationRuleUpdateEvent
   AUTO_MODERATION_RULE_DELETE: AutoModerationRuleDeleteEvent
@@ -5945,7 +5939,7 @@ export interface SessionStartLimit {
   readonly max_concurrency: number
 }
 export type Snowflake = `${bigint}`
-export const enum SortOrderType {
+export enum SortOrderType {
   /** Sort forum posts by activity */
   LATEST_ACTIVITY = 0,
   /** Sort forum posts by creation time (from most recent to oldest) */
@@ -5978,36 +5972,16 @@ export interface StartThreadFromMessageParams {
   /** amount of seconds a user has to wait before sending another message (0-21600) */
   readonly rate_limit_per_user?: number | null
 }
-export interface StartThreadInForumChannelForumThreadMessageParams {
-  /** Message contents (up to 2000 characters) */
-  readonly content?: string
-  /** Up to 10 rich embeds (up to 6000 characters) */
-  readonly embeds?: Array<Embed>
-  /** Allowed mentions for the message */
-  readonly allowed_mentions?: AllowedMention
-  /** Components to include with the message */
-  readonly components?: Array<Component>
-  /** IDs of up to 3 stickers in the server to send in the message */
-  readonly sticker_ids?: Array<Snowflake>
-  /** Contents of the file being sent. See Uploading Files */
-  readonly files: string
-  /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
-  readonly payload_json?: string
-  /** Attachment objects with filename and description. See Uploading Files */
-  readonly attachments?: Array<Attachment>
-  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
-  readonly flags?: number
-}
-export interface StartThreadInForumChannelParams {
+export interface StartThreadInForumOrMediaChannelParams {
   /** 1-100 character channel name */
   readonly name: string
   /** duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080 */
   readonly auto_archive_duration?: number
   /** amount of seconds a user has to wait before sending another message (0-21600) */
   readonly rate_limit_per_user?: number | null
-  /** contents of the first message in the forum thread */
-  readonly message: StartThreadInForumChannelForumThreadMessageParams
-  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
+  /** contents of the first message in the forum/media thread */
+  readonly message: Message
+  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly applied_tags?: Array<Snowflake>
 }
 export interface StartThreadWithoutMessageParams {
@@ -6022,7 +5996,7 @@ export interface StartThreadWithoutMessageParams {
   /** amount of seconds a user has to wait before sending another message (0-21600) */
   readonly rate_limit_per_user?: number | null
 }
-export const enum StatusType {
+export enum StatusType {
   /** Online */
   ONLINE = "online",
   /** Do Not Disturb */
@@ -6060,7 +6034,7 @@ export interface Sticker {
   /** the standard sticker's sort order within its pack */
   readonly sort_value?: number
 }
-export const enum StickerFormatType {
+export enum StickerFormatType {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
@@ -6090,8 +6064,8 @@ export interface StickerPack {
   /** id of the sticker pack's banner image */
   readonly banner_asset_id?: Snowflake
 }
-export const enum StickerType {
-  /** an official sticker in a pack, part of Nitro or in a removed purchasable pack */
+export enum StickerType {
+  /** an official sticker in a pack */
   STANDARD = 1,
   /** a sticker uploaded to a guild for the guild's members */
   GUILD = 2,
@@ -6111,26 +6085,36 @@ export const SystemChannelFlag = {
   SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATION_REPLIES: 1 << 5,
 } as const
 export interface Team {
-  /** a hash of the image of the team's icon */
+  /** Hash of the image of the team's icon */
   readonly icon?: string | null
-  /** the unique id of the team */
+  /** Unique ID of the team */
   readonly id: Snowflake
-  /** the members of the team */
+  /** Members of the team */
   readonly members: Array<TeamMember>
-  /** the name of the team */
+  /** Name of the team */
   readonly name: string
-  /** the user id of the current team owner */
+  /** User ID of the current team owner */
   readonly owner_user_id: Snowflake
 }
 export interface TeamMember {
-  /** the user's membership state on the team */
+  /** User's membership state on the team */
   readonly membership_state: MembershipState
-  /** will always be ["*"] */
-  readonly permissions: Array<string>
-  /** the id of the parent team of which they are a member */
+  /** ID of the parent team of which they are a member */
   readonly team_id: Snowflake
-  /** the avatar, discriminator, id, and username of the user */
+  /** Avatar, discriminator, ID, and username of the user */
   readonly user: User
+  /** Role of the team member */
+  readonly role: TeamMemberRoleType
+}
+export enum TeamMemberRoleType {
+  /** Owners are the most permissiable role, and can take destructive, irreversible actions like deleting team-owned apps or the team itself. Teams are limited to 1 owner. */
+  OWNER = "",
+  /** Admins have similar access as owners, except they cannot take destructive actions on the team or team-owned apps. */
+  ADMIN = "admin",
+  /** Developers can access information about team-owned apps, like the client secret or public key. They can also take limited actions on team-owned apps, like configuring interaction endpoints or resetting the bot token. Members with the Developer role cannot manage the team or its members, or take destructive actions on team-owned apps. */
+  DEVELOPER = "developer",
+  /** Read-only members can access information about a team and any team-owned apps. Some examples include getting the IDs of applications and exporting payout records. */
+  READONLY = "read_only",
 }
 export interface TextInput {
   /** 4 for a text input */
@@ -6152,7 +6136,7 @@ export interface TextInput {
   /** Custom placeholder text if the input is empty; max 100 characters */
   readonly placeholder?: string
 }
-export const enum TextInputStyle {
+export enum TextInputStyle {
   /** Single-line input */
   SHORT = 1,
   /** Multi-line input */
@@ -6228,7 +6212,7 @@ export interface TriggerMetadatum {
   /** MENTION_SPAM */
   readonly mention_raid_protection_enabled: boolean
 }
-export const enum TriggerType {
+export enum TriggerType {
   /** check if content contains words from a user defined list of keywords */
   KEYWORD = 1,
   /** check if content represents generic spam */
@@ -6353,7 +6337,7 @@ export const UserFlag = {
   ACTIVE_DEVELOPER: 1 << 22,
 } as const
 export type UserUpdateEvent = User
-export const enum VerificationLevel {
+export enum VerificationLevel {
   /** unrestricted */
   NONE = 0,
   /** must have verified email on account */
@@ -6365,19 +6349,19 @@ export const enum VerificationLevel {
   /** must have a verified phone number */
   VERY_HIGH = 4,
 }
-export const enum VideoQualityMode {
+export enum VideoQualityMode {
   /** Discord chooses the quality for optimal performance */
   AUTO = 1,
   /** 720p */
   FULL = 2,
 }
-export const enum VisibilityType {
+export enum VisibilityType {
   /** invisible to everyone except the user themselves */
   NONE = 0,
   /** visible to everyone */
   EVERYONE = 1,
 }
-export const enum VoiceOpcode {
+export enum VoiceOpcode {
   /** Begin a voice websocket connection. */
   IDENTIFY = 0,
   /** Select the voice protocol. */
@@ -6482,7 +6466,7 @@ export interface WebhooksUpdateEvent {
   /** ID of the channel */
   readonly channel_id: Snowflake
 }
-export const enum WebhookType {
+export enum WebhookType {
   /** Incoming Webhooks can post messages to channels with a generated token */
   INCOMING = 1,
   /** Channel Follower Webhooks are internal webhooks used with Channel Following to post new messages into channels */

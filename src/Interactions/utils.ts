@@ -7,11 +7,12 @@ import type * as Discord from "dfx/types"
 export type DefinitionFlattened<R, E, TE, A> = D.InteractionDefinition<
   R,
   E
-> extends infer D ? {
-    [K in keyof D]: K extends "handle"
-      ? (_: Discord.Interaction) => Effect.Effect<R, TE, A>
-      : D[K]
-  }
+> extends infer D
+  ? {
+      [K in keyof D]: K extends "handle"
+        ? (_: Discord.Interaction) => Effect.Effect<R, TE, A>
+        : D[K]
+    }
   : never
 
 export type DefinitionFlattenedCommand<R, E, TE, A> = Extract<
@@ -44,11 +45,13 @@ export const flattenDefinitions = <R, E, TE, A, B>(
     handle: (i: Discord.Interaction) =>
       Effect.isEffect(definition.handle)
         ? transform(
-          Effect.flatMap(definition.handle, _ => handleResponse(i, _)),
-        )
+            Effect.flatMap(definition.handle, _ => handleResponse(i, _)),
+          )
         : transform(
-          Effect.flatMap(definition.handle(context), _ => handleResponse(i, _)),
-        ),
+            Effect.flatMap(definition.handle(context), _ =>
+              handleResponse(i, _),
+            ),
+          ),
   }))
 
 export const splitDefinitions = <R, E, TE, A>(
@@ -79,10 +82,11 @@ export const splitDefinitions = <R, E, TE, A>(
   ).pipe(
     Chunk.reduce(
       {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
-      (acc, d) => ({
-        ...acc,
-        [d.command.name]: d,
-      } as any),
+      (acc, d) =>
+        ({
+          ...acc,
+          [d.command.name]: d,
+        }) as any,
     ),
   )
 

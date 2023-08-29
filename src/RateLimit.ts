@@ -43,7 +43,7 @@ export interface RateLimitStore {
 export const RateLimitStore = Tag<RateLimitStore>()
 export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
 
-const makeLimiter = Effect.gen(function*(_) {
+const makeLimiter = Effect.gen(function* (_) {
   const store = yield* _(RateLimitStore)
   const log = yield* _(Log)
 
@@ -64,10 +64,10 @@ const makeLimiter = Effect.gen(function*(_) {
           windowMs,
           limit,
           delay: Duration.toMillis(d),
-        })
+        }),
       ),
       Effect.tap(_ =>
-        Duration.toMillis(_) === 0 ? Effect.unit : Effect.sleep(_)
+        Duration.toMillis(_) === 0 ? Effect.unit : Effect.sleep(_),
       ),
       Effect.asUnit,
     )
@@ -77,7 +77,6 @@ const makeLimiter = Effect.gen(function*(_) {
 })
 
 export interface RateLimiter
-  extends Effect.Effect.Success<typeof makeLimiter>
-{}
+  extends Effect.Effect.Success<typeof makeLimiter> {}
 export const RateLimiter = Tag<RateLimiter>()
 export const LiveRateLimiter = Layer.effect(RateLimiter, makeLimiter)

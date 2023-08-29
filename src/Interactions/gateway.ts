@@ -29,88 +29,90 @@ export interface RunOpts {
 /**
  * @tsplus pipeable dfx/InteractionBuilder runGateway
  */
-export const run = <R, R2, E, TE, E2>(
-  postHandler: (
-    effect: Effect.Effect<
-      R | DiscordREST | Discord.Interaction,
-      TE | DiscordRESTError | DefinitionNotFound,
-      void
-    >,
-  ) => Effect.Effect<R2, E2, void>,
-  { sync = true }: RunOpts = {},
-) =>
-(
-  ix: InteractionBuilder<R, E, TE>,
-): Effect.Effect<
-  DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
-  E2 | DiscordRESTError | Http.error.ResponseError,
-  never
-> =>
-  Effect.gen(function*(_) {
-    const GlobalApplicationCommand = ix.definitions.pipe(
-      Chunk.map(_ => _[0]),
-      Chunk.filter(
-        (_): _ is GlobalApplicationCommand<R, E> =>
-          _._tag === "GlobalApplicationCommand",
-      ),
-      Chunk.toReadonlyArray,
-    )
-    const GuildApplicationCommand = ix.definitions.pipe(
-      Chunk.map(_ => _[0]),
-      Chunk.filter(
-        (_): _ is GuildApplicationCommand<R, E> =>
-          _._tag === "GuildApplicationCommand",
-      ),
-      Chunk.toReadonlyArray,
-    )
-
-    const gateway = yield* _(DiscordGateway)
-    const rest = yield* _(DiscordREST)
-
-    const application = yield* _(
-      rest.getCurrentBotApplicationInformation(),
-      Effect.flatMap(a => a.json),
-    )
-
-    const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
-      application.id,
-      {
-        body: Http.body.unsafeJson(
-          GlobalApplicationCommand.map(_ => _.command),
+export const run =
+  <R, R2, E, TE, E2>(
+    postHandler: (
+      effect: Effect.Effect<
+        R | DiscordREST | Discord.Interaction,
+        TE | DiscordRESTError | DefinitionNotFound,
+        void
+      >,
+    ) => Effect.Effect<R2, E2, void>,
+    { sync = true }: RunOpts = {},
+  ) =>
+  (
+    ix: InteractionBuilder<R, E, TE>,
+  ): Effect.Effect<
+    DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
+    E2 | DiscordRESTError | Http.error.ResponseError,
+    never
+  > =>
+    Effect.gen(function* (_) {
+      const GlobalApplicationCommand = ix.definitions.pipe(
+        Chunk.map(_ => _[0]),
+        Chunk.filter(
+          (_): _ is GlobalApplicationCommand<R, E> =>
+            _._tag === "GlobalApplicationCommand",
         ),
-      },
-    )
+        Chunk.toReadonlyArray,
+      )
+      const GuildApplicationCommand = ix.definitions.pipe(
+        Chunk.map(_ => _[0]),
+        Chunk.filter(
+          (_): _ is GuildApplicationCommand<R, E> =>
+            _._tag === "GuildApplicationCommand",
+        ),
+        Chunk.toReadonlyArray,
+      )
 
-    const guildSync = GuildApplicationCommand.length
-      ? gateway.handleDispatch("GUILD_CREATE", a =>
-        rest.bulkOverwriteGuildApplicationCommands(
-          application.id,
-          a.id,
-          GuildApplicationCommand.map(_ =>
-            _.command
-          ) as any,
-        ))
-      : Effect.never
+      const gateway = yield* _(DiscordGateway)
+      const rest = yield* _(DiscordREST)
 
-    const handle = handlers(ix.definitions, (i, r) =>
-      rest.createInteractionResponse(i.id, i.token, r))
+      const application = yield* _(
+        rest.getCurrentBotApplicationInformation(),
+        Effect.flatMap(a => a.json),
+      )
 
-    const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
-      Effect.provideService(postHandler(handle[i.type](i)), Interaction, i))
+      const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
+        application.id,
+        {
+          body: Http.body.unsafeJson(
+            GlobalApplicationCommand.map(_ => _.command),
+          ),
+        },
+      )
 
-    return yield* _(
-      sync
-        ? Effect.forever(
-          Effect.all([run, globalSync, guildSync], {
-            concurrency: "unbounded",
-            discard: true,
-          }),
-        )
-        : run,
-    )
-  })
+      const guildSync = GuildApplicationCommand.length
+        ? gateway.handleDispatch("GUILD_CREATE", a =>
+            rest.bulkOverwriteGuildApplicationCommands(
+              application.id,
+              a.id,
+              GuildApplicationCommand.map(_ => _.command) as any,
+            ),
+          )
+        : Effect.never
 
-const makeRegistry = Effect.gen(function*(_) {
+      const handle = handlers(ix.definitions, (i, r) =>
+        rest.createInteractionResponse(i.id, i.token, r),
+      )
+
+      const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
+        Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
+      )
+
+      return yield* _(
+        sync
+          ? Effect.forever(
+              Effect.all([run, globalSync, guildSync], {
+                concurrency: "unbounded",
+                discard: true,
+              }),
+            )
+          : run,
+      )
+    })
+
+const makeRegistry = Effect.gen(function* (_) {
   const ref = yield* _(
     Ref.make(builder as InteractionBuilder<never, never, never>),
   )
@@ -134,7 +136,8 @@ const makeRegistry = Effect.gen(function*(_) {
       Effect.delay(
         pipe(ix, run(Effect.catchAllCause(onError), opts)),
         Duration.seconds(0.1),
-      ))
+      ),
+    )
 
   return { register, run: run_ } as const
 })

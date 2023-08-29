@@ -22,7 +22,10 @@ export class WebSocketError {
 
 export class WebSocketCloseError {
   readonly _tag = "WebSocketCloseError"
-  constructor(readonly code: number, readonly reason: string) {}
+  constructor(
+    readonly code: number,
+    readonly reason: string,
+  ) {}
 }
 
 const isReconnect = (
@@ -38,7 +41,7 @@ const socket = (urlRef: Ref.Ref<string>) =>
         // eslint-disable-next-line no-extra-semi
         ;(ws as any).removeAllListeners?.()
         ws.close()
-      })
+      }),
     ),
   )
 
@@ -72,7 +75,7 @@ const offer = (
             resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
           })
         },
-      )
+      ),
     ),
   )
 
@@ -117,7 +120,7 @@ const send = (
     Effect.forever,
   )
 
-const make = Effect.gen(function*(_) {
+const make = Effect.gen(function* (_) {
   const log = yield* _(Log)
 
   const connect = (
@@ -126,7 +129,7 @@ const make = Effect.gen(function*(_) {
     onConnecting = Effect.unit,
     openTimeout = Duration.seconds(3),
   ) =>
-    Effect.gen(function*(_) {
+    Effect.gen(function* (_) {
       const queue = yield* _(Queue.unbounded<WebSocket.Data>())
 
       const run = onConnecting.pipe(
@@ -140,7 +143,7 @@ const make = Effect.gen(function*(_) {
               ),
             ],
             { concurrency: "unbounded", discard: true },
-          )
+          ),
         ),
         Effect.scoped,
         Effect.retryWhile(isReconnect),

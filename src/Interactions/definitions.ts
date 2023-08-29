@@ -25,9 +25,8 @@ export class GlobalApplicationCommand<R, E> {
 export const global = <
   R,
   E,
-  const A extends DeepReadonlyObject<
-    Discord.CreateGlobalApplicationCommandParams
-  >,
+  const A extends
+    DeepReadonlyObject<Discord.CreateGlobalApplicationCommandParams>,
 >(
   command: A,
   handle: CommandHandler<R, E, A>,
@@ -48,9 +47,8 @@ export class GuildApplicationCommand<R, E> {
 export const guild = <
   R,
   E,
-  const A extends DeepReadonlyObject<
-    Discord.CreateGuildApplicationCommandParams
-  >,
+  const A extends
+    DeepReadonlyObject<Discord.CreateGuildApplicationCommandParams>,
 >(
   command: A,
   handle: CommandHandler<R, E, A>,
@@ -123,9 +121,12 @@ export const autocomplete = <R1, R2, E1, E2>(
   >(pred as any, handle as any)
 
 // ==== Command handler helpers
-type DeepReadonly<T> = T extends Array<infer R> ? ReadonlyArray<DeepReadonly<R>>
-  : T extends Function ? T
-  : T extends object ? DeepReadonlyObject<T>
+type DeepReadonly<T> = T extends Array<infer R>
+  ? ReadonlyArray<DeepReadonly<R>>
+  : T extends Function
+  ? T
+  : T extends object
+  ? DeepReadonlyObject<T>
   : T
 type DeepReadonlyObject<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>
@@ -162,26 +163,29 @@ export interface CommandHelper<A> {
   >
 
   subCommands: <
-    NER extends SubCommandNames<A> extends never ? never
+    NER extends SubCommandNames<A> extends never
+      ? never
       : Record<
-        SubCommandNames<A>,
-        Effect.Effect<any, any, Discord.InteractionResponse>
-      >,
+          SubCommandNames<A>,
+          Effect.Effect<any, any, Discord.InteractionResponse>
+        >,
   >(
     commands: NER,
   ) => Effect.Effect<
     | Exclude<
-      [NER[keyof NER]] extends [
-        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-      ] ? R
-        : never,
-      SubCommandContext
-    >
+        [NER[keyof NER]] extends [
+          { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
+        ]
+          ? R
+          : never,
+        SubCommandContext
+      >
     | Discord.Interaction
     | Discord.ApplicationCommandDatum,
     [NER[keyof NER]] extends [
       { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-    ] ? E
+    ]
+      ? E
       : never,
     Discord.InteractionResponse
   >
@@ -201,9 +205,10 @@ interface CommandOption {
 type SubCommands<A> = A extends {
   readonly type: Discord.ApplicationCommandOptionType.SUB_COMMAND
   readonly options?: ReadonlyArray<CommandOption>
-} ? A
+}
+  ? A
   : A extends { readonly options: ReadonlyArray<CommandOption> }
-    ? SubCommands<A["options"][number]>
+  ? SubCommands<A["options"][number]>
   : never
 
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
@@ -280,16 +285,20 @@ type SubCommandResolvables<A> = Extract<
 type AllResolvables<A> = Resolvables<A> | SubCommandResolvables<A>
 
 // == Utilities
-type StringLiteral<T> = T extends string ? string extends T ? never
-  : T
+type StringLiteral<T> = T extends string
+  ? string extends T
+    ? never
+    : T
   : never
 
 type Option<A> = A extends { readonly name: infer N }
-  ? N extends StringLiteral<N> ? A
-  : never
+  ? N extends StringLiteral<N>
+    ? A
+    : never
   : never
 
 type OptionsWithLiteral<A, T> = A extends {
   readonly options: ReadonlyArray<CommandOption>
-} ? Extract<A["options"][number], Option<A["options"][number]> & T>
+}
+  ? Extract<A["options"][number], Option<A["options"][number]> & T>
   : never

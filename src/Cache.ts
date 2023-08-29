@@ -97,7 +97,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
                 Effect.all(
                   entries.map(([id, a]) => driver.set(parentId, id, a)),
                   { concurrency: "unbounded" },
-                )
+                ),
               ),
               Effect.map(entries => new Map(entries) as ReadonlyMap<string, A>),
             ),
@@ -167,5 +167,8 @@ export const make = <EOps, EDriver, EMiss, A>({
 
 export class CacheMissError {
   readonly _tag = "CacheMissError"
-  constructor(readonly cacheName: string, readonly id: string) {}
+  constructor(
+    readonly cacheName: string,
+    readonly id: string,
+  ) {}
 }

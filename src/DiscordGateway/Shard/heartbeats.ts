@@ -11,9 +11,8 @@ import type * as Discord from "dfx/types"
 import * as EffectU from "dfx/utils/Effect"
 
 const payload = (seqRef: Ref.Ref<Option.Option<number>>) =>
-  Effect.map(
-    Ref.get(seqRef),
-    seq => SendEvents.heartbeat(Option.getOrNull(seq)),
+  Effect.map(Ref.get(seqRef), seq =>
+    SendEvents.heartbeat(Option.getOrNull(seq)),
   )
 
 const payloadOrReconnect = (

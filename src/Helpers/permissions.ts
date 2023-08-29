@@ -84,8 +84,8 @@ export const forChannel =
     } else {
       const everyone = roles.find(role => role.name === "@everyone")
 
-      basePermissions = BigInt(everyone?.permissions || "0")
-        | BigInt(memberOrRole.permissions)
+      basePermissions =
+        BigInt(everyone?.permissions || "0") | BigInt(memberOrRole.permissions)
       filteredOverwrites = overwrites.filter(
         overwriteIsForRole(guild_id)(memberOrRole),
       )

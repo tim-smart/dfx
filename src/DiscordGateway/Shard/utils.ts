@@ -13,15 +13,16 @@ export const opCode =
       Stream.filter((p): p is Discord.GatewayPayload<T> => p.op === code),
     )
 
-const maybeUpdateRef = <T>(
-  f: (p: Discord.GatewayPayload) => Option.Option<T>,
-  ref: Ref.Ref<Option.Option<T>>,
-) =>
-(_: Discord.GatewayPayload): Effect.Effect<never, never, void> =>
-  Option.match(f(_), {
-    onNone: () => Effect.unit,
-    onSome: a => Ref.set(ref, Option.some(a)),
-  })
+const maybeUpdateRef =
+  <T>(
+    f: (p: Discord.GatewayPayload) => Option.Option<T>,
+    ref: Ref.Ref<Option.Option<T>>,
+  ) =>
+  (_: Discord.GatewayPayload): Effect.Effect<never, never, void> =>
+    Option.match(f(_), {
+      onNone: () => Effect.unit,
+      onSome: a => Ref.set(ref, Option.some(a)),
+    })
 
 export const latest = <T>(
   f: (p: Discord.GatewayPayload) => Option.Option<T>,

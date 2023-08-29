@@ -17,10 +17,10 @@ export const subscribeForEachPar = <R, E, A, X>(
             effect(_).pipe(
               Effect.catchAllCause(_ => Deferred.failCause(deferred, _)),
               Effect.forkScoped,
-            )
+            ),
           ),
           Effect.forever,
-        )
+        ),
       ),
       Effect.scoped,
     )
@@ -41,26 +41,24 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       Effect.fork(Effect.unit),
     ),
   ]).pipe(
-    Effect.flatMap(
-      ([causeDeferred, fiberRef]) => {
-        const run = self.pipe(
-          Effect.flatMap(_ =>
-            ScopedRef.set(
-              fiberRef,
-              f(_).pipe(
-                Effect.tapErrorCause(_ => Deferred.failCause(causeDeferred, _)),
-                Effect.forkScoped,
-              ),
-            )
+    Effect.flatMap(([causeDeferred, fiberRef]) => {
+      const run = self.pipe(
+        Effect.flatMap(_ =>
+          ScopedRef.set(
+            fiberRef,
+            f(_).pipe(
+              Effect.tapErrorCause(_ => Deferred.failCause(causeDeferred, _)),
+              Effect.forkScoped,
+            ),
           ),
-          Effect.forever,
-        )
+        ),
+        Effect.forever,
+      )
 
-        return Effect.all([run, Deferred.await(causeDeferred)], {
-          concurrency: "unbounded",
-          discard: true,
-        }) as Effect.Effect<R | R1, E | E1, never>
-      },
-    ),
+      return Effect.all([run, Deferred.await(causeDeferred)], {
+        concurrency: "unbounded",
+        discard: true,
+      }) as Effect.Effect<R | R1, E | E1, never>
+    }),
     Effect.scoped,
   )

@@ -57,8 +57,5 @@ export const webhookLayerConfig = (
   RateLimiter | DiscordREST | WebhookConfig
 > =>
   Layer.unwrapEffect(
-    Effect.map(
-      Effect.config(Config.unwrap(config)),
-      webhookLayer,
-    ),
+    Effect.map(Effect.config(Config.unwrap(config)), webhookLayer),
   )

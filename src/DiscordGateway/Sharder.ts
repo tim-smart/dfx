@@ -24,7 +24,7 @@ const claimRepeatPolicy = Schedule.spaced("3 minutes").pipe(
   Schedule.passthrough,
 ) as Schedule.Schedule<never, Option.Option<number>, Option.Some<number>>
 
-const make = Effect.gen(function*(_) {
+const make = Effect.gen(function* (_) {
   const store = yield* _(ShardStore)
   const rest = yield* _(DiscordREST)
   const { gateway: config } = yield* _(DiscordConfig)
@@ -33,7 +33,7 @@ const make = Effect.gen(function*(_) {
   const currentShards = yield* _(Ref.make(HashSet.empty<RunningShard>()))
 
   const takeConfig = (totalCount: number) =>
-    Effect.gen(function*(_) {
+    Effect.gen(function* (_) {
       const currentCount = yield* _(Ref.make(0))
 
       const claimId = (
@@ -51,7 +51,7 @@ const make = Effect.gen(function*(_) {
 
       return Ref.getAndUpdate(currentCount, _ => _ + 1).pipe(
         Effect.flatMap(claimId),
-        Effect.map(id => ({ id, totalCount } as const)),
+        Effect.map(id => ({ id, totalCount }) as const),
       )
     })
 
@@ -68,7 +68,7 @@ const make = Effect.gen(function*(_) {
           reset_after: 0,
           max_concurrency: 1,
         },
-      })
+      }),
     ),
   )
 
@@ -76,7 +76,7 @@ const make = Effect.gen(function*(_) {
     hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
     sendQueue: Queue.Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
   ) =>
-    Effect.gen(function*(_) {
+    Effect.gen(function* (_) {
       const deferred = yield* _(
         Deferred.make<WebSocketError | WebSocketCloseError, never>(),
       )
@@ -93,10 +93,10 @@ const make = Effect.gen(function*(_) {
             `dfx.sharder.${id % concurrency}`,
             Duration.millis(config.identifyRateLimit[0]),
             config.identifyRateLimit[1],
-          )
+          ),
         ),
         Effect.flatMap(c =>
-          shard.connect([c.id, c.totalCount], hub, sendQueue)
+          shard.connect([c.id, c.totalCount], hub, sendQueue),
         ),
         Effect.flatMap(shard =>
           Effect.acquireUseRelease(
@@ -106,7 +106,7 @@ const make = Effect.gen(function*(_) {
           ).pipe(
             Effect.catchAllCause(_ => Deferred.failCause(deferred, _)),
             Effect.fork,
-          )
+          ),
         ),
         Effect.forever,
       )
