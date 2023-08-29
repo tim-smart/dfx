@@ -1,3 +1,4 @@
+import { pipe } from "@effect/data/Function"
 import * as Deferred from "@effect/io/Deferred"
 import * as Effect from "@effect/io/Effect"
 import type * as Fiber from "@effect/io/Fiber"
@@ -10,16 +11,17 @@ export const subscribeForEachPar = <R, E, A, X>(
   effect: (_: A) => Effect.Effect<R, E, X>,
 ): Effect.Effect<R, E, never> =>
   Effect.flatMap(Deferred.make<E, never>(), deferred => {
-    const run = Hub.subscribe(self).pipe(
+    const run = pipe(
+      Hub.subscribe(self),
       Effect.flatMap(queue =>
-        Queue.take(queue).pipe(
-          Effect.flatMap(_ =>
-            effect(_).pipe(
-              Effect.catchAllCause(_ => Deferred.failCause(deferred, _)),
-              Effect.forkScoped,
+        Effect.forever(
+          Effect.flatMap(Queue.take(queue), _ =>
+            Effect.forkScoped(
+              Effect.catchAllCause(effect(_), _ =>
+                Deferred.failCause(deferred, _),
+              ),
             ),
           ),
-          Effect.forever,
         ),
       ),
       Effect.scoped,
@@ -35,24 +37,25 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
   self: Effect.Effect<R, E, A>,
   f: (_: A) => Effect.Effect<R1, E1, X>,
 ): Effect.Effect<R | R1, E | E1, never> =>
-  Effect.all([
-    Deferred.make<E1, never>(),
-    ScopedRef.fromAcquire<R1, never, Fiber.RuntimeFiber<unknown, unknown>>(
-      Effect.fork(Effect.unit),
-    ),
-  ]).pipe(
+  pipe(
+    Effect.all([
+      Deferred.make<E1, never>(),
+      ScopedRef.fromAcquire<R1, never, Fiber.RuntimeFiber<unknown, unknown>>(
+        Effect.fork(Effect.unit),
+      ),
+    ]),
     Effect.flatMap(([causeDeferred, fiberRef]) => {
-      const run = self.pipe(
-        Effect.flatMap(_ =>
+      const run = Effect.forever(
+        Effect.flatMap(self, _ =>
           ScopedRef.set(
             fiberRef,
-            f(_).pipe(
-              Effect.tapErrorCause(_ => Deferred.failCause(causeDeferred, _)),
-              Effect.forkScoped,
+            Effect.forkScoped(
+              Effect.tapErrorCause(f(_), _ =>
+                Deferred.failCause(causeDeferred, _),
+              ),
             ),
           ),
         ),
-        Effect.forever,
       )
 
       return Effect.all([run, Deferred.await(causeDeferred)], {

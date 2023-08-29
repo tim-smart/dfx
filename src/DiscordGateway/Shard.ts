@@ -1,6 +1,7 @@
 import * as Chunk from "@effect/data/Chunk"
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
+import { pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
 import * as ConfigSecret from "@effect/io/Config/Secret"
 import * as Effect from "@effect/io/Effect"
@@ -64,13 +65,15 @@ export const make = Effect.gen(function* (_) {
 
       const prioritySend = (p: Message) => Queue.offer(outboundQueue, p)
 
-      const resume = setPhase(Phase.Connected).pipe(
+      const resume = pipe(
+        setPhase(Phase.Connected),
         Effect.zipRight(Queue.takeAll(pendingQueue)),
         Effect.tap(_ => Queue.offerAll(outboundQueue, _)),
         Effect.asUnit,
       )
 
-      const onConnecting = Queue.takeAll(outboundQueue).pipe(
+      const onConnecting = pipe(
+        Queue.takeAll(outboundQueue),
         Effect.tap(msgs =>
           Queue.offerAll(
             pendingQueue,
@@ -89,32 +92,27 @@ export const make = Effect.gen(function* (_) {
 
       const socket = yield* _(dws.connect({ outbound, onConnecting }))
 
+      const isReady = Option.liftPredicate(
+        (
+          p: Discord.GatewayPayload,
+        ): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
+          p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
+      )
+
       const [latestReady, updateLatestReady] = yield* _(
-        Utils.latest(p =>
-          Option.some(p).pipe(
-            Option.filter(
-              (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
-                p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
-            ),
-            Option.map(p => p.d!),
-          ),
-        ),
+        Utils.latest(p => Option.map(isReady(p), p => p.d!)),
       )
       const [latestSequence, updateLatestSequence] = yield* _(
         Utils.latest(p => Option.fromNullable(p.s)),
       )
       const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
-        Option.some(p).pipe(
-          Option.filter(
-            (p): p is Discord.GatewayPayload<Discord.ReadyEvent> =>
-              p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
-          ),
-          Option.map(p => p.d!),
-          Option.match({
+        Option.match(
+          Option.map(isReady(p), p => p.d!),
+          {
             onNone: () => Effect.unit,
             onSome: ({ resume_gateway_url }) =>
               socket.setUrl(resume_gateway_url),
-          }),
+          },
         )
 
       const hellos = yield* _(Queue.unbounded<Discord.GatewayPayload>())
@@ -141,13 +139,15 @@ export const make = Effect.gen(function* (_) {
       )
 
       const onPayload = (p: Discord.GatewayPayload) =>
-        updateLatestReady(p).pipe(
+        pipe(
+          updateLatestReady(p),
           Effect.zipRight(updateLatestSequence(p)),
           Effect.zipRight(maybeUpdateUrl(p)),
           Effect.tap(() => {
             switch (p.op) {
               case Discord.GatewayOpcode.HELLO:
-                return Effect.tap(identify, prioritySend).pipe(
+                return pipe(
+                  Effect.tap(identify, prioritySend),
                   Effect.zipRight(setPhase(Phase.Handshake)),
                   Effect.zipRight(Queue.offer(hellos, p)),
                 )
@@ -163,20 +163,19 @@ export const make = Effect.gen(function* (_) {
                   return Effect.zipRight(resume, Hub.publish(hub, p))
                 }
                 return Hub.publish(hub, p)
+              default:
+                return Effect.unit
             }
-
-            return Effect.unit
           }),
         )
 
-      const drainSendQueue = Queue.take(sendQueue).pipe(
-        Effect.tap(send),
-        Effect.forever,
+      const drainSendQueue = Effect.forever(
+        Effect.tap(Queue.take(sendQueue), send),
       )
 
       const run = Effect.all(
         [
-          socket.take.pipe(Effect.flatMap(onPayload), Effect.forever),
+          Effect.forever(Effect.flatMap(socket.take, onPayload)),
           heartbeats,
           drainSendQueue,
           socket.run,

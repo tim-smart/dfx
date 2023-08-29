@@ -18,7 +18,10 @@ const fromDispatchFactory =
   <K extends keyof Discord.ReceiveEvents>(
     event: K,
   ): Stream.Stream<R, E, Discord.ReceiveEvents[K]> =>
-    Stream.filter(source, p => p.t === event).pipe(Stream.map(p => p.d! as any))
+    Stream.map(
+      Stream.filter(source, p => p.t === event),
+      p => p.d! as any,
+    )
 
 const handleDispatchFactory =
   (hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>

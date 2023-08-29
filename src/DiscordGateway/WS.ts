@@ -1,5 +1,6 @@
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
+import { pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Queue from "@effect/io/Queue"
@@ -33,7 +34,8 @@ const isReconnect = (
   e._tag === "WebSocketCloseError" && e.code === 1012
 
 const socket = (urlRef: Ref.Ref<string>) =>
-  Ref.get(urlRef).pipe(
+  pipe(
+    Ref.get(urlRef),
     Effect.map(_ => new WebSocket(_) as any as globalThis.WebSocket),
     Effect.acquireRelease(ws =>
       Effect.sync(() => {
@@ -92,7 +94,8 @@ const send = (
   take: Effect.Effect<never, never, Message>,
   log: Log,
 ) =>
-  take.pipe(
+  pipe(
+    take,
     Effect.tap(data => log.debug("WS", "send", data)),
     Effect.tap(data => {
       if (data === Reconnect) {
@@ -121,7 +124,8 @@ const make = Effect.gen(function* (_) {
     Effect.gen(function* (_) {
       const queue = yield* _(Queue.unbounded<WebSocket.Data>())
 
-      const run = onConnecting.pipe(
+      const run = pipe(
+        onConnecting,
         Effect.zipRight(socket(url)),
         Effect.flatMap(ws =>
           Effect.all(

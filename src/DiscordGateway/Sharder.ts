@@ -1,6 +1,7 @@
 import * as Chunk from "@effect/data/Chunk"
 import { Tag } from "@effect/data/Context"
 import * as Duration from "@effect/data/Duration"
+import { pipe } from "@effect/data/Function"
 import * as HashSet from "@effect/data/HashSet"
 import type * as Option from "@effect/data/Option"
 import * as Deferred from "@effect/io/Deferred"
@@ -39,17 +40,17 @@ const make = Effect.gen(function* (_) {
       const claimId = (
         sharderCount: number,
       ): Effect.Effect<never, never, number> =>
-        store
-          .claimId({
+        pipe(
+          store.claimId({
             totalCount,
             sharderCount,
-          })
-          .pipe(
-            Effect.repeat(claimRepeatPolicy),
-            Effect.map(_ => _.value),
-          )
+          }),
+          Effect.repeat(claimRepeatPolicy),
+          Effect.map(_ => _.value),
+        )
 
-      return Ref.getAndUpdate(currentCount, _ => _ + 1).pipe(
+      return pipe(
+        Ref.getAndUpdate(currentCount, _ => _ + 1),
         Effect.flatMap(claimId),
         Effect.map(id => ({ id, totalCount }) as const),
       )
@@ -82,7 +83,8 @@ const make = Effect.gen(function* (_) {
       )
       const take = yield* _(takeConfig(config.shardCount ?? gateway.shards))
 
-      const spawner = take.pipe(
+      const spawner = pipe(
+        take,
         Effect.map(config => ({
           ...config,
           url: gateway.url,
