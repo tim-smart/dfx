@@ -4,7 +4,6 @@ import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Queue from "@effect/io/Queue"
 import * as Ref from "@effect/io/Ref"
-import * as Runtime from "@effect/io/Runtime"
 import { Log } from "dfx/Log"
 import WebSocket from "isomorphic-ws"
 
@@ -50,34 +49,24 @@ const offer = (
   queue: Queue.Enqueue<WebSocket.Data>,
   log: Log,
 ) =>
-  Effect.runtime<never>().pipe(
-    Effect.flatMap(runtime =>
-      Effect.async<never, WebSocketError | WebSocketCloseError, never>(
-        resume => {
-          const run = Runtime.runFork(runtime)
-          ws.addEventListener("message", message => {
-            run(
-              Effect.all(
-                [
-                  log.debug("WS", "receive", message.data),
-                  Queue.offer(queue, message.data),
-                ],
-                { concurrency: "unbounded", discard: true },
-              ),
-            )
-          })
+  Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
+    ws.addEventListener("message", message => {
+      Effect.runFork(
+        Effect.zipRight(
+          log.debug("WS", "receive", message.data),
+          Queue.offer(queue, message.data),
+        ),
+      )
+    })
 
-          ws.addEventListener("error", cause => {
-            resume(Effect.fail(new WebSocketError("error", cause)))
-          })
+    ws.addEventListener("error", cause => {
+      resume(Effect.fail(new WebSocketError("error", cause)))
+    })
 
-          ws.addEventListener("close", e => {
-            resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
-          })
-        },
-      ),
-    ),
-  )
+    ws.addEventListener("close", e => {
+      resume(Effect.fail(new WebSocketCloseError(e.code, e.reason)))
+    })
+  })
 
 const waitForOpen = (ws: globalThis.WebSocket, timeout: Duration.Duration) =>
   Effect.timeoutFail(
@@ -138,8 +127,9 @@ const make = Effect.gen(function* (_) {
           Effect.all(
             [
               offer(ws, queue, log),
-              waitForOpen(ws, openTimeout).pipe(
-                Effect.zipRight(send(ws, takeOutbound, log)),
+              Effect.zipRight(
+                waitForOpen(ws, openTimeout),
+                send(ws, takeOutbound, log),
               ),
             ],
             { concurrency: "unbounded", discard: true },
