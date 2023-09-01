@@ -1,5 +1,5 @@
 import * as Config from "@effect/io/Config"
-import type * as ConfigError from "@effect/io/Config/Error"
+import type * as ConfigError from "@effect/io/ConfigError"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import type { DiscordREST } from "dfx"

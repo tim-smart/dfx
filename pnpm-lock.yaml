@@ -49,20 +49,20 @@ devDependencies:
     specifier: ^0.1.4
     version: 0.1.4
   '@effect/data':
-    specifier: ^0.17.6
-    version: 0.17.6
+    specifier: ^0.18.3
+    version: 0.18.3
   '@effect/io':
-    specifier: ^0.38.2
-    version: 0.38.2(@effect/data@0.17.6)
+    specifier: ^0.39.0
+    version: 0.39.0(@effect/data@0.18.3)
   '@effect/language-service':
     specifier: ^0.0.21
     version: 0.0.21
   '@effect/platform':
-    specifier: ^0.13.15
-    version: 0.13.15(@effect/data@0.17.6)(@effect/io@0.38.2)(@effect/schema@0.33.2)(@effect/stream@0.34.0)
+    specifier: ^0.14.0
+    version: 0.14.0(@effect/data@0.18.3)(@effect/io@0.39.0)(@effect/schema@0.34.0)(@effect/stream@0.35.1)
   '@effect/stream':
-    specifier: ^0.34.0
-    version: 0.34.0(@effect/data@0.17.6)(@effect/io@0.38.2)
+    specifier: ^0.35.1
+    version: 0.35.1(@effect/data@0.18.3)(@effect/io@0.39.0)
   '@tim-smart/discord-api-docs-parser':
     specifier: ^0.5.9
     version: 0.5.9
@@ -97,8 +97,8 @@ devDependencies:
     specifier: ^16.3.1
     version: 16.3.1
   effect:
-    specifier: 2.0.0-next.29
-    version: 2.0.0-next.29(@effect/data@0.17.6)(@effect/io@0.38.2)(@effect/match@0.34.0)(@effect/stm@0.22.0)(@effect/stream@0.34.0)
+    specifier: 2.0.0-next.30
+    version: 2.0.0-next.30(@effect/data@0.18.3)(@effect/io@0.39.0)(@effect/match@0.35.1)(@effect/stm@0.23.0)(@effect/stream@0.35.1)
   eslint:
     specifier: ^8.48.0
     version: 8.48.0
@@ -675,76 +675,76 @@ packages:
     hasBin: true
     dev: true
 
-  /@effect/data@0.17.6:
-    resolution: {integrity: sha512-/vwz7Jh05eS0qY8kczR/YyJd18d0C+PMtUkAealh4f6gwvhABLGCnktNJTcq/+UHxY0Cbv18r5uaJ4+7PPC+WQ==}
+  /@effect/data@0.18.3:
+    resolution: {integrity: sha512-xNG4CwxE758EK0v81EIPnKv9QeU/x9st1Doab/Fjf7sb9V3n55C85aBiKChpKgGD8pKCPHcjGydLsRHVUvzpwg==}
     dev: true
 
-  /@effect/io@0.38.2(@effect/data@0.17.6):
-    resolution: {integrity: sha512-rnAXFo9BDLbY7DgQE1e8uP/sEniyVCsB7gNs+yXPu0XK9s4kaGinH6XgwYRDBuu7Fu1tQ1yd7JoAdEb7yutNRg==}
+  /@effect/io@0.39.0(@effect/data@0.18.3):
+    resolution: {integrity: sha512-9rlW1Pvn6ww1eaxPCg5+PeRlzYA7AfUJwiduPSMfXwgvqdR24gBGCoGgaD8aSKeOE1V1xhgOUNqbaf/oGsmbtQ==}
     peerDependencies:
-      '@effect/data': ^0.17.1
+      '@effect/data': ^0.18.0
     dependencies:
-      '@effect/data': 0.17.6
+      '@effect/data': 0.18.3
     dev: true
 
   /@effect/language-service@0.0.21:
     resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
     dev: true
 
-  /@effect/match@0.34.0(@effect/data@0.17.6):
-    resolution: {integrity: sha512-3fPqDT81rOU+83s84dx7Dh8pMtBq6BE+FGxq5U6FB48IeUdr35jayeuIXe6ZGQC6YorM3GJny6XYO5gOy0AAow==}
+  /@effect/match@0.35.1(@effect/data@0.18.3):
+    resolution: {integrity: sha512-uIj86SLtIswSnGlKfjTM/Ea/3MbW+JhsTdv414E3YlxLycjx5X9yOodzVM0I3/z9PaYhbpqAcHk9oEtLt7kk1w==}
     peerDependencies:
-      '@effect/data': ^0.17.1
+      '@effect/data': ^0.18.3
     dependencies:
-      '@effect/data': 0.17.6
+      '@effect/data': 0.18.3
     dev: true
 
-  /@effect/platform@0.13.15(@effect/data@0.17.6)(@effect/io@0.38.2)(@effect/schema@0.33.2)(@effect/stream@0.34.0):
-    resolution: {integrity: sha512-UFSQQihjsXAkEOix7FYr5VUPLhJ5BLDAvdAWgI14w1jVVqWp3vStNjtrhf120DSNxUPNKhZGriyk35Xq3FPhBQ==}
+  /@effect/platform@0.14.0(@effect/data@0.18.3)(@effect/io@0.39.0)(@effect/schema@0.34.0)(@effect/stream@0.35.1):
+    resolution: {integrity: sha512-ZdKwJVHW9KoU1hYkF8wEnL6gn0Ou+tcsWJqD9P+3No20VjVSNQvOzDbHjD000DNqrFzneLvo/atBHvmHmdiN9Q==}
     peerDependencies:
-      '@effect/data': ^0.17.5
-      '@effect/io': ^0.38.2
-      '@effect/schema': ^0.33.1
-      '@effect/stream': ^0.34.0
+      '@effect/data': ^0.18.3
+      '@effect/io': ^0.39.0
+      '@effect/schema': ^0.34.0
+      '@effect/stream': ^0.35.1
     dependencies:
-      '@effect/data': 0.17.6
-      '@effect/io': 0.38.2(@effect/data@0.17.6)
-      '@effect/schema': 0.33.2(@effect/data@0.17.6)(@effect/io@0.38.2)
-      '@effect/stream': 0.34.0(@effect/data@0.17.6)(@effect/io@0.38.2)
+      '@effect/data': 0.18.3
+      '@effect/io': 0.39.0(@effect/data@0.18.3)
+      '@effect/schema': 0.34.0(@effect/data@0.18.3)(@effect/io@0.39.0)
+      '@effect/stream': 0.35.1(@effect/data@0.18.3)(@effect/io@0.39.0)
       find-my-way: 7.6.2
       mime: 3.0.0
       path-browserify: 1.0.1
     dev: true
 
-  /@effect/schema@0.33.2(@effect/data@0.17.6)(@effect/io@0.38.2):
-    resolution: {integrity: sha512-GfV4kXAs4tkx09bGD6J4RDqVN+xea4UP0I05r1wloox6j0eYgXYaSKAXAZ7qBKVywkba3cDUDZhc9nplAD8TAA==}
+  /@effect/schema@0.34.0(@effect/data@0.18.3)(@effect/io@0.39.0):
+    resolution: {integrity: sha512-7BdriGSWYj+f9jVqIq6PyfLoPztV05RW1Sj+mdKX3gAwqqIM7MBwkM0kTaLYKAFbGXTE9AK83uG2SSfzMigqTA==}
     peerDependencies:
-      '@effect/data': ^0.17.1
-      '@effect/io': ^0.38.0
+      '@effect/data': ^0.18.3
+      '@effect/io': ^0.39.0
     dependencies:
-      '@effect/data': 0.17.6
-      '@effect/io': 0.38.2(@effect/data@0.17.6)
+      '@effect/data': 0.18.3
+      '@effect/io': 0.39.0(@effect/data@0.18.3)
       fast-check: 3.12.0
     dev: true
 
-  /@effect/stm@0.22.0(@effect/data@0.17.6)(@effect/io@0.38.2):
-    resolution: {integrity: sha512-K+v05Iveg9h//xZbo/JekZE4mHln8QA7dpfl84L3VKQlUfiAZOiN4ABTyb41Ly+n+YywSSbeTdbOya0ccxx/rQ==}
+  /@effect/stm@0.23.0(@effect/data@0.18.3)(@effect/io@0.39.0):
+    resolution: {integrity: sha512-c8pXK5mN9ZCFwPvxNJRzxAWwwSWjkdxs1FlCh1mdyXSah0uSD+lkuvEKrcpJCJroMmMBPrxKJv5ascfzTbBE9A==}
     peerDependencies:
-      '@effect/data': ^0.17.1
-      '@effect/io': ^0.38.0
+      '@effect/data': ^0.18.3
+      '@effect/io': ^0.39.0
     dependencies:
-      '@effect/data': 0.17.6
-      '@effect/io': 0.38.2(@effect/data@0.17.6)
+      '@effect/data': 0.18.3
+      '@effect/io': 0.39.0(@effect/data@0.18.3)
     dev: true
 
-  /@effect/stream@0.34.0(@effect/data@0.17.6)(@effect/io@0.38.2):
-    resolution: {integrity: sha512-8eDDQ0JG+ctsstLH/Qo4ojBkcEIFtqpEsWZS6leAwY9gXVmEG54PMWXZiX6dTchgQXKmSnLkEh36leAq4piawQ==}
+  /@effect/stream@0.35.1(@effect/data@0.18.3)(@effect/io@0.39.0):
+    resolution: {integrity: sha512-MPtZdEZ3U2vtQTg+jXm6Xg5i0p4wO+BC4KtXqV93KIajk7sLfjlLlRf7GqlUPZgMH+jSoOAPARjM+G3UsNhMvg==}
     peerDependencies:
-      '@effect/data': ^0.17.1
-      '@effect/io': ^0.38.0
+      '@effect/data': ^0.18.3
+      '@effect/io': ^0.39.0
     dependencies:
-      '@effect/data': 0.17.6
-      '@effect/io': 0.38.2(@effect/data@0.17.6)
+      '@effect/data': 0.18.3
+      '@effect/io': 0.39.0(@effect/data@0.18.3)
     dev: true
 
   /@esbuild/android-arm64@0.18.20:
@@ -3445,20 +3445,20 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /effect@2.0.0-next.29(@effect/data@0.17.6)(@effect/io@0.38.2)(@effect/match@0.34.0)(@effect/stm@0.22.0)(@effect/stream@0.34.0):
-    resolution: {integrity: sha512-CgQRDXcaGVBJUS7816vOwIP9CPRKXYBZMOP4ifJ4UdDLs1t/+EE4FSjiaHHjOCqIU7pRyCi2QZYuDjAT3OgFaw==}
+  /effect@2.0.0-next.30(@effect/data@0.18.3)(@effect/io@0.39.0)(@effect/match@0.35.1)(@effect/stm@0.23.0)(@effect/stream@0.35.1):
+    resolution: {integrity: sha512-7mCheLiy6x33e4qXLSFpQ9TCpj/+gPhPjLtBY9HODzH0sQw3B4sBUytoKWd+7DnRJRU7sdJbpPZnfDz+M1g3fw==}
     peerDependencies:
-      '@effect/data': ^0.17.6
-      '@effect/io': ^0.38.2
-      '@effect/match': ^0.34.0
-      '@effect/stm': ^0.22.0
-      '@effect/stream': ^0.34.0
+      '@effect/data': ^0.18.3
+      '@effect/io': ^0.39.0
+      '@effect/match': ^0.35.1
+      '@effect/stm': ^0.23.0
+      '@effect/stream': ^0.35.1
     dependencies:
-      '@effect/data': 0.17.6
-      '@effect/io': 0.38.2(@effect/data@0.17.6)
-      '@effect/match': 0.34.0(@effect/data@0.17.6)
-      '@effect/stm': 0.22.0(@effect/data@0.17.6)(@effect/io@0.38.2)
-      '@effect/stream': 0.34.0(@effect/data@0.17.6)(@effect/io@0.38.2)
+      '@effect/data': 0.18.3
+      '@effect/io': 0.39.0(@effect/data@0.18.3)
+      '@effect/match': 0.35.1(@effect/data@0.18.3)
+      '@effect/stm': 0.23.0(@effect/data@0.18.3)(@effect/io@0.39.0)
+      '@effect/stream': 0.35.1(@effect/data@0.18.3)(@effect/io@0.39.0)
     dev: true
 
   /ejs@3.1.9:
