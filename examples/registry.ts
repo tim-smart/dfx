@@ -78,7 +78,7 @@ const DiscordLive = gatewayLayer({
 const MainLive = Layer.provideMerge(DiscordLive, GreetLive)
 
 main.pipe(
-  Effect.provideLayer(MainLive),
+  Effect.provide(MainLive),
   Effect.catchAllCause(Effect.logError),
   Effect.runFork,
 )

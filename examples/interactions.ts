@@ -87,7 +87,7 @@ const program = Effect.gen(function* (_) {
 
 // Run it
 program.pipe(
-  Effect.provideLayer(DiscordLive),
+  Effect.provide(DiscordLive),
   Effect.tapErrorCause(_ =>
     Effect.sync(() => {
       console.error(Cause.squash(_))
