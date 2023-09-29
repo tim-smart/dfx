@@ -2,7 +2,7 @@
 
 [![Discord](https://img.shields.io/discord/887189613389705256?style=for-the-badge)](https://discord.gg/dtR2Mtu66Q)
 
-A Discord library built on top of @effect/io
+A Discord library built on top of effect
 
 - Supports both the gateway and webhooks
 - Simple yet powerful abstractions to build Discord bots
@@ -10,9 +10,7 @@ A Discord library built on top of @effect/io
 ## Example
 
 ```typescript
-import * as Config from "@effect/io/Config"
-import * as Effect from "@effect/io/Effect"
-import { pipe } from "@fp-ts/data/Function"
+import { Config, Effect, pipe } from "effect"
 import { Ix } from "dfx"
 import { runIx, makeFromConfig } from "dfx/gateway"
 
@@ -45,7 +43,7 @@ pipe(
       }),
     ),
   ),
-  Effect.providerLayer(Dependencies),
-  Effect.unsafeRunPromise,
+  Effect.provide(Dependencies),
+  Effect.runFork,
 )
 ```
