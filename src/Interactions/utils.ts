@@ -1,5 +1,5 @@
-import * as Chunk from "@effect/data/Chunk"
-import * as Effect from "@effect/io/Effect"
+import * as Chunk from "effect/Chunk"
+import * as Effect from "effect/Effect"
 import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"

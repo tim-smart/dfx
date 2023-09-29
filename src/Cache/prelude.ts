@@ -1,5 +1,5 @@
-import * as Effect from "@effect/io/Effect"
-import * as Stream from "@effect/stream/Stream"
+import * as Effect from "effect/Effect"
+import * as Stream from "effect/Stream"
 import { DiscordREST } from "dfx"
 import type {
   CacheDriver,

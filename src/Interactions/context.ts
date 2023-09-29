@@ -1,8 +1,8 @@
-import { Tag } from "@effect/data/Context"
-import type * as HashMap from "@effect/data/HashMap"
-import * as Option from "@effect/data/Option"
-import * as Arr from "@effect/data/ReadonlyArray"
-import * as Effect from "@effect/io/Effect"
+import { Tag } from "effect/Context"
+import type * as HashMap from "effect/HashMap"
+import * as Option from "effect/Option"
+import * as Arr from "effect/ReadonlyArray"
+import * as Effect from "effect/Effect"
 import * as IxHelpers from "dfx/Helpers/interactions"
 import type * as Discord from "dfx/types"
 

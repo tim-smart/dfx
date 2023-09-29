@@ -1,6 +1,6 @@
-import * as Duration from "@effect/data/Duration"
-import * as Option from "@effect/data/Option"
-import * as ReadonlyRecord from "@effect/data/ReadonlyRecord"
+import * as Duration from "effect/Duration"
+import * as Option from "effect/Option"
+import * as ReadonlyRecord from "effect/ReadonlyRecord"
 import type * as Http from "@effect/platform/HttpClient"
 
 const majorResources = ["channels", "guilds", "webhooks"] as const

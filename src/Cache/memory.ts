@@ -1,5 +1,5 @@
-import * as Option from "@effect/data/Option"
-import * as Effect from "@effect/io/Effect"
+import * as Option from "effect/Option"
+import * as Effect from "effect/Effect"
 import { createDriver, createParentDriver } from "dfx/Cache/driver"
 
 export const createWithParent = <T>() =>

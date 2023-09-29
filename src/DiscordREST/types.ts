@@ -1,4 +1,4 @@
-import type * as Effect from "@effect/io/Effect"
+import type * as Effect from "effect/Effect"
 import type * as Http from "@effect/platform/HttpClient"
 import type { DiscordRESTError } from "dfx/DiscordREST"
 

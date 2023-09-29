@@ -1,7 +1,7 @@
-import { identity, pipe } from "@effect/data/Function"
-import * as HashMap from "@effect/data/HashMap"
-import * as Option from "@effect/data/Option"
-import * as Arr from "@effect/data/ReadonlyArray"
+import { identity, pipe } from "effect/Function"
+import * as HashMap from "effect/HashMap"
+import * as Option from "effect/Option"
+import * as Arr from "effect/ReadonlyArray"
 import * as Discord from "dfx/types"
 
 /**

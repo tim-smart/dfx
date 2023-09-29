@@ -1,10 +1,10 @@
-import { pipe } from "@effect/data/Function"
-import * as Deferred from "@effect/io/Deferred"
-import * as Effect from "@effect/io/Effect"
-import type * as Fiber from "@effect/io/Fiber"
-import * as Hub from "@effect/io/Hub"
-import * as Queue from "@effect/io/Queue"
-import * as ScopedRef from "@effect/io/ScopedRef"
+import { pipe } from "effect/Function"
+import * as Deferred from "effect/Deferred"
+import * as Effect from "effect/Effect"
+import type * as Fiber from "effect/Fiber"
+import * as Hub from "effect/Hub"
+import * as Queue from "effect/Queue"
+import * as ScopedRef from "effect/ScopedRef"
 
 export const subscribeForEachPar = <R, E, A, X>(
   self: Hub.Hub<A>,

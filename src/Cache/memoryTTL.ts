@@ -1,7 +1,7 @@
-import * as Duration from "@effect/data/Duration"
-import * as Option from "@effect/data/Option"
-import * as ReadonlyArray from "@effect/data/ReadonlyArray"
-import * as Effect from "@effect/io/Effect"
+import * as Duration from "effect/Duration"
+import * as Option from "effect/Option"
+import * as ReadonlyArray from "effect/ReadonlyArray"
+import * as Effect from "effect/Effect"
 import { createDriver, createParentDriver } from "dfx/Cache/driver"
 
 export interface MemoryTTLOpts {

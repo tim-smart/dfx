@@ -1,7 +1,7 @@
-import * as Option from "@effect/data/Option"
-import * as Effect from "@effect/io/Effect"
-import * as Ref from "@effect/io/Ref"
-import * as Stream from "@effect/stream/Stream"
+import * as Option from "effect/Option"
+import * as Effect from "effect/Effect"
+import * as Ref from "effect/Ref"
+import * as Stream from "effect/Stream"
 import type * as Discord from "dfx/types"
 
 export const opCode =

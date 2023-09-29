@@ -1,10 +1,10 @@
-import { Tag } from "@effect/data/Context"
-import * as Duration from "@effect/data/Duration"
-import * as Config from "@effect/io/Config"
-import type * as ConfigError from "@effect/io/ConfigError"
-import type * as ConfigSecret from "@effect/io/ConfigSecret"
-import * as Effect from "@effect/io/Effect"
-import * as Layer from "@effect/io/Layer"
+import { Tag } from "effect/Context"
+import * as Duration from "effect/Duration"
+import * as Config from "effect/Config"
+import type * as ConfigError from "effect/ConfigError"
+import type * as ConfigSecret from "effect/ConfigSecret"
+import * as Effect from "effect/Effect"
+import * as Layer from "effect/Layer"
 import * as Discord from "dfx/types"
 
 const VERSION = 10

@@ -1,6 +1,6 @@
-import * as Option from "@effect/data/Option"
-import * as Effect from "@effect/io/Effect"
-import * as Stream from "@effect/stream/Stream"
+import * as Option from "effect/Option"
+import * as Effect from "effect/Effect"
+import * as Stream from "effect/Stream"
 import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 
 export * from "dfx/Cache/driver"

@@ -1,4 +1,4 @@
-import * as Effect from "@effect/io/Effect"
+import * as Effect from "effect/Effect"
 import type * as Discord from "dfx/types"
 
 export { response } from "dfx/Helpers/interactions"

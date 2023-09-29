@@ -1,5 +1,5 @@
-import type * as Option from "@effect/data/Option"
-import type * as Effect from "@effect/io/Effect"
+import type * as Option from "effect/Option"
+import type * as Effect from "effect/Effect"
 
 export interface ParentCacheDriver<E, T> {
   readonly size: Effect.Effect<never, E, number>

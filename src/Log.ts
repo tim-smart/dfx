@@ -1,6 +1,6 @@
-import { Tag } from "@effect/data/Context"
-import * as Effect from "@effect/io/Effect"
-import * as Layer from "@effect/io/Layer"
+import { Tag } from "effect/Context"
+import * as Effect from "effect/Effect"
+import * as Layer from "effect/Layer"
 
 const make = (debug = false) => ({
   info: (...args: Array<any>) =>

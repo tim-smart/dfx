@@ -1,5 +1,5 @@
-import { pipe } from "@effect/data/Function"
-import * as Effect from "@effect/io/Effect"
+import { pipe } from "effect/Function"
+import * as Effect from "effect/Effect"
 import * as Flags from "dfx/Helpers/flags"
 import * as Members from "dfx/Helpers/members"
 import * as Discord from "dfx/types"
