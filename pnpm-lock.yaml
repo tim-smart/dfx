@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -55,8 +55,8 @@ devDependencies:
     specifier: ^0.0.21
     version: 0.0.21
   '@effect/platform':
-    specifier: ^0.18.1
-    version: 0.18.1(@effect/schema@0.37.2)(effect@2.0.0-next.39)
+    specifier: ^0.18.2
+    version: 0.18.2(@effect/schema@0.39.1)(effect@2.0.0-next.39)
   '@tim-smart/discord-api-docs-parser':
     specifier: ^0.5.9
     version: 0.5.9
@@ -669,42 +669,28 @@ packages:
     hasBin: true
     dev: true
 
-  /@effect/data@0.18.7:
-    resolution: {integrity: sha512-r7C9VjavmG85wb5BOvcbbKGioPJCoBAFsJVOUNWlxZBRIU+l68ENpsyzCkWsU7dP4teAztjBZ89O3hVhBX0Huw==}
-    dev: true
-
-  /@effect/io@0.41.2(@effect/data@0.18.7):
-    resolution: {integrity: sha512-kSMMQbowTPhUGQIo+B/5F6WWynY14IWr9avLAv4oaZ6PtjP+w8sOOdO0YU3a+idBaO12uIuvba2ZFR6LnASM6w==}
-    peerDependencies:
-      '@effect/data': ^0.18.5
-    dependencies:
-      '@effect/data': 0.18.7
-    dev: true
-
   /@effect/language-service@0.0.21:
     resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
     dev: true
 
-  /@effect/platform@0.18.1(@effect/schema@0.37.2)(effect@2.0.0-next.39):
-    resolution: {integrity: sha512-gAJkUmlTumtJHlNTFXIOaLcZAoNglmCfbmQM6+WvXtbjHzs/I7UBSS4z6t1Y7zJAi7t8os7QDBppMcSegFFIVw==}
+  /@effect/platform@0.18.2(@effect/schema@0.39.1)(effect@2.0.0-next.39):
+    resolution: {integrity: sha512-NxGYR+FnTSyF6g/awigFRhcaaXJBQZ6/ABNhRzcMBAMYtF2O4D9IBlkWUboh42yausJghL4Se6mMyOoJ4J9V5g==}
     peerDependencies:
-      '@effect/schema': ^0.37.1
-      effect: 2.0.0-next.38
+      '@effect/schema': ^0.39.1
+      effect: ^2.0.0-next.39
     dependencies:
-      '@effect/schema': 0.37.2(@effect/data@0.18.7)(@effect/io@0.41.2)
+      '@effect/schema': 0.39.1(effect@2.0.0-next.39)
       effect: 2.0.0-next.39
       find-my-way: 7.6.2
       path-browserify: 1.0.1
     dev: true
 
-  /@effect/schema@0.37.2(@effect/data@0.18.7)(@effect/io@0.41.2):
-    resolution: {integrity: sha512-SlD0F3vCJxshzkYe8bOhHLNhOTC4UHHobpNcuVx6KGMyX4Tueq0uNMI7uV8UTV95ciK/vKerzkole/sS11FVsQ==}
+  /@effect/schema@0.39.1(effect@2.0.0-next.39):
+    resolution: {integrity: sha512-O/BO7I4q7A1edmqs0+UrkHpqX7bzWfzAEdEm5u42FJkJFQBjUEMJpz8qaVDrY/WI2dKFWKZRS6Z5oP2qJtILTQ==}
     peerDependencies:
-      '@effect/data': ^0.18.6
-      '@effect/io': ^0.41.1
+      effect: 2.0.0-next.38
     dependencies:
-      '@effect/data': 0.18.7
-      '@effect/io': 0.41.2(@effect/data@0.18.7)
+      effect: 2.0.0-next.39
       fast-check: 3.13.1
     dev: true
 

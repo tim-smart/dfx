@@ -45,7 +45,7 @@
     "ws": "^8.14.2"
   },
   "peerDependencies": {
-    "@effect/platform": "^0.17.0",
+    "@effect/platform": "^0.18.2",
     "effect": "2.0.0-next.39"
   },
   "optionalDependencies": {
@@ -64,7 +64,7 @@
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.1.4",
     "@effect/language-service": "^0.0.21",
-    "@effect/platform": "^0.18.1",
+    "@effect/platform": "^0.18.2",
     "@tim-smart/discord-api-docs-parser": "^0.5.9",
     "@types/chai": "^4.3.6",
     "@types/node": "^20.7.2",
