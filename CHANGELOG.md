@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.66.4](https://github.com/tim-smart/dfx/compare/dfx@0.66.3...dfx@0.66.4) (2023-10-03)
+
+### Bug Fixes
+
+- cache return types ([4c9bc32](https://github.com/tim-smart/dfx/commit/4c9bc324b4b230a4318e593c66333d273f3be0fc))
+
 ## [0.66.3](https://github.com/tim-smart/dfx/compare/dfx@0.66.2...dfx@0.66.3) (2023-10-03)
 
 **Note:** Version bump only for package dfx
