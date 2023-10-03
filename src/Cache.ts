@@ -24,6 +24,43 @@ export type CacheOp<T> =
   | { op: "update"; resourceId: string; resource: T }
   | { op: "delete"; resourceId: string }
 
+export interface ParentCache<EOps, EDriver, EMiss, EPMiss, A> {
+  readonly get: (
+    parentId: string,
+    id: string,
+  ) => Effect.Effect<never, EDriver | EMiss, A>
+  readonly put: (_: A) => Effect.Effect<never, EDriver | EMiss, void>
+  readonly update: <R, E>(
+    parentId: string,
+    id: string,
+    f: (_: A) => Effect.Effect<R, E, A>,
+  ) => Effect.Effect<R, EDriver | EMiss | E, A>
+  readonly getForParent: (
+    parentId: string,
+  ) => Effect.Effect<never, EDriver | EPMiss, ReadonlyMap<string, A>>
+  readonly run: Effect.Effect<never, EOps | EDriver, void>
+  readonly size: Effect.Effect<never, EDriver, number>
+  readonly sizeForParent: (
+    parentId: string,
+  ) => Effect.Effect<never, EDriver, number>
+  readonly set: (
+    parentId: string,
+    resourceId: string,
+    resource: A,
+  ) => Effect.Effect<never, EDriver, void>
+  readonly delete: (
+    parentId: string,
+    resourceId: string,
+  ) => Effect.Effect<never, EDriver, void>
+  readonly parentDelete: (
+    parentId: string,
+  ) => Effect.Effect<never, EDriver, void>
+  readonly refreshTTL: (
+    parentId: string,
+    resourceId: string,
+  ) => Effect.Effect<never, EDriver, void>
+}
+
 export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   driver,
   id,
@@ -40,7 +77,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   onParentMiss: (
     parentId: string,
   ) => Effect.Effect<never, EPMiss, Array<[id: string, resource: A]>>
-}) => {
+}): ParentCache<EOps, EDriver, EMiss, EPMiss, A> => {
   const sync = Stream.runDrain(
     Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
       switch (op.op) {
@@ -109,7 +146,26 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       concurrency: "unbounded",
       discard: true,
     }),
-  }
+  } as const
+}
+
+export interface Cache<EOps, EDriver, EMiss, A> {
+  readonly get: (id: string) => Effect.Effect<never, EDriver | EMiss, A>
+  readonly put: (_: A) => Effect.Effect<never, EDriver, void>
+  readonly update: <R, E>(
+    id: string,
+    f: (_: A) => Effect.Effect<R, E, A>,
+  ) => Effect.Effect<R, EDriver | EMiss | E, A>
+  readonly run: Effect.Effect<never, EOps | EDriver, void>
+  readonly size: Effect.Effect<never, EDriver, number>
+  readonly set: (
+    resourceId: string,
+    resource: A,
+  ) => Effect.Effect<never, EDriver, void>
+  readonly delete: (resourceId: string) => Effect.Effect<never, EDriver, void>
+  readonly refreshTTL: (
+    resourceId: string,
+  ) => Effect.Effect<never, EDriver, void>
 }
 
 export const make = <EOps, EDriver, EMiss, A>({
@@ -122,7 +178,7 @@ export const make = <EOps, EDriver, EMiss, A>({
   ops?: Stream.Stream<never, EOps, CacheOp<A>>
   id: (_: A) => string
   onMiss: (id: string) => Effect.Effect<never, EMiss, A>
-}) => {
+}): Cache<EOps, EDriver, EMiss, A> => {
   const sync = Stream.runDrain(
     Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
       switch (op.op) {
@@ -162,7 +218,7 @@ export const make = <EOps, EDriver, EMiss, A>({
       concurrency: "unbounded",
       discard: true,
     }),
-  }
+  } as const
 }
 
 export class CacheMissError {

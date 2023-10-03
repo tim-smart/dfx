@@ -1,11 +1,15 @@
 import * as Effect from "effect/Effect"
 import * as Stream from "effect/Stream"
-import { DiscordREST } from "dfx"
+import type { DiscordRESTError } from "dfx/DiscordREST"
+import { DiscordREST } from "dfx/DiscordREST"
+import type { ResponseError } from "@effect/platform/Http/ClientError"
 import type {
   CacheDriver,
   CacheOp,
   ParentCacheDriver,
   ParentCacheOp,
+  Cache,
+  ParentCache,
 } from "dfx/Cache"
 import { CacheMissError, make, makeWithParent } from "dfx/Cache"
 import { DiscordGateway } from "dfx/DiscordGateway"
@@ -31,7 +35,7 @@ export const opsWithParent = <E, T>({
   parentRemove,
   remove,
   update,
-}: OptsWithParentOptions<E, T>) => {
+}: OptsWithParentOptions<E, T>): Stream.Stream<never, E, ParentCacheOp<T>> => {
   const fromParentOps = Stream.flatMap(fromParent, ([parentId, a]) =>
     Stream.fromIterable(
       a.map(
@@ -96,7 +100,12 @@ export interface OpsOptions<E, A> {
   remove: Stream.Stream<never, E, string>
 }
 
-export const ops = <E, T>({ create, id, remove, update }: OpsOptions<E, T>) => {
+export const ops = <E, T>({
+  create,
+  id,
+  remove,
+  update,
+}: OpsOptions<E, T>): Stream.Stream<never, E, CacheOp<T>> => {
   const createOps = Stream.map(
     create,
     (resource): CacheOp<T> => ({
@@ -128,7 +137,11 @@ export const ops = <E, T>({ create, id, remove, update }: OpsOptions<E, T>) => {
 
 export const guilds = <RM, EM, E>(
   makeDriver: Effect.Effect<RM, EM, CacheDriver<E, Discord.Guild>>,
-) =>
+): Effect.Effect<
+  RM | DiscordGateway | DiscordREST,
+  EM,
+  Cache<never, E, ResponseError | DiscordRESTError, Discord.Guild>
+> =>
   Effect.gen(function* (_) {
     const driver = yield* _(makeDriver)
     const gateway = yield* _(DiscordGateway)
@@ -155,7 +168,17 @@ export const guilds = <RM, EM, E>(
 
 export const channels = <RM, EM, E>(
   makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Channel>>,
-) =>
+): Effect.Effect<
+  DiscordGateway | DiscordREST | RM,
+  EM,
+  ParentCache<
+    never,
+    E,
+    ResponseError | DiscordRESTError,
+    ResponseError | DiscordRESTError,
+    Discord.Channel
+  >
+> =>
   Effect.gen(function* (_) {
     const driver = yield* _(makeDriver)
     const gateway = yield* _(DiscordGateway)
@@ -198,7 +221,17 @@ export const channels = <RM, EM, E>(
 
 export const roles = <RM, EM, E>(
   makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Role>>,
-) =>
+): Effect.Effect<
+  DiscordGateway | DiscordREST | RM,
+  EM,
+  ParentCache<
+    never,
+    E,
+    CacheMissError,
+    ResponseError | DiscordRESTError,
+    Discord.Role
+  >
+> =>
   Effect.gen(function* (_) {
     const driver = yield* _(makeDriver)
     const gateway = yield* _(DiscordGateway)

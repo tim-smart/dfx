@@ -2,6 +2,7 @@ import * as Duration from "effect/Duration"
 import * as Option from "effect/Option"
 import * as ReadonlyArray from "effect/ReadonlyArray"
 import * as Effect from "effect/Effect"
+import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 import { createDriver, createParentDriver } from "dfx/Cache/driver"
 
 export interface MemoryTTLOpts {
@@ -37,7 +38,7 @@ const make = <T>({
   resolution = Duration.minutes(1),
   strategy = "usage",
   ttl,
-}: MemoryTTLOpts) => {
+}: MemoryTTLOpts): CacheDriver<never, T> => {
   const resolutionMs = Duration.toMillis(resolution)
   const additionalMilliseconds =
     (Math.floor(Duration.toMillis(ttl) / resolutionMs) + 1) * resolutionMs
@@ -131,10 +132,14 @@ const make = <T>({
   })
 }
 
-export const create = <T>(opts: MemoryTTLOpts) =>
+export const create = <T>(
+  opts: MemoryTTLOpts,
+): Effect.Effect<never, never, CacheDriver<never, T>> =>
   Effect.sync(() => make<T>(opts))
 
-export const createWithParent = <T>(opts: MemoryTTLOpts) =>
+export const createWithParent = <T>(
+  opts: MemoryTTLOpts,
+): Effect.Effect<never, never, ParentCacheDriver<never, T>> =>
   Effect.sync(() => {
     const store = make<T>(opts)
     const parentIds = new Map<string, Set<string>>()
