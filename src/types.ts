@@ -148,54 +148,60 @@ export enum AllowedMentionType {
   EVERYONE_MENTIONS = "everyone",
 }
 export interface Application {
-  /** the id of the app */
+  /** ID of the app */
   readonly id: Snowflake
-  /** the name of the app */
+  /** Name of the app */
   readonly name: string
-  /** the icon hash of the app */
+  /** Icon hash of the app */
   readonly icon?: string | null
-  /** the description of the app */
+  /** Description of the app */
   readonly description: string
-  /** an array of rpc origin urls, if rpc is enabled */
+  /** List of RPC origin URLs, if RPC is enabled */
   readonly rpc_origins?: Array<string>
-  /** when false only app owner can join the app's bot to guilds */
+  /** When false, only the app owner can add the app to guilds */
   readonly bot_public: boolean
-  /** when true the app's bot will only join upon completion of the full oauth2 code grant flow */
+  /** When true, the app's bot will only join upon completion of the full OAuth2 code grant flow */
   readonly bot_require_code_grant: boolean
-  /** the url of the app's terms of service */
+  /** Partial user object for the bot user associated with the app */
+  readonly bot?: User
+  /** URL of the app's Terms of Service */
   readonly terms_of_service_url?: string
-  /** the url of the app's privacy policy */
+  /** URL of the app's Privacy Policy */
   readonly privacy_policy_url?: string
-  /** partial user object containing info on the owner of the application */
+  /** Partial user object for the owner of the app */
   readonly owner?: User
   /** deprecated and will be removed in v11. An empty string. */
   readonly summary: string
-  /** the hex encoded key for verification in interactions and the GameSDK's GetTicket */
+  /** Hex encoded key for verification in interactions and the GameSDK's GetTicket */
   readonly verify_key: string
-  /** if the application belongs to a team, this will be a list of the members of that team */
+  /** If the app belongs to a team, this will be a list of the members of that team */
   readonly team?: Team | null
-  /** guild associated with the app. For example, a developer support server. */
+  /** Guild associated with the app. For example, a developer support server. */
   readonly guild_id?: Snowflake
-  /** a partial object of the associated guild */
+  /** Partial object of the associated guild */
   readonly guild?: Guild
-  /** if this application is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists */
+  /** If this app is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists */
   readonly primary_sku_id?: Snowflake
-  /** if this application is a game sold on Discord, this field will be the URL slug that links to the store page */
+  /** If this app is a game sold on Discord, this field will be the URL slug that links to the store page */
   readonly slug?: string
-  /** the application's default rich presence invite cover image hash */
+  /** App's default rich presence invite cover image hash */
   readonly cover_image?: string
-  /** the application's public flags */
+  /** App's public flags */
   readonly flags?: number
-  /** an approximate count of the app's guild membership. */
+  /** Approximate count of guilds the app has been added to */
   readonly approximate_guild_count?: number
-  /** up to 5 tags describing the content and functionality of the application */
-  readonly tags?: Array<string>
-  /** settings for the application's default in-app authorization link, if enabled */
-  readonly install_params?: InstallParam
-  /** the application's default custom authorization link, if enabled */
-  readonly custom_install_url?: string
-  /** the application's role connection verification entry point, which when configured will render the app as a verification method in the guild role verification configuration */
+  /** Array of redirect URIs for the app */
+  readonly redirect_uris?: Array<string>
+  /** Interactions endpoint URL for the app */
+  readonly interactions_endpoint_url?: string
+  /** Role connection verification URL for the app */
   readonly role_connections_verification_url?: string
+  /** List of tags describing the content and functionality of the app. Max of 5 tags. */
+  readonly tags?: Array<string>
+  /** Settings for the app's default in-app authorization link, if enabled */
+  readonly install_params?: InstallParam
+  /** Default custom authorization URL for the app, if enabled */
+  readonly custom_install_url?: string
 }
 export interface ApplicationCommand {
   /** Unique ID of command */
@@ -1034,6 +1040,8 @@ export interface CreateGuildChannelParams {
   readonly default_sort_order: SortOrderType
   /** the default forum layout view used to display posts in GUILD_FORUM channels */
   readonly default_forum_layout: ForumLayoutType
+  /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
+  readonly default_thread_rate_limit_per_user: number
 }
 export interface CreateGuildEmojiParams {
   /** name of the emoji */
@@ -1118,7 +1126,7 @@ export interface CreateGuildStickerParams {
   readonly description: string
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
   readonly tags: string
-  /** the sticker file to upload, must be a PNG, APNG, GIF, or Lottie JSON file, max 512 KB */
+  /** the sticker file to upload, must be a PNG, APNG, GIF, or Lottie JSON file, max 512 KiB */
   readonly file: string
 }
 export interface CreateGuildTemplateParams {
@@ -1358,6 +1366,12 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    createTestEntitlement: (applicationId, options) =>
+      fetch({
+        method: "POST",
+        url: `/applications/${applicationId}/entitlements`,
+        options,
+      }),
     createWebhook: (channelId, params, options) =>
       fetch({
         method: "POST",
@@ -1505,6 +1519,12 @@ export function createRoutes<O = any>(
         url: `/stage-instances/${channelId}`,
         options,
       }),
+    deleteTestEntitlement: (applicationId, entitlementId, options) =>
+      fetch({
+        method: "DELETE",
+        url: `/applications/${applicationId}/entitlements/${entitlementId}`,
+        options,
+      }),
     deleteUserReaction: (channelId, messageId, emoji, userId, options) =>
       fetch({
         method: "DELETE",
@@ -1553,6 +1573,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "PUT",
         url: `/channels/${channelId}/permissions/${overwriteId}`,
+        params,
+        options,
+      }),
+    editCurrentApplication: (params, options) =>
+      fetch({
+        method: "PATCH",
+        url: `/applications/@me`,
         params,
         options,
       }),
@@ -1717,6 +1744,18 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/users/@me`,
+        options,
+      }),
+    getCurrentUserApplicationRoleConnection: (applicationId, options) =>
+      fetch({
+        method: "GET",
+        url: `/users/@me/applications/${applicationId}/role-connection`,
+        options,
+      }),
+    getCurrentUserConnections: options =>
+      fetch({
+        method: "GET",
+        url: `/users/@me/connections`,
         options,
       }),
     getCurrentUserGuildMember: (guildId, options) =>
@@ -2008,18 +2047,6 @@ export function createRoutes<O = any>(
         url: `/users/${userId}`,
         options,
       }),
-    getUserApplicationRoleConnection: (applicationId, options) =>
-      fetch({
-        method: "GET",
-        url: `/users/@me/applications/${applicationId}/role-connection`,
-        options,
-      }),
-    getUserConnections: options =>
-      fetch({
-        method: "GET",
-        url: `/users/@me/connections`,
-        options,
-      }),
     getWebhook: (webhookId, options) =>
       fetch({
         method: "GET",
@@ -2082,6 +2109,12 @@ export function createRoutes<O = any>(
         url: `/guilds/${guildId}/auto-moderation/rules`,
         options,
       }),
+    listEntitlements: (applicationId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/entitlements`,
+        options,
+      }),
     listGuildEmojis: (guildId, options) =>
       fetch({
         method: "GET",
@@ -2127,6 +2160,12 @@ export function createRoutes<O = any>(
         method: "GET",
         url: `/guilds/${guildId}/scheduled-events`,
         params,
+        options,
+      }),
+    listSkUs: (applicationId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/skus`,
         options,
       }),
     listStickerPacks: options =>
@@ -2399,7 +2438,11 @@ export function createRoutes<O = any>(
         url: `/applications/${applicationId}/role-connections/metadata`,
         options,
       }),
-    updateUserApplicationRoleConnection: (applicationId, params, options) =>
+    updateCurrentUserApplicationRoleConnection: (
+      applicationId,
+      params,
+      options,
+    ) =>
       fetch({
         method: "PUT",
         url: `/users/@me/applications/${applicationId}/role-connection`,
@@ -2417,6 +2460,8 @@ export interface CreateStageInstanceParams {
   readonly privacy_level?: PrivacyLevel
   /** Notify @everyone that a Stage instance has started */
   readonly send_start_notification?: boolean
+  /** The guild scheduled event associated with this Stage instance */
+  readonly guild_scheduled_event_id?: Snowflake
 }
 export interface CreateWebhookParams {
   /** name of the webhook (1-80 characters) */
@@ -2451,6 +2496,26 @@ export interface EditChannelPermissionParams {
   readonly deny?: string
   /** 0 for a role or 1 for a member */
   readonly type: number
+}
+export interface EditCurrentApplicationParams {
+  /** Default custom authorization URL for the app, if enabled */
+  readonly custom_install_url: string
+  /** Description of the app */
+  readonly description: string
+  /** Role connection verification URL for the app */
+  readonly role_connections_verification_url: string
+  /** Settings for the app's default in-app authorization link, if enabled */
+  readonly install_params: InstallParam
+  /** App's public flags */
+  readonly flags: number
+  /** Icon for the app */
+  readonly icon?: string | null
+  /** Default rich presence invite cover image for the app */
+  readonly cover_image?: string | null
+  /** Interactions endpoint URL for the app */
+  readonly interactions_endpoint_url: string
+  /** List of tags describing the content and functionality of the app (max of 20 characters per tag). Max of 5 tags. */
+  readonly tags: Array<string>
 }
 export interface EditGlobalApplicationCommandParams {
   /** Name of command, 1-32 characters */
@@ -2815,6 +2880,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<CreateStageInstanceParams>,
     options?: O,
   ) => RestResponse<StageInstance>
+  /** Creates a test entitlement to a given SKU for a given guild or user. Discord will act as though that user or guild has entitlement to your premium offering. */
+  createTestEntitlement: (
+    applicationId: string,
+    options?: O,
+  ) => RestResponse<any>
   /** Creates a new webhook and returns a webhook object on success. Requires the MANAGE_WEBHOOKS permission. Fires a Webhooks Update Gateway event. */
   createWebhook: (
     channelId: string,
@@ -2937,6 +3007,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<any>
   /** Deletes the Stage instance. Returns 204 No Content. Fires a Stage Instance Delete Gateway event. */
   deleteStageInstance: (channelId: string, options?: O) => RestResponse<any>
+  /** Deletes a currently-active test entitlement. Discord will act as though that user or guild no longer has entitlement to your premium offering. */
+  deleteTestEntitlement: (
+    applicationId: string,
+    entitlementId: string,
+    options?: O,
+  ) => RestResponse<any>
   /** Deletes another user's reaction. This endpoint requires the MANAGE_MESSAGES permission to be present on the current user. Returns a 204 empty response on success. Fires a Message Reaction Remove Gateway event.
 The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id. */
   deleteUserReaction: (
@@ -2976,6 +3052,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<EditChannelPermissionParams>,
     options?: O,
   ) => RestResponse<any>
+  /** Edit properties of the app associated with the requesting bot user. Only properties that are passed will be updated. Returns the updated application object on success. */
+  editCurrentApplication: (
+    params?: Partial<EditCurrentApplicationParams>,
+    options?: O,
+  ) => RestResponse<Application>
   /** Edits a followup message for an Interaction. Functions the same as Edit Webhook Message. */
   editFollowupMessage: (
     applicationId: string,
@@ -3098,12 +3179,19 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<Application>
   /** Returns the user object of the requester's account. For OAuth2, this requires the identify scope, which will return the object without an email, and optionally the email scope, which returns the object with an email. */
   getCurrentUser: (options?: O) => RestResponse<User>
+  /** Returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
+  getCurrentUserApplicationRoleConnection: (
+    applicationId: string,
+    options?: O,
+  ) => RestResponse<ApplicationRoleConnection>
+  /** Returns a list of connection objects. Requires the connections OAuth2 scope. */
+  getCurrentUserConnections: (options?: O) => RestResponse<Array<Connection>>
   /** Returns a guild member object for the current user. Requires the guilds.members.read OAuth2 scope. */
   getCurrentUserGuildMember: (
     guildId: string,
     options?: O,
   ) => RestResponse<GuildMember>
-  /** Returns a list of partial guild objects the current user is a member of. Requires the guilds OAuth2 scope. */
+  /** Returns a list of partial guild objects the current user is a member of. For OAuth2, requires the guilds scope. */
   getCurrentUserGuilds: (
     params?: Partial<GetCurrentUserGuildParams>,
     options?: O,
@@ -3259,7 +3347,7 @@ If the user is not in the guild, then the guild must be discoverable. */
     guildId: string,
     options?: O,
   ) => RestResponse<WelcomeScreen>
-  /** Returns the widget for the guild. */
+  /** Returns the widget for the guild. Fires an Invite Create Gateway event if an invite channel is defined on the Guild Widget. */
   getGuildWidget: (guildId: string, options?: O) => RestResponse<GuildWidget>
   /** Returns a PNG image widget for the guild. Requires no permissions or authentication. */
   getGuildWidgetImage: (
@@ -3312,13 +3400,6 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<ThreadMember>
   /** Returns a user object for a given user ID. */
   getUser: (userId: string, options?: O) => RestResponse<User>
-  /** Returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
-  getUserApplicationRoleConnection: (
-    applicationId: string,
-    options?: O,
-  ) => RestResponse<ApplicationRoleConnection>
-  /** Returns a list of connection objects. Requires the connections OAuth2 scope. */
-  getUserConnections: (options?: O) => RestResponse<Array<Connection>>
   /** Returns the new webhook object for the given id. */
   getWebhook: (webhookId: string, options?: O) => RestResponse<Webhook>
   /** Returns a previously-sent webhook message from the same token. Returns a message object on success. */
@@ -3364,6 +3445,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<Array<AutoModerationRule>>
+  /** Returns all entitlements for a given app, active and expired. */
+  listEntitlements: (applicationId: string, options?: O) => RestResponse<any>
   /** Returns a list of emoji objects for the given guild. */
   listGuildEmojis: (guildId: string, options?: O) => RestResponse<Array<Emoji>>
   /** Returns a list of guild member objects that are members of the guild. */
@@ -3401,6 +3484,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListScheduledEventsForGuildParams>,
     options?: O,
   ) => RestResponse<Array<GuildScheduledEvent>>
+  /** Returns all SKUs for a given application. Because of how our SKU and subscription systems work, you will see two SKUs for your premium offering. For integration and testing entitlements, you should use the SKU with type: 5. */
+  listSkUs: (applicationId: string, options?: O) => RestResponse<any>
   /** Returns a list of available sticker packs. */
   listStickerPacks: (options?: O) => RestResponse<any>
   listThreadMembers: (
@@ -3523,7 +3608,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildWelcomeScreenParams>,
     options?: O,
   ) => RestResponse<WelcomeScreen>
-  /** Modify a guild widget settings object for the guild. All attributes may be passed in with JSON and modified. Requires the MANAGE_GUILD permission. Returns the updated guild widget settings object. */
+  /** Modify a guild widget settings object for the guild. All attributes may be passed in with JSON and modified. Requires the MANAGE_GUILD permission. Returns the updated guild widget settings object. Fires a Guild Update Gateway event. */
   modifyGuildWidget: (
     guildId: string,
     options?: O,
@@ -3615,7 +3700,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     templateCode: string,
     options?: O,
   ) => RestResponse<GuildTemplate>
-  /** Post a typing indicator for the specified channel. Generally bots should not implement this route. However, if a bot is responding to a command and expects the computation to take a few seconds, this endpoint may be called to let the user know that the bot is processing their message. Returns a 204 empty response on success. Fires a Typing Start Gateway event. */
+  /** Post a typing indicator for the specified channel, which expires after 10 seconds. Returns a 204 empty response on success. Fires a Typing Start Gateway event. */
   triggerTypingIndicator: (channelId: string, options?: O) => RestResponse<any>
   /** Unpin a message in a channel. Requires the MANAGE_MESSAGES permission. Returns a 204 empty response on success. Fires a Channel Pins Update Gateway event. */
   unpinMessage: (
@@ -3629,11 +3714,35 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     options?: O,
   ) => RestResponse<Array<ApplicationRoleConnectionMetadatum>>
   /** Updates and returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
-  updateUserApplicationRoleConnection: (
+  updateCurrentUserApplicationRoleConnection: (
     applicationId: string,
-    params?: Partial<UpdateUserApplicationRoleConnectionParams>,
+    params?: Partial<UpdateCurrentUserApplicationRoleConnectionParams>,
     options?: O,
   ) => RestResponse<ApplicationRoleConnection>
+}
+export interface Entitlement {
+  /** ID of the entitlement */
+  readonly id: Snowflake
+  /** ID of the SKU */
+  readonly sku_id: Snowflake
+  /** ID of the user that is granted access to the entitlement's sku */
+  readonly user_id?: Snowflake
+  /** ID of the guild that is granted access to the entitlement's sku */
+  readonly guild_id?: Snowflake
+  /** ID of the parent application */
+  readonly application_id: Snowflake
+  /** Type of entitlement */
+  readonly type: EntitlementType
+  /** Not applicable for App Subscriptions. Subscriptions are not consumed and will be false */
+  readonly consumed: boolean
+  /** Start date at which the entitlement is valid. Not present when using test entitlements. */
+  readonly starts_at?: string
+  /** Date at which the entitlement is no longer valid. Not present when using test entitlements. */
+  readonly ends_at?: string
+}
+export enum EntitlementType {
+  /** Entitlement was purchased as an app subscription */
+  APPLICATION_SUBSCRIPTION = 8,
 }
 export enum EventType {
   /** when a member sends or edits a message in the guild */
@@ -3686,7 +3795,7 @@ export interface FollowedChannel {
 export interface ForumAndMediaThreadMessageParam {
   /** Message contents (up to 2000 characters) */
   readonly content?: string
-  /** Up to 10 rich embeds (up to 6000 characters) */
+  /** Embedded rich content (up to 6000 characters) */
   readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
@@ -3694,13 +3803,9 @@ export interface ForumAndMediaThreadMessageParam {
   readonly components?: Array<Component>
   /** IDs of up to 3 stickers in the server to send in the message */
   readonly sticker_ids?: Array<Snowflake>
-  /** Contents of the file being sent. See Uploading Files */
-  readonly files: string
-  /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
-  readonly payload_json?: string
   /** Attachment objects with filename and description. See Uploading Files */
   readonly attachments?: Array<Attachment>
-  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
+  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
   readonly flags?: number
 }
 export enum ForumLayoutType {
@@ -4419,9 +4524,9 @@ export interface IdentifyConnectionProperty {
   readonly device: string
 }
 export interface InstallParam {
-  /** the scopes to add the application to the server with */
+  /** Scopes to add the application to the server with */
   readonly scopes: Array<OAuth2Scope>
-  /** the permissions to request for the bot role */
+  /** Permissions to request for the bot role */
   readonly permissions: string
 }
 export interface Integration {
@@ -4531,6 +4636,8 @@ export interface Interaction {
   readonly locale?: string
   /** Guild's preferred locale, if invoked in a guild */
   readonly guild_locale?: string
+  /** For monetized apps, any entitlements for the invoking user, representing access to premium SKUs */
+  readonly entitlements: Array<Entitlement>
 }
 export interface InteractionCallbackAutocomplete {
   /** autocomplete choices (max of 25 choices) */
@@ -4579,6 +4686,8 @@ export enum InteractionCallbackType {
   APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8,
   /** respond to an interaction with a popup modal */
   MODAL = 9,
+  /** respond to an interaction with an upgrade button, only available for apps with monetization enabled */
+  PREMIUM_REQUIRED = 10,
 }
 export type InteractionCreateEvent = Interaction
 export type InteractionDatum =
@@ -4888,6 +4997,8 @@ export interface Message {
   readonly position?: number
   /** data of the role subscription purchase or renewal that prompted this ROLE_SUBSCRIPTION_PURCHASE message */
   readonly role_subscription_data?: RoleSubscriptionDatum
+  /** data for users, members, channels, and roles in the message's auto-populated select menus */
+  readonly resolved?: ResolvedDatum
 }
 export interface MessageActivity {
   /** type of message activity */
@@ -4908,6 +5019,8 @@ export interface MessageComponentDatum {
   readonly component_type: ComponentType
   /** values the user selected in a select menu component */
   readonly values?: Array<SelectOption>
+  /** resolved entities from selected options */
+  readonly resolved?: ResolvedDatum
 }
 export type MessageCreateEvent = Message & MessageCreateExtra
 export interface MessageCreateExtra {
@@ -5363,13 +5476,13 @@ export enum MutableGuildFeature {
 export enum OAuth2Scope {
   /** allows your app to fetch data from a user's "Now Playing/Recently Played" list — not currently available for apps */
   ACTIVITIES_READ = "activities.read",
-  /** allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER) */
+  /** allows your app to update a user's activity - not currently available for apps (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER) */
   ACTIVITIES_WRITE = "activities.write",
   /** allows your app to read build data for a user's applications */
   APPLICATIONS_BUILDS_READ = "applications.builds.read",
   /** allows your app to upload/update builds for a user's applications - requires Discord approval */
   APPLICATIONS_BUILDS_UPLOAD = "applications.builds.upload",
-  /** allows your app to use commands in a guild */
+  /** allows your app to add commands to a guild - included by default with the bot scope */
   APPLICATIONS_COMMANDS = "applications.commands",
   /** allows your app to update its commands using a Bearer token - client credentials grant only */
   APPLICATIONS_COMMANDS_UPDATE = "applications.commands.update",
@@ -5883,6 +5996,12 @@ export interface SearchGuildMemberParams {
   /** max number of members to return (1-1000) */
   readonly limit: number
 }
+export interface SelectDefaultValue {
+  /** ID of a user, role, or channel */
+  readonly id: Snowflake
+  /** Type of value that id represents. Either "user", "role", or "channel" */
+  readonly type: string
+}
 export interface SelectMenu {
   /** Type of select menu component (text: 3, user: 5, role: 6, mentionable: 7, channels: 8) */
   readonly type: ComponentType
@@ -5894,6 +6013,8 @@ export interface SelectMenu {
   readonly channel_types?: Array<ChannelType>
   /** Placeholder text if nothing is selected; max 150 characters */
   readonly placeholder?: string
+  /** List of default values for auto-populated select menu components; number of default values must be in the range defined by min_values and max_values */
+  readonly default_values?: Array<SelectDefaultValue>
   /** Minimum number of items that must be chosen (defaults to 1); min 0, max 25 */
   readonly min_values?: number
   /** Maximum number of items that can be chosen (defaults to 1); max 25 */
@@ -5938,6 +6059,30 @@ export interface SessionStartLimit {
   /** Number of identify requests allowed per 5 seconds */
   readonly max_concurrency: number
 }
+export interface Sku {
+  /** ID of SKU */
+  readonly id: Snowflake
+  /** Type of SKU */
+  readonly type: SkuType
+  /** ID of the parent application */
+  readonly application_id: Snowflake
+  /** Customer-facing name of your premium offering */
+  readonly name: string
+  /** System-generated URL slug based on the SKU's name */
+  readonly slug: string
+  /** SKU flags combined as a bitfield */
+  readonly flags: number
+}
+export const SkuFlag = {
+  GUILD_SUBSCRIPTION: 1 << 7,
+  USER_SUBSCRIPTION: 1 << 8,
+} as const
+export enum SkuType {
+  /** Represents a recurring subscription */
+  SUBSCRIPTION = 5,
+  /** System-generated group for each SUBSCRIPTION SKU created */
+  SUBSCRIPTION_GROUP = 6,
+}
 export type Snowflake = `${bigint}`
 export enum SortOrderType {
   /** Sort forum posts by activity */
@@ -5979,10 +6124,14 @@ export interface StartThreadInForumOrMediaChannelParams {
   readonly auto_archive_duration?: number
   /** amount of seconds a user has to wait before sending another message (0-21600) */
   readonly rate_limit_per_user?: number | null
-  /** contents of the first message in the forum/media thread */
+  /** contents of the first message in the forum thread */
   readonly message: Message
-  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
+  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
   readonly applied_tags?: Array<Snowflake>
+  /** Contents of the file being sent. See Uploading Files */
+  readonly files?: string
+  /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
+  readonly payload_json?: string
 }
 export interface StartThreadWithoutMessageParams {
   /** 1-100 character channel name */
@@ -6240,6 +6389,14 @@ export interface UnavailableGuild {
   /**  */
   readonly unavailable: boolean
 }
+export interface UpdateCurrentUserApplicationRoleConnectionParams {
+  /** the vanity name of the platform a bot has connected (max 50 characters) */
+  readonly platform_name?: string
+  /** the username on the platform a bot has connected (max 100 characters) */
+  readonly platform_username?: string
+  /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
+  readonly metadata?: ApplicationRoleConnectionMetadatum
+}
 export interface UpdatePresence {
   /** Unix time (in milliseconds) of when the client went idle, or null if the client is not idle */
   readonly since?: number | null
@@ -6249,14 +6406,6 @@ export interface UpdatePresence {
   readonly status: StatusType
   /** Whether or not the client is afk */
   readonly afk: boolean
-}
-export interface UpdateUserApplicationRoleConnectionParams {
-  /** the vanity name of the platform a bot has connected (max 50 characters) */
-  readonly platform_name?: string
-  /** the username on the platform a bot has connected (max 100 characters) */
-  readonly platform_username?: string
-  /** object mapping application role connection metadata keys to their string-ified value (max 100 characters) for the user on the platform a bot has connected */
-  readonly metadata?: ApplicationRoleConnectionMetadatum
 }
 export interface UpdateVoiceState {
   /** ID of the guild */
