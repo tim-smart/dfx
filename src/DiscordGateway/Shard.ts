@@ -5,7 +5,7 @@ import { pipe } from "effect/Function"
 import * as Option from "effect/Option"
 import * as ConfigSecret from "effect/ConfigSecret"
 import * as Effect from "effect/Effect"
-import * as Hub from "effect/Hub"
+import * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
@@ -35,7 +35,7 @@ export const make = Effect.gen(function* (_) {
 
   const connect = (
     shard: [id: number, count: number],
-    hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
+    hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
     sendQueue: Queue.Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
   ) =>
     Effect.gen(function* (_) {
@@ -160,9 +160,9 @@ export const make = Effect.gen(function* (_) {
                 )
               case Discord.GatewayOpcode.DISPATCH:
                 if (p.t === "READY" || p.t === "RESUMED") {
-                  return Effect.zipRight(resume, Hub.publish(hub, p))
+                  return Effect.zipRight(resume, PubSub.publish(hub, p))
                 }
-                return Hub.publish(hub, p)
+                return PubSub.publish(hub, p)
               default:
                 return Effect.unit
             }

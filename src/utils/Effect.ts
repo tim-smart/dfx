@@ -2,17 +2,17 @@ import { pipe } from "effect/Function"
 import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
 import type * as Fiber from "effect/Fiber"
-import * as Hub from "effect/Hub"
+import * as PubSub from "effect/PubSub"
 import * as Queue from "effect/Queue"
 import * as ScopedRef from "effect/ScopedRef"
 
 export const subscribeForEachPar = <R, E, A, X>(
-  self: Hub.Hub<A>,
+  self: PubSub.PubSub<A>,
   effect: (_: A) => Effect.Effect<R, E, X>,
 ): Effect.Effect<R, E, never> =>
   Effect.flatMap(Deferred.make<E, never>(), deferred => {
     const run = pipe(
-      Hub.subscribe(self),
+      PubSub.subscribe(self),
       Effect.flatMap(queue =>
         Effect.forever(
           Effect.flatMap(Queue.take(queue), _ =>

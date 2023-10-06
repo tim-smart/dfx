@@ -6,7 +6,7 @@ import * as HashSet from "effect/HashSet"
 import type * as Option from "effect/Option"
 import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
-import type * as Hub from "effect/Hub"
+import type * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
 import type * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
@@ -74,7 +74,7 @@ const make = Effect.gen(function* (_) {
   )
 
   const run = (
-    hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
+    hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
     sendQueue: Queue.Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
   ) =>
     Effect.gen(function* (_) {

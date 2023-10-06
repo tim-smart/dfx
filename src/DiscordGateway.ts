@@ -1,7 +1,7 @@
 import { Tag } from "effect/Context"
 import type * as HashSet from "effect/HashSet"
 import * as Effect from "effect/Effect"
-import * as Hub from "effect/Hub"
+import * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Stream from "effect/Stream"
@@ -24,7 +24,7 @@ const fromDispatchFactory =
     )
 
 const handleDispatchFactory =
-  (hub: Hub.Hub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
+  (hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
   <K extends keyof Discord.ReceiveEvents, R, E, A>(
     event: K,
     handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<R, E, A>,
@@ -64,7 +64,7 @@ export const DiscordGateway = Tag<DiscordGateway>()
 export const make = Effect.gen(function* (_) {
   const sharder = yield* _(Sharder)
   const hub = yield* _(
-    Hub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),
+    PubSub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),
   )
 
   const sendQueue = yield* _(
@@ -73,7 +73,7 @@ export const make = Effect.gen(function* (_) {
   const send = (payload: Discord.GatewayPayload<Discord.SendEvent>) =>
     sendQueue.offer(payload)
 
-  const dispatch = Stream.fromHub(hub)
+  const dispatch = Stream.fromPubSub(hub)
   const fromDispatch = fromDispatchFactory(dispatch)
   const handleDispatch = handleDispatchFactory(hub)
 
