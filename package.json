@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.66.4",
+  "version": "0.67.0",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
