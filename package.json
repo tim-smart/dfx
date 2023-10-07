@@ -67,7 +67,7 @@
     "@effect/platform": "^0.20.0",
     "@tim-smart/discord-api-docs-parser": "^0.5.10",
     "@types/chai": "^4.3.6",
-    "@types/node": "^20.8.2",
+    "@types/node": "^20.8.3",
     "@types/ws": "^8.5.6",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
