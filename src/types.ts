@@ -3347,7 +3347,7 @@ If the user is not in the guild, then the guild must be discoverable. */
     guildId: string,
     options?: O,
   ) => RestResponse<WelcomeScreen>
-  /** Returns the widget for the guild. Fires an Invite Create Gateway event if an invite channel is defined on the Guild Widget. */
+  /** Returns the widget for the guild. Fires an Invite Create Gateway event when an invite channel is defined and a new Invite is generated. */
   getGuildWidget: (guildId: string, options?: O) => RestResponse<GuildWidget>
   /** Returns a PNG image widget for the guild. Requires no permissions or authentication. */
   getGuildWidgetImage: (
@@ -5914,12 +5914,10 @@ export interface Response {
   readonly user?: User
 }
 export interface ResponseBody {
-  /** the public, archived threads */
+  /** the active threads */
   readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
   readonly members: Array<ThreadMember>
-  /** whether there are potentially additional threads that could be returned on a subsequent call */
-  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
