@@ -3725,25 +3725,28 @@ export interface Entitlement {
   readonly id: Snowflake
   /** ID of the SKU */
   readonly sku_id: Snowflake
-  /** ID of the user that is granted access to the entitlement's sku */
-  readonly user_id?: Snowflake
-  /** ID of the guild that is granted access to the entitlement's sku */
-  readonly guild_id?: Snowflake
   /** ID of the parent application */
   readonly application_id: Snowflake
+  /** ID of the user that is granted access to the entitlement's sku */
+  readonly user_id?: Snowflake
   /** Type of entitlement */
   readonly type: EntitlementType
-  /** Not applicable for App Subscriptions. Subscriptions are not consumed and will be false */
-  readonly consumed: boolean
+  /** Entitlement was deleted */
+  readonly deleted: boolean
   /** Start date at which the entitlement is valid. Not present when using test entitlements. */
   readonly starts_at?: string
   /** Date at which the entitlement is no longer valid. Not present when using test entitlements. */
   readonly ends_at?: string
+  /** ID of the guild that is granted access to the entitlement's sku */
+  readonly guild_id?: Snowflake
 }
+export type EntitlementCreateEvent = Entitlement
+export type EntitlementDeleteEvent = Entitlement
 export enum EntitlementType {
   /** Entitlement was purchased as an app subscription */
   APPLICATION_SUBSCRIPTION = 8,
 }
+export type EntitlementUpdateEvent = Entitlement
 export enum EventType {
   /** when a member sends or edits a message in the guild */
   MESSAGE_SEND = 1,
@@ -5764,6 +5767,9 @@ export type ReceiveEvent =
   | ThreadListSyncEvent
   | ThreadMemberUpdateEvent
   | ThreadMembersUpdateEvent
+  | EntitlementCreateEvent
+  | EntitlementUpdateEvent
+  | EntitlementDeleteEvent
   | GuildCreateEvent
   | GuildUpdateEvent
   | GuildDeleteEvent
@@ -5829,6 +5835,9 @@ export interface ReceiveEvents {
   THREAD_LIST_SYNC: ThreadListSyncEvent
   THREAD_MEMBER_UPDATE: ThreadMemberUpdateEvent
   THREAD_MEMBERS_UPDATE: ThreadMembersUpdateEvent
+  ENTITLEMENT_CREATE: EntitlementCreateEvent
+  ENTITLEMENT_UPDATE: EntitlementUpdateEvent
+  ENTITLEMENT_DELETE: EntitlementDeleteEvent
   GUILD_CREATE: GuildCreateEvent
   GUILD_UPDATE: GuildUpdateEvent
   GUILD_DELETE: GuildDeleteEvent
@@ -5914,10 +5923,12 @@ export interface Response {
   readonly user?: User
 }
 export interface ResponseBody {
-  /** the active threads */
+  /** the public, archived threads */
   readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
   readonly members: Array<ThreadMember>
+  /** whether there are potentially additional threads that could be returned on a subsequent call */
+  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
@@ -6072,7 +6083,11 @@ export interface Sku {
   readonly flags: number
 }
 export const SkuFlag = {
+  /** SKU is available for purchase */
+  AVAILABLE: 1 << 2,
+  /** Recurring SKU that can be purchased by a user and applied to a single server. Grants access to every user in that server. */
   GUILD_SUBSCRIPTION: 1 << 7,
+  /** Recurring SKU purchased by a user for themselves. Grants access to the purchasing user in every server. */
   USER_SUBSCRIPTION: 1 << 8,
 } as const
 export enum SkuType {
