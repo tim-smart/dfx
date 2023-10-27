@@ -55,8 +55,8 @@ devDependencies:
     specifier: ^0.0.21
     version: 0.0.21
   '@effect/platform':
-    specifier: ^0.25.1
-    version: 0.25.1(@effect/schema@0.46.1)(effect@2.0.0-next.52)
+    specifier: ^0.26.2
+    version: 0.26.2(@effect/schema@0.46.1)(effect@2.0.0-next.52)
   '@tim-smart/discord-api-docs-parser':
     specifier: ^0.5.10
     version: 0.5.10
@@ -673,8 +673,8 @@ packages:
     resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
     dev: true
 
-  /@effect/platform@0.25.1(@effect/schema@0.46.1)(effect@2.0.0-next.52):
-    resolution: {integrity: sha512-BBoOKrkAr3P2TvZSai3fTJOnegLVtAVipChWLTA1Uv3hgS7A74M4rCNzmcMEsJLOCvvMq50Y4HnDvpTxr+wd0w==}
+  /@effect/platform@0.26.2(@effect/schema@0.46.1)(effect@2.0.0-next.52):
+    resolution: {integrity: sha512-eQif6w4f9IjdhbJtRw4fA3itgANPVzdRtpq5P8z6NupJbJ9EMq/Sfc8yyyypy1A8tfoIRgTxtVN6R7ZvbY1+vg==}
     peerDependencies:
       '@effect/schema': ^0.46.1
       effect: 2.0.0-next.52
