@@ -2,7 +2,6 @@ import * as Chunk from "effect/Chunk"
 import { Tag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { pipe } from "effect/Function"
-import type { Cause } from "effect/Cause"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
@@ -21,6 +20,7 @@ import type { InteractionBuilder } from "dfx/Interactions/index"
 import { builder, Interaction } from "dfx/Interactions/index"
 import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
+import * as Schedule from "effect/Schedule"
 
 export interface RunOpts {
   sync?: boolean
@@ -112,55 +112,55 @@ export const run =
       )
     })
 
-const makeRegistry = Effect.gen(function* (_) {
-  const ref = yield* _(
-    Ref.make(builder as InteractionBuilder<never, never, never>),
-  )
-  const queue = yield* _(
-    Queue.sliding<InteractionBuilder<never, never, never>>(1),
-  )
-
-  const register = <E>(ix: InteractionBuilder<never, E, never>) =>
-    Effect.flatMap(
-      Ref.updateAndGet(ref, _ => _.concat(ix as any)),
-      _ => Queue.offer(queue, _),
+const makeRegistry = (options?: RunOpts) =>
+  Effect.gen(function* (_) {
+    const ref = yield* _(
+      Ref.make(builder as InteractionBuilder<never, never, never>),
+    )
+    const queue = yield* _(
+      Queue.sliding<InteractionBuilder<never, never, never>>(1),
     )
 
-  const run_ = <R, E>(
-    onError: (
-      _: Cause<DiscordRESTError | DefinitionNotFound>,
-    ) => Effect.Effect<R, E, void>,
-    opts?: RunOpts,
-  ) =>
-    EffectUtils.foreverSwitch(Queue.take(queue), ix =>
-      Effect.delay(
-        pipe(ix, run(Effect.catchAllCause(onError), opts)),
-        Duration.seconds(0.1),
+    const register = <E>(ix: InteractionBuilder<never, E, never>) =>
+      Effect.flatMap(
+        Ref.updateAndGet(ref, _ => _.concat(ix as any)),
+        _ => Queue.offer(queue, _),
+      )
+
+    yield* _(
+      EffectUtils.foreverSwitch(Queue.take(queue), ix =>
+        pipe(
+          ix,
+          run(
+            Effect.catchAllCause(_ => Effect.logError("unhandled error", _)),
+            options,
+          ),
+          Effect.delay(Duration.seconds(0.1)),
+        ),
       ),
+      Effect.tapErrorCause(_ => Effect.logError("registry error", _)),
+      Effect.retry(
+        Schedule.exponential("1 seconds").pipe(
+          Schedule.union(Schedule.spaced("20 seconds")),
+        ),
+      ),
+      Effect.forkScoped,
     )
 
-  return { register, run: run_ } as const
-})
+    return { register } as const
+  }).pipe(
+    Effect.annotateLogs({
+      package: "dfx",
+      service: "InteractionsRegistry",
+    }),
+  )
 
 export interface InteractionsRegistry {
   readonly register: <E>(
     ix: InteractionBuilder<never, E, never>,
   ) => Effect.Effect<never, never, void>
-
-  readonly run: <R, E>(
-    onError: (
-      _: Cause<DiscordRESTError | DefinitionNotFound>,
-    ) => Effect.Effect<R, E, void>,
-    opts?: RunOpts,
-  ) => Effect.Effect<
-    DiscordREST | DiscordGateway | Exclude<R, Discord.Interaction>,
-    DiscordRESTError | Http.error.ResponseError | E,
-    never
-  >
 }
 
 export const InteractionsRegistry = Tag<InteractionsRegistry>()
-export const InteractionsRegistryLive = Layer.effect(
-  InteractionsRegistry,
-  makeRegistry,
-)
+export const InteractionsRegistryLive = (options?: RunOpts) =>
+  Layer.scoped(InteractionsRegistry, makeRegistry(options))

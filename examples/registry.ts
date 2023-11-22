@@ -1,6 +1,5 @@
 import { Discord, Ix } from "dfx"
 import {
-  DiscordGateway,
   gatewayLayer,
   InteractionsRegistry,
   InteractionsRegistryLive,
@@ -50,35 +49,20 @@ const makeGreetService = Effect.gen(function* (_) {
 })
 
 // Greet service layer
-const GreetLive = Layer.provide(
-  InteractionsRegistryLive,
-  Layer.effectDiscard(makeGreetService),
+const GreetLive = Layer.effectDiscard(makeGreetService)
+
+// Main layer
+const MainLive = GreetLive.pipe(
+  Layer.use(InteractionsRegistryLive()),
+  Layer.use(
+    gatewayLayer({
+      token: Config.secret("DISCORD_BOT_TOKEN"),
+      debug: Config.withDefault(Config.boolean("DEBUG"), false),
+    }),
+  ),
 )
 
-// main program
-const main = Effect.gen(function* (_) {
-  const gateway = yield* _(DiscordGateway)
-  const registry = yield* _(InteractionsRegistry)
-
-  yield* _(
-    Effect.all([registry.run(Effect.logError), gateway.run], {
-      concurrency: "unbounded",
-      discard: true,
-    }),
-  )
-})
-
-// Create the dependencies layer
-const DiscordLive = gatewayLayer({
-  token: Config.secret("DISCORD_BOT_TOKEN"),
-  debug: Config.withDefault(Config.boolean("DEBUG"), false),
-})
-
-// Add our GreetLive layer
-const MainLive = Layer.provideMerge(DiscordLive, GreetLive)
-
-main.pipe(
-  Effect.provide(MainLive),
+Layer.launch(MainLive).pipe(
   Effect.catchAllCause(Effect.logError),
   Effect.runFork,
 )

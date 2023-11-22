@@ -7,9 +7,9 @@ import * as Queue from "effect/Queue"
 import * as Stream from "effect/Stream"
 import type { RunningShard } from "dfx/DiscordGateway/Shard"
 import { LiveSharder, Sharder } from "dfx/DiscordGateway/Sharder"
-import type { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
 import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
+import * as Schedule from "effect/Schedule"
 
 const fromDispatchFactory =
   <R, E>(
@@ -33,15 +33,10 @@ const handleDispatchFactory =
       if (_.t === event) {
         return handle(_.d as any)
       }
-      return Effect.unit
+      return Effect.unit as any
     })
 
 export interface DiscordGateway {
-  readonly run: Effect.Effect<
-    never,
-    WebSocketError | WebSocketCloseError,
-    never
-  >
   readonly dispatch: Stream.Stream<
     never,
     never,
@@ -77,19 +72,32 @@ export const make = Effect.gen(function* (_) {
   const fromDispatch = fromDispatchFactory(dispatch)
   const handleDispatch = handleDispatchFactory(hub)
 
-  const run = sharder.run(hub, sendQueue)
+  yield* _(
+    sharder.run(hub, sendQueue),
+    Effect.tapErrorCause(_ => Effect.logError("fatal error, restarting", _)),
+    Effect.retry(
+      Schedule.exponential("1 seconds").pipe(
+        Schedule.union(Schedule.spaced("30 seconds")),
+      ),
+    ),
+    Effect.forkScoped,
+  )
 
   return DiscordGateway.of({
-    run,
     dispatch,
     fromDispatch,
     handleDispatch,
     send,
     shards: sharder.shards,
   })
-})
+}).pipe(
+  Effect.annotateLogs({
+    package: "dfx",
+    service: "DiscordGateway",
+  }),
+)
 
 export const LiveDiscordGateway = Layer.provide(
   LiveSharder,
-  Layer.effect(DiscordGateway, make),
+  Layer.scoped(DiscordGateway, make),
 )

@@ -14,8 +14,6 @@ import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
 import * as ShardStore from "dfx/DiscordGateway/ShardStore"
 import { LiveMemoryShardStore } from "dfx/DiscordGateway/ShardStore"
 import * as WS from "dfx/DiscordGateway/WS"
-import { InteractionsRegistryLive } from "dfx/gateway"
-import type { InteractionsRegistry } from "dfx/gateway"
 import type { RateLimiter } from "dfx/RateLimit"
 import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
 
@@ -43,7 +41,6 @@ export const MemoryBot = Layer.provide(
   Layer.mergeAll(
     Layer.provideMerge(LiveDiscordREST, LiveDiscordGateway),
     MemoryRateLimit,
-    InteractionsRegistryLive,
   ),
 )
 
@@ -54,7 +51,6 @@ export const gatewayLayer = (
   ConfigError.ConfigError,
   | RateLimiter
   | Log.Log
-  | InteractionsRegistry
   | DiscordREST
   | DiscordGateway
   | DiscordConfig.DiscordConfig

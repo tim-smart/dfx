@@ -1,5 +1,5 @@
 import { Discord, Ix } from "dfx"
-import { DiscordGateway, gatewayLayer, runIx } from "dfx/gateway"
+import { gatewayLayer, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Cause, Config, Effect, Option, pipe } from "effect"
 
@@ -64,8 +64,6 @@ const greeting = Ix.global(
 
 // Build your program use `Ix.builder`
 const program = Effect.gen(function* (_) {
-  const gateway = yield* _(DiscordGateway)
-
   const interactions = pipe(
     Ix.builder.add(hello).add(greeting),
     runIx(
@@ -77,12 +75,7 @@ const program = Effect.gen(function* (_) {
     ),
   )
 
-  yield* _(
-    Effect.all([gateway.run, interactions], {
-      concurrency: "unbounded",
-      discard: true,
-    }),
-  )
+  yield* _(interactions)
 })
 
 // Run it
