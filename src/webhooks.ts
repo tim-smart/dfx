@@ -21,13 +21,13 @@ export {
 } from "dfx/Interactions/webhook"
 
 export const MemoryRateLimit = Layer.provide(
-  LiveMemoryRateLimitStore,
   LiveRateLimiter,
+  LiveMemoryRateLimitStore,
 )
 
 export const MemoryREST = Layer.provide(
-  LiveMemoryRateLimitStore,
   LiveDiscordREST,
+  LiveMemoryRateLimitStore,
 )
 
 export const webhookLayer = (
@@ -42,8 +42,8 @@ export const webhookLayer = (
   const LiveWebhook = makeConfigLayer(options)
   const LiveLog = config.debug ? Log.LiveLogDebug : Log.LiveLog
   const LiveEnv = Layer.provide(
-    Layer.merge(LiveLog, LiveConfig),
     Layer.mergeAll(MemoryREST, LiveWebhook, MemoryRateLimit),
+    Layer.merge(LiveLog, LiveConfig),
   )
 
   return LiveEnv

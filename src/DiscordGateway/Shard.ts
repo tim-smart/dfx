@@ -192,8 +192,8 @@ export const make = Effect.gen(function* (_) {
 export interface Shard extends Effect.Effect.Success<typeof make> {}
 export const Shard = Tag<Shard>()
 export const LiveShard = Layer.provide(
-  Layer.merge(LiveDiscordWS, LiveRateLimiter),
   Layer.effect(Shard, make),
+  Layer.merge(LiveDiscordWS, LiveRateLimiter),
 )
 
 export interface RunningShard

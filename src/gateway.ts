@@ -28,20 +28,18 @@ export {
 export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore, WS }
 
 export const MemoryRateLimit = Layer.provide(
-  LiveMemoryRateLimitStore,
   LiveRateLimiter,
+  LiveMemoryRateLimitStore,
 )
 
-export const MemoryBot = Layer.provide(
-  Layer.mergeAll(
-    LiveMemoryShardStore,
-    LiveMemoryRateLimitStore,
-    LiveJsonDiscordWSCodec,
-  ),
-  Layer.mergeAll(
-    Layer.provideMerge(LiveDiscordREST, LiveDiscordGateway),
-    MemoryRateLimit,
-  ),
+export const MemoryBot = Layer.mergeAll(
+  MemoryRateLimit,
+  LiveDiscordGateway,
+).pipe(
+  Layer.provideMerge(LiveDiscordREST),
+  Layer.provide(LiveJsonDiscordWSCodec),
+  Layer.provide(LiveMemoryRateLimitStore),
+  Layer.provide(LiveMemoryShardStore),
 )
 
 export const gatewayLayer = (
@@ -61,7 +59,7 @@ export const gatewayLayer = (
       Effect.map(config => {
         const LiveLog = config.debug ? Log.LiveLogDebug : Log.LiveLog
         const LiveConfig = Layer.succeed(DiscordConfig.DiscordConfig, config)
-        return Layer.provideMerge(Layer.merge(LiveLog, LiveConfig), MemoryBot)
+        return Layer.provideMerge(MemoryBot, Layer.merge(LiveLog, LiveConfig))
       }),
     ),
   )

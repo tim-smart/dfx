@@ -151,7 +151,7 @@ export const resolveValues =
       ),
       Option.bind("r", () => resolved(a)),
       Option.map(({ r, values }) =>
-        Arr.compact(values.map(a => Option.fromNullable(f(a as any, r)))),
+        Arr.getSomes(values.map(a => Option.fromNullable(f(a as any, r)))),
       ),
     )
 

@@ -70,6 +70,6 @@ const make = Effect.gen(function* (_) {
 export interface DiscordWS extends Effect.Effect.Success<typeof make> {}
 export const DiscordWS = Tag<DiscordWS>()
 export const LiveDiscordWS = Layer.provide(
-  LiveWS,
   Layer.effect(DiscordWS, make),
+  LiveWS,
 )

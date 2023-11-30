@@ -53,8 +53,8 @@ const GreetLive = Layer.effectDiscard(makeGreetService)
 
 // Main layer
 const MainLive = GreetLive.pipe(
-  Layer.use(InteractionsRegistryLive()),
-  Layer.use(
+  Layer.provide(InteractionsRegistryLive()),
+  Layer.provide(
     gatewayLayer({
       token: Config.secret("DISCORD_BOT_TOKEN"),
       debug: Config.withDefault(Config.boolean("DEBUG"), false),

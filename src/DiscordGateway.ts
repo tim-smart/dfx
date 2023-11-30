@@ -98,6 +98,6 @@ export const make = Effect.gen(function* (_) {
 )
 
 export const LiveDiscordGateway = Layer.provide(
-  LiveSharder,
   Layer.scoped(DiscordGateway, make),
+  LiveSharder,
 )

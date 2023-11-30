@@ -255,6 +255,6 @@ export interface DiscordREST
 
 export const DiscordREST = Tag<DiscordREST>()
 export const LiveDiscordREST = Layer.effect(DiscordREST, make).pipe(
-  Layer.use(LiveRateLimiter),
-  Layer.use(Http.client.layer),
+  Layer.provide(LiveRateLimiter),
+  Layer.provide(Http.client.layer),
 )

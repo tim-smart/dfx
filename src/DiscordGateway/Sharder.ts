@@ -135,6 +135,6 @@ const make = Effect.gen(function* (_) {
 export interface Sharder extends Effect.Effect.Success<typeof make> {}
 export const Sharder = Tag<Sharder>()
 export const LiveSharder = Layer.provide(
-  Layer.merge(LiveRateLimiter, LiveShard),
   Layer.effect(Sharder, make),
+  Layer.merge(LiveRateLimiter, LiveShard),
 )
