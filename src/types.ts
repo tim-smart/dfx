@@ -2819,7 +2819,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildChannelParams>,
     options?: O,
   ) => RestResponse<Channel>
-  /** Create a new emoji for the guild. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the new emoji object on success. Fires a Guild Emojis Update Gateway event. */
+  /** Create a new emoji for the guild. Requires the CREATE_GUILD_EXPRESSIONS permission. Returns the new emoji object on success. Fires a Guild Emojis Update Gateway event. */
   createGuildEmoji: (
     guildId: string,
     params?: Partial<CreateGuildEmojiParams>,
@@ -2843,7 +2843,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildScheduledEventParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent>
-  /** Create a new sticker for the guild. Send a multipart/form-data body. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the new sticker object on success. Fires a Guild Stickers Update Gateway event. */
+  /** Create a new sticker for the guild. Send a multipart/form-data body. Requires the CREATE_GUILD_EXPRESSIONS permission. Returns the new sticker object on success. Fires a Guild Stickers Update Gateway event. */
   createGuildSticker: (
     guildId: string,
     params?: Partial<CreateGuildStickerParams>,
@@ -2947,7 +2947,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     commandId: string,
     options?: O,
   ) => RestResponse<any>
-  /** Delete the given emoji. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Emojis Update Gateway event. */
+  /** Delete the given emoji. For emojis created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other emojis, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Emojis Update Gateway event. */
   deleteGuildEmoji: (
     guildId: string,
     emojiId: string,
@@ -2971,7 +2971,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildScheduledEventId: string,
     options?: O,
   ) => RestResponse<any>
-  /** Delete the given sticker. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Stickers Update Gateway event. */
+  /** Delete the given sticker. For stickers created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other stickers, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Stickers Update Gateway event. */
   deleteGuildSticker: (
     guildId: string,
     stickerId: string,
@@ -3265,7 +3265,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<Array<Channel>>
-  /** Returns an emoji object for the given guild and emoji IDs. */
+  /** Returns an emoji object for the given guild and emoji IDs. Includes the user field if the bot has the MANAGE_GUILD_EXPRESSIONS permission, or if the bot created the emoji and has the the CREATE_GUILD_EXPRESSIONS permission. */
   getGuildEmoji: (
     guildId: string,
     emojiId: string,
@@ -3314,7 +3314,7 @@ If the user is not in the guild, then the guild must be discoverable. */
     params?: Partial<GetGuildScheduledEventUserParams>,
     options?: O,
   ) => RestResponse<Array<GuildScheduledEventUser>>
-  /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the MANAGE_GUILD_EXPRESSIONS permission. */
+  /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
   getGuildSticker: (
     guildId: string,
     stickerId: string,
@@ -3447,7 +3447,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<Array<AutoModerationRule>>
   /** Returns all entitlements for a given app, active and expired. */
   listEntitlements: (applicationId: string, options?: O) => RestResponse<any>
-  /** Returns a list of emoji objects for the given guild. */
+  /** Returns a list of emoji objects for the given guild. Includes user fields if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
   listGuildEmojis: (guildId: string, options?: O) => RestResponse<Array<Emoji>>
   /** Returns a list of guild member objects that are members of the guild. */
   listGuildMembers: (
@@ -3455,7 +3455,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListGuildMemberParams>,
     options?: O,
   ) => RestResponse<Array<GuildMember>>
-  /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the MANAGE_GUILD_EXPRESSIONS permission. */
+  /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
   listGuildStickers: (
     guildId: string,
     options?: O,
@@ -3542,7 +3542,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildChannelPositionParams>,
     options?: O,
   ) => RestResponse<any>
-  /** Modify the given emoji. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated emoji object on success. Fires a Guild Emojis Update Gateway event. */
+  /** Modify the given emoji. For emojis created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other emojis, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated emoji object on success. Fires a Guild Emojis Update Gateway event. */
   modifyGuildEmoji: (
     guildId: string,
     emojiId: string,
@@ -3588,7 +3588,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildScheduledEventParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent>
-  /** Modify the given sticker. Requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated sticker object on success. Fires a Guild Stickers Update Gateway event. */
+  /** Modify the given sticker. For stickers created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other stickers, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated sticker object on success. Fires a Guild Stickers Update Gateway event. */
   modifyGuildSticker: (
     guildId: string,
     stickerId: string,
@@ -3798,7 +3798,7 @@ export interface FollowedChannel {
 export interface ForumAndMediaThreadMessageParam {
   /** Message contents (up to 2000 characters) */
   readonly content?: string
-  /** Embedded rich content (up to 6000 characters) */
+  /** Up to 10 rich embeds (up to 6000 characters) */
   readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
@@ -3808,7 +3808,7 @@ export interface ForumAndMediaThreadMessageParam {
   readonly sticker_ids?: Array<Snowflake>
   /** Attachment objects with filename and description. See Uploading Files */
   readonly attachments?: Array<Attachment>
-  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
+  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
 }
 export enum ForumLayoutType {
@@ -5627,13 +5627,13 @@ export const PermissionFlag = {
   MANAGE_ROLES: BigInt(1) << BigInt(28),
   /** Allows management and editing of webhooks */
   MANAGE_WEBHOOKS: BigInt(1) << BigInt(29),
-  /** Allows management and editing of emojis, stickers, and soundboard sounds */
+  /** Allows for editing and deleting emojis, stickers, and soundboard sounds created by all users */
   MANAGE_GUILD_EXPRESSIONS: BigInt(1) << BigInt(30),
   /** Allows members to use application commands, including slash commands and context menu commands. */
   USE_APPLICATION_COMMANDS: BigInt(1) << BigInt(31),
   /** Allows for requesting to speak in stage channels. (This permission is under active development and may be changed or removed.) */
   REQUEST_TO_SPEAK: BigInt(1) << BigInt(32),
-  /** Allows for creating, editing, and deleting scheduled events */
+  /** Allows for editing and deleting scheduled events created by all users */
   MANAGE_EVENTS: BigInt(1) << BigInt(33),
   /** Allows for deleting and archiving threads, and viewing all private threads */
   MANAGE_THREADS: BigInt(1) << BigInt(34),
@@ -5653,6 +5653,10 @@ export const PermissionFlag = {
   VIEW_CREATOR_MONETIZATION_ANALYTICS: BigInt(1) << BigInt(41),
   /** Allows for using soundboard in a voice channel */
   USE_SOUNDBOARD: BigInt(1) << BigInt(42),
+  /** Allows for creating emojis, stickers, and soundboard sounds, and editing and deleting those created by the current user */
+  CREATE_GUILD_EXPRESSIONS: BigInt(1) << BigInt(43),
+  /** Allows for creating scheduled events, and editing and deleting those created by the current user */
+  CREATE_EVENTS: BigInt(1) << BigInt(44),
   /** Allows the usage of custom soundboard sounds from other servers */
   USE_EXTERNAL_SOUNDS: BigInt(1) << BigInt(45),
   /** Allows sending voice messages */
@@ -5699,8 +5703,14 @@ export interface PromptOption {
   readonly channel_ids: Array<Snowflake>
   /** IDs for roles assigned to a member when the option is selected */
   readonly role_ids: Array<Snowflake>
-  /** Emoji of the option */
-  readonly emoji: Emoji
+  /** Emoji of the option (see below) */
+  readonly emoji?: Emoji
+  /** Emoji ID of the option (see below) */
+  readonly emoji_id?: Snowflake
+  /** Emoji name of the option (see below) */
+  readonly emoji_name?: string
+  /** Whether the emoji is animated (see below) */
+  readonly emoji_animated?: boolean
   /** Title of the option */
   readonly title: string
   /** Description of the option */
@@ -6137,9 +6147,9 @@ export interface StartThreadInForumOrMediaChannelParams {
   readonly auto_archive_duration?: number
   /** amount of seconds a user has to wait before sending another message (0-21600) */
   readonly rate_limit_per_user?: number | null
-  /** contents of the first message in the forum thread */
+  /** contents of the first message in the forum/media thread */
   readonly message: Message
-  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM channel */
+  /** the IDs of the set of tags that have been applied to a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly applied_tags?: Array<Snowflake>
   /** Contents of the file being sent. See Uploading Files */
   readonly files?: string
