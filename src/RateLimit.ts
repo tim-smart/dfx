@@ -41,7 +41,7 @@ export interface RateLimitStore {
 }
 
 export const RateLimitStore = Tag<RateLimitStore>()
-export const LiveMemoryRateLimitStore = Layer.sync(RateLimitStore, Memory.make)
+export const MemoryRateLimitStoreLive = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Effect.gen(function* (_) {
   const store = yield* _(RateLimitStore)

@@ -6,20 +6,14 @@ import { LiveJsonDiscordWSCodec as JsonDiscordWSCodecLive } from "dfx/DiscordGat
 import * as Shard from "dfx/DiscordGateway/Shard"
 import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
 import * as ShardStore from "dfx/DiscordGateway/ShardStore"
-import { MemoryShardStoreLive as MemoryShardStoreLive } from "dfx/DiscordGateway/ShardStore"
+import { MemoryShardStoreLive } from "dfx/DiscordGateway/ShardStore"
 import * as WS from "dfx/DiscordGateway/WS"
+import { InteractionsRegistryLive } from "dfx/Interactions/gateway"
 import { LogLive } from "dfx/Log"
-import {
-  LiveMemoryRateLimitStore as MemoryRateLimitStoreLive,
-  RateLimiterLive as RateLimiterLive,
-} from "dfx/RateLimit"
+import { MemoryRateLimitStoreLive, RateLimiterLive } from "dfx/RateLimit"
 import * as Layer from "effect/Layer"
-import { InteractionsRegistryLive } from "./gateway"
 
-export {
-  DiscordGateway,
-  DiscordGatewayLive as LiveDiscordGateway,
-} from "dfx/DiscordGateway"
+export { DiscordGateway, DiscordGatewayLive } from "dfx/DiscordGateway"
 
 export {
   InteractionsRegistry,

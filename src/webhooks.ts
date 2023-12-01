@@ -1,7 +1,7 @@
 import { DiscordRESTLive } from "dfx/DiscordREST"
 import * as Log from "dfx/Log"
 import {
-  LiveMemoryRateLimitStore as MemoryRateLimitStoreLive,
+  MemoryRateLimitStoreLive as MemoryRateLimitStoreLive,
   RateLimiterLive as RateLimiterLive,
 } from "dfx/RateLimit"
 import * as Layer from "effect/Layer"
