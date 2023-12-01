@@ -14,6 +14,7 @@ import {
   RateLimiterLive as RateLimiterLive,
 } from "dfx/RateLimit"
 import * as Layer from "effect/Layer"
+import { InteractionsRegistryLive } from "./gateway"
 
 export {
   DiscordGateway,
@@ -39,4 +40,8 @@ export const DiscordLive = Layer.mergeAll(
   Layer.provide(MemoryRateLimitStoreLive),
   Layer.provide(MemoryShardStoreLive),
   Layer.provideMerge(LogLive),
+)
+
+export const DiscordIxLive = InteractionsRegistryLive.pipe(
+  Layer.provideMerge(DiscordLive),
 )
