@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.77.1",
+  "version": "0.77.2",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
@@ -96,5 +96,5 @@
     "vitest": "0.34.6"
   },
   "sideEffects": false,
-  "gitHead": "46015105671184b9dc26919b633fc03b2152c7b7"
+  "gitHead": "4d43c4f6e21042928fb56bb7a23a74cdf7044d4e"
 }
