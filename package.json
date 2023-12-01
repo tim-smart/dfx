@@ -45,8 +45,8 @@
     "ws": "^8.14.2"
   },
   "peerDependencies": {
-    "@effect/platform": "^0.32.0",
-    "effect": "2.0.0-next.57"
+    "@effect/platform": "^0.32.1",
+    "effect": "2.0.0-next.58"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
@@ -62,9 +62,9 @@
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.1",
     "@effect/babel-plugin": "^0.2.0",
-    "@effect/build-utils": "^0.5.0",
+    "@effect/build-utils": "^0.5.1",
     "@effect/language-service": "^0.0.21",
-    "@effect/platform": "^0.32.0",
+    "@effect/platform": "^0.32.1",
     "@tim-smart/discord-api-docs-parser": "^0.5.10",
     "@types/chai": "^4.3.11",
     "@types/node": "^20.10.1",
@@ -76,7 +76,7 @@
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "concurrently": "^8.2.2",
     "dotenv": "^16.3.1",
-    "effect": "2.0.0-next.57",
+    "effect": "2.0.0-next.58",
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",
