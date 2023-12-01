@@ -21,14 +21,17 @@ import { builder, Interaction } from "dfx/Interactions/index"
 import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
 import * as Schedule from "effect/Schedule"
+import { globalValue } from "effect/GlobalValue"
+import * as FiberRef from "effect/FiberRef"
 
-export interface RunOpts {
-  sync?: boolean
-}
+export const interactionsSync: FiberRef.FiberRef<boolean> = globalValue(
+  "dfx/Interactions/sync",
+  () => FiberRef.unsafeMake(true),
+)
 
-/**
- * @tsplus pipeable dfx/InteractionBuilder runGateway
- */
+export const setInteractionsSync = (enabled: boolean) =>
+  Layer.locally(interactionsSync, enabled)
+
 export const run =
   <R, R2, E, TE, E2>(
     postHandler: (
@@ -38,7 +41,6 @@ export const run =
         void
       >,
     ) => Effect.Effect<R2, E2, void>,
-    { sync = true }: RunOpts = {},
   ) =>
   (
     ix: InteractionBuilder<R, E, TE>,
@@ -100,6 +102,8 @@ export const run =
         Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
       )
 
+      const sync = yield* _(FiberRef.get(interactionsSync))
+
       return yield* _(
         sync
           ? Effect.forever(
@@ -112,48 +116,44 @@ export const run =
       )
     })
 
-const makeRegistry = (options?: RunOpts) =>
-  Effect.gen(function* (_) {
-    const ref = yield* _(
-      Ref.make(builder as InteractionBuilder<never, never, never>),
-    )
-    const queue = yield* _(
-      Queue.sliding<InteractionBuilder<never, never, never>>(1),
-    )
-
-    const register = <E>(ix: InteractionBuilder<never, E, never>) =>
-      Effect.flatMap(
-        Ref.updateAndGet(ref, _ => _.concat(ix as any)),
-        _ => Queue.offer(queue, _),
-      )
-
-    yield* _(
-      EffectUtils.foreverSwitch(Queue.take(queue), ix =>
-        pipe(
-          ix,
-          run(
-            Effect.catchAllCause(_ => Effect.logError("unhandled error", _)),
-            options,
-          ),
-          Effect.delay(Duration.seconds(0.1)),
-        ),
-      ),
-      Effect.tapErrorCause(_ => Effect.logError("registry error", _)),
-      Effect.retry(
-        Schedule.exponential("1 seconds").pipe(
-          Schedule.union(Schedule.spaced("20 seconds")),
-        ),
-      ),
-      Effect.forkScoped,
-    )
-
-    return { register } as const
-  }).pipe(
-    Effect.annotateLogs({
-      package: "dfx",
-      service: "InteractionsRegistry",
-    }),
+const makeRegistry = Effect.gen(function* (_) {
+  const ref = yield* _(
+    Ref.make(builder as InteractionBuilder<never, never, never>),
   )
+  const queue = yield* _(
+    Queue.sliding<InteractionBuilder<never, never, never>>(1),
+  )
+
+  const register = <E>(ix: InteractionBuilder<never, E, never>) =>
+    Effect.flatMap(
+      Ref.updateAndGet(ref, _ => _.concat(ix as any)),
+      _ => Queue.offer(queue, _),
+    )
+
+  yield* _(
+    EffectUtils.foreverSwitch(Queue.take(queue), ix =>
+      pipe(
+        ix,
+        run(Effect.catchAllCause(_ => Effect.logError("unhandled error", _))),
+        Effect.delay(Duration.seconds(0.1)),
+      ),
+    ),
+    Effect.tapErrorCause(_ => Effect.logError("registry error", _)),
+    Effect.retry(
+      Schedule.exponential("1 seconds").pipe(
+        Schedule.union(Schedule.spaced("20 seconds")),
+      ),
+    ),
+    Effect.forkScoped,
+  )
+
+  return { register } as const
+}).pipe(
+  Effect.annotateLogs({
+    package: "dfx",
+    service: "InteractionsRegistry",
+  }),
+)
 
 export interface InteractionsRegistry {
   readonly register: <E>(
@@ -162,5 +162,7 @@ export interface InteractionsRegistry {
 }
 
 export const InteractionsRegistry = Tag<InteractionsRegistry>()
-export const InteractionsRegistryLive = (options?: RunOpts) =>
-  Layer.scoped(InteractionsRegistry, makeRegistry(options))
+export const InteractionsRegistryLive = Layer.scoped(
+  InteractionsRegistry,
+  makeRegistry,
+)

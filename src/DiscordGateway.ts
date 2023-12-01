@@ -6,7 +6,7 @@ import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Stream from "effect/Stream"
 import type { RunningShard } from "dfx/DiscordGateway/Shard"
-import { LiveSharder, Sharder } from "dfx/DiscordGateway/Sharder"
+import { SharedLive, Sharder } from "dfx/DiscordGateway/Sharder"
 import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
 import * as Schedule from "effect/Schedule"
@@ -97,7 +97,7 @@ export const make = Effect.gen(function* (_) {
   }),
 )
 
-export const LiveDiscordGateway = Layer.provide(
+export const DiscordGatewayLive = Layer.provide(
   Layer.scoped(DiscordGateway, make),
-  LiveSharder,
+  SharedLive,
 )

@@ -60,12 +60,12 @@ export const make = ({
   },
 })
 
-export const makeLayer = (
+export const layer = (
   opts: MakeOpts,
 ): Layer.Layer<never, never, DiscordConfig> =>
   Layer.succeed(DiscordConfig, make(opts))
 
-export const makeFromConfig = (
+export const layerConfig = (
   _: Config.Config.Wrap<MakeOpts>,
 ): Layer.Layer<never, ConfigError.ConfigError, DiscordConfig> =>
   Layer.effect(DiscordConfig, Effect.map(Effect.config(Config.unwrap(_)), make))

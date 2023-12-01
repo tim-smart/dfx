@@ -37,4 +37,4 @@ const memoryStore = (): ShardStore => {
   }
 }
 
-export const LiveMemoryShardStore = Layer.sync(ShardStore, memoryStore)
+export const MemoryShardStoreLive = Layer.sync(ShardStore, memoryStore)

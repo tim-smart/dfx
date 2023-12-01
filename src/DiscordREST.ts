@@ -17,7 +17,7 @@ import {
   routeFromConfig,
 } from "dfx/DiscordREST/utils"
 import { Log } from "dfx/Log"
-import { LiveRateLimiter, RateLimiter, RateLimitStore } from "dfx/RateLimit"
+import { RateLimiterLive, RateLimiter, RateLimitStore } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
 
@@ -254,7 +254,7 @@ export interface DiscordREST
 }
 
 export const DiscordREST = Tag<DiscordREST>()
-export const LiveDiscordREST = Layer.effect(DiscordREST, make).pipe(
-  Layer.provide(LiveRateLimiter),
+export const DiscordRESTLive = Layer.effect(DiscordREST, make).pipe(
+  Layer.provide(RateLimiterLive),
   Layer.provide(Http.client.layer),
 )

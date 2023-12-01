@@ -1,6 +1,6 @@
-import { Discord, Ix } from "dfx"
+import { Discord, DiscordConfig, Ix } from "dfx"
 import {
-  gatewayLayer,
+  DiscordLive,
   InteractionsRegistry,
   InteractionsRegistryLive,
 } from "dfx/gateway"
@@ -53,9 +53,10 @@ const GreetLive = Layer.effectDiscard(makeGreetService)
 
 // Main layer
 const MainLive = GreetLive.pipe(
-  Layer.provide(InteractionsRegistryLive()),
+  Layer.provide(InteractionsRegistryLive),
+  Layer.provide(DiscordLive),
   Layer.provide(
-    gatewayLayer({
+    DiscordConfig.layerConfig({
       token: Config.secret("DISCORD_BOT_TOKEN"),
       debug: Config.withDefault(Config.boolean("DEBUG"), false),
     }),

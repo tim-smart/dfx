@@ -11,14 +11,14 @@ import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import type { Message } from "dfx/DiscordGateway/DiscordWS"
-import { DiscordWS, LiveDiscordWS } from "dfx/DiscordGateway/DiscordWS"
+import { DiscordWS, DiscordWSLive } from "dfx/DiscordGateway/DiscordWS"
 import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
 import * as Identify from "dfx/DiscordGateway/Shard/identify"
 import * as InvalidSession from "dfx/DiscordGateway/Shard/invalidSession"
 import * as Utils from "dfx/DiscordGateway/Shard/utils"
 import { Reconnect } from "dfx/DiscordGateway/WS"
 import { Log } from "dfx/Log"
-import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
+import { RateLimiterLive, RateLimiter } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 
 const enum Phase {
@@ -191,9 +191,9 @@ export const make = Effect.gen(function* (_) {
 
 export interface Shard extends Effect.Effect.Success<typeof make> {}
 export const Shard = Tag<Shard>()
-export const LiveShard = Layer.provide(
+export const ShardLive = Layer.provide(
   Layer.effect(Shard, make),
-  Layer.merge(LiveDiscordWS, LiveRateLimiter),
+  Layer.merge(DiscordWSLive, RateLimiterLive),
 )
 
 export interface RunningShard

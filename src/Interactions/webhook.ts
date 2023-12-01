@@ -71,10 +71,10 @@ const makeConfig = ({
 export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
 export const WebhookConfig = Tag<WebhookConfig>()
 
-export const makeConfigLayer = (opts: MakeConfigOpts) =>
+export const layer = (opts: MakeConfigOpts) =>
   Layer.succeed(WebhookConfig, makeConfig(opts))
 
-export const makeFromConfig: (
+export const layerConfig: (
   a: Config.Config<MakeConfigOpts>,
 ) => Layer.Layer<never, ConfigError.ConfigError, WebhookConfig> = (
   a: Config.Config<MakeConfigOpts>,

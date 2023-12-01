@@ -1,12 +1,12 @@
-import { Discord, Ix } from "dfx"
-import { gatewayLayer, runIx } from "dfx/gateway"
+import { Discord, DiscordConfig, Ix } from "dfx"
+import { DiscordLive, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Cause, Config, Effect, Option, pipe } from "effect"
+import { Cause, Config, Effect, Layer, Option, pipe } from "effect"
 
 Dotenv.config()
 
 // Create the dependencies layer
-const DiscordLive = gatewayLayer({
+const DiscordConfigLive = DiscordConfig.layerConfig({
   token: Config.secret("DISCORD_BOT_TOKEN"),
 })
 
@@ -78,9 +78,11 @@ const program = Effect.gen(function* (_) {
   yield* _(interactions)
 })
 
+const EnvLive = DiscordLive.pipe(Layer.provide(DiscordConfigLive))
+
 // Run it
 program.pipe(
-  Effect.provide(DiscordLive),
+  Effect.provide(EnvLive),
   Effect.tapErrorCause(_ =>
     Effect.sync(() => {
       console.error(Cause.squash(_))

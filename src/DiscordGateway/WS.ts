@@ -151,4 +151,4 @@ const make = Effect.gen(function* (_) {
 
 export interface WS extends Effect.Effect.Success<typeof make> {}
 export const WS = Tag<WS>()
-export const LiveWS = Layer.effect(WS, make)
+export const WSLive = Layer.effect(WS, make)

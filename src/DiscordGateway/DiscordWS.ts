@@ -2,7 +2,7 @@ import { Tag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Ref from "effect/Ref"
-import { LiveWS, Reconnect, WS } from "dfx/DiscordGateway/WS"
+import { WSLive, Reconnect, WS } from "dfx/DiscordGateway/WS"
 import type * as Discord from "dfx/types"
 import type WebSocket from "isomorphic-ws"
 
@@ -69,7 +69,7 @@ const make = Effect.gen(function* (_) {
 
 export interface DiscordWS extends Effect.Effect.Success<typeof make> {}
 export const DiscordWS = Tag<DiscordWS>()
-export const LiveDiscordWS = Layer.provide(
+export const DiscordWSLive = Layer.provide(
   Layer.effect(DiscordWS, make),
-  LiveWS,
+  WSLive,
 )

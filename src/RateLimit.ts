@@ -79,4 +79,4 @@ const makeLimiter = Effect.gen(function* (_) {
 export interface RateLimiter
   extends Effect.Effect.Success<typeof makeLimiter> {}
 export const RateLimiter = Tag<RateLimiter>()
-export const LiveRateLimiter = Layer.effect(RateLimiter, makeLimiter)
+export const RateLimiterLive = Layer.effect(RateLimiter, makeLimiter)

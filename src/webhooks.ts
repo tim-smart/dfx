@@ -1,61 +1,22 @@
-import * as Config from "effect/Config"
-import type * as ConfigError from "effect/ConfigError"
-import * as Effect from "effect/Effect"
-import * as Layer from "effect/Layer"
-import * as DiscordConfig from "dfx/DiscordConfig"
-import type { DiscordREST } from "dfx/DiscordREST"
-import { LiveDiscordREST } from "dfx/DiscordREST"
-import type { MakeConfigOpts, WebhookConfig } from "dfx/Interactions/webhook"
-import { makeConfigLayer } from "dfx/Interactions/webhook"
+import { DiscordRESTLive } from "dfx/DiscordREST"
 import * as Log from "dfx/Log"
-import type { RateLimiter } from "dfx/RateLimit"
-import { LiveMemoryRateLimitStore, LiveRateLimiter } from "dfx/RateLimit"
+import {
+  LiveMemoryRateLimitStore as MemoryRateLimitStoreLive,
+  RateLimiterLive as RateLimiterLive,
+} from "dfx/RateLimit"
+import * as Layer from "effect/Layer"
 
 export {
   BadWebhookSignature,
-  makeConfigLayer,
-  makeHandler,
-  makeSimpleHandler,
   WebhookConfig,
   WebhookParseError,
+  makeHandler,
+  makeSimpleHandler,
+  layer as webhookLayer,
+  layerConfig as webhookLayerConfig,
 } from "dfx/Interactions/webhook"
 
-export const MemoryRateLimit = Layer.provide(
-  LiveRateLimiter,
-  LiveMemoryRateLimitStore,
-)
-
-export const MemoryREST = Layer.provide(
-  LiveDiscordREST,
-  LiveMemoryRateLimitStore,
-)
-
-export const webhookLayer = (
-  options: DiscordConfig.MakeOpts & MakeConfigOpts,
-): Layer.Layer<
-  never,
-  ConfigError.ConfigError,
-  RateLimiter | DiscordREST | WebhookConfig
-> => {
-  const config = DiscordConfig.make(options)
-  const LiveConfig = Layer.succeed(DiscordConfig.DiscordConfig, config)
-  const LiveWebhook = makeConfigLayer(options)
-  const LiveLog = config.debug ? Log.LiveLogDebug : Log.LiveLog
-  const LiveEnv = Layer.provide(
-    Layer.mergeAll(MemoryREST, LiveWebhook, MemoryRateLimit),
-    Layer.merge(LiveLog, LiveConfig),
-  )
-
-  return LiveEnv
-}
-
-export const webhookLayerConfig = (
-  config: Config.Config.Wrap<DiscordConfig.MakeOpts & MakeConfigOpts>,
-): Layer.Layer<
-  never,
-  ConfigError.ConfigError,
-  RateLimiter | DiscordREST | WebhookConfig
-> =>
-  Layer.unwrapEffect(
-    Effect.map(Effect.config(Config.unwrap(config)), webhookLayer),
-  )
+export const DiscordLive = Layer.mergeAll(
+  DiscordRESTLive,
+  RateLimiterLive,
+).pipe(Layer.provide(MemoryRateLimitStoreLive), Layer.provideMerge(Log.LogLive))

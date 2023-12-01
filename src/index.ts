@@ -10,12 +10,15 @@ import * as Ix from "dfx/Interactions/index"
 import * as Log from "dfx/Log"
 import * as Discord from "dfx/types"
 
-export { DiscordREST, LiveDiscordREST } from "dfx/DiscordREST"
+export {
+  DiscordREST,
+  DiscordRESTLive as LiveDiscordREST,
+} from "dfx/DiscordREST"
 
 export {
   BucketDetails,
   LiveMemoryRateLimitStore,
-  LiveRateLimiter,
+  RateLimiterLive as LiveRateLimiter,
   RateLimiter,
   RateLimitStore,
 } from "dfx/RateLimit"

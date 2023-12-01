@@ -13,11 +13,11 @@ import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import type { RunningShard } from "dfx/DiscordGateway/Shard"
-import { LiveShard, Shard } from "dfx/DiscordGateway/Shard"
+import { ShardLive, Shard } from "dfx/DiscordGateway/Shard"
 import { ShardStore } from "dfx/DiscordGateway/ShardStore"
 import type { WebSocketCloseError, WebSocketError } from "dfx/DiscordGateway/WS"
 import { DiscordREST } from "dfx/DiscordREST"
-import { LiveRateLimiter, RateLimiter } from "dfx/RateLimit"
+import { RateLimiterLive, RateLimiter } from "dfx/RateLimit"
 import type * as Discord from "dfx/types"
 
 const claimRepeatPolicy = Schedule.spaced("3 minutes").pipe(
@@ -134,7 +134,7 @@ const make = Effect.gen(function* (_) {
 
 export interface Sharder extends Effect.Effect.Success<typeof make> {}
 export const Sharder = Tag<Sharder>()
-export const LiveSharder = Layer.provide(
+export const SharedLive = Layer.provide(
   Layer.effect(Sharder, make),
-  Layer.merge(LiveRateLimiter, LiveShard),
+  Layer.merge(RateLimiterLive, ShardLive),
 )
