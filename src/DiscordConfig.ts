@@ -10,6 +10,10 @@ import * as Discord from "dfx/types"
 const VERSION = 10
 
 export interface DiscordConfig {
+  readonly _: unique symbol
+}
+
+export interface DiscordConfigValue {
   readonly token: ConfigSecret.ConfigSecret
   readonly debug: boolean
   readonly rest: {
@@ -27,13 +31,13 @@ export interface DiscordConfig {
     readonly identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export const DiscordConfig = Tag<DiscordConfig>()
+export const DiscordConfig = Tag<DiscordConfig, DiscordConfigValue>()
 
 export interface MakeOpts {
   readonly token: ConfigSecret.ConfigSecret
   readonly debug?: boolean
-  readonly rest?: Partial<DiscordConfig["rest"]>
-  readonly gateway?: Partial<DiscordConfig["gateway"]>
+  readonly rest?: Partial<DiscordConfigValue["rest"]>
+  readonly gateway?: Partial<DiscordConfigValue["gateway"]>
 }
 
 export const make = ({
@@ -41,7 +45,7 @@ export const make = ({
   gateway,
   rest,
   token,
-}: MakeOpts): DiscordConfig => ({
+}: MakeOpts): DiscordConfigValue => ({
   token,
   debug,
   rest: {
