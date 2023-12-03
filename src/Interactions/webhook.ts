@@ -11,7 +11,10 @@ import * as Layer from "effect/Layer"
 import type * as D from "dfx/Interactions/definitions"
 import type { DefinitionNotFound } from "dfx/Interactions/handlers"
 import { handlers } from "dfx/Interactions/handlers"
-import type { InteractionBuilder } from "dfx/Interactions/index"
+import type {
+  DiscordInteraction,
+  InteractionBuilder,
+} from "dfx/Interactions/index"
 import { Interaction } from "dfx/Interactions/index"
 import type * as Discord from "dfx/types"
 import * as Verify from "discord-verify"
@@ -68,8 +71,12 @@ const makeConfig = ({
   algorithm: Verify.PlatformAlgorithm[algorithm],
 })
 
-export interface WebhookConfig extends ReturnType<typeof makeConfig> {}
-export const WebhookConfig = Tag<WebhookConfig>()
+export interface WebhookConfig {
+  readonly _: unique symbol
+}
+export const WebhookConfig = Tag<WebhookConfig, ReturnType<typeof makeConfig>>(
+  "dfx/Interactions/WebhookConfig",
+)
 
 export const layer = (opts: MakeConfigOpts) =>
   Layer.succeed(WebhookConfig, makeConfig(opts))
@@ -112,7 +119,14 @@ const run = <R, E>(
   ) => Effect.Effect<R, E, Discord.InteractionResponse>,
 ) => {
   const handler = handlers(definitions, handleResponse)
-  return (headers: Headers, body: string) =>
+  return (
+    headers: Headers,
+    body: string,
+  ): Effect.Effect<
+    WebhookConfig | Exclude<R, DiscordInteraction>,
+    BadWebhookSignature | WebhookParseError | E | DefinitionNotFound,
+    Discord.InteractionResponse
+  > =>
     Effect.flatMap(fromHeadersAndBody(headers, body), interaction =>
       Effect.provideService(
         handler[interaction.type](interaction),

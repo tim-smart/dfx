@@ -16,9 +16,11 @@ import type {
 } from "dfx/Interactions/definitions"
 import type { DefinitionNotFound } from "dfx/Interactions/handlers"
 import { handlers } from "dfx/Interactions/handlers"
-import type { InteractionBuilder } from "dfx/Interactions/index"
+import type {
+  DiscordInteraction,
+  InteractionBuilder,
+} from "dfx/Interactions/index"
 import { builder, Interaction } from "dfx/Interactions/index"
-import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
 import * as Schedule from "effect/Schedule"
 import { globalValue } from "effect/GlobalValue"
@@ -36,7 +38,7 @@ export const run =
   <R, R2, E, TE, E2>(
     postHandler: (
       effect: Effect.Effect<
-        R | DiscordREST | Discord.Interaction,
+        R | DiscordREST | DiscordInteraction,
         TE | DiscordRESTError | DefinitionNotFound,
         void
       >,
@@ -45,7 +47,7 @@ export const run =
   (
     ix: InteractionBuilder<R, E, TE>,
   ): Effect.Effect<
-    DiscordREST | DiscordGateway | Exclude<R2, Discord.Interaction>,
+    DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>,
     E2 | DiscordRESTError | Http.error.ResponseError,
     never
   > =>
@@ -155,13 +157,19 @@ const makeRegistry = Effect.gen(function* (_) {
   }),
 )
 
-export interface InteractionsRegistry {
+export interface InteractionsRegistryService {
   readonly register: <E>(
     ix: InteractionBuilder<never, E, never>,
   ) => Effect.Effect<never, never, void>
 }
+export interface InteractionsRegistry {
+  readonly _: unique symbol
+}
 
-export const InteractionsRegistry = Tag<InteractionsRegistry>()
+export const InteractionsRegistry = Tag<
+  InteractionsRegistry,
+  InteractionsRegistryService
+>("dfx/Interactions/InteractionsRegistry")
 export const InteractionsRegistryLive = Layer.scoped(
   InteractionsRegistry,
   makeRegistry,

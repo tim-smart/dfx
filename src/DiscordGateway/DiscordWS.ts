@@ -16,12 +16,17 @@ export interface OpenOpts {
   onConnecting?: Effect.Effect<never, never, void>
 }
 
-export interface DiscordWSCodec {
+export interface DiscordWSCodecService {
   type: "json" | "etf"
   encode: (p: Discord.GatewayPayload) => string
   decode: (p: WebSocket.Data) => Discord.GatewayPayload
 }
-export const DiscordWSCodec = Tag<DiscordWSCodec>()
+export interface DiscordWSCodec {
+  readonly _: unique symbol
+}
+export const DiscordWSCodec = Tag<DiscordWSCodec, DiscordWSCodecService>(
+  "dfx/DiscordGateway/DiscordWS/Codec",
+)
 export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
   type: "json",
   encode: p => JSON.stringify(p),
@@ -47,18 +52,19 @@ const make = Effect.gen(function* (_) {
       const takeOutbound = Effect.map(outbound, msg =>
         msg === Reconnect ? msg : encoding.encode(msg),
       )
-      const socket = yield* _(ws.connect(urlRef, takeOutbound, onConnecting))
+      const socket = yield* _(
+        ws.connect({
+          urlRef,
+          takeOutbound,
+          onConnecting,
+          reconnectWhen: e =>
+            (e._tag === "WebSocketCloseError" && e.code < 2000) ||
+            (e._tag === "WebSocketError" && e.reason === "open-timeout"),
+        }),
+      )
       const take = Effect.map(socket.take, encoding.decode)
 
-      const run = Effect.retryWhile(
-        socket.run,
-        e =>
-          (e._tag === "WebSocketCloseError" && e.code < 2000) ||
-          (e._tag === "WebSocketError" && e.reason === "open-timeout"),
-      )
-
       return {
-        run,
         take,
         setUrl,
       } as const
@@ -67,8 +73,12 @@ const make = Effect.gen(function* (_) {
   return { connect } as const
 })
 
-export interface DiscordWS extends Effect.Effect.Success<typeof make> {}
-export const DiscordWS = Tag<DiscordWS>()
+export interface DiscordWS {
+  readonly _: unique symbol
+}
+export const DiscordWS = Tag<DiscordWS, Effect.Effect.Success<typeof make>>(
+  "dfx/DiscordGateway/DiscordWS",
+)
 export const DiscordWSLive = Layer.provide(
   Layer.effect(DiscordWS, make),
   WSLive,

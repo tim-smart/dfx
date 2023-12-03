@@ -16,7 +16,6 @@ import {
   retryAfter,
   routeFromConfig,
 } from "dfx/DiscordREST/utils"
-import { Log } from "dfx/Log"
 import { RateLimiterLive, RateLimiter, RateLimitStore } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
@@ -33,7 +32,6 @@ const make = Effect.gen(function* (_) {
   const { rest, token } = yield* _(DiscordConfig)
 
   const http = yield* _(Http.client.Client)
-  const log = yield* _(Log)
   const store = yield* _(RateLimitStore)
   const { maybeWait } = yield* _(RateLimiter)
 
@@ -47,14 +45,13 @@ const make = Effect.gen(function* (_) {
   const badRoutesRef = yield* _(Ref.make(HashSet.empty<string>()))
   const tenMinutes = Duration.toMillis(Duration.minutes(10))
   const addBadRoute = (route: string) =>
-    log
-      .info("DiscordREST", "addBadRoute", route)
-      .pipe(
-        Effect.zipRight(Ref.update(badRoutesRef, HashSet.add(route))),
-        Effect.zipRight(
-          store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
-        ),
-      )
+    Effect.logDebug("bad route").pipe(
+      Effect.zipRight(Ref.update(badRoutesRef, HashSet.add(route))),
+      Effect.zipRight(
+        store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
+      ),
+      Effect.annotateLogs("route", route),
+    )
   const isBadRoute = (route: string) =>
     Effect.map(Ref.get(badRoutesRef), HashSet.has(route))
   const removeBadRoute = (route: string) =>
@@ -181,7 +178,11 @@ const make = Effect.gen(function* (_) {
             return Effect.zipRight(
               Effect.all(
                 [
-                  log.info("DiscordREST", "403", request.url),
+                  Effect.annotateLogs(
+                    Effect.logDebug("403"),
+                    "url",
+                    request.url,
+                  ),
                   addBadRoute(routeFromConfig(request.url, request.method)),
                   updateBuckets(request, response),
                 ],
@@ -191,25 +192,31 @@ const make = Effect.gen(function* (_) {
             )
 
           case 429:
-            return log
-              .info("DiscordREST", "429", request.url)
-              .pipe(
-                Effect.zipRight(
-                  addBadRoute(routeFromConfig(request.url, request.method)),
-                ),
-                Effect.zipRight(updateBuckets(request, response)),
-                Effect.zipRight(
-                  Effect.sleep(
-                    Option.getOrElse(retryAfter(response.headers), () =>
-                      Duration.seconds(5),
-                    ),
+            return Effect.annotateLogs(
+              Effect.logDebug("429"),
+              "url",
+              request.url,
+            ).pipe(
+              Effect.zipRight(
+                addBadRoute(routeFromConfig(request.url, request.method)),
+              ),
+              Effect.zipRight(updateBuckets(request, response)),
+              Effect.zipRight(
+                Effect.sleep(
+                  Option.getOrElse(retryAfter(response.headers), () =>
+                    Duration.seconds(5),
                   ),
                 ),
-                Effect.zipRight(executor<A>(request)),
-              )
+              ),
+              Effect.zipRight(executor<A>(request)),
+            )
         }
 
         return Effect.fail(e)
+      }),
+      Effect.annotateLogs({
+        package: "dfx",
+        module: "DiscordREST",
       }),
     )
 
@@ -246,14 +253,20 @@ const make = Effect.gen(function* (_) {
   }
 })
 
-export interface DiscordREST
+export interface DiscordREST {
+  readonly _: unique symbol
+}
+
+export interface DiscordRESTService
   extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>> {
   readonly executor: <A = unknown>(
     request: Http.request.ClientRequest,
   ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>
 }
 
-export const DiscordREST = Tag<DiscordREST>()
+export const DiscordREST = Tag<DiscordREST, DiscordRESTService>(
+  "dfx/DiscordREST",
+)
 export const DiscordRESTLive = Layer.effect(DiscordREST, make).pipe(
   Layer.provide(RateLimiterLive),
   Layer.provide(Http.client.layer),

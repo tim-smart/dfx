@@ -5,7 +5,7 @@ import {
   InteractionsRegistryLive,
 } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Config, Effect, Layer } from "effect"
+import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 
 Dotenv.config()
 
@@ -58,12 +58,12 @@ const MainLive = GreetLive.pipe(
   Layer.provide(
     DiscordConfig.layerConfig({
       token: Config.secret("DISCORD_BOT_TOKEN"),
-      debug: Config.withDefault(Config.boolean("DEBUG"), false),
     }),
   ),
 )
 
 Layer.launch(MainLive).pipe(
   Effect.catchAllCause(Effect.logError),
+  Logger.withMinimumLogLevel(LogLevel.Trace),
   Effect.runFork,
 )

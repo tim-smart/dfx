@@ -17,9 +17,9 @@ import * as Identify from "dfx/DiscordGateway/Shard/identify"
 import * as InvalidSession from "dfx/DiscordGateway/Shard/invalidSession"
 import * as Utils from "dfx/DiscordGateway/Shard/utils"
 import { Reconnect } from "dfx/DiscordGateway/WS"
-import { Log } from "dfx/Log"
 import { RateLimiterLive, RateLimiter } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
+import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
 
 const enum Phase {
   Connecting,
@@ -31,19 +31,18 @@ export const make = Effect.gen(function* (_) {
   const { gateway, token } = yield* _(DiscordConfig)
   const limiter = yield* _(RateLimiter)
   const dws = yield* _(DiscordWS)
-  const log = yield* _(Log)
+  const { hub, sendQueue } = yield* _(Messaging)
 
-  const connect = (
-    shard: [id: number, count: number],
-    hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>,
-    sendQueue: Queue.Dequeue<Discord.GatewayPayload<Discord.SendEvent>>,
-  ) =>
+  const connect = (shard: [id: number, count: number]) =>
     Effect.gen(function* (_) {
       const outboundQueue = yield* _(Queue.unbounded<Message>())
       const pendingQueue = yield* _(Queue.unbounded<Message>())
       const phase = yield* _(Ref.make(Phase.Connecting))
       const setPhase = (p: Phase) =>
-        Effect.zipLeft(Ref.set(phase, p), log.debug("Shard", shard, "phase", p))
+        Effect.zipLeft(
+          Ref.set(phase, p),
+          Effect.annotateLogs(Effect.logTrace("phase transition"), "phase", p),
+        )
       const outbound = Effect.zipLeft(
         Queue.take(outboundQueue),
         limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
@@ -115,15 +114,23 @@ export const make = Effect.gen(function* (_) {
           },
         )
 
-      const hellos = yield* _(Queue.unbounded<Discord.GatewayPayload>())
-      const acks = yield* _(Queue.unbounded<Discord.GatewayPayload>())
+      const hellos = yield* _(
+        Effect.acquireRelease(
+          Queue.unbounded<Discord.GatewayPayload>(),
+          Queue.shutdown,
+        ),
+      )
+      const acks = yield* _(
+        Effect.acquireRelease(
+          Queue.unbounded<Discord.GatewayPayload>(),
+          Queue.shutdown,
+        ),
+      )
 
       // heartbeats
-      const heartbeats = Heartbeats.send(
-        hellos,
-        acks,
-        latestSequence,
-        heartbeatSend,
+      yield* _(
+        Heartbeats.send(hellos, acks, latestSequence, heartbeatSend),
+        Effect.forkScoped,
       )
 
       // identify
@@ -169,32 +176,43 @@ export const make = Effect.gen(function* (_) {
           }),
         )
 
-      const drainSendQueue = Effect.forever(
-        Effect.tap(Queue.take(sendQueue), send),
+      yield* _(
+        Queue.take(sendQueue),
+        Effect.tap(send),
+        Effect.forever,
+        Effect.forkScoped,
       )
 
-      const run = Effect.all(
-        [
-          Effect.forever(Effect.flatMap(socket.take, onPayload)),
-          heartbeats,
-          drainSendQueue,
-          socket.run,
-        ],
-        { discard: true, concurrency: "unbounded" },
+      yield* _(
+        socket.take,
+        Effect.flatMap(onPayload),
+        Effect.forever,
+        Effect.forkScoped,
       )
 
-      return { id: shard, send, run } as const
-    })
+      return { id: shard, send } as const
+    }).pipe(
+      Effect.annotateLogs({
+        package: "dfx",
+        module: "DiscordGateway/Shard",
+        shard,
+      }),
+    )
 
   return { connect } as const
 })
 
-export interface Shard extends Effect.Effect.Success<typeof make> {}
-export const Shard = Tag<Shard>()
-export const ShardLive = Layer.provide(
-  Layer.effect(Shard, make),
-  Layer.merge(DiscordWSLive, RateLimiterLive),
+type ShardService = Effect.Effect.Success<typeof make>
+
+export interface Shard {
+  readonly _: unique symbol
+}
+export const Shard = Tag<Shard, ShardService>("dfx/DiscordGateway/Shard")
+export const ShardLive = Layer.effect(Shard, make).pipe(
+  Layer.provide(DiscordWSLive),
+  Layer.provide(MesssagingLive),
+  Layer.provide(RateLimiterLive),
 )
 
 export interface RunningShard
-  extends Effect.Effect.Success<ReturnType<Shard["connect"]>> {}
+  extends Effect.Effect.Success<ReturnType<ShardService["connect"]>> {}

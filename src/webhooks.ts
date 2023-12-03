@@ -1,5 +1,4 @@
 import { DiscordRESTLive } from "dfx/DiscordREST"
-import * as Log from "dfx/Log"
 import {
   MemoryRateLimitStoreLive as MemoryRateLimitStoreLive,
   RateLimiterLive as RateLimiterLive,
@@ -19,4 +18,4 @@ export {
 export const DiscordLive = Layer.mergeAll(
   DiscordRESTLive,
   RateLimiterLive,
-).pipe(Layer.provide(MemoryRateLimitStoreLive), Layer.provideMerge(Log.LogLive))
+).pipe(Layer.provide(MemoryRateLimitStoreLive))

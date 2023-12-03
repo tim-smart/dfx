@@ -1,12 +1,13 @@
 import { Tag } from "effect/Context"
-import * as Duration from "effect/Duration"
-import { pipe } from "effect/Function"
+import type * as Duration from "effect/Duration"
+import { identity, pipe } from "effect/Function"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
-import { Log } from "dfx/Log"
 import WebSocket from "isomorphic-ws"
+import type { Predicate } from "effect/Predicate"
+import * as Schedule from "effect/Schedule"
 
 export const Reconnect = Symbol()
 export type Reconnect = typeof Reconnect
@@ -49,16 +50,10 @@ const socket = (urlRef: Ref.Ref<string>) =>
 const offer = (
   ws: globalThis.WebSocket,
   queue: Queue.Enqueue<WebSocket.Data>,
-  log: Log,
 ) =>
   Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
     ws.addEventListener("message", message => {
-      Effect.runFork(
-        Effect.zipRight(
-          log.debug("WS", "receive", message.data),
-          Queue.offer(queue, message.data),
-        ),
-      )
+      Queue.unsafeOffer(queue, message.data)
     })
 
     ws.addEventListener("error", cause => {
@@ -70,7 +65,10 @@ const offer = (
     })
   })
 
-const waitForOpen = (ws: globalThis.WebSocket, timeout: Duration.Duration) =>
+const waitForOpen = (
+  ws: globalThis.WebSocket,
+  timeout: Duration.DurationInput,
+) =>
   Effect.timeoutFail(
     Effect.suspend(() => {
       if (ws.readyState === WebSocket.OPEN) {
@@ -92,11 +90,10 @@ const waitForOpen = (ws: globalThis.WebSocket, timeout: Duration.Duration) =>
 const send = (
   ws: globalThis.WebSocket,
   take: Effect.Effect<never, never, Message>,
-  log: Log,
 ) =>
   pipe(
     take,
-    Effect.tap(data => log.debug("WS", "send", data)),
+    Effect.tap(data => Effect.logTrace(data)),
     Effect.tap(data => {
       if (data === Reconnect) {
         return Effect.failSync(() => {
@@ -110,30 +107,50 @@ const send = (
       })
     }),
     Effect.forever,
+    Effect.annotateLogs("method", "send"),
   )
 
-const make = Effect.gen(function* (_) {
-  const log = yield* _(Log)
-
-  const connect = (
-    url: Ref.Ref<string>,
-    takeOutbound: Effect.Effect<never, never, Message>,
+const wsImpl = {
+  connect: ({
     onConnecting = Effect.unit,
-    openTimeout = Duration.seconds(3),
-  ) =>
+    openTimeout = "3 seconds",
+    reconnectWhen,
+    takeOutbound,
+    urlRef,
+  }: {
+    readonly urlRef: Ref.Ref<string>
+    readonly takeOutbound: Effect.Effect<never, never, Message>
+    readonly onConnecting?: Effect.Effect<never, never, void>
+    readonly openTimeout?: Duration.DurationInput
+    readonly reconnectWhen?: Predicate<WebSocketError | WebSocketCloseError>
+  }) =>
     Effect.gen(function* (_) {
-      const queue = yield* _(Queue.unbounded<WebSocket.Data>())
+      const scope = yield* _(Effect.scope)
+      const queue = yield* _(
+        Effect.acquireRelease(
+          Queue.unbounded<WebSocket.Data>(),
+          Queue.shutdown,
+        ),
+      )
+      const take = Effect.annotateLogs(
+        Effect.tap(Queue.take(queue), data => Effect.logTrace(data)),
+        {
+          package: "dfx",
+          module: "DiscordGateway/WS",
+          method: "take",
+        },
+      )
 
       const run = pipe(
         onConnecting,
-        Effect.zipRight(socket(url)),
+        Effect.zipRight(socket(urlRef)),
         Effect.flatMap(ws =>
           Effect.all(
             [
-              offer(ws, queue, log),
+              offer(ws, queue),
               Effect.zipRight(
                 waitForOpen(ws, openTimeout),
-                send(ws, takeOutbound, log),
+                send(ws, takeOutbound),
               ),
             ],
             { concurrency: "unbounded", discard: true },
@@ -141,14 +158,29 @@ const make = Effect.gen(function* (_) {
         ),
         Effect.scoped,
         Effect.retryWhile(isReconnect),
+        reconnectWhen ? Effect.retryWhile(reconnectWhen) : identity,
+        Effect.catchAllCause(Effect.logError),
+        Effect.repeat(
+          Schedule.exponential("500 millis").pipe(
+            Schedule.union(Schedule.spaced("30 seconds")),
+          ),
+        ),
+        Effect.forkIn(scope),
       )
 
-      return { run, take: Queue.take(queue) } as const
-    })
+      yield* _(run)
 
-  return { connect } as const
-})
+      return { take } as const
+    }).pipe(
+      Effect.annotateLogs({
+        package: "dfx",
+        module: "DiscordGateway/WS",
+      }),
+    ),
+} as const
 
-export interface WS extends Effect.Effect.Success<typeof make> {}
-export const WS = Tag<WS>()
-export const WSLive = Layer.effect(WS, make)
+export interface WS {
+  readonly _: unique symbol
+}
+export const WS = Tag<WS, typeof wsImpl>("dfx/DiscordGateway/WS")
+export const WSLive = Layer.succeed(WS, wsImpl)

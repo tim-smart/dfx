@@ -1,42 +1,19 @@
-import { Tag } from "effect/Context"
-import type * as HashSet from "effect/HashSet"
-import * as Effect from "effect/Effect"
-import * as PubSub from "effect/PubSub"
-import * as Layer from "effect/Layer"
-import * as Queue from "effect/Queue"
-import * as Stream from "effect/Stream"
+import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
 import type { RunningShard } from "dfx/DiscordGateway/Shard"
-import { SharedLive, Sharder } from "dfx/DiscordGateway/Sharder"
+import { Sharder, SharderLive } from "dfx/DiscordGateway/Sharder"
 import type * as Discord from "dfx/types"
-import * as EffectUtils from "dfx/utils/Effect"
-import * as Schedule from "effect/Schedule"
+import { Tag } from "effect/Context"
+import * as Effect from "effect/Effect"
+import type * as HashSet from "effect/HashSet"
+import * as Layer from "effect/Layer"
+import type * as Stream from "effect/Stream"
 
-const fromDispatchFactory =
-  <R, E>(
-    source: Stream.Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
-  ) =>
-  <K extends keyof Discord.ReceiveEvents>(
-    event: K,
-  ): Stream.Stream<R, E, Discord.ReceiveEvents[K]> =>
-    Stream.map(
-      Stream.filter(source, p => p.t === event),
-      p => p.d! as any,
-    )
-
-const handleDispatchFactory =
-  (hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
-  <K extends keyof Discord.ReceiveEvents, R, E, A>(
-    event: K,
-    handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<R, E, A>,
-  ): Effect.Effect<R, E, never> =>
-    EffectUtils.subscribeForEachPar(hub, _ => {
-      if (_.t === event) {
-        return handle(_.d as any)
-      }
-      return Effect.unit as any
-    })
+export const TypeId = Symbol.for("dfx/DiscordGateway")
+export type TypeId = typeof TypeId
 
 export interface DiscordGateway {
+  readonly [TypeId]: TypeId
+
   readonly dispatch: Stream.Stream<
     never,
     never,
@@ -54,50 +31,24 @@ export interface DiscordGateway {
   ) => Effect.Effect<never, never, boolean>
   readonly shards: Effect.Effect<never, never, HashSet.HashSet<RunningShard>>
 }
-export const DiscordGateway = Tag<DiscordGateway>()
+
+export const DiscordGateway = Tag<DiscordGateway>(TypeId)
 
 export const make = Effect.gen(function* (_) {
   const sharder = yield* _(Sharder)
-  const hub = yield* _(
-    PubSub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),
-  )
-
-  const sendQueue = yield* _(
-    Queue.unbounded<Discord.GatewayPayload<Discord.SendEvent>>(),
-  )
-  const send = (payload: Discord.GatewayPayload<Discord.SendEvent>) =>
-    sendQueue.offer(payload)
-
-  const dispatch = Stream.fromPubSub(hub)
-  const fromDispatch = fromDispatchFactory(dispatch)
-  const handleDispatch = handleDispatchFactory(hub)
-
-  yield* _(
-    sharder.run(hub, sendQueue),
-    Effect.tapErrorCause(_ => Effect.logError("fatal error, restarting", _)),
-    Effect.retry(
-      Schedule.exponential("1 seconds").pipe(
-        Schedule.union(Schedule.spaced("30 seconds")),
-      ),
-    ),
-    Effect.forkScoped,
-  )
+  const messaging = yield* _(Messaging)
 
   return DiscordGateway.of({
-    dispatch,
-    fromDispatch,
-    handleDispatch,
-    send,
+    [TypeId]: TypeId,
+    dispatch: messaging.dispatch,
+    fromDispatch: messaging.fromDispatch,
+    handleDispatch: messaging.handleDispatch,
+    send: messaging.send,
     shards: sharder.shards,
   })
-}).pipe(
-  Effect.annotateLogs({
-    package: "dfx",
-    service: "DiscordGateway",
-  }),
-)
+})
 
-export const DiscordGatewayLive = Layer.provide(
-  Layer.scoped(DiscordGateway, make),
-  SharedLive,
+export const DiscordGatewayLive = Layer.effect(DiscordGateway, make).pipe(
+  Layer.provide(MesssagingLive),
+  Layer.provide(SharderLive),
 )

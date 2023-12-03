@@ -1,13 +1,13 @@
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
-import type { BucketDetails, RateLimitStore } from "dfx/RateLimit"
+import type { BucketDetails, RateLimitStoreService } from "dfx/RateLimit"
 
 interface Counter {
   count: number
   expires: number
 }
 
-export const make = (): RateLimitStore => {
+export const make = (): RateLimitStoreService => {
   const buckets = new Map<string, BucketDetails>()
   const routes = new Map<string, string>()
   const counters = new Map<string, Counter>()

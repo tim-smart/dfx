@@ -1,7 +1,11 @@
 import type * as Option from "effect/Option"
 import type * as Effect from "effect/Effect"
 import type {
-  FocusedOptionContext,
+  DiscordApplicationCommand,
+  DiscordFocusedOption,
+  DiscordInteraction,
+  DiscordMessageComponent,
+  DiscordModalSubmit,
   ResolvedDataNotFound,
   SubCommandContext,
 } from "dfx/Interactions/context"
@@ -32,7 +36,7 @@ export const global = <
   handle: CommandHandler<R, E, A>,
 ) =>
   new GlobalApplicationCommand<
-    Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
+    Exclude<R, DiscordInteraction | DiscordApplicationCommand>,
     E
   >(command as any, handle as any)
 
@@ -54,7 +58,7 @@ export const guild = <
   handle: CommandHandler<R, E, A>,
 ) =>
   new GuildApplicationCommand<
-    Exclude<R, Discord.Interaction | Discord.ApplicationCommandDatum>,
+    Exclude<R, DiscordInteraction | DiscordApplicationCommand>,
     E
   >(command as any, handle as any)
 
@@ -71,7 +75,7 @@ export const messageComponent = <R1, R2, E1, E2>(
   handle: CommandHandler<R2, E2, Discord.InteractionResponse>,
 ) =>
   new MessageComponent<
-    Exclude<R1 | R2, Discord.Interaction | Discord.MessageComponentDatum>,
+    Exclude<R1 | R2, DiscordInteraction | DiscordMessageComponent>,
     E1 | E2
   >(pred as any, handle as any)
 
@@ -88,7 +92,7 @@ export const modalSubmit = <R1, R2, E1, E2>(
   handle: Effect.Effect<R2, E2, Discord.InteractionResponse>,
 ) =>
   new ModalSubmit<
-    Exclude<R1 | R2, Discord.Interaction | Discord.ModalSubmitDatum>,
+    Exclude<R1 | R2, DiscordInteraction | DiscordModalSubmit>,
     E1 | E2
   >(pred as any, handle as any)
 
@@ -113,9 +117,7 @@ export const autocomplete = <R1, R2, E1, E2>(
   new Autocomplete<
     Exclude<
       R1 | R2,
-      | Discord.Interaction
-      | Discord.ApplicationCommandDatum
-      | FocusedOptionContext
+      DiscordInteraction | DiscordApplicationCommand | DiscordFocusedOption
     >,
     E1 | E2
   >(pred as any, handle as any)
@@ -124,10 +126,10 @@ export const autocomplete = <R1, R2, E1, E2>(
 type DeepReadonly<T> = T extends Array<infer R>
   ? ReadonlyArray<DeepReadonly<R>>
   : T extends Function
-  ? T
-  : T extends object
-  ? DeepReadonlyObject<T>
-  : T
+    ? T
+    : T extends object
+      ? DeepReadonlyObject<T>
+      : T
 type DeepReadonlyObject<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>
 }
@@ -140,24 +142,24 @@ export interface CommandHelper<A> {
   resolve: <T>(
     name: AllResolvables<A>["name"],
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
-  ) => Effect.Effect<Discord.Interaction, ResolvedDataNotFound, T>
+  ) => Effect.Effect<DiscordInteraction, ResolvedDataNotFound, T>
 
   option: (
     name: AllCommandOptions<A>["name"],
   ) => Effect.Effect<
-    Discord.ApplicationCommandDatum,
+    DiscordApplicationCommand,
     never,
     Option.Option<Discord.ApplicationCommandInteractionDataOption>
   >
 
   optionValue: <N extends AllRequiredCommandOptions<A>["name"]>(
     name: N,
-  ) => Effect.Effect<Discord.ApplicationCommandDatum, never, CommandValue<A, N>>
+  ) => Effect.Effect<DiscordApplicationCommand, never, CommandValue<A, N>>
 
   optionValueOptional: <N extends AllCommandOptions<A>["name"]>(
     name: N,
   ) => Effect.Effect<
-    Discord.ApplicationCommandDatum,
+    DiscordApplicationCommand,
     never,
     Option.Option<CommandValue<A, N>>
   >
@@ -180,8 +182,8 @@ export interface CommandHelper<A> {
           : never,
         SubCommandContext
       >
-    | Discord.Interaction
-    | Discord.ApplicationCommandDatum,
+    | DiscordInteraction
+    | DiscordApplicationCommand,
     [NER[keyof NER]] extends [
       { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
     ]
@@ -208,8 +210,8 @@ type SubCommands<A> = A extends {
 }
   ? A
   : A extends { readonly options: ReadonlyArray<CommandOption> }
-  ? SubCommands<A["options"][number]>
-  : never
+    ? SubCommands<A["options"][number]>
+    : never
 
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 

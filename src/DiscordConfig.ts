@@ -13,9 +13,8 @@ export interface DiscordConfig {
   readonly _: unique symbol
 }
 
-export interface DiscordConfigValue {
+export interface DiscordConfigService {
   readonly token: ConfigSecret.ConfigSecret
-  readonly debug: boolean
   readonly rest: {
     readonly baseUrl: string
     readonly globalRateLimit: {
@@ -31,23 +30,22 @@ export interface DiscordConfigValue {
     readonly identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export const DiscordConfig = Tag<DiscordConfig, DiscordConfigValue>()
+export const DiscordConfig = Tag<DiscordConfig, DiscordConfigService>(
+  "dfx/DiscordConfig",
+)
 
 export interface MakeOpts {
   readonly token: ConfigSecret.ConfigSecret
-  readonly debug?: boolean
-  readonly rest?: Partial<DiscordConfigValue["rest"]>
-  readonly gateway?: Partial<DiscordConfigValue["gateway"]>
+  readonly rest?: Partial<DiscordConfigService["rest"]>
+  readonly gateway?: Partial<DiscordConfigService["gateway"]>
 }
 
 export const make = ({
-  debug = false,
   gateway,
   rest,
   token,
-}: MakeOpts): DiscordConfigValue => ({
+}: MakeOpts): DiscordConfigService => ({
   token,
-  debug,
   rest: {
     baseUrl: `https://discord.com/api/v${VERSION}`,
     ...(rest ?? {}),
