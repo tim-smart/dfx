@@ -47,18 +47,19 @@ const make = Effect.gen(function* (_) {
       const takeOutbound = Effect.map(outbound, msg =>
         msg === Reconnect ? msg : encoding.encode(msg),
       )
-      const socket = yield* _(ws.connect(urlRef, takeOutbound, onConnecting))
+      const socket = yield* _(
+        ws.connect({
+          urlRef,
+          takeOutbound,
+          onConnecting,
+          reconnectWhen: e =>
+            (e._tag === "WebSocketCloseError" && e.code < 2000) ||
+            (e._tag === "WebSocketError" && e.reason === "open-timeout"),
+        }),
+      )
       const take = Effect.map(socket.take, encoding.decode)
 
-      const run = Effect.retryWhile(
-        socket.run,
-        e =>
-          (e._tag === "WebSocketCloseError" && e.code < 2000) ||
-          (e._tag === "WebSocketError" && e.reason === "open-timeout"),
-      )
-
       return {
-        run,
         take,
         setUrl,
       } as const
@@ -67,8 +68,12 @@ const make = Effect.gen(function* (_) {
   return { connect } as const
 })
 
-export interface DiscordWS extends Effect.Effect.Success<typeof make> {}
-export const DiscordWS = Tag<DiscordWS>()
+export interface DiscordWS {
+  readonly _: unique symbol
+}
+export const DiscordWS = Tag<DiscordWS, Effect.Effect.Success<typeof make>>(
+  "dfx/DiscordGateway/DiscordWS",
+)
 export const DiscordWSLive = Layer.provide(
   Layer.effect(DiscordWS, make),
   WSLive,

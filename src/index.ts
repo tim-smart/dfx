@@ -7,7 +7,6 @@ import * as Members from "dfx/Helpers/members"
 import * as Perms from "dfx/Helpers/permissions"
 import * as UI from "dfx/Helpers/ui"
 import * as Ix from "dfx/Interactions/index"
-import * as Log from "dfx/Log"
 import * as Discord from "dfx/types"
 
 export { DiscordREST, DiscordRESTLive } from "dfx/DiscordREST"
@@ -28,7 +27,6 @@ export {
   Intents,
   Ix,
   IxHelpers,
-  Log,
   Members,
   Perms,
   UI,

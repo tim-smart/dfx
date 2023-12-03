@@ -8,17 +8,22 @@ export interface ClaimIdContext {
   totalCount: number
 }
 
-export interface ShardStore {
+export interface ShardStoreService {
   claimId: (
     ctx: ClaimIdContext,
   ) => Effect.Effect<never, never, Option.Option<number>>
   allClaimed: (totalCount: number) => Effect.Effect<never, never, boolean>
   heartbeat?: (shardId: number) => Effect.Effect<never, never, void>
 }
-export const ShardStore = Tag<ShardStore>()
+export interface ShardStore {
+  readonly _: unique symbol
+}
+export const ShardStore = Tag<ShardStore, ShardStoreService>(
+  "dfx/DiscordGateway/ShardStore",
+)
 
 // Very basic shard id store, that does no health checks
-const memoryStore = (): ShardStore => {
+const memoryStore = (): ShardStoreService => {
   let currentId = 0
 
   return {

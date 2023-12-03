@@ -3,7 +3,6 @@ import * as Duration from "effect/Duration"
 import type * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
-import { Log } from "dfx/Log"
 import * as Memory from "dfx/RateLimit/memory"
 import { delayFrom } from "dfx/RateLimit/utils"
 
@@ -45,7 +44,6 @@ export const MemoryRateLimitStoreLive = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Effect.gen(function* (_) {
   const store = yield* _(RateLimitStore)
-  const log = yield* _(Log)
 
   const maybeWait = (
     key: string,
@@ -58,7 +56,8 @@ const makeLimiter = Effect.gen(function* (_) {
     return store.incrementCounter(key, windowMs, limit).pipe(
       Effect.map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl)),
       Effect.tap(d =>
-        log.debug("RateLimitStore maybeWait", {
+        Effect.annotateLogs(Effect.logDebug("maybeWait"), {
+          service: "RateLimit",
           key,
           window: Duration.toMillis(window),
           windowMs,

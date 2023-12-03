@@ -9,7 +9,6 @@ import { MemoryShardStoreLive } from "dfx/DiscordGateway/ShardStore"
 import * as WS from "dfx/DiscordGateway/WS"
 import { DiscordRESTLive } from "dfx/DiscordREST"
 import { InteractionsRegistryLive } from "dfx/Interactions/gateway"
-import { LogLive } from "dfx/Log"
 import { MemoryRateLimitStoreLive, RateLimiterLive } from "dfx/RateLimit"
 import * as Layer from "effect/Layer"
 
@@ -33,7 +32,6 @@ export const DiscordLive = Layer.mergeAll(
   Layer.provide(JsonDiscordWSCodecLive),
   Layer.provide(MemoryRateLimitStoreLive),
   Layer.provide(MemoryShardStoreLive),
-  Layer.provideMerge(LogLive),
 )
 
 export const DiscordIxLive = InteractionsRegistryLive.pipe(

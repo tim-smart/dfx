@@ -5,7 +5,7 @@ import {
   InteractionsRegistryLive,
 } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Config, Effect, Layer } from "effect"
+import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 
 Dotenv.config()
 
@@ -65,5 +65,6 @@ const MainLive = GreetLive.pipe(
 
 Layer.launch(MainLive).pipe(
   Effect.catchAllCause(Effect.logError),
+  Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.runFork,
 )
