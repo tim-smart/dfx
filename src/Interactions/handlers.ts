@@ -13,7 +13,7 @@ export class DefinitionNotFound {
 }
 
 type Handler<R, E, A> = Effect.Effect<
-  R | Discord.Interaction,
+  R | Ctx.DiscordInteraction,
   E | DefinitionNotFound,
   A
 >

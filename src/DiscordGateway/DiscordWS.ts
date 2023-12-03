@@ -16,12 +16,17 @@ export interface OpenOpts {
   onConnecting?: Effect.Effect<never, never, void>
 }
 
-export interface DiscordWSCodec {
+export interface DiscordWSCodecService {
   type: "json" | "etf"
   encode: (p: Discord.GatewayPayload) => string
   decode: (p: WebSocket.Data) => Discord.GatewayPayload
 }
-export const DiscordWSCodec = Tag<DiscordWSCodec>()
+export interface DiscordWSCodec {
+  readonly _: unique symbol
+}
+export const DiscordWSCodec = Tag<DiscordWSCodec, DiscordWSCodecService>(
+  "dfx/DiscordGateway/DiscordWS/Codec",
+)
 export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
   type: "json",
   encode: p => JSON.stringify(p),

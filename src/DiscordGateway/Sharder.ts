@@ -85,10 +85,7 @@ const make = Effect.gen(function* (_) {
     Effect.replicateEffect(
       spawner,
       gateway.session_start_limit.max_concurrency,
-      {
-        concurrency: "unbounded",
-        discard: true,
-      },
+      { concurrency: "unbounded", discard: true },
     ),
     Effect.scoped,
     Effect.catchAllCause(Effect.logError),

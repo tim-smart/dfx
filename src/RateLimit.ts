@@ -12,7 +12,7 @@ export type BucketDetails = {
   limit: number
 }
 
-export interface RateLimitStore {
+export interface RateLimitStoreService {
   readonly hasBucket: (
     bucketKey: string,
   ) => Effect.Effect<never, never, boolean>
@@ -39,7 +39,13 @@ export interface RateLimitStore {
   readonly removeCounter: (key: string) => Effect.Effect<never, never, void>
 }
 
-export const RateLimitStore = Tag<RateLimitStore>()
+export interface RateLimitStore {
+  readonly _: unique symbol
+}
+
+export const RateLimitStore = Tag<RateLimitStore, RateLimitStoreService>(
+  "dfx/RateLimit/RateLimitStore",
+)
 export const MemoryRateLimitStoreLive = Layer.sync(RateLimitStore, Memory.make)
 
 const makeLimiter = Effect.gen(function* (_) {
@@ -56,7 +62,7 @@ const makeLimiter = Effect.gen(function* (_) {
     return store.incrementCounter(key, windowMs, limit).pipe(
       Effect.map(([count, ttl]) => delayFrom(windowMs, limit, count, ttl)),
       Effect.tap(d =>
-        Effect.annotateLogs(Effect.logDebug("maybeWait"), {
+        Effect.annotateLogs(Effect.logTrace("maybeWait"), {
           service: "RateLimit",
           key,
           window: Duration.toMillis(window),
@@ -75,7 +81,11 @@ const makeLimiter = Effect.gen(function* (_) {
   return { maybeWait }
 })
 
-export interface RateLimiter
-  extends Effect.Effect.Success<typeof makeLimiter> {}
-export const RateLimiter = Tag<RateLimiter>()
+export interface RateLimiter {
+  readonly _: unique symbol
+}
+export const RateLimiter = Tag<
+  RateLimiter,
+  Effect.Effect.Success<typeof makeLimiter>
+>("dfx/RateLimit/RateLimiter")
 export const RateLimiterLive = Layer.effect(RateLimiter, makeLimiter)

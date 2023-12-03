@@ -58,13 +58,12 @@ const MainLive = GreetLive.pipe(
   Layer.provide(
     DiscordConfig.layerConfig({
       token: Config.secret("DISCORD_BOT_TOKEN"),
-      debug: Config.withDefault(Config.boolean("DEBUG"), false),
     }),
   ),
 )
 
 Layer.launch(MainLive).pipe(
   Effect.catchAllCause(Effect.logError),
-  Logger.withMinimumLogLevel(LogLevel.Debug),
+  Logger.withMinimumLogLevel(LogLevel.Trace),
   Effect.runFork,
 )

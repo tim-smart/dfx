@@ -8,7 +8,12 @@ import type * as HashSet from "effect/HashSet"
 import * as Layer from "effect/Layer"
 import type * as Stream from "effect/Stream"
 
+export const TypeId = Symbol.for("dfx/DiscordGateway")
+export type TypeId = typeof TypeId
+
 export interface DiscordGateway {
+  readonly [TypeId]: TypeId
+
   readonly dispatch: Stream.Stream<
     never,
     never,
@@ -26,13 +31,15 @@ export interface DiscordGateway {
   ) => Effect.Effect<never, never, boolean>
   readonly shards: Effect.Effect<never, never, HashSet.HashSet<RunningShard>>
 }
-export const DiscordGateway = Tag<DiscordGateway>()
+
+export const DiscordGateway = Tag<DiscordGateway>(TypeId)
 
 export const make = Effect.gen(function* (_) {
   const sharder = yield* _(Sharder)
   const messaging = yield* _(Messaging)
 
   return DiscordGateway.of({
+    [TypeId]: TypeId,
     dispatch: messaging.dispatch,
     fromDispatch: messaging.fromDispatch,
     handleDispatch: messaging.handleDispatch,

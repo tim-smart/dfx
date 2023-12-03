@@ -93,7 +93,7 @@ const send = (
 ) =>
   pipe(
     take,
-    Effect.tap(data => Effect.logDebug(data)),
+    Effect.tap(data => Effect.logTrace(data)),
     Effect.tap(data => {
       if (data === Reconnect) {
         return Effect.failSync(() => {
@@ -132,6 +132,14 @@ const wsImpl = {
           Queue.shutdown,
         ),
       )
+      const take = Effect.annotateLogs(
+        Effect.tap(Queue.take(queue), data => Effect.logTrace(data)),
+        {
+          package: "dfx",
+          module: "DiscordGateway/WS",
+          method: "take",
+        },
+      )
 
       const run = pipe(
         onConnecting,
@@ -162,9 +170,7 @@ const wsImpl = {
 
       yield* _(run)
 
-      return {
-        take: Queue.take(queue),
-      } as const
+      return { take } as const
     }).pipe(
       Effect.annotateLogs({
         package: "dfx",

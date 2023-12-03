@@ -41,7 +41,7 @@ export const make = Effect.gen(function* (_) {
       const setPhase = (p: Phase) =>
         Effect.zipLeft(
           Ref.set(phase, p),
-          Effect.annotateLogs(Effect.logDebug("phase transition"), "phase", p),
+          Effect.annotateLogs(Effect.logTrace("phase transition"), "phase", p),
         )
       const outbound = Effect.zipLeft(
         Queue.take(outboundQueue),
@@ -202,12 +202,12 @@ export const make = Effect.gen(function* (_) {
   return { connect } as const
 })
 
-type ShardReturn = Effect.Effect.Success<typeof make>
+type ShardService = Effect.Effect.Success<typeof make>
 
 export interface Shard {
   readonly _: unique symbol
 }
-export const Shard = Tag<Shard, ShardReturn>("dfx/DiscordGateway/Shard")
+export const Shard = Tag<Shard, ShardService>("dfx/DiscordGateway/Shard")
 export const ShardLive = Layer.effect(Shard, make).pipe(
   Layer.provide(DiscordWSLive),
   Layer.provide(MesssagingLive),
@@ -215,4 +215,4 @@ export const ShardLive = Layer.effect(Shard, make).pipe(
 )
 
 export interface RunningShard
-  extends Effect.Effect.Success<ReturnType<ShardReturn["connect"]>> {}
+  extends Effect.Effect.Success<ReturnType<ShardService["connect"]>> {}

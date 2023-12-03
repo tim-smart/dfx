@@ -253,14 +253,20 @@ const make = Effect.gen(function* (_) {
   }
 })
 
-export interface DiscordREST
+export interface DiscordREST {
+  readonly _: unique symbol
+}
+
+export interface DiscordRESTService
   extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>> {
   readonly executor: <A = unknown>(
     request: Http.request.ClientRequest,
   ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>
 }
 
-export const DiscordREST = Tag<DiscordREST>()
+export const DiscordREST = Tag<DiscordREST, DiscordRESTService>(
+  "dfx/DiscordREST",
+)
 export const DiscordRESTLive = Layer.effect(DiscordREST, make).pipe(
   Layer.provide(RateLimiterLive),
   Layer.provide(Http.client.layer),
