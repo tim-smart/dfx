@@ -1,19 +1,10 @@
-# dfx
-
-[![Discord](https://img.shields.io/discord/887189613389705256?style=for-the-badge)](https://discord.gg/dtR2Mtu66Q)
-
-A Discord library built on top of effect
-
-- Supports both the gateway and webhooks
-- Simple yet powerful abstractions to build Discord bots
-
-## Example
-
-```typescript
 import { runMain } from "@effect/platform-node/Runtime"
 import { DiscordConfig, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
+import * as Dotenv from "dotenv"
 import { Config, Effect, Layer } from "effect"
+
+Dotenv.config()
 
 // Create a config layer
 const DiscordConfigLive = DiscordConfig.layerConfig({
@@ -45,7 +36,7 @@ const HelloLive = Layer.effectDiscard(
     )
   }),
 ).pipe(
-  // provide discord interactions layer
+  // provide discord ix layer
   Layer.provide(DiscordIxLive),
 )
 
@@ -54,4 +45,3 @@ const MainLive = HelloLive.pipe(Layer.provide(DiscordConfigLive))
 
 // run it
 runMain(Layer.launch(MainLive))
-```

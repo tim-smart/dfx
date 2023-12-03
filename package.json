@@ -65,6 +65,7 @@
     "@effect/build-utils": "^0.5.1",
     "@effect/language-service": "^0.0.21",
     "@effect/platform": "^0.32.1",
+    "@effect/platform-node": "^0.33.4",
     "@tim-smart/discord-api-docs-parser": "^0.5.10",
     "@types/chai": "^4.3.11",
     "@types/node": "^20.10.1",

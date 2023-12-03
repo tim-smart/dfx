@@ -57,6 +57,9 @@ devDependencies:
   '@effect/platform':
     specifier: ^0.32.1
     version: 0.32.1(@effect/schema@0.51.1)(effect@2.0.0-next.58)
+  '@effect/platform-node':
+    specifier: ^0.33.4
+    version: 0.33.4(@effect/schema@0.51.1)(effect@2.0.0-next.58)
   '@tim-smart/discord-api-docs-parser':
     specifier: ^0.5.10
     version: 0.5.10
@@ -688,8 +691,34 @@ packages:
     resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
     dev: true
 
+  /@effect/platform-node@0.33.4(@effect/schema@0.51.1)(effect@2.0.0-next.58):
+    resolution: {integrity: sha512-l77ogcpAXXY64p5FTdOOE3prGzhkmtZWnLAE0GPJsDIVNqI9BwDDkZFdCPye+Vc1IIJ9abcPqcdqqdsQu6JIsg==}
+    peerDependencies:
+      effect: 2.0.0-next.58
+    dependencies:
+      '@effect/platform': 0.32.2(@effect/schema@0.51.1)(effect@2.0.0-next.58)
+      effect: 2.0.0-next.58
+      mime: 3.0.0
+      multipasta: 0.1.19
+    transitivePeerDependencies:
+      - '@effect/schema'
+    dev: true
+
   /@effect/platform@0.32.1(@effect/schema@0.51.1)(effect@2.0.0-next.58):
     resolution: {integrity: sha512-6hZqIEC2S21kXFluwKX3slXddQe3GhAJCJCwGJq8lNQfWDeOnpOs4tQyNYrTdYEEAy8zA7LwZGRqCbdE5hacdA==}
+    peerDependencies:
+      '@effect/schema': ^0.51.1
+      effect: 2.0.0-next.58
+    dependencies:
+      '@effect/schema': 0.51.1(effect@2.0.0-next.58)(fast-check@3.14.0)
+      effect: 2.0.0-next.58
+      find-my-way: 7.7.0
+      multipasta: 0.1.19
+      path-browserify: 1.0.1
+    dev: true
+
+  /@effect/platform@0.32.2(@effect/schema@0.51.1)(effect@2.0.0-next.58):
+    resolution: {integrity: sha512-wI9vSTb0PWjxdX/8aC41Y01kXJoaG/tqzNPQJEnUoetAWpAfdUeaKSTGQEBzEDI1gj0tp2qPsHUlNzVGG8REQg==}
     peerDependencies:
       '@effect/schema': ^0.51.1
       effect: 2.0.0-next.58
@@ -6144,6 +6173,12 @@ packages:
     engines: {node: '>= 0.6'}
     dependencies:
       mime-db: 1.52.0
+    dev: true
+
+  /mime@3.0.0:
+    resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
+    engines: {node: '>=10.0.0'}
+    hasBin: true
     dev: true
 
   /mimic-fn@2.1.0:
