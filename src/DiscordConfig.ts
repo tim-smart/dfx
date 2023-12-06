@@ -2,7 +2,7 @@ import { Tag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Config from "effect/Config"
 import type * as ConfigError from "effect/ConfigError"
-import type * as ConfigSecret from "effect/ConfigSecret"
+import type * as Secret from "effect/Secret"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Discord from "dfx/types"
@@ -14,7 +14,7 @@ export interface DiscordConfig {
 }
 
 export interface DiscordConfigService {
-  readonly token: ConfigSecret.ConfigSecret
+  readonly token: Secret.Secret
   readonly rest: {
     readonly baseUrl: string
     readonly globalRateLimit: {
@@ -35,7 +35,7 @@ export const DiscordConfig = Tag<DiscordConfig, DiscordConfigService>(
 )
 
 export interface MakeOpts {
-  readonly token: ConfigSecret.ConfigSecret
+  readonly token: Secret.Secret
   readonly rest?: Partial<DiscordConfigService["rest"]>
   readonly gateway?: Partial<DiscordConfigService["gateway"]>
 }

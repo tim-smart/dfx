@@ -45,8 +45,8 @@
     "ws": "^8.14.2"
   },
   "peerDependencies": {
-    "@effect/platform": "^0.32.1",
-    "effect": "2.0.0-next.58"
+    "@effect/platform": "^0.33.0",
+    "effect": "2.0.0-next.59"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
@@ -64,22 +64,22 @@
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.5.1",
     "@effect/language-service": "^0.0.21",
-    "@effect/platform": "^0.32.1",
-    "@effect/platform-node": "^0.33.4",
+    "@effect/platform": "^0.33.0",
+    "@effect/platform-node": "^0.34.0",
     "@tim-smart/discord-api-docs-parser": "^0.5.10",
     "@types/chai": "^4.3.11",
-    "@types/node": "^20.10.1",
+    "@types/node": "^20.10.3",
     "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
-    "@vitejs/plugin-react": "^4.2.0",
-    "@vitest/coverage-v8": "^0.34.6",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.0.1",
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "concurrently": "^8.2.2",
     "dotenv": "^16.3.1",
-    "effect": "2.0.0-next.58",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
+    "effect": "2.0.0-next.59",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-codegen": "0.21.0",
     "eslint-plugin-deprecation": "^2.0.0",
@@ -93,8 +93,8 @@
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.2",
-    "vite": "^5.0.4",
-    "vitest": "0.34.6"
+    "vite": "^5.0.5",
+    "vitest": "1.0.1"
   },
   "sideEffects": false,
   "gitHead": "4d43c4f6e21042928fb56bb7a23a74cdf7044d4e"

@@ -4,7 +4,7 @@ import { millis } from "effect/Duration"
 import { pipe } from "effect/Function"
 import * as HashSet from "effect/HashSet"
 import * as Option from "effect/Option"
-import * as ConfigSecret from "effect/ConfigSecret"
+import * as Secret from "effect/Secret"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Ref from "effect/Ref"
@@ -136,7 +136,7 @@ const make = Effect.gen(function* (_) {
       pipe(
         Http.request.prependUrl(req, rest.baseUrl),
         Http.request.setHeaders({
-          Authorization: `Bot ${ConfigSecret.value(token)}`,
+          Authorization: `Bot ${Secret.value(token)}`,
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       ),

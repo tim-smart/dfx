@@ -3,7 +3,7 @@ import { Tag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { pipe } from "effect/Function"
 import * as Option from "effect/Option"
-import * as ConfigSecret from "effect/ConfigSecret"
+import * as Secret from "effect/Secret"
 import * as Effect from "effect/Effect"
 import * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
@@ -136,7 +136,7 @@ export const make = Effect.gen(function* (_) {
       // identify
       const identify = Identify.identifyOrResume(
         {
-          token: ConfigSecret.value(token),
+          token: Secret.value(token),
           shard,
           intents: gateway.intents,
           presence: gateway.presence,
