@@ -3774,8 +3774,10 @@ export interface ExecuteWebhookParams {
   readonly attachments: Array<Attachment>
   /** message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
   readonly flags: number
-  /** name of thread to create (requires the webhook channel to be a forum channel) */
+  /** name of thread to create (requires the webhook channel to be a forum or media channel) */
   readonly thread_name: string
+  /** array of tag ids to apply to the thread (requires the webhook channel to be a forum or media channel) */
+  readonly applied_tags: Array<Snowflake>
 }
 export enum ExplicitContentFilterLevel {
   /** media content will not be scanned */
@@ -5933,12 +5935,10 @@ export interface Response {
   readonly user?: User
 }
 export interface ResponseBody {
-  /** the public, archived threads */
+  /** the active threads */
   readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
   readonly members: Array<ThreadMember>
-  /** whether there are potentially additional threads that could be returned on a subsequent call */
-  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
