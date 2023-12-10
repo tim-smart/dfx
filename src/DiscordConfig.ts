@@ -70,4 +70,4 @@ export const layer = (
 export const layerConfig = (
   _: Config.Config.Wrap<MakeOpts>,
 ): Layer.Layer<never, ConfigError.ConfigError, DiscordConfig> =>
-  Layer.effect(DiscordConfig, Effect.map(Effect.config(Config.unwrap(_)), make))
+  Layer.effect(DiscordConfig, Effect.map(Config.unwrap(_), make))

@@ -82,10 +82,10 @@ export const layer = (opts: MakeConfigOpts) =>
   Layer.succeed(WebhookConfig, makeConfig(opts))
 
 export const layerConfig: (
-  a: Config.Config<MakeConfigOpts>,
+  config: Config.Config<MakeConfigOpts>,
 ) => Layer.Layer<never, ConfigError.ConfigError, WebhookConfig> = (
-  a: Config.Config<MakeConfigOpts>,
-) => Layer.effect(WebhookConfig, Effect.map(Effect.config(a), makeConfig))
+  config: Config.Config<MakeConfigOpts>,
+) => Layer.effect(WebhookConfig, Effect.map(config, makeConfig))
 
 export class WebhookParseError {
   readonly _tag = "WebhookParseError"
