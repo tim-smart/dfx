@@ -58,6 +58,7 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
             fiber = fiber_
           }),
         ),
+        Effect.forever,
       )
 
       return Effect.all([run, Deferred.await(causeDeferred)], {
