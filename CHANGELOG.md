@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.80.2](https://github.com/tim-smart/dfx/compare/dfx@0.80.1...dfx@0.80.2) (2023-12-12)
+
+### Bug Fixes
+
+- foreverSwitch ([a7806cd](https://github.com/tim-smart/dfx/commit/a7806cd7fea6ddfceaf1b706a8b4abd7335f90b5))
+
 ## [0.80.1](https://github.com/tim-smart/dfx/compare/dfx@0.80.0...dfx@0.80.1) (2023-12-11)
 
 **Note:** Version bump only for package dfx
