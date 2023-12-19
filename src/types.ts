@@ -5655,9 +5655,9 @@ export const PermissionFlag = {
   VIEW_CREATOR_MONETIZATION_ANALYTICS: BigInt(1) << BigInt(41),
   /** Allows for using soundboard in a voice channel */
   USE_SOUNDBOARD: BigInt(1) << BigInt(42),
-  /** Allows for creating emojis, stickers, and soundboard sounds, and editing and deleting those created by the current user */
+  /** Allows for creating emojis, stickers, and soundboard sounds, and editing and deleting those created by the current user. Not yet available to developers, see changelog. */
   CREATE_GUILD_EXPRESSIONS: BigInt(1) << BigInt(43),
-  /** Allows for creating scheduled events, and editing and deleting those created by the current user */
+  /** Allows for creating scheduled events, and editing and deleting those created by the current user. Not yet available to developers, see changelog. */
   CREATE_EVENTS: BigInt(1) << BigInt(44),
   /** Allows the usage of custom soundboard sounds from other servers */
   USE_EXTERNAL_SOUNDS: BigInt(1) << BigInt(45),
@@ -5935,10 +5935,12 @@ export interface Response {
   readonly user?: User
 }
 export interface ResponseBody {
-  /** the active threads */
+  /** the public, archived threads */
   readonly threads: Array<Channel>
   /** a thread member object for each returned thread the current user has joined */
   readonly members: Array<ThreadMember>
+  /** whether there are potentially additional threads that could be returned on a subsequent call */
+  readonly has_more: boolean
 }
 export interface Resume {
   /** Session token */
