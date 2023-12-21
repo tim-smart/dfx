@@ -45,8 +45,8 @@
     "ws": "^8.15.1"
   },
   "peerDependencies": {
-    "@effect/platform": "^0.38.0",
-    "effect": "2.0.0-next.61"
+    "@effect/platform": "^0.39.0",
+    "effect": "2.0.0-next.62"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
