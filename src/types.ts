@@ -2614,7 +2614,7 @@ export interface Embed {
   readonly provider?: EmbedProvider
   /** author information */
   readonly author?: EmbedAuthor
-  /** fields information */
+  /** fields information, max of 25 */
   readonly fields?: Array<EmbedField>
 }
 export interface EmbedAuthor {
