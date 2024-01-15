@@ -157,8 +157,8 @@ const wsImpl = {
           ),
         ),
         Effect.scoped,
-        Effect.retryWhile(isReconnect),
-        reconnectWhen ? Effect.retryWhile(reconnectWhen) : identity,
+        Effect.retry({ while: isReconnect }),
+        reconnectWhen ? Effect.retry({ while: reconnectWhen }) : identity,
         Effect.catchAllCause(Effect.logError),
         Effect.repeat(
           Schedule.exponential("500 millis").pipe(
