@@ -7,9 +7,9 @@ import * as Queue from "effect/Queue"
 
 export const subscribeForEachPar = <R, E, A, X>(
   self: PubSub.PubSub<A>,
-  effect: (_: A) => Effect.Effect<R, E, X>,
-): Effect.Effect<R, E, never> =>
-  Effect.flatMap(Deferred.make<E, never>(), deferred => {
+  effect: (_: A) => Effect.Effect<X, E, R>,
+): Effect.Effect<never, E, R> =>
+  Effect.flatMap(Deferred.make<never, E>(), deferred => {
     const run = pipe(
       PubSub.subscribe(self),
       Effect.flatMap(queue =>
@@ -29,15 +29,15 @@ export const subscribeForEachPar = <R, E, A, X>(
     return Effect.all([run, Deferred.await(deferred)], {
       concurrency: "unbounded",
       discard: true,
-    }) as Effect.Effect<R, E, never>
+    }) as Effect.Effect<never, E, R>;
   })
 
 export const foreverSwitch = <R, E, A, R1, E1, X>(
-  self: Effect.Effect<R, E, A>,
-  f: (_: A) => Effect.Effect<R1, E1, X>,
-): Effect.Effect<R | R1, E | E1, never> =>
+  self: Effect.Effect<A, E, R>,
+  f: (_: A) => Effect.Effect<X, E1, R1>,
+): Effect.Effect<never, E | E1, R | R1> =>
   pipe(
-    Effect.all([Deferred.make<E1, never>(), Effect.fiberId]),
+    Effect.all([Deferred.make<never, E1>(), Effect.fiberId]),
     Effect.flatMap(([causeDeferred, fiberId]) => {
       let fiber: Fiber.RuntimeFiber<unknown, unknown> | undefined
 
@@ -64,6 +64,6 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       return Effect.all([run, Deferred.await(causeDeferred)], {
         concurrency: "unbounded",
         discard: true,
-      }) as Effect.Effect<R | R1, E | E1, never>
+      }) as Effect.Effect<never, E | E1, R | R1>;
     }),
   )

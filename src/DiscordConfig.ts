@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Config from "effect/Config"
 import type * as ConfigError from "effect/ConfigError"
@@ -30,7 +30,7 @@ export interface DiscordConfigService {
     readonly identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export const DiscordConfig = Tag<DiscordConfig, DiscordConfigService>(
+export const DiscordConfig = GenericTag<DiscordConfig, DiscordConfigService>(
   "dfx/DiscordConfig",
 )
 
@@ -64,10 +64,10 @@ export const make = ({
 
 export const layer = (
   opts: MakeOpts,
-): Layer.Layer<never, never, DiscordConfig> =>
+): Layer.Layer<DiscordConfig> =>
   Layer.succeed(DiscordConfig, make(opts))
 
 export const layerConfig = (
   _: Config.Config.Wrap<MakeOpts>,
-): Layer.Layer<never, ConfigError.ConfigError, DiscordConfig> =>
+): Layer.Layer<DiscordConfig, ConfigError.ConfigError> =>
   Layer.effect(DiscordConfig, Effect.map(Config.unwrap(_), make))

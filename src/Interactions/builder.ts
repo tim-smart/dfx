@@ -24,12 +24,12 @@ export class InteractionBuilder<R, E, TE> {
         handler: D.InteractionDefinition<R, E>,
         transform: (
           self: Effect.Effect<any, any, any>,
-        ) => Effect.Effect<R, TE, void>,
+        ) => Effect.Effect<void, TE, R>,
       ]
     >,
     readonly transform: (
       self: Effect.Effect<any, any, any>,
-    ) => Effect.Effect<R, TE, void>,
+    ) => Effect.Effect<void, TE, R>,
   ) {}
 
   add<R1, E1>(definition: D.InteractionDefinition<R1, E1>) {
@@ -47,7 +47,7 @@ export class InteractionBuilder<R, E, TE> {
   }
 
   private transformTransform<R1, E1>(
-    f: (selr: Effect.Effect<R, TE, void>) => Effect.Effect<R1, E1, void>,
+    f: (selr: Effect.Effect<void, TE, R>) => Effect.Effect<void, E1, R1>,
   ) {
     return new InteractionBuilder<R1, E, E1>(
       Chunk.map(this.definitions, ([d, t]) => [d as any, _ => f(t(_)) as any]),
@@ -57,8 +57,8 @@ export class InteractionBuilder<R, E, TE> {
 
   private transformHandlers<R1, E1>(
     f: (
-      selr: Effect.Effect<R, E, Discord.InteractionResponse>,
-    ) => Effect.Effect<R1, E1, Discord.InteractionResponse>,
+      selr: Effect.Effect<Discord.InteractionResponse, E, R>,
+    ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
   ) {
     return new InteractionBuilder<
       R1,
@@ -79,7 +79,7 @@ export class InteractionBuilder<R, E, TE> {
   }
 
   catchAllCause<R1, E1>(
-    f: (cause: Cause.Cause<TE>) => Effect.Effect<R1, E1, void>,
+    f: (cause: Cause.Cause<TE>) => Effect.Effect<void, E1, R1>,
   ) {
     return this.transformTransform<R | R1, E1>(Effect.catchAllCause(f))
   }
@@ -87,24 +87,24 @@ export class InteractionBuilder<R, E, TE> {
   catchAllCauseRespond<R1, E1>(
     f: (
       cause: Cause.Cause<E>,
-    ) => Effect.Effect<R1, E1, Discord.InteractionResponse>,
+    ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
   ) {
     return this.transformHandlers<R | R1, E1>(Effect.catchAllCause(f))
   }
 
-  catchAll<R1, E1>(f: (error: TE) => Effect.Effect<R1, E1, void>) {
+  catchAll<R1, E1>(f: (error: TE) => Effect.Effect<void, E1, R1>) {
     return this.transformTransform<R | R1, E1>(Effect.catchAll(f))
   }
 
   catchAllRespond<R1, E1>(
-    f: (error: E) => Effect.Effect<R1, E1, Discord.InteractionResponse>,
+    f: (error: E) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
   ) {
     return this.transformHandlers<R | R1, E1>(Effect.catchAll(f))
   }
 
   catchTag<T extends ExtractTag<E>, R1, E1>(
     tag: T,
-    f: (error: Extract<TE, { _tag: T }>) => Effect.Effect<R1, E1, void>,
+    f: (error: Extract<TE, { _tag: T }>) => Effect.Effect<void, E1, R1>,
   ) {
     return this.transformTransform<R | R1, Exclude<TE, { _tag: T }> | E1>(
       _ => catchTag(_ as any, tag, f as any) as any,
@@ -115,7 +115,7 @@ export class InteractionBuilder<R, E, TE> {
     tag: T,
     f: (
       error: Extract<E, { _tag: T }>,
-    ) => Effect.Effect<R1, E1, Discord.InteractionResponse>,
+    ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
   ) {
     return this.transformHandlers<R | R1, Exclude<E, { _tag: T }> | E1>(
       _ => catchTag(_ as any, tag, f as any) as any,

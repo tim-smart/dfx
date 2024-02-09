@@ -1,5 +1,5 @@
 import * as Chunk from "effect/Chunk"
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import { identity } from "effect/Function"
 import * as Option from "effect/Option"
 import type * as Cause from "effect/Cause"
@@ -74,7 +74,7 @@ const makeConfig = ({
 export interface WebhookConfig {
   readonly _: unique symbol
 }
-export const WebhookConfig = Tag<WebhookConfig, ReturnType<typeof makeConfig>>(
+export const WebhookConfig = GenericTag<WebhookConfig, ReturnType<typeof makeConfig>>(
   "dfx/Interactions/WebhookConfig",
 )
 
@@ -83,7 +83,7 @@ export const layer = (opts: MakeConfigOpts) =>
 
 export const layerConfig: (
   config: Config.Config<MakeConfigOpts>,
-) => Layer.Layer<never, ConfigError.ConfigError, WebhookConfig> = (
+) => Layer.Layer<WebhookConfig, ConfigError.ConfigError> = (
   config: Config.Config<MakeConfigOpts>,
 ) => Layer.effect(WebhookConfig, Effect.map(config, makeConfig))
 
@@ -109,38 +109,34 @@ const run = <R, E>(
     readonly [
       handler: D.InteractionDefinition<R, E>,
       transform: (
-        self: Effect.Effect<R, E, Discord.InteractionResponse>,
-      ) => Effect.Effect<R, E, Discord.InteractionResponse>,
+        self: Effect.Effect<Discord.InteractionResponse, E, R>,
+      ) => Effect.Effect<Discord.InteractionResponse, E, R>,
     ]
   >,
   handleResponse: (
     ix: Discord.Interaction,
     _: Discord.InteractionResponse,
-  ) => Effect.Effect<R, E, Discord.InteractionResponse>,
+  ) => Effect.Effect<Discord.InteractionResponse, E, R>,
 ) => {
   const handler = handlers(definitions, handleResponse)
   return (
     headers: Headers,
     body: string,
-  ): Effect.Effect<
-    WebhookConfig | Exclude<R, DiscordInteraction>,
-    BadWebhookSignature | WebhookParseError | E | DefinitionNotFound,
-    Discord.InteractionResponse
-  > =>
+  ): Effect.Effect<Discord.InteractionResponse, BadWebhookSignature | WebhookParseError | E | DefinitionNotFound, WebhookConfig | Exclude<R, DiscordInteraction>> =>
     Effect.flatMap(fromHeadersAndBody(headers, body), interaction =>
       Effect.provideService(
         handler[interaction.type](interaction),
         Interaction,
         interaction,
       ),
-    )
+    );
 }
 
 export interface HandleWebhookOpts<E> {
   headers: Headers
   body: string
-  success: (a: Discord.InteractionResponse) => Effect.Effect<never, never, void>
-  error: (e: Cause.Cause<E>) => Effect.Effect<never, never, void>
+  success: (a: Discord.InteractionResponse) => Effect.Effect<void>
+  error: (e: Cause.Cause<E>) => Effect.Effect<void>
 }
 
 /**
@@ -155,7 +151,7 @@ export const makeHandler = <R, E, TE>(
   success,
 }: HandleWebhookOpts<
   E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
->) => Effect.Effect<WebhookConfig, never, void>) => {
+>) => Effect.Effect<void, never, WebhookConfig>) => {
   const handle = run(
     Chunk.map(ix.definitions, ([d]) => [d, identity] as any),
     (_i, r) => Effect.succeed(r),
@@ -168,11 +164,11 @@ export const makeHandler = <R, E, TE>(
     success,
   }: HandleWebhookOpts<
     E | WebhookParseError | BadWebhookSignature | DefinitionNotFound
-  >): Effect.Effect<WebhookConfig, never, void> =>
+  >): Effect.Effect<void, never, WebhookConfig> =>
     handle(headers, body).pipe(
       Effect.flatMap(success),
       Effect.catchAllCause(error),
-    )
+    );
 }
 
 /**
@@ -187,9 +183,9 @@ export const makeSimpleHandler = <R, E, TE>(
   headers: Headers
   body: string
 }) => Effect.Effect<
-  WebhookConfig,
+  Discord.InteractionResponse,
   BadWebhookSignature | WebhookParseError | DefinitionNotFound,
-  Discord.InteractionResponse
+  WebhookConfig
 >) => {
   const handle = run(
     Chunk.map(ix.definitions, ([d]) => [d, identity] as any),

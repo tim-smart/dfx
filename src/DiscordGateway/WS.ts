@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import type * as Duration from "effect/Duration"
 import { identity, pipe } from "effect/Function"
 import * as Effect from "effect/Effect"
@@ -51,7 +51,7 @@ const offer = (
   ws: globalThis.WebSocket,
   queue: Queue.Enqueue<WebSocket.Data>,
 ) =>
-  Effect.async<never, WebSocketError | WebSocketCloseError, never>(resume => {
+  Effect.async<never, WebSocketError | WebSocketCloseError>(resume => {
     ws.addEventListener("message", message => {
       Queue.unsafeOffer(queue, message.data)
     })
@@ -75,11 +75,11 @@ const waitForOpen = (
         return Effect.unit
       }
 
-      return Effect.async<never, never, void>(resume => {
+      return Effect.async<void>(resume => {
         ws.addEventListener("open", () => resume(Effect.unit), {
           once: true,
         })
-      })
+      });
     }),
     {
       onTimeout: () => new WebSocketError("open-timeout"),
@@ -89,7 +89,7 @@ const waitForOpen = (
 
 const send = (
   ws: globalThis.WebSocket,
-  take: Effect.Effect<never, never, Message>,
+  take: Effect.Effect<Message>,
 ) =>
   pipe(
     take,
@@ -119,8 +119,8 @@ const wsImpl = {
     urlRef,
   }: {
     readonly urlRef: Ref.Ref<string>
-    readonly takeOutbound: Effect.Effect<never, never, Message>
-    readonly onConnecting?: Effect.Effect<never, never, void>
+    readonly takeOutbound: Effect.Effect<Message>
+    readonly onConnecting?: Effect.Effect<void>
     readonly openTimeout?: Duration.DurationInput
     readonly reconnectWhen?: Predicate<WebSocketError | WebSocketCloseError>
   }) =>
@@ -182,5 +182,5 @@ const wsImpl = {
 export interface WS {
   readonly _: unique symbol
 }
-export const WS = Tag<WS, typeof wsImpl>("dfx/DiscordGateway/WS")
+export const WS = GenericTag<WS, typeof wsImpl>("dfx/DiscordGateway/WS")
 export const WSLive = Layer.succeed(WS, wsImpl)

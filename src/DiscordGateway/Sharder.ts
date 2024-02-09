@@ -5,7 +5,7 @@ import { ShardStore } from "dfx/DiscordGateway/ShardStore"
 import { DiscordREST, DiscordRESTLive } from "dfx/DiscordREST"
 import { RateLimiter, RateLimiterLive } from "dfx/RateLimit"
 import type * as Discord from "dfx/types"
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import { pipe } from "effect/Function"
@@ -47,7 +47,7 @@ const make = Effect.gen(function* (_) {
 
   const totalCount = config.shardCount ?? gateway.shards
   const currentCount = yield* _(Ref.make(0))
-  const claimId = (sharderCount: number): Effect.Effect<never, never, number> =>
+  const claimId = (sharderCount: number): Effect.Effect<number> =>
     pipe(
       store.claimId({
         totalCount,
@@ -59,7 +59,10 @@ const make = Effect.gen(function* (_) {
   const takeConfig = pipe(
     Ref.getAndUpdate(currentCount, _ => _ + 1),
     Effect.flatMap(claimId),
-    Effect.map(id => ({ id, totalCount }) as const),
+    Effect.map(id => (({
+      id,
+      totalCount
+    }) as const)),
   )
 
   const spawner = pipe(
@@ -105,7 +108,7 @@ const make = Effect.gen(function* (_) {
 export interface Sharder {
   readonly _: unique symbol
 }
-export const Sharder = Tag<Sharder, Effect.Effect.Success<typeof make>>(
+export const Sharder = GenericTag<Sharder, Effect.Effect.Success<typeof make>>(
   "dfx/DiscordGateway/Sharder",
 )
 export const SharderLive = Layer.scoped(Sharder, make).pipe(

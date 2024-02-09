@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import type * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
@@ -15,35 +15,35 @@ export type BucketDetails = {
 export interface RateLimitStoreService {
   readonly hasBucket: (
     bucketKey: string,
-  ) => Effect.Effect<never, never, boolean>
+  ) => Effect.Effect<boolean>
 
   readonly putBucket: (
     bucket: BucketDetails,
-  ) => Effect.Effect<never, never, void>
+  ) => Effect.Effect<void>
 
   readonly getBucketForRoute: (
     route: string,
-  ) => Effect.Effect<never, never, Option.Option<BucketDetails>>
+  ) => Effect.Effect<Option.Option<BucketDetails>>
 
   readonly putBucketRoute: (
     route: string,
     bucketKey: string,
-  ) => Effect.Effect<never, never, void>
+  ) => Effect.Effect<void>
 
   readonly incrementCounter: (
     key: string,
     window: number,
     limit: number,
-  ) => Effect.Effect<never, never, readonly [count: number, ttl: number]>
+  ) => Effect.Effect<readonly [count: number, ttl: number]>
 
-  readonly removeCounter: (key: string) => Effect.Effect<never, never, void>
+  readonly removeCounter: (key: string) => Effect.Effect<void>
 }
 
 export interface RateLimitStore {
   readonly _: unique symbol
 }
 
-export const RateLimitStore = Tag<RateLimitStore, RateLimitStoreService>(
+export const RateLimitStore = GenericTag<RateLimitStore, RateLimitStoreService>(
   "dfx/RateLimit/RateLimitStore",
 )
 export const MemoryRateLimitStoreLive = Layer.sync(RateLimitStore, Memory.make)
@@ -84,7 +84,7 @@ const makeLimiter = Effect.gen(function* (_) {
 export interface RateLimiter {
   readonly _: unique symbol
 }
-export const RateLimiter = Tag<
+export const RateLimiter = GenericTag<
   RateLimiter,
   Effect.Effect.Success<typeof makeLimiter>
 >("dfx/RateLimit/RateLimiter")

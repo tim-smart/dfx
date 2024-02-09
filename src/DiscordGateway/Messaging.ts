@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
@@ -9,11 +9,11 @@ import * as EffectUtils from "dfx/utils/Effect"
 
 const fromDispatchFactory =
   <R, E>(
-    source: Stream.Stream<R, E, Discord.GatewayPayload<Discord.ReceiveEvent>>,
+    source: Stream.Stream<Discord.GatewayPayload<Discord.ReceiveEvent>, E, R>,
   ) =>
   <K extends keyof Discord.ReceiveEvents>(
     event: K,
-  ): Stream.Stream<R, E, Discord.ReceiveEvents[K]> =>
+  ): Stream.Stream<Discord.ReceiveEvents[K], E, R> =>
     Stream.map(
       Stream.filter(source, p => p.t === event),
       p => p.d! as any,
@@ -23,8 +23,8 @@ const handleDispatchFactory =
   (hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
   <K extends keyof Discord.ReceiveEvents, R, E, A>(
     event: K,
-    handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<R, E, A>,
-  ): Effect.Effect<R, E, never> =>
+    handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<A, E, R>,
+  ): Effect.Effect<never, E, R> =>
     EffectUtils.subscribeForEachPar(hub, _ => {
       if (_.t === event) {
         return handle(_.d as any)
@@ -66,7 +66,8 @@ export const make = Effect.gen(function* (_) {
 export interface Messsaging {
   readonly _: unique symbol
 }
-export const Messaging = Tag<Messsaging, Effect.Effect.Success<typeof make>>(
-  "dfx/DiscordGateway/Messaging",
-)
+export const Messaging = GenericTag<
+  Messsaging,
+  Effect.Effect.Success<typeof make>
+>("dfx/DiscordGateway/Messaging")
 export const MesssagingLive = Layer.scoped(Messaging, make)

@@ -21,7 +21,7 @@ const payloadOrReconnect = (
 ) =>
   Effect.flatMap(
     Ref.get(ref),
-    (acked): Effect.Effect<never, never, DiscordWS.Message> =>
+    (acked): Effect.Effect<DiscordWS.Message> =>
       acked ? payload(seqRef) : Effect.succeed(Reconnect),
   )
 
@@ -29,7 +29,7 @@ export const send = (
   hellos: Queue.Dequeue<Discord.GatewayPayload>,
   acks: Queue.Dequeue<Discord.GatewayPayload>,
   seqRef: Ref.Ref<Option.Option<number>>,
-  send: (p: DiscordWS.Message) => Effect.Effect<never, never, boolean>,
+  send: (p: DiscordWS.Message) => Effect.Effect<boolean>,
 ) =>
   Effect.flatMap(Ref.make(true), ackedRef => {
     const heartbeats = EffectU.foreverSwitch(

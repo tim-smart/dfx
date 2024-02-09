@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { millis } from "effect/Duration"
 import { pipe } from "effect/Function"
@@ -155,15 +155,11 @@ const make = Effect.gen(function* (_) {
 
   const executor = <A = unknown>(
     request: Http.request.ClientRequest,
-  ): Effect.Effect<never, DiscordRESTError, ResponseWithData<A>> =>
+  ): Effect.Effect<ResponseWithData<A>, DiscordRESTError> =>
     requestRateLimit(request.url, request).pipe(
       Effect.zipLeft(globalRateLimit),
       Effect.zipRight(
-        httpExecutor(request) as Effect.Effect<
-          never,
-          DiscordRESTError,
-          ResponseWithData<A>
-        >,
+        httpExecutor(request) as Effect.Effect<ResponseWithData<A>, DiscordRESTError>,
       ),
       Effect.tap(response => updateBuckets(request, response)),
       Effect.catchTag("DiscordRESTError", e => {
@@ -261,10 +257,10 @@ export interface DiscordRESTService
   extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>> {
   readonly executor: <A = unknown>(
     request: Http.request.ClientRequest,
-  ) => Effect.Effect<never, DiscordRESTError, ResponseWithData<A>>
+  ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError>
 }
 
-export const DiscordREST = Tag<DiscordREST, DiscordRESTService>(
+export const DiscordREST = GenericTag<DiscordREST, DiscordRESTService>(
   "dfx/DiscordREST",
 )
 export const DiscordRESTLive = Layer.effect(DiscordREST, make).pipe(

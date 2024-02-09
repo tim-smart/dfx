@@ -1,5 +1,5 @@
 import * as Chunk from "effect/Chunk"
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { pipe } from "effect/Function"
 import * as Option from "effect/Option"
@@ -207,7 +207,7 @@ type ShardService = Effect.Effect.Success<typeof make>
 export interface Shard {
   readonly _: unique symbol
 }
-export const Shard = Tag<Shard, ShardService>("dfx/DiscordGateway/Shard")
+export const Shard = GenericTag<Shard, ShardService>("dfx/DiscordGateway/Shard")
 export const ShardLive = Layer.effect(Shard, make).pipe(
   Layer.provide(DiscordWSLive),
   Layer.provide(MesssagingLive),

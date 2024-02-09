@@ -1,5 +1,5 @@
 import * as Chunk from "effect/Chunk"
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { pipe } from "effect/Function"
 import * as Effect from "effect/Effect"
@@ -37,20 +37,12 @@ export const setInteractionsSync = (enabled: boolean) =>
 export const run =
   <R, R2, E, TE, E2>(
     postHandler: (
-      effect: Effect.Effect<
-        R | DiscordREST | DiscordInteraction,
-        TE | DiscordRESTError | DefinitionNotFound,
-        void
-      >,
-    ) => Effect.Effect<R2, E2, void>,
+      effect: Effect.Effect<void, TE | DiscordRESTError | DefinitionNotFound, R | DiscordREST | DiscordInteraction>,
+    ) => Effect.Effect<void, E2, R2>,
   ) =>
   (
     ix: InteractionBuilder<R, E, TE>,
-  ): Effect.Effect<
-    DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>,
-    E2 | DiscordRESTError | Http.error.ResponseError,
-    never
-  > =>
+  ): Effect.Effect<never, E2 | DiscordRESTError | Http.error.ResponseError, DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>> =>
     Effect.gen(function* (_) {
       const GlobalApplicationCommand = ix.definitions.pipe(
         Chunk.map(_ => _[0]),
@@ -160,13 +152,13 @@ const makeRegistry = Effect.gen(function* (_) {
 export interface InteractionsRegistryService {
   readonly register: <E>(
     ix: InteractionBuilder<never, E, never>,
-  ) => Effect.Effect<never, never, void>
+  ) => Effect.Effect<void>
 }
 export interface InteractionsRegistry {
   readonly _: unique symbol
 }
 
-export const InteractionsRegistry = Tag<
+export const InteractionsRegistry = GenericTag<
   InteractionsRegistry,
   InteractionsRegistryService
 >("dfx/Interactions/InteractionsRegistry")

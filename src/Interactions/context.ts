@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import type * as HashMap from "effect/HashMap"
 import * as Option from "effect/Option"
 import * as Arr from "effect/ReadonlyArray"
@@ -9,14 +9,14 @@ import type * as Discord from "dfx/types"
 export interface DiscordInteraction {
   readonly _: unique symbol
 }
-export const Interaction = Tag<DiscordInteraction, Discord.Interaction>(
+export const Interaction = GenericTag<DiscordInteraction, Discord.Interaction>(
   "dfx/Interactions/Interaction",
 )
 
 export interface DiscordApplicationCommand {
   readonly _: unique symbol
 }
-export const ApplicationCommand = Tag<
+export const ApplicationCommand = GenericTag<
   DiscordApplicationCommand,
   Discord.ApplicationCommandDatum
 >("dfx/Interactions/ApplicationCommand")
@@ -24,7 +24,7 @@ export const ApplicationCommand = Tag<
 export interface DiscordMessageComponent {
   readonly _: unique symbol
 }
-export const MessageComponentData = Tag<
+export const MessageComponentData = GenericTag<
   DiscordMessageComponent,
   Discord.MessageComponentDatum
 >("dfx/Interactions/MessageComponentData")
@@ -32,7 +32,7 @@ export const MessageComponentData = Tag<
 export interface DiscordModalSubmit {
   readonly _: unique symbol
 }
-export const ModalSubmitData = Tag<
+export const ModalSubmitData = GenericTag<
   DiscordModalSubmit,
   Discord.ModalSubmitDatum
 >("dfx/Interactions/ModalSubmitData")
@@ -43,7 +43,7 @@ export interface DiscordFocusedOption {
 export interface FocusedOptionContext {
   readonly focusedOption: Discord.ApplicationCommandInteractionDataOption
 }
-export const FocusedOptionContext = Tag<
+export const FocusedOptionContext = GenericTag<
   DiscordFocusedOption,
   FocusedOptionContext
 >("dfx/Interactions/FocusedOptionContext")
@@ -54,7 +54,7 @@ export interface DiscordSubCommand {
 export interface SubCommandContext {
   readonly command: Discord.ApplicationCommandInteractionDataOption
 }
-export const SubCommandContext = Tag<DiscordSubCommand, SubCommandContext>(
+export const SubCommandContext = GenericTag<DiscordSubCommand, SubCommandContext>(
   "dfx/Interactions/SubCommandContext",
 )
 
@@ -68,7 +68,7 @@ export class ResolvedDataNotFound {
 
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-): Effect.Effect<DiscordInteraction, ResolvedDataNotFound, ReadonlyArray<A>> =>
+): Effect.Effect<ReadonlyArray<A>, ResolvedDataNotFound, DiscordInteraction> =>
   Effect.flatMap(Interaction, ix =>
     Effect.mapError(
       IxHelpers.resolveValues(f)(ix),
@@ -79,7 +79,7 @@ export const resolvedValues = <A>(
 export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-): Effect.Effect<DiscordInteraction, ResolvedDataNotFound, A> =>
+): Effect.Effect<A, ResolvedDataNotFound, DiscordInteraction> =>
   Effect.flatMap(Interaction, ix =>
     Effect.mapError(
       IxHelpers.resolveOptionValue(name, f)(ix),
@@ -100,29 +100,25 @@ export class SubCommandNotFound {
 export const handleSubCommands = <
   NER extends Record<
     string,
-    Effect.Effect<any, any, Discord.InteractionResponse>
+    Effect.Effect<Discord.InteractionResponse, any, any>
   >,
 >(
   commands: NER,
-): Effect.Effect<
-  | Exclude<
-      [NER[keyof NER]] extends [
-        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-      ]
-        ? R
-        : never,
-      SubCommandContext
-    >
-  | Discord.Interaction
-  | Discord.ApplicationCommandDatum,
-  | ([NER[keyof NER]] extends [
-      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
+): Effect.Effect<Discord.InteractionResponse, | ([NER[keyof NER]] extends [
+    { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
+  ]
+    ? E
+    : never)
+| SubCommandNotFound, | Exclude<
+    [NER[keyof NER]] extends [
+      { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
     ]
-      ? E
-      : never)
-  | SubCommandNotFound,
-  Discord.InteractionResponse
-> =>
+      ? R
+      : never,
+    SubCommandContext
+  >
+| Discord.Interaction
+| Discord.ApplicationCommandDatum> =>
   ApplicationCommand.pipe(
     Effect.flatMap(data =>
       Effect.mapError(
@@ -138,15 +134,15 @@ export const handleSubCommands = <
   )
 
 export const currentSubCommand: Effect.Effect<
-  DiscordSubCommand,
+  Discord.ApplicationCommandInteractionDataOption,
   never,
-  Discord.ApplicationCommandInteractionDataOption
+  DiscordSubCommand
 > = Effect.map(SubCommandContext, _ => _.command)
 
 export const optionsMap: Effect.Effect<
-  DiscordApplicationCommand,
+  HashMap.HashMap<string, string | undefined>,
   never,
-  HashMap.HashMap<string, string | undefined>
+  DiscordApplicationCommand
 > = Effect.map(ApplicationCommand, IxHelpers.optionsMap)
 
 export class RequiredOptionNotFound {

@@ -34,36 +34,36 @@ export interface ParentCache<EDriver, EMiss, EPMiss, A> {
   readonly get: (
     parentId: string,
     id: string,
-  ) => Effect.Effect<never, EDriver | EMiss, A>
-  readonly put: (_: A) => Effect.Effect<never, EDriver | EMiss, void>
+  ) => Effect.Effect<A, EDriver | EMiss>
+  readonly put: (_: A) => Effect.Effect<void, EDriver | EMiss>
   readonly update: <R, E>(
     parentId: string,
     id: string,
-    f: (_: A) => Effect.Effect<R, E, A>,
-  ) => Effect.Effect<R, EDriver | EMiss | E, A>
+    f: (_: A) => Effect.Effect<A, E, R>,
+  ) => Effect.Effect<A, EDriver | EMiss | E, R>
   readonly getForParent: (
     parentId: string,
-  ) => Effect.Effect<never, EDriver | EPMiss, ReadonlyMap<string, A>>
-  readonly size: Effect.Effect<never, EDriver, number>
+  ) => Effect.Effect<ReadonlyMap<string, A>, EDriver | EPMiss>
+  readonly size: Effect.Effect<number, EDriver>
   readonly sizeForParent: (
     parentId: string,
-  ) => Effect.Effect<never, EDriver, number>
+  ) => Effect.Effect<number, EDriver>
   readonly set: (
     parentId: string,
     resourceId: string,
     resource: A,
-  ) => Effect.Effect<never, EDriver, void>
+  ) => Effect.Effect<void, EDriver>
   readonly delete: (
     parentId: string,
     resourceId: string,
-  ) => Effect.Effect<never, EDriver, void>
+  ) => Effect.Effect<void, EDriver>
   readonly parentDelete: (
     parentId: string,
-  ) => Effect.Effect<never, EDriver, void>
+  ) => Effect.Effect<void, EDriver>
   readonly refreshTTL: (
     parentId: string,
     resourceId: string,
-  ) => Effect.Effect<never, EDriver, void>
+  ) => Effect.Effect<void, EDriver>
 }
 
 export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
@@ -74,19 +74,19 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   ops = Stream.empty,
 }: {
   driver: ParentCacheDriver<EDriver, A>
-  ops?: Stream.Stream<never, EOps, ParentCacheOp<A>>
+  ops?: Stream.Stream<ParentCacheOp<A>, EOps>
   id: (
     _: A,
-  ) => Effect.Effect<never, EMiss, readonly [parentId: string, id: string]>
-  onMiss: (parentId: string, id: string) => Effect.Effect<never, EMiss, A>
+  ) => Effect.Effect<readonly [parentId: string, id: string], EMiss>
+  onMiss: (parentId: string, id: string) => Effect.Effect<A, EMiss>
   onParentMiss: (
     parentId: string,
-  ) => Effect.Effect<never, EPMiss, Array<[id: string, resource: A]>>
-}): Effect.Effect<Scope.Scope, never, ParentCache<EDriver, EMiss, EPMiss, A>> =>
+  ) => Effect.Effect<Array<[id: string, resource: A]>, EPMiss>
+}): Effect.Effect<ParentCache<EDriver, EMiss, EPMiss, A>, never, Scope.Scope> =>
   Effect.gen(function* (_) {
     yield* _(
       Stream.runDrain(
-        Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
+        Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
           switch (op.op) {
             case "create":
             case "update":
@@ -129,7 +129,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     const update = <R, E>(
       parentId: string,
       id: string,
-      f: (_: A) => Effect.Effect<R, E, A>,
+      f: (_: A) => Effect.Effect<A, E, R>,
     ) =>
       get(parentId, id).pipe(
         Effect.flatMap(f),
@@ -171,21 +171,21 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   )
 
 export interface Cache<EDriver, EMiss, A> {
-  readonly get: (id: string) => Effect.Effect<never, EDriver | EMiss, A>
-  readonly put: (_: A) => Effect.Effect<never, EDriver, void>
+  readonly get: (id: string) => Effect.Effect<A, EDriver | EMiss>
+  readonly put: (_: A) => Effect.Effect<void, EDriver>
   readonly update: <R, E>(
     id: string,
-    f: (_: A) => Effect.Effect<R, E, A>,
-  ) => Effect.Effect<R, EDriver | EMiss | E, A>
-  readonly size: Effect.Effect<never, EDriver, number>
+    f: (_: A) => Effect.Effect<A, E, R>,
+  ) => Effect.Effect<A, EDriver | EMiss | E, R>
+  readonly size: Effect.Effect<number, EDriver>
   readonly set: (
     resourceId: string,
     resource: A,
-  ) => Effect.Effect<never, EDriver, void>
-  readonly delete: (resourceId: string) => Effect.Effect<never, EDriver, void>
+  ) => Effect.Effect<void, EDriver>
+  readonly delete: (resourceId: string) => Effect.Effect<void, EDriver>
   readonly refreshTTL: (
     resourceId: string,
-  ) => Effect.Effect<never, EDriver, void>
+  ) => Effect.Effect<void, EDriver>
 }
 
 export const make = <EOps, EDriver, EMiss, A>({
@@ -195,14 +195,14 @@ export const make = <EOps, EDriver, EMiss, A>({
   ops = Stream.empty,
 }: {
   driver: CacheDriver<EDriver, A>
-  ops?: Stream.Stream<never, EOps, CacheOp<A>>
+  ops?: Stream.Stream<CacheOp<A>, EOps>
   id: (_: A) => string
-  onMiss: (id: string) => Effect.Effect<never, EMiss, A>
-}): Effect.Effect<Scope.Scope, never, Cache<EDriver, EMiss, A>> =>
+  onMiss: (id: string) => Effect.Effect<A, EMiss>
+}): Effect.Effect<Cache<EDriver, EMiss, A>, never, Scope.Scope> =>
   Effect.gen(function* (_) {
     yield* _(
       Stream.runDrain(
-        Stream.tap(ops, (op): Effect.Effect<never, EDriver, void> => {
+        Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
           switch (op.op) {
             case "create":
             case "update":
@@ -238,7 +238,7 @@ export const make = <EOps, EDriver, EMiss, A>({
 
     const put = (_: A) => driver.set(id(_), _)
 
-    const update = <R, E>(id: string, f: (_: A) => Effect.Effect<R, E, A>) =>
+    const update = <R, E>(id: string, f: (_: A) => Effect.Effect<A, E, R>) =>
       get(id).pipe(
         Effect.flatMap(f),
         Effect.tap(_ => driver.set(id, _)),

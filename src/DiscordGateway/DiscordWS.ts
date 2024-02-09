@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Ref from "effect/Ref"
@@ -12,8 +12,8 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: DiscordWSCodec
-  outbound: Effect.Effect<never, never, Message>
-  onConnecting?: Effect.Effect<never, never, void>
+  outbound: Effect.Effect<Message>
+  onConnecting?: Effect.Effect<void>
 }
 
 export interface DiscordWSCodecService {
@@ -24,7 +24,7 @@ export interface DiscordWSCodecService {
 export interface DiscordWSCodec {
   readonly _: unique symbol
 }
-export const DiscordWSCodec = Tag<DiscordWSCodec, DiscordWSCodecService>(
+export const DiscordWSCodec = GenericTag<DiscordWSCodec, DiscordWSCodecService>(
   "dfx/DiscordGateway/DiscordWS/Codec",
 )
 export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
@@ -76,7 +76,7 @@ const make = Effect.gen(function* (_) {
 export interface DiscordWS {
   readonly _: unique symbol
 }
-export const DiscordWS = Tag<DiscordWS, Effect.Effect.Success<typeof make>>(
+export const DiscordWS = GenericTag<DiscordWS, Effect.Effect.Success<typeof make>>(
   "dfx/DiscordGateway/DiscordWS",
 )
 export const DiscordWSLive = Layer.provide(

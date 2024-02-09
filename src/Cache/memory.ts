@@ -3,11 +3,7 @@ import * as Effect from "effect/Effect"
 import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 import { createDriver, createParentDriver } from "dfx/Cache/driver"
 
-export const createWithParent = <T>(): Effect.Effect<
-  never,
-  never,
-  ParentCacheDriver<never, T>
-> =>
+export const createWithParent = <T>(): Effect.Effect<ParentCacheDriver<never, T>> =>
   Effect.sync(() => {
     const map = new Map<string, Map<string, T>>()
 
@@ -56,11 +52,7 @@ export const createWithParent = <T>(): Effect.Effect<
     })
   })
 
-export const create = <T>(): Effect.Effect<
-  never,
-  never,
-  CacheDriver<never, T>
-> =>
+export const create = <T>(): Effect.Effect<CacheDriver<never, T>> =>
   Effect.sync(() => {
     const map = new Map<string, T>()
 

@@ -10,7 +10,7 @@ export type DefinitionFlattened<R, E, TE, A> = D.InteractionDefinition<
 > extends infer D
   ? {
       [K in keyof D]: K extends "handle"
-        ? (_: Discord.Interaction) => Effect.Effect<R, TE, A>
+        ? (_: Discord.Interaction) => Effect.Effect<A, TE, R>
         : D[K]
     }
   : never
@@ -32,13 +32,13 @@ export const flattenDefinitions = <R, E, TE, A, B>(
   definitions: Chunk.Chunk<
     readonly [
       handler: D.InteractionDefinition<R, E>,
-      transform: (self: Effect.Effect<R, E, A>) => Effect.Effect<R, TE, B>,
+      transform: (self: Effect.Effect<A, E, R>) => Effect.Effect<B, TE, R>,
     ]
   >,
   handleResponse: (
     ix: Discord.Interaction,
     _: Discord.InteractionResponse,
-  ) => Effect.Effect<R, E, A>,
+  ) => Effect.Effect<A, E, R>,
 ) =>
   Chunk.map(definitions, ([definition, transform]) => ({
     ...definition,
@@ -83,10 +83,10 @@ export const splitDefinitions = <R, E, TE, A>(
     Chunk.reduce(
       {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
       (acc, d) =>
-        ({
+        (({
           ...acc,
-          [d.command.name]: d,
-        }) as any,
+          [d.command.name]: d
+        }) as any),
     ),
   )
 

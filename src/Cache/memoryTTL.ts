@@ -134,12 +134,12 @@ const make = <T>({
 
 export const create = <T>(
   opts: MemoryTTLOpts,
-): Effect.Effect<never, never, CacheDriver<never, T>> =>
+): Effect.Effect<CacheDriver<never, T>> =>
   Effect.sync(() => make<T>(opts))
 
 export const createWithParent = <T>(
   opts: MemoryTTLOpts,
-): Effect.Effect<never, never, ParentCacheDriver<never, T>> =>
+): Effect.Effect<ParentCacheDriver<never, T>> =>
   Effect.sync(() => {
     const store = make<T>(opts)
     const parentIds = new Map<string, Set<string>>()
@@ -204,7 +204,7 @@ export const createWithParent = <T>(
           const ids = parentIds.get(parentId)
           parentIds.delete(parentId)
 
-          const effects: Array<Effect.Effect<never, never, void>> = []
+          const effects: Array<Effect.Effect<void>> = []
           if (ids) {
             ids.forEach(id => {
               effects.push(store.delete(id))
@@ -218,5 +218,5 @@ export const createWithParent = <T>(
         }),
 
       run: store.run,
-    })
+    });
   })

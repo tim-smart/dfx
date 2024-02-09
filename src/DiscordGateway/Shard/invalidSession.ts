@@ -8,5 +8,5 @@ import type * as Discord from "dfx/types"
 export const fromPayload = (
   p: Discord.GatewayPayload,
   latestReady: Ref.Ref<Option.Option<Discord.ReadyEvent>>,
-): Effect.Effect<never, never, Message> =>
+): Effect.Effect<Message> =>
   Effect.as(p.d ? Effect.unit : Ref.set(latestReady, Option.none()), Reconnect)

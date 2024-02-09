@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { GenericTag } from "effect/Context"
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
@@ -11,14 +11,14 @@ export interface ClaimIdContext {
 export interface ShardStoreService {
   claimId: (
     ctx: ClaimIdContext,
-  ) => Effect.Effect<never, never, Option.Option<number>>
-  allClaimed: (totalCount: number) => Effect.Effect<never, never, boolean>
-  heartbeat?: (shardId: number) => Effect.Effect<never, never, void>
+  ) => Effect.Effect<Option.Option<number>>
+  allClaimed: (totalCount: number) => Effect.Effect<boolean>
+  heartbeat?: (shardId: number) => Effect.Effect<void>
 }
 export interface ShardStore {
   readonly _: unique symbol
 }
-export const ShardStore = Tag<ShardStore, ShardStoreService>(
+export const ShardStore = GenericTag<ShardStore, ShardStoreService>(
   "dfx/DiscordGateway/ShardStore",
 )
 

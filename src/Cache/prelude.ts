@@ -18,15 +18,11 @@ import type * as Discord from "dfx/types"
 
 export interface OptsWithParentOptions<E, A> {
   readonly id: (a: A) => string
-  readonly fromParent: Stream.Stream<
-    never,
-    E,
-    [parentId: string, resources: Array<A>]
-  >
-  readonly create: Stream.Stream<never, E, [parentId: string, resource: A]>
-  readonly update: Stream.Stream<never, E, [parentId: string, resource: A]>
-  readonly remove: Stream.Stream<never, E, [parentId: string, id: string]>
-  readonly parentRemove: Stream.Stream<never, E, string>
+  readonly fromParent: Stream.Stream<[parentId: string, resources: Array<A>], E>
+  readonly create: Stream.Stream<[parentId: string, resource: A], E>
+  readonly update: Stream.Stream<[parentId: string, resource: A], E>
+  readonly remove: Stream.Stream<[parentId: string, id: string], E>
+  readonly parentRemove: Stream.Stream<string, E>
 }
 
 export const opsWithParent = <E, T>({
@@ -36,7 +32,7 @@ export const opsWithParent = <E, T>({
   parentRemove,
   remove,
   update,
-}: OptsWithParentOptions<E, T>): Stream.Stream<never, E, ParentCacheOp<T>> => {
+}: OptsWithParentOptions<E, T>): Stream.Stream<ParentCacheOp<T>, E> => {
   const fromParentOps = Stream.flatMap(fromParent, ([parentId, a]) =>
     Stream.fromIterable(
       a.map(
@@ -96,9 +92,9 @@ export const opsWithParent = <E, T>({
 
 export interface OpsOptions<E, A> {
   id: (a: A) => string
-  create: Stream.Stream<never, E, A>
-  update: Stream.Stream<never, E, A>
-  remove: Stream.Stream<never, E, string>
+  create: Stream.Stream<A, E>
+  update: Stream.Stream<A, E>
+  remove: Stream.Stream<string, E>
 }
 
 export const ops = <E, T>({
@@ -106,7 +102,7 @@ export const ops = <E, T>({
   id,
   remove,
   update,
-}: OpsOptions<E, T>): Stream.Stream<never, E, CacheOp<T>> => {
+}: OpsOptions<E, T>): Stream.Stream<CacheOp<T>, E> => {
   const createOps = Stream.map(
     create,
     (resource): CacheOp<T> => ({
@@ -137,11 +133,11 @@ export const ops = <E, T>({
 }
 
 export const guilds = <RM, EM, E>(
-  makeDriver: Effect.Effect<RM, EM, CacheDriver<E, Discord.Guild>>,
+  makeDriver: Effect.Effect<CacheDriver<E, Discord.Guild>, EM, RM>,
 ): Effect.Effect<
-  RM | DiscordGateway | DiscordREST | Scope.Scope,
+  Cache<E, ResponseError | DiscordRESTError, Discord.Guild>,
   EM,
-  Cache<E, ResponseError | DiscordRESTError, Discord.Guild>
+  RM | DiscordGateway | DiscordREST | Scope.Scope
 > =>
   Effect.gen(function* (_) {
     const driver = yield* _(makeDriver)
@@ -170,16 +166,16 @@ export const guilds = <RM, EM, E>(
   })
 
 export const channels = <RM, EM, E>(
-  makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Channel>>,
+  makeDriver: Effect.Effect<ParentCacheDriver<E, Discord.Channel>, EM, RM>,
 ): Effect.Effect<
-  DiscordGateway | DiscordREST | RM | Scope.Scope,
-  EM,
   ParentCache<
     E,
     ResponseError | DiscordRESTError,
     ResponseError | DiscordRESTError,
     Discord.Channel
-  >
+  >,
+  EM,
+  DiscordGateway | DiscordREST | RM | Scope.Scope
 > =>
   Effect.gen(function* (_) {
     const driver = yield* _(makeDriver)
@@ -224,11 +220,16 @@ export const channels = <RM, EM, E>(
   })
 
 export const roles = <RM, EM, E>(
-  makeDriver: Effect.Effect<RM, EM, ParentCacheDriver<E, Discord.Role>>,
+  makeDriver: Effect.Effect<ParentCacheDriver<E, Discord.Role>, EM, RM>,
 ): Effect.Effect<
-  DiscordGateway | DiscordREST | RM | Scope.Scope,
+  ParentCache<
+    E,
+    CacheMissError,
+    ResponseError | DiscordRESTError,
+    Discord.Role
+  >,
   EM,
-  ParentCache<E, CacheMissError, ResponseError | DiscordRESTError, Discord.Role>
+  DiscordGateway | DiscordREST | RM | Scope.Scope
 > =>
   Effect.gen(function* (_) {
     const driver = yield* _(makeDriver)

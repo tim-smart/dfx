@@ -112,7 +112,7 @@ export const applyOverwrites =
 interface RolesCache<E> {
   getForParent: (
     parentId: string,
-  ) => Effect.Effect<never, E, ReadonlyMap<string, Discord.Role>>
+  ) => Effect.Effect<ReadonlyMap<string, Discord.Role>, E>
 }
 
 export const hasInChannel =
