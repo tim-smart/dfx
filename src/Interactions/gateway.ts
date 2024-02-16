@@ -83,17 +83,15 @@ export const run =
             GlobalApplicationCommand.map(_ => _.command),
           ),
         },
-      ).asUnit
+      )
 
       const guildSync = GuildApplicationCommand.length
-        ? gateway.handleDispatch(
-            "GUILD_CREATE",
-            a =>
-              rest.bulkOverwriteGuildApplicationCommands(
-                application.id,
-                a.id,
-                GuildApplicationCommand.map(_ => _.command) as any,
-              ).asUnit,
+        ? gateway.handleDispatch("GUILD_CREATE", a =>
+            rest.bulkOverwriteGuildApplicationCommands(
+              application.id,
+              a.id,
+              GuildApplicationCommand.map(_ => _.command) as any,
+            ),
           )
         : Effect.never
 

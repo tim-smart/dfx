@@ -8,7 +8,7 @@ export interface ResponseWithData<A> extends Http.response.ClientResponse {
 }
 
 export interface RestResponse<T>
-  extends Effect.Effect<ResponseWithData<T>, DiscordRESTError, Scope> {
+  extends Effect.Effect<ResponseWithData<T>, DiscordRESTError> {
   readonly json: Effect.Effect<T, DiscordRESTError | Http.error.ResponseError>
-  readonly asUnit: Effect.Effect<void, DiscordRESTError>
+  readonly response: Effect.Effect<ResponseWithData<T>, DiscordRESTError, Scope>
 }

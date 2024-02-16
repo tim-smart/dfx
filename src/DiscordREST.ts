@@ -256,7 +256,7 @@ const make = Effect.gen(function* (_) {
 })
 
 class RestResponseImpl<T>
-  extends Effectable.Class<ResponseWithData<T>, DiscordRESTError, Scope>
+  extends Effectable.Class<ResponseWithData<T>, DiscordRESTError>
   implements RestResponse<T>
 {
   constructor(
@@ -269,16 +269,16 @@ class RestResponseImpl<T>
     super()
   }
 
-  commit(): Effect.Effect<ResponseWithData<T>, DiscordRESTError, Scope> {
-    return this.response
+  commit(): Effect.Effect<ResponseWithData<T>, DiscordRESTError> {
+    return Effect.scoped(this.response)
   }
 
   get json() {
     return Effect.scoped(Effect.flatMap(this.response, _ => _.json))
   }
 
-  get asUnit() {
-    return Effect.scoped(this.response)
+  get response() {
+    return this.response
   }
 }
 
