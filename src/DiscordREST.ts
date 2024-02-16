@@ -260,7 +260,7 @@ class RestResponseImpl<T>
   implements RestResponse<T>
 {
   constructor(
-    readonly response: Effect.Effect<
+    readonly effect: Effect.Effect<
       ResponseWithData<T>,
       DiscordRESTError,
       Scope
@@ -270,15 +270,15 @@ class RestResponseImpl<T>
   }
 
   commit(): Effect.Effect<ResponseWithData<T>, DiscordRESTError> {
-    return Effect.scoped(this.response)
+    return Effect.scoped(this.effect)
   }
 
   get json() {
-    return Effect.scoped(Effect.flatMap(this.response, _ => _.json))
+    return Effect.scoped(Effect.flatMap(this.effect, _ => _.json))
   }
 
   get response() {
-    return this.response
+    return this.effect
   }
 }
 
