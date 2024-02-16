@@ -79,7 +79,7 @@ const waitForOpen = (
         ws.addEventListener("open", () => resume(Effect.unit), {
           once: true,
         })
-      });
+      })
     }),
     {
       onTimeout: () => new WebSocketError("open-timeout"),
@@ -87,10 +87,7 @@ const waitForOpen = (
     },
   )
 
-const send = (
-  ws: globalThis.WebSocket,
-  take: Effect.Effect<Message>,
-) =>
+const send = (ws: globalThis.WebSocket, take: Effect.Effect<Message>) =>
   pipe(
     take,
     Effect.tap(data => Effect.logTrace(data)),

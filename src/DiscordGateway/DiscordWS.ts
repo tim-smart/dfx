@@ -76,9 +76,10 @@ const make = Effect.gen(function* (_) {
 export interface DiscordWS {
   readonly _: unique symbol
 }
-export const DiscordWS = GenericTag<DiscordWS, Effect.Effect.Success<typeof make>>(
-  "dfx/DiscordGateway/DiscordWS",
-)
+export const DiscordWS = GenericTag<
+  DiscordWS,
+  Effect.Effect.Success<typeof make>
+>("dfx/DiscordGateway/DiscordWS")
 export const DiscordWSLive = Layer.provide(
   Layer.effect(DiscordWS, make),
   WSLive,

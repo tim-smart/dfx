@@ -26,10 +26,12 @@ const maybeUpdateRef =
 
 export const latest = <T>(
   f: (p: Discord.GatewayPayload) => Option.Option<T>,
-): Effect.Effect<readonly [
-  Ref.Ref<Option.Option<T>>,
-  (_: Discord.GatewayPayload<any>) => Effect.Effect<void>,
-]> =>
+): Effect.Effect<
+  readonly [
+    Ref.Ref<Option.Option<T>>,
+    (_: Discord.GatewayPayload<any>) => Effect.Effect<void>,
+  ]
+> =>
   Effect.map(
     Ref.make<Option.Option<T>>(Option.none()),
     ref => [ref, maybeUpdateRef(f, ref)] as const,

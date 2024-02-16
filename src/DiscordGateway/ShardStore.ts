@@ -9,9 +9,7 @@ export interface ClaimIdContext {
 }
 
 export interface ShardStoreService {
-  claimId: (
-    ctx: ClaimIdContext,
-  ) => Effect.Effect<Option.Option<number>>
+  claimId: (ctx: ClaimIdContext) => Effect.Effect<Option.Option<number>>
   allClaimed: (totalCount: number) => Effect.Effect<boolean>
   heartbeat?: (shardId: number) => Effect.Effect<void>
 }

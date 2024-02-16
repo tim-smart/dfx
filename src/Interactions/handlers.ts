@@ -12,7 +12,11 @@ export class DefinitionNotFound {
   constructor(readonly interaction: Discord.Interaction) {}
 }
 
-type Handler<R, E, A> = Effect.Effect<A, E | DefinitionNotFound, R | Ctx.DiscordInteraction>
+type Handler<R, E, A> = Effect.Effect<
+  A,
+  E | DefinitionNotFound,
+  R | Ctx.DiscordInteraction
+>
 
 export const handlers = <R, E, TE, A, B>(
   definitions: Chunk.Chunk<

@@ -54,9 +54,10 @@ export interface DiscordSubCommand {
 export interface SubCommandContext {
   readonly command: Discord.ApplicationCommandInteractionDataOption
 }
-export const SubCommandContext = GenericTag<DiscordSubCommand, SubCommandContext>(
-  "dfx/Interactions/SubCommandContext",
-)
+export const SubCommandContext = GenericTag<
+  DiscordSubCommand,
+  SubCommandContext
+>("dfx/Interactions/SubCommandContext")
 
 export class ResolvedDataNotFound {
   readonly _tag = "ResolvedDataNotFound"
@@ -104,21 +105,25 @@ export const handleSubCommands = <
   >,
 >(
   commands: NER,
-): Effect.Effect<Discord.InteractionResponse, | ([NER[keyof NER]] extends [
-    { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-  ]
-    ? E
-    : never)
-| SubCommandNotFound, | Exclude<
-    [NER[keyof NER]] extends [
-      { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
+): Effect.Effect<
+  Discord.InteractionResponse,
+  | ([NER[keyof NER]] extends [
+      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
     ]
-      ? R
-      : never,
-    SubCommandContext
-  >
-| Discord.Interaction
-| Discord.ApplicationCommandDatum> =>
+      ? E
+      : never)
+  | SubCommandNotFound,
+  | Exclude<
+      [NER[keyof NER]] extends [
+        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
+      ]
+        ? R
+        : never,
+      SubCommandContext
+    >
+  | Discord.Interaction
+  | Discord.ApplicationCommandDatum
+> =>
   ApplicationCommand.pipe(
     Effect.flatMap(data =>
       Effect.mapError(

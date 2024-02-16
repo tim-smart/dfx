@@ -3,7 +3,9 @@ import * as Effect from "effect/Effect"
 import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 import { createDriver, createParentDriver } from "dfx/Cache/driver"
 
-export const createWithParent = <T>(): Effect.Effect<ParentCacheDriver<never, T>> =>
+export const createWithParent = <T>(): Effect.Effect<
+  ParentCacheDriver<never, T>
+> =>
   Effect.sync(() => {
     const map = new Map<string, Map<string, T>>()
 

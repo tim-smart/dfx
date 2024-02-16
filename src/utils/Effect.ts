@@ -29,7 +29,7 @@ export const subscribeForEachPar = <R, E, A, X>(
     return Effect.all([run, Deferred.await(deferred)], {
       concurrency: "unbounded",
       discard: true,
-    }) as Effect.Effect<never, E, R>;
+    }) as Effect.Effect<never, E, R>
   })
 
 export const foreverSwitch = <R, E, A, R1, E1, X>(
@@ -64,6 +64,6 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       return Effect.all([run, Deferred.await(causeDeferred)], {
         concurrency: "unbounded",
         discard: true,
-      }) as Effect.Effect<never, E | E1, R | R1>;
+      }) as Effect.Effect<never, E | E1, R | R1>
     }),
   )

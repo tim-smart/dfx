@@ -59,10 +59,13 @@ const make = Effect.gen(function* (_) {
   const takeConfig = pipe(
     Ref.getAndUpdate(currentCount, _ => _ + 1),
     Effect.flatMap(claimId),
-    Effect.map(id => (({
-      id,
-      totalCount
-    }) as const)),
+    Effect.map(
+      id =>
+        ({
+          id,
+          totalCount,
+        }) as const,
+    ),
   )
 
   const spawner = pipe(

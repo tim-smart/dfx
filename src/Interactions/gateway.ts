@@ -37,12 +37,20 @@ export const setInteractionsSync = (enabled: boolean) =>
 export const run =
   <R, R2, E, TE, E2>(
     postHandler: (
-      effect: Effect.Effect<void, TE | DiscordRESTError | DefinitionNotFound, R | DiscordREST | DiscordInteraction>,
+      effect: Effect.Effect<
+        void,
+        TE | DiscordRESTError | DefinitionNotFound,
+        R | DiscordREST | DiscordInteraction
+      >,
     ) => Effect.Effect<void, E2, R2>,
   ) =>
   (
     ix: InteractionBuilder<R, E, TE>,
-  ): Effect.Effect<never, E2 | DiscordRESTError | Http.error.ResponseError, DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>> =>
+  ): Effect.Effect<
+    never,
+    E2 | DiscordRESTError | Http.error.ResponseError,
+    DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>
+  > =>
     Effect.gen(function* (_) {
       const GlobalApplicationCommand = ix.definitions.pipe(
         Chunk.map(_ => _[0]),
@@ -65,8 +73,7 @@ export const run =
       const rest = yield* _(DiscordREST)
 
       const application = yield* _(
-        rest.getCurrentBotApplicationInformation(),
-        Effect.flatMap(a => a.json),
+        rest.getCurrentBotApplicationInformation().json,
       )
 
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
@@ -76,20 +83,22 @@ export const run =
             GlobalApplicationCommand.map(_ => _.command),
           ),
         },
-      )
+      ).asUnit
 
       const guildSync = GuildApplicationCommand.length
-        ? gateway.handleDispatch("GUILD_CREATE", a =>
-            rest.bulkOverwriteGuildApplicationCommands(
-              application.id,
-              a.id,
-              GuildApplicationCommand.map(_ => _.command) as any,
-            ),
+        ? gateway.handleDispatch(
+            "GUILD_CREATE",
+            a =>
+              rest.bulkOverwriteGuildApplicationCommands(
+                application.id,
+                a.id,
+                GuildApplicationCommand.map(_ => _.command) as any,
+              ).asUnit,
           )
         : Effect.never
 
       const handle = handlers(ix.definitions, (i, r) =>
-        rest.createInteractionResponse(i.id, i.token, r),
+        rest.createInteractionResponse(i.id, i.token, r).pipe(Effect.scoped),
       )
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>

@@ -4,16 +4,14 @@ import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
 
-export type DefinitionFlattened<R, E, TE, A> = D.InteractionDefinition<
-  R,
-  E
-> extends infer D
-  ? {
-      [K in keyof D]: K extends "handle"
-        ? (_: Discord.Interaction) => Effect.Effect<A, TE, R>
-        : D[K]
-    }
-  : never
+export type DefinitionFlattened<R, E, TE, A> =
+  D.InteractionDefinition<R, E> extends infer D
+    ? {
+        [K in keyof D]: K extends "handle"
+          ? (_: Discord.Interaction) => Effect.Effect<A, TE, R>
+          : D[K]
+      }
+    : never
 
 export type DefinitionFlattenedCommand<R, E, TE, A> = Extract<
   DefinitionFlattened<R, E, TE, A>,
@@ -83,10 +81,10 @@ export const splitDefinitions = <R, E, TE, A>(
     Chunk.reduce(
       {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
       (acc, d) =>
-        (({
+        ({
           ...acc,
-          [d.command.name]: d
-        }) as any),
+          [d.command.name]: d,
+        }) as any,
     ),
   )
 

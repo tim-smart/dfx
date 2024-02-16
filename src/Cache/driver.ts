@@ -16,15 +16,9 @@ export interface ParentCacheDriver<E, T> {
     resourceId: string,
     resource: T,
   ) => Effect.Effect<void, E>
-  delete: (
-    parentId: string,
-    resourceId: string,
-  ) => Effect.Effect<void, E>
+  delete: (parentId: string, resourceId: string) => Effect.Effect<void, E>
   parentDelete: (parentId: string) => Effect.Effect<void, E>
-  refreshTTL: (
-    parentId: string,
-    resourceId: string,
-  ) => Effect.Effect<void, E>
+  refreshTTL: (parentId: string, resourceId: string) => Effect.Effect<void, E>
   readonly run: Effect.Effect<never, E>
 }
 

@@ -160,7 +160,7 @@ export const guilds = <RM, EM, E>(
           update: gateway.fromDispatch("GUILD_UPDATE"),
           remove: Stream.map(gateway.fromDispatch("GUILD_DELETE"), a => a.id),
         }),
-        onMiss: id => Effect.flatMap(rest.getGuild(id), r => r.json),
+        onMiss: id => rest.getGuild(id).json,
       }),
     )
   })
@@ -209,12 +209,11 @@ export const channels = <RM, EM, E>(
             g => g.id,
           ),
         }),
-        onMiss: (_, id) => Effect.flatMap(rest.getChannel(id), r => r.json),
+        onMiss: (_, id) => rest.getChannel(id).json,
         onParentMiss: guildId =>
-          rest.getGuildChannels(guildId).pipe(
-            Effect.flatMap(r => r.json),
-            Effect.map(a => a.map(a => [a.id, a])),
-          ),
+          rest
+            .getGuildChannels(guildId)
+            .json.pipe(Effect.map(a => a.map(a => [a.id, a]))),
       }),
     )
   })
@@ -265,10 +264,9 @@ export const roles = <RM, EM, E>(
         }),
         onMiss: (_, id) => Effect.fail(new CacheMissError("RolesCache", id)),
         onParentMiss: guildId =>
-          rest.getGuildRoles(guildId).pipe(
-            Effect.flatMap(r => r.json),
-            Effect.map(_ => _.map(role => [role.id, role])),
-          ),
+          rest
+            .getGuildRoles(guildId)
+            .json.pipe(Effect.map(_ => _.map(role => [role.id, role]))),
       }),
     )
   })

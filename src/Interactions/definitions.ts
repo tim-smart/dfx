@@ -123,13 +123,14 @@ export const autocomplete = <R1, R2, E1, E2>(
   >(pred as any, handle as any)
 
 // ==== Command handler helpers
-type DeepReadonly<T> = T extends Array<infer R>
-  ? ReadonlyArray<DeepReadonly<R>>
-  : T extends Function
-    ? T
-    : T extends object
-      ? DeepReadonlyObject<T>
-      : T
+type DeepReadonly<T> =
+  T extends Array<infer R>
+    ? ReadonlyArray<DeepReadonly<R>>
+    : T extends Function
+      ? T
+      : T extends object
+        ? DeepReadonlyObject<T>
+        : T
 type DeepReadonlyObject<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>
 }
@@ -173,20 +174,24 @@ export interface CommandHelper<A> {
         >,
   >(
     commands: NER,
-  ) => Effect.Effect<Discord.InteractionResponse, [NER[keyof NER]] extends [
-    { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-  ]
-    ? E
-    : never, | Exclude<
-      [NER[keyof NER]] extends [
-        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-      ]
-        ? R
-        : never,
-      SubCommandContext
-    >
-  | DiscordInteraction
-  | DiscordApplicationCommand>
+  ) => Effect.Effect<
+    Discord.InteractionResponse,
+    [NER[keyof NER]] extends [
+      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
+    ]
+      ? E
+      : never,
+    | Exclude<
+        [NER[keyof NER]] extends [
+          { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
+        ]
+          ? R
+          : never,
+        SubCommandContext
+      >
+    | DiscordInteraction
+    | DiscordApplicationCommand
+  >
 }
 
 export type CommandHandlerFn<R, E, A> = (

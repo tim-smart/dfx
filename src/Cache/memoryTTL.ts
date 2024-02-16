@@ -134,8 +134,7 @@ const make = <T>({
 
 export const create = <T>(
   opts: MemoryTTLOpts,
-): Effect.Effect<CacheDriver<never, T>> =>
-  Effect.sync(() => make<T>(opts))
+): Effect.Effect<CacheDriver<never, T>> => Effect.sync(() => make<T>(opts))
 
 export const createWithParent = <T>(
   opts: MemoryTTLOpts,
@@ -218,5 +217,5 @@ export const createWithParent = <T>(
         }),
 
       run: store.run,
-    });
+    })
   })

@@ -19,6 +19,8 @@ import {
 import { RateLimiterLive, RateLimiter, RateLimitStore } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
+import type { Scope } from "effect/Scope"
+import * as Effectable from "effect/Effectable"
 
 export class DiscordRESTError {
   readonly _tag = "DiscordRESTError"
@@ -155,11 +157,15 @@ const make = Effect.gen(function* (_) {
 
   const executor = <A = unknown>(
     request: Http.request.ClientRequest,
-  ): Effect.Effect<ResponseWithData<A>, DiscordRESTError> =>
+  ): Effect.Effect<ResponseWithData<A>, DiscordRESTError, Scope> =>
     requestRateLimit(request.url, request).pipe(
       Effect.zipLeft(globalRateLimit),
       Effect.zipRight(
-        httpExecutor(request) as Effect.Effect<ResponseWithData<A>, DiscordRESTError>,
+        httpExecutor(request) as Effect.Effect<
+          ResponseWithData<A>,
+          DiscordRESTError,
+          Scope
+        >,
       ),
       Effect.tap(response => updateBuckets(request, response)),
       Effect.catchTag("DiscordRESTError", e => {
@@ -239,7 +245,7 @@ const make = Effect.gen(function* (_) {
         request = Http.request.unsafeJsonBody(request, params)
       }
 
-      return executor(request)
+      return new RestResponseImpl(executor(request))
     },
   )
 
@@ -249,6 +255,33 @@ const make = Effect.gen(function* (_) {
   }
 })
 
+class RestResponseImpl<T>
+  extends Effectable.Class<ResponseWithData<T>, DiscordRESTError, Scope>
+  implements RestResponse<T>
+{
+  constructor(
+    readonly response: Effect.Effect<
+      ResponseWithData<T>,
+      DiscordRESTError,
+      Scope
+    >,
+  ) {
+    super()
+  }
+
+  commit(): Effect.Effect<ResponseWithData<T>, DiscordRESTError, Scope> {
+    return this.response
+  }
+
+  get json() {
+    return Effect.scoped(Effect.flatMap(this.response, _ => _.json))
+  }
+
+  get asUnit() {
+    return Effect.scoped(this.response)
+  }
+}
+
 export interface DiscordREST {
   readonly _: unique symbol
 }
@@ -257,7 +290,7 @@ export interface DiscordRESTService
   extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>> {
   readonly executor: <A = unknown>(
     request: Http.request.ClientRequest,
-  ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError>
+  ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError, Scope>
 }
 
 export const DiscordREST = GenericTag<DiscordREST, DiscordRESTService>(

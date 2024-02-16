@@ -41,8 +41,10 @@ export const identifyOrResume = (
   opts: Options,
   ready: Ref.Ref<Option.Option<Discord.ReadyEvent>>,
   seq: Ref.Ref<Option.Option<number>>,
-): Effect.Effect<| Discord.GatewayPayload<Discord.Identify>
-| Discord.GatewayPayload<Discord.Resume>> =>
+): Effect.Effect<
+  | Discord.GatewayPayload<Discord.Identify>
+  | Discord.GatewayPayload<Discord.Resume>
+> =>
   Effect.map(
     Effect.all([Ref.get(ready), Ref.get(seq)]),
     ([readyEvent, seqNumber]) =>

@@ -74,9 +74,10 @@ const makeConfig = ({
 export interface WebhookConfig {
   readonly _: unique symbol
 }
-export const WebhookConfig = GenericTag<WebhookConfig, ReturnType<typeof makeConfig>>(
-  "dfx/Interactions/WebhookConfig",
-)
+export const WebhookConfig = GenericTag<
+  WebhookConfig,
+  ReturnType<typeof makeConfig>
+>("dfx/Interactions/WebhookConfig")
 
 export const layer = (opts: MakeConfigOpts) =>
   Layer.succeed(WebhookConfig, makeConfig(opts))
@@ -122,14 +123,18 @@ const run = <R, E>(
   return (
     headers: Headers,
     body: string,
-  ): Effect.Effect<Discord.InteractionResponse, BadWebhookSignature | WebhookParseError | E | DefinitionNotFound, WebhookConfig | Exclude<R, DiscordInteraction>> =>
+  ): Effect.Effect<
+    Discord.InteractionResponse,
+    BadWebhookSignature | WebhookParseError | E | DefinitionNotFound,
+    WebhookConfig | Exclude<R, DiscordInteraction>
+  > =>
     Effect.flatMap(fromHeadersAndBody(headers, body), interaction =>
       Effect.provideService(
         handler[interaction.type](interaction),
         Interaction,
         interaction,
       ),
-    );
+    )
 }
 
 export interface HandleWebhookOpts<E> {
@@ -168,7 +173,7 @@ export const makeHandler = <R, E, TE>(
     handle(headers, body).pipe(
       Effect.flatMap(success),
       Effect.catchAllCause(error),
-    );
+    )
 }
 
 /**
