@@ -18,7 +18,7 @@ import * as Schedule from "effect/Schedule"
 const claimRepeatPolicy = Schedule.spaced("3 minutes").pipe(
   Schedule.whileInput((_: Option.Option<number>) => _._tag === "None"),
   Schedule.passthrough,
-) as Schedule.Schedule<never, Option.Option<number>, Option.Some<number>>
+) as Schedule.Schedule<Option.Some<number>, Option.Option<number>>
 
 const make = Effect.gen(function* (_) {
   const store = yield* _(ShardStore)
@@ -59,13 +59,7 @@ const make = Effect.gen(function* (_) {
   const takeConfig = pipe(
     Ref.getAndUpdate(currentCount, _ => _ + 1),
     Effect.flatMap(claimId),
-    Effect.map(
-      id =>
-        ({
-          id,
-          totalCount,
-        }) as const,
-    ),
+    Effect.map(id => ({ id, totalCount }) as const),
   )
 
   const spawner = pipe(

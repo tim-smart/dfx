@@ -81,10 +81,10 @@ export const splitDefinitions = <R, E, TE, A>(
     Chunk.reduce(
       {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
       (acc, d) =>
-        ({
+        (({
           ...acc,
-          [d.command.name]: d,
-        }) as any,
+          [d.command.name]: d
+        }) as any),
     ),
   )
 

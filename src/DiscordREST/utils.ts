@@ -1,7 +1,6 @@
 import * as Duration from "effect/Duration"
 import * as Option from "effect/Option"
-import * as ReadonlyRecord from "effect/ReadonlyRecord"
-import type * as Http from "@effect/platform/HttpClient"
+import * as Http from "@effect/platform/HttpClient"
 
 const majorResources = ["channels", "guilds", "webhooks"] as const
 
@@ -19,7 +18,7 @@ export const routeFromConfig = (path: string, method: string) => {
 }
 
 export const numberHeader = (headers: Http.headers.Headers) => (key: string) =>
-  ReadonlyRecord.get(headers, key).pipe(
+  Http.headers.get(headers, key).pipe(
     Option.map(parseFloat),
     Option.filter(n => !isNaN(n)),
   )
@@ -32,7 +31,7 @@ export const retryAfter = (headers: Http.headers.Headers) =>
 
 export const rateLimitFromHeaders = (headers: Http.headers.Headers) =>
   Option.all({
-    bucket: ReadonlyRecord.get(headers, "x-ratelimit-bucket"),
+    bucket: Http.headers.get(headers, "x-ratelimit-bucket"),
     retryAfter: retryAfter(headers),
     limit: numberHeader(headers)("x-ratelimit-limit"),
     remaining: numberHeader(headers)("x-ratelimit-remaining"),

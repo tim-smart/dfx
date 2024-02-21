@@ -45,9 +45,7 @@ export interface ParentCache<EDriver, EMiss, EPMiss, A> {
     parentId: string,
   ) => Effect.Effect<ReadonlyMap<string, A>, EDriver | EPMiss>
   readonly size: Effect.Effect<number, EDriver>
-  readonly sizeForParent: (
-    parentId: string,
-  ) => Effect.Effect<number, EDriver>
+  readonly sizeForParent: (parentId: string) => Effect.Effect<number, EDriver>
   readonly set: (
     parentId: string,
     resourceId: string,
@@ -57,9 +55,7 @@ export interface ParentCache<EDriver, EMiss, EPMiss, A> {
     parentId: string,
     resourceId: string,
   ) => Effect.Effect<void, EDriver>
-  readonly parentDelete: (
-    parentId: string,
-  ) => Effect.Effect<void, EDriver>
+  readonly parentDelete: (parentId: string) => Effect.Effect<void, EDriver>
   readonly refreshTTL: (
     parentId: string,
     resourceId: string,
@@ -75,9 +71,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
 }: {
   driver: ParentCacheDriver<EDriver, A>
   ops?: Stream.Stream<ParentCacheOp<A>, EOps>
-  id: (
-    _: A,
-  ) => Effect.Effect<readonly [parentId: string, id: string], EMiss>
+  id: (_: A) => Effect.Effect<readonly [parentId: string, id: string], EMiss>
   onMiss: (parentId: string, id: string) => Effect.Effect<A, EMiss>
   onParentMiss: (
     parentId: string,
@@ -183,9 +177,7 @@ export interface Cache<EDriver, EMiss, A> {
     resource: A,
   ) => Effect.Effect<void, EDriver>
   readonly delete: (resourceId: string) => Effect.Effect<void, EDriver>
-  readonly refreshTTL: (
-    resourceId: string,
-  ) => Effect.Effect<void, EDriver>
+  readonly refreshTTL: (resourceId: string) => Effect.Effect<void, EDriver>
 }
 
 export const make = <EOps, EDriver, EMiss, A>({
