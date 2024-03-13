@@ -1,7 +1,7 @@
 {
   "packages": ["."],
   "version": "independent",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "command": {
     "version": {
       "allowBranch": "main",
