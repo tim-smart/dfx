@@ -4,9 +4,8 @@ import * as Effect from "effect/Effect"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
-import type * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
+import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
 import * as SendEvents from "dfx/DiscordGateway/Shard/sendEvents"
-import { Reconnect } from "dfx/DiscordGateway/WS"
 import type * as Discord from "dfx/types"
 import * as EffectU from "dfx/utils/Effect"
 
@@ -22,7 +21,7 @@ const payloadOrReconnect = (
   Effect.flatMap(
     Ref.get(ref),
     (acked): Effect.Effect<DiscordWS.Message> =>
-      acked ? payload(seqRef) : Effect.succeed(Reconnect),
+      acked ? payload(seqRef) : Effect.succeed(DiscordWS.Reconnect),
   )
 
 export const send = (

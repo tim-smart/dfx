@@ -11,12 +11,15 @@ import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import type { Message } from "dfx/DiscordGateway/DiscordWS"
-import { DiscordWS, DiscordWSLive } from "dfx/DiscordGateway/DiscordWS"
+import {
+  DiscordWS,
+  DiscordWSLive,
+  Reconnect,
+} from "dfx/DiscordGateway/DiscordWS"
 import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
 import * as Identify from "dfx/DiscordGateway/Shard/identify"
 import * as InvalidSession from "dfx/DiscordGateway/Shard/invalidSession"
 import * as Utils from "dfx/DiscordGateway/Shard/utils"
-import { Reconnect } from "dfx/DiscordGateway/WS"
 import { RateLimiterLive, RateLimiter } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"

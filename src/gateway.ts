@@ -6,7 +6,6 @@ import * as Shard from "dfx/DiscordGateway/Shard"
 import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
 import * as ShardStore from "dfx/DiscordGateway/ShardStore"
 import { MemoryShardStoreLive } from "dfx/DiscordGateway/ShardStore"
-import * as WS from "dfx/DiscordGateway/WS"
 import { DiscordRESTLive } from "dfx/DiscordREST"
 import { InteractionsRegistryLive } from "dfx/Interactions/gateway"
 import { MemoryRateLimitStoreLive, RateLimiterLive } from "dfx/RateLimit"
@@ -22,7 +21,7 @@ export {
   setInteractionsSync,
 } from "dfx/Interactions/gateway"
 
-export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore, WS }
+export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore }
 
 export const DiscordLive = Layer.mergeAll(
   RateLimiterLive,
