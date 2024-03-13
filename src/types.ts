@@ -1156,10 +1156,12 @@ export interface CreateMessageParams {
   readonly files?: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
   readonly payload_json?: string
-  /** Attachment objects with filename and description. See Uploading Files */
+  /** Attachment objects with filename and description. See [Uploading Files](#DOCS_REFERENCE/uploading-files */
   readonly attachments?: Array<Attachment>
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
+  /** If true and nonce is present, it will be checked for uniqueness in the past few minutes. If another message was created by the same author with the same nonce, that message will be returned and no new message will be created. */
+  readonly enforce_nonce?: boolean
 }
 export function createRoutes<O = any>(
   fetch: <R, P>(route: Route<P, O>) => RestResponse<R>,
@@ -3100,7 +3102,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<EditWebhookMessageParams>,
     options?: O,
   ) => RestResponse<Message>
-  /** Add a new webhook to your GitHub repo (in the repo's settings), and use this endpoint as the "Payload URL." You can choose what events your Discord channel receives by choosing the "Let me select individual events" option and selecting individual events for the new webhook you're configuring. */
+  /** Add a new webhook to your GitHub repo (in the repo's settings), and use this endpoint as the "Payload URL." You can choose what events your Discord channel receives by choosing the "Let me select individual events" option and selecting individual events for the new webhook you're configuring. The supported events are commit_comment, create, delete, fork, issue_comment, issues, member, public, pull_request, pull_request_review, pull_request_review_comment, push, release, watch, check_run, check_suite, discussion, and discussion_comment. */
   executeGitHubCompatibleWebhook: (
     webhookId: string,
     webhookToken: string,
@@ -3772,7 +3774,7 @@ export interface ExecuteWebhookParams {
   readonly payload_json: string
   /** attachment objects with filename and description */
   readonly attachments: Array<Attachment>
-  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
+  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set can be set) */
   readonly flags: number
   /** name of thread to create (requires the webhook channel to be a forum or media channel) */
   readonly thread_name: string
@@ -4661,7 +4663,7 @@ export interface InteractionCallbackMessage {
   readonly embeds?: Array<Embed>
   /** allowed mentions object */
   readonly allowed_mentions?: AllowedMention
-  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and EPHEMERAL can be set) */
+  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS, EPHEMERAL, and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
   /** message components */
   readonly components?: Array<Component>
