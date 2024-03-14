@@ -3,13 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.90.0](https://github.com/tim-smart/dfx/compare/dfx@0.89.0...dfx@0.90.0) (2024-03-13)
+## [0.90.1](https://github.com/tim-smart/dfx/compare/dfx@0.89.0...dfx@0.90.1) (2024-03-14)
 
 **Note:** Version bump only for package dfx
 
+# [0.90.0](https://github.com/tim-smart/dfx/compare/dfx@0.89.0...dfx@0.90.0) (2024-03-13)
 
-
-
+**Note:** Version bump only for package dfx
 
 # [0.89.0](https://github.com/tim-smart/dfx/compare/dfx@0.88.1...dfx@0.89.0) (2024-02-21)
 
