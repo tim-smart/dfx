@@ -60,7 +60,7 @@ export const make = Effect.gen(function* (_) {
 
       const heartbeatSend = (p: Message) =>
         Effect.flatMap(Ref.get(phase), phase =>
-          phase !== Phase.Connecting
+          phase === Phase.Connected
             ? Queue.offer(outboundQueue, p)
             : Effect.succeed(false),
         )
