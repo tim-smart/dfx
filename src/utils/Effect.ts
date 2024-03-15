@@ -24,6 +24,7 @@ export const subscribeForEachPar = <R, E, A, X>(
         ),
       ),
       Effect.scoped,
+      Effect.interruptible,
     )
 
     return Effect.all([run, Deferred.await(deferred)], {
@@ -59,6 +60,7 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
           }),
         ),
         Effect.forever,
+        Effect.interruptible,
       )
 
       return Effect.all([run, Deferred.await(causeDeferred)], {

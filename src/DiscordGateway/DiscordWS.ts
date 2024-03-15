@@ -78,6 +78,7 @@ const make = Effect.gen(function* (_) {
         Effect.forever,
         Effect.annotateLogs("channel", "outbound"),
         Effect.forkScoped,
+        Effect.interruptible,
       )
       yield* _(
         onConnecting,
@@ -103,6 +104,7 @@ const make = Effect.gen(function* (_) {
         ),
         Effect.annotateLogs("channel", "inbound"),
         Effect.forkScoped,
+        Effect.interruptible,
       )
 
       return {

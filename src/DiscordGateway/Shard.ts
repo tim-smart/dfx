@@ -60,7 +60,7 @@ export const make = Effect.gen(function* (_) {
 
       const heartbeatSend = (p: Message) =>
         Effect.flatMap(Ref.get(phase), phase =>
-          phase === Phase.Connected
+          phase !== Phase.Connecting
             ? Queue.offer(outboundQueue, p)
             : Effect.succeed(false),
         )
@@ -134,6 +134,7 @@ export const make = Effect.gen(function* (_) {
       yield* _(
         Heartbeats.send(hellos, acks, latestSequence, heartbeatSend),
         Effect.forkScoped,
+        Effect.interruptible,
       )
 
       // identify
@@ -155,26 +156,34 @@ export const make = Effect.gen(function* (_) {
           Effect.zipRight(maybeUpdateUrl(p)),
           Effect.tap(() => {
             switch (p.op) {
-              case Discord.GatewayOpcode.HELLO:
+              case Discord.GatewayOpcode.HELLO: {
                 return pipe(
                   Effect.tap(identify, prioritySend),
                   Effect.zipRight(setPhase(Phase.Handshake)),
                   Effect.zipRight(Queue.offer(hellos, p)),
                 )
-              case Discord.GatewayOpcode.HEARTBEAT_ACK:
+              }
+              case Discord.GatewayOpcode.HEARTBEAT_ACK: {
                 return Queue.offer(acks, p)
-              case Discord.GatewayOpcode.INVALID_SESSION:
+              }
+              case Discord.GatewayOpcode.INVALID_SESSION: {
                 return Effect.tap(
                   InvalidSession.fromPayload(p, latestReady),
                   send,
                 )
-              case Discord.GatewayOpcode.DISPATCH:
+              }
+              case Discord.GatewayOpcode.DISPATCH: {
                 if (p.t === "READY" || p.t === "RESUMED") {
                   return Effect.zipRight(resume, PubSub.publish(hub, p))
                 }
                 return PubSub.publish(hub, p)
-              default:
+              }
+              case Discord.GatewayOpcode.RECONNECT: {
+                return prioritySend(Reconnect)
+              }
+              default: {
                 return Effect.unit
+              }
             }
           }),
         )
@@ -184,6 +193,7 @@ export const make = Effect.gen(function* (_) {
         Effect.tap(send),
         Effect.forever,
         Effect.forkScoped,
+        Effect.interruptible,
       )
 
       yield* _(
@@ -191,6 +201,7 @@ export const make = Effect.gen(function* (_) {
         Effect.flatMap(onPayload),
         Effect.forever,
         Effect.forkScoped,
+        Effect.interruptible,
       )
 
       return { id: shard, send } as const

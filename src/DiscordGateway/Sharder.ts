@@ -92,6 +92,7 @@ const make = Effect.gen(function* (_) {
     Effect.ensuring(Ref.set(currentShards, HashSet.empty())),
     Effect.forever,
     Effect.forkScoped,
+    Effect.interruptible,
   )
 
   return { shards: Ref.get(currentShards) } as const

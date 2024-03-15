@@ -146,6 +146,7 @@ const makeRegistry = Effect.gen(function* (_) {
       ),
     ),
     Effect.forkScoped,
+    Effect.interruptible,
   )
 
   return { register } as const

@@ -97,6 +97,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       Effect.tapErrorCause(_ => Effect.logError("ops error, restarting", _)),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
+      Effect.interruptible,
     )
     yield* _(
       driver.run,
@@ -105,6 +106,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       ),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
+      Effect.interruptible,
     )
 
     const get = (parentId: string, id: string) =>
@@ -208,6 +210,7 @@ export const make = <EOps, EDriver, EMiss, A>({
       Effect.tapErrorCause(_ => Effect.logError("ops error, restarting", _)),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
+      Effect.interruptible,
     )
 
     yield* _(
@@ -217,6 +220,7 @@ export const make = <EOps, EDriver, EMiss, A>({
       ),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
+      Effect.interruptible,
     )
 
     const get = (id: string) =>

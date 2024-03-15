@@ -41,8 +41,8 @@
     }
   },
   "peerDependencies": {
-    "@effect/platform": "^0.48.2",
-    "effect": "^2.4.6"
+    "@effect/platform": "^0.48.7",
+    "effect": "^2.4.7"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
@@ -60,8 +60,8 @@
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.7.6",
     "@effect/language-service": "^0.1.0",
-    "@effect/platform": "^0.48.3",
-    "@effect/platform-node": "^0.45.5",
+    "@effect/platform": "^0.48.7",
+    "@effect/platform-node": "^0.45.9",
     "@tim-smart/discord-api-docs-parser": "^0.5.10",
     "@types/chai": "^4.3.12",
     "@types/node": "^20.11.27",
@@ -73,7 +73,7 @@
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.5",
-    "effect": "^2.4.6",
+    "effect": "^2.4.7",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
