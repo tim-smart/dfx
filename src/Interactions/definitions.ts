@@ -6,10 +6,10 @@ import type {
   DiscordInteraction,
   DiscordMessageComponent,
   DiscordModalSubmit,
-  ResolvedDataNotFound,
   SubCommandContext,
 } from "dfx/Interactions/context"
 import type * as Discord from "dfx/types"
+import type { NoSuchElementException } from "effect/Cause"
 
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
@@ -143,7 +143,7 @@ export interface CommandHelper<A> {
   resolve: <T>(
     name: AllResolvables<A>["name"],
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
-  ) => Effect.Effect<T, ResolvedDataNotFound, DiscordInteraction>
+  ) => Effect.Effect<T, NoSuchElementException, DiscordInteraction>
 
   option: (
     name: AllCommandOptions<A>["name"],

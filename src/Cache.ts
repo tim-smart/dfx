@@ -1,9 +1,10 @@
+import { TypeIdError } from "@effect/platform/Error"
+import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
+import * as Effect from "effect/Effect"
 import * as Option from "effect/Option"
 import * as Schedule from "effect/Schedule"
 import type * as Scope from "effect/Scope"
-import * as Effect from "effect/Effect"
 import * as Stream from "effect/Stream"
-import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 
 export * from "dfx/Cache/driver"
 export {
@@ -253,10 +254,16 @@ export const make = <EOps, EDriver, EMiss, A>({
     }),
   )
 
-export class CacheMissError {
-  readonly _tag = "CacheMissError"
-  constructor(
-    readonly cacheName: string,
-    readonly id: string,
-  ) {}
+export const CacheErrorTypeId = Symbol.for("dfx/Cache/CacheError")
+
+export class CacheMissError extends TypeIdError(
+  CacheErrorTypeId,
+  "CacheMissError",
+)<{
+  cacheName: string
+  id: string
+}> {
+  get message() {
+    return `Cache miss for "${this.cacheName}" with id: ${this.id}`
+  }
 }

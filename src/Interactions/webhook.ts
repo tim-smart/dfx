@@ -18,6 +18,8 @@ import type {
 import { Interaction } from "dfx/Interactions/index"
 import type * as Discord from "dfx/types"
 import * as Verify from "discord-verify"
+import { RefailError } from "@effect/platform/Error"
+import { InteractionsErrorTypeId } from "dfx/Interactions/error"
 
 export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
@@ -88,10 +90,10 @@ export const layerConfig: (
   config: Config.Config<MakeConfigOpts>,
 ) => Layer.effect(WebhookConfig, Effect.map(config, makeConfig))
 
-export class WebhookParseError {
-  readonly _tag = "WebhookParseError"
-  constructor(readonly reason: unknown) {}
-}
+export class WebhookParseError extends RefailError(
+  InteractionsErrorTypeId,
+  "WebhookParseError",
+)<{}> {}
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
   Effect.tap(WebhookConfig, ({ algorithm, crypto, publicKey }) =>
@@ -100,7 +102,7 @@ const fromHeadersAndBody = (headers: Headers, body: string) =>
     Effect.flatMap(() =>
       Effect.try({
         try: () => JSON.parse(body) as Discord.Interaction,
-        catch: reason => new WebhookParseError(reason),
+        catch: error => new WebhookParseError({ error }),
       }),
     ),
   )

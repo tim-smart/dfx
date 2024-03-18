@@ -1,10 +1,13 @@
+import { TypeIdError } from "@effect/platform/Error"
+import * as IxHelpers from "dfx/Helpers/interactions"
+import { InteractionsErrorTypeId } from "dfx/Interactions/error"
+import type * as Discord from "dfx/types"
+import type { NoSuchElementException } from "effect/Cause"
 import { GenericTag } from "effect/Context"
+import * as Effect from "effect/Effect"
 import type * as HashMap from "effect/HashMap"
 import * as Option from "effect/Option"
 import * as Arr from "effect/ReadonlyArray"
-import * as Effect from "effect/Effect"
-import * as IxHelpers from "dfx/Helpers/interactions"
-import type * as Discord from "dfx/types"
 
 export interface DiscordInteraction {
   readonly _: unique symbol
@@ -59,44 +62,31 @@ export const SubCommandContext = GenericTag<
   SubCommandContext
 >("dfx/Interactions/SubCommandContext")
 
-export class ResolvedDataNotFound {
-  readonly _tag = "ResolvedDataNotFound"
-  constructor(
-    readonly data: Discord.Interaction,
-    readonly name?: string,
-  ) {}
-}
-
 export const resolvedValues = <A>(
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-): Effect.Effect<ReadonlyArray<A>, ResolvedDataNotFound, DiscordInteraction> =>
-  Effect.flatMap(Interaction, ix =>
-    Effect.mapError(
-      IxHelpers.resolveValues(f)(ix),
-      () => new ResolvedDataNotFound(ix),
-    ),
-  )
+): Effect.Effect<
+  ReadonlyArray<A>,
+  NoSuchElementException,
+  DiscordInteraction
+> => Effect.flatMap(Interaction, ix => IxHelpers.resolveValues(f)(ix))
 
 export const resolved = <A>(
   name: string,
   f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
-): Effect.Effect<A, ResolvedDataNotFound, DiscordInteraction> =>
-  Effect.flatMap(Interaction, ix =>
-    Effect.mapError(
-      IxHelpers.resolveOptionValue(name, f)(ix),
-      () => new ResolvedDataNotFound(ix, name),
-    ),
-  )
+): Effect.Effect<A, NoSuchElementException, DiscordInteraction> =>
+  Effect.flatMap(Interaction, ix => IxHelpers.resolveOptionValue(name, f)(ix))
 
 export const focusedOptionValue = Effect.map(
   FocusedOptionContext,
   _ => _.focusedOption.value ?? "",
 )
 
-export class SubCommandNotFound {
-  readonly _tag = "SubCommandNotFound"
-  constructor(readonly data: Discord.ApplicationCommandDatum) {}
-}
+export class SubCommandNotFound extends TypeIdError(
+  InteractionsErrorTypeId,
+  "SubCommandNotFound",
+)<{
+  data: Discord.ApplicationCommandDatum
+}> {}
 
 export const handleSubCommands = <
   NER extends Record<
@@ -128,7 +118,7 @@ export const handleSubCommands = <
     Effect.flatMap(data =>
       Effect.mapError(
         Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name]),
-        () => new SubCommandNotFound(data),
+        () => new SubCommandNotFound({ data }),
       ),
     ),
     Effect.flatMap(command =>
@@ -188,18 +178,7 @@ export const modalValues = Effect.map(ModalSubmitData, IxHelpers.componentsMap)
 export const modalValueOption = (name: string) =>
   Effect.map(ModalSubmitData, IxHelpers.componentValue(name))
 
-export class ModalValueNotFound {
-  readonly _tag = "ModalValueNotFound"
-  constructor(
-    readonly data: Discord.ModalSubmitDatum,
-    readonly name: string,
-  ) {}
-}
-
-export const modalValue = (name: string) =>
-  Effect.flatMap(ModalSubmitData, data =>
-    Effect.mapError(
-      IxHelpers.componentValue(name)(data),
-      () => new ModalValueNotFound(data, name),
-    ),
-  )
+export const modalValue = (
+  name: string,
+): Effect.Effect<string, NoSuchElementException, DiscordModalSubmit> =>
+  Effect.flatMap(ModalSubmitData, data => IxHelpers.componentValue(name)(data))

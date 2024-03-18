@@ -21,13 +21,25 @@ import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
 import type { Scope } from "effect/Scope"
 import * as Effectable from "effect/Effectable"
+import { TypeIdError } from "@effect/platform/Error"
 
-export class DiscordRESTError {
-  readonly _tag = "DiscordRESTError"
-  constructor(
-    readonly error: Http.error.HttpClientError,
-    readonly body?: unknown,
-  ) {}
+export const DiscordRESTErrorTypeId = Symbol.for(
+  "dfx/DiscordREST/DiscordRESTError",
+)
+
+export class DiscordRESTError extends TypeIdError(
+  DiscordRESTErrorTypeId,
+  "DiscordRESTError",
+)<{
+  error: Http.error.HttpClientError
+  body?: unknown
+}> {
+  get message() {
+    const httpMessage = this.error.message
+    return this.body !== undefined
+      ? `${httpMessage}: ${JSON.stringify(this.body)}`
+      : httpMessage
+  }
 }
 
 const make = Effect.gen(function* (_) {
@@ -146,12 +158,12 @@ const make = Effect.gen(function* (_) {
     Http.client.catchAll(error =>
       error.reason === "StatusCode"
         ? error.response.json.pipe(
-            Effect.mapError(_ => new DiscordRESTError(_)),
+            Effect.mapError(_ => new DiscordRESTError({ error })),
             Effect.flatMap(body =>
-              Effect.fail(new DiscordRESTError(error, body)),
+              Effect.fail(new DiscordRESTError({ error, body })),
             ),
           )
-        : Effect.fail(new DiscordRESTError(error)),
+        : Effect.fail(new DiscordRESTError({ error })),
     ),
   )
 

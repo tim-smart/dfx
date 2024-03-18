@@ -238,7 +238,10 @@ export const roles = <RM, EM, E>(
     return yield* _(
       makeWithParent({
         driver,
-        id: _ => Effect.fail(new CacheMissError("RolesCache/id", _.id)),
+        id: _ =>
+          Effect.fail(
+            new CacheMissError({ cacheName: "RolesCache/id", id: _.id }),
+          ),
         ops: opsWithParent({
           id: (a: Discord.Role) => a.id,
           fromParent: Stream.map(gateway.fromDispatch("GUILD_CREATE"), g => [
@@ -262,7 +265,8 @@ export const roles = <RM, EM, E>(
             g => g.id,
           ),
         }),
-        onMiss: (_, id) => Effect.fail(new CacheMissError("RolesCache", id)),
+        onMiss: (_, id) =>
+          Effect.fail(new CacheMissError({ cacheName: "RolesCache", id })),
         onParentMiss: guildId =>
           rest
             .getGuildRoles(guildId)
