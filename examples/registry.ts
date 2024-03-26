@@ -6,6 +6,7 @@ import {
 } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
+import * as NodeHttp from "@effect/platform-node/NodeHttpClient"
 
 Dotenv.config()
 
@@ -55,6 +56,7 @@ const GreetLive = Layer.effectDiscard(makeGreetService)
 const MainLive = GreetLive.pipe(
   Layer.provide(InteractionsRegistryLive),
   Layer.provide(DiscordLive),
+  Layer.provide(NodeHttp.layer),
   Layer.provide(
     DiscordConfig.layerConfig({
       token: Config.secret("DISCORD_BOT_TOKEN"),

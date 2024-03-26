@@ -310,5 +310,4 @@ export const DiscordREST = GenericTag<DiscordREST, DiscordRESTService>(
 )
 export const DiscordRESTLive = Layer.effect(DiscordREST, make).pipe(
   Layer.provide(RateLimiterLive),
-  Layer.provide(Http.client.layer),
 )
