@@ -200,6 +200,8 @@ export interface Application {
   readonly tags?: Array<string>
   /** Settings for the app's default in-app authorization link, if enabled */
   readonly install_params?: InstallParam
+  /** In preview. Default scopes and permissions for each supported installation context. Value for each key is an integration type configuration object */
+  readonly integration_types_config?: ApplicationIntegrationType
   /** Default custom authorization URL for the app, if enabled */
   readonly custom_install_url?: string
 }
@@ -224,12 +226,16 @@ export interface ApplicationCommand {
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
-  /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
+  /** Deprecated (use contexts instead); Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   readonly dm_permission?: boolean
   /** Not recommended for use as field will soon be deprecated. Indicates whether the command is enabled by default when the app is added to a guild, defaults to true */
   readonly default_permission?: boolean | null
   /** Indicates whether the command is age-restricted, defaults to false */
   readonly nsfw?: boolean
+  /** In preview. Installation context(s) where the command is available, only for globally-scoped commands. Defaults to GUILD_INSTALL (0) */
+  readonly integration_types?: Array<ApplicationIntegrationType>
+  /** In preview. Interaction context(s) where the command can be used, only for globally-scoped commands. By default, all interaction context types included for new commands. */
+  readonly contexts?: Array<InteractionContextType> | null
   /** Autoincrementing version identifier updated during substantial record changes */
   readonly version: Snowflake
 }
@@ -357,6 +363,12 @@ export const ApplicationFlag = {
   /** Indicates if an app has registered global application commands */
   APPLICATION_COMMAND_BADGE: 1 << 23,
 } as const
+export enum ApplicationIntegrationType {
+  /** App is installable to servers */
+  GUILD_INSTALL = 0,
+  /** App is installable to users */
+  USER_INSTALL = 1,
+}
 export interface ApplicationRoleConnection {
   /** the vanity name of the platform a bot has connected (max 50 characters) */
   readonly platform_name?: string | null
@@ -684,9 +696,27 @@ export interface BeginGuildPruneParams {
   /** reason for the prune (deprecated) */
   readonly reason?: string
 }
+export interface BulkBanResponse {
+  /** list of user ids, that were successfully banned */
+  readonly banned_users: Array<Snowflake>
+  /** list of user ids, that were not banned */
+  readonly failed_users: Array<Snowflake>
+}
 export interface BulkDeleteMessageParams {
   /** an array of message ids to delete (2-100) */
   readonly messages: Array<Snowflake>
+}
+export interface BulkGuildBanParams {
+  /** list of user ids to ban (max 200) */
+  readonly user_ids: Array<Snowflake>
+  /** number of seconds to delete messages for, between 0 and 604800 (7 days) */
+  readonly delete_message_seconds?: number
+}
+export interface BulkGuildBanResponse {
+  /** list of user ids, that were successfully banned */
+  readonly banned_users: Array<Snowflake>
+  /** list of user ids, that were not banned */
+  readonly failed_users: Array<Snowflake>
 }
 export interface BulkOverwriteGuildApplicationCommandParams {
   /** ID of the command, if known */
@@ -703,10 +733,14 @@ export interface BulkOverwriteGuildApplicationCommandParams {
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
-  /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
+  /** Deprecated (use contexts instead); Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   readonly default_permission?: boolean
+  /** In preview. Installation context(s) where the command is available, defaults to GUILD_INSTALL ([0]) */
+  readonly integration_types: Array<ApplicationIntegrationType>
+  /** In preview. Interaction context(s) where the command can be used, defaults to all contexts [0,1,2] */
+  readonly contexts: Array<InteractionContextType>
   /** Type of command, defaults 1 if not set */
   readonly type?: ApplicationCommandType
   /** Indicates whether the command is age-restricted */
@@ -964,10 +998,14 @@ export interface CreateGlobalApplicationCommandParams {
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
-  /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
+  /** Deprecated (use contexts instead); Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   readonly default_permission?: boolean
+  /** Installation context(s) where the command is available */
+  readonly integration_types?: Array<ApplicationIntegrationType>
+  /** Interaction context(s) where the command can be used */
+  readonly contexts?: Array<InteractionContextType>
   /** Type of command, defaults 1 if not set */
   readonly type?: ApplicationCommandType
   /** Indicates whether the command is age-restricted */
@@ -1156,7 +1194,7 @@ export interface CreateMessageParams {
   readonly files?: string
   /** JSON-encoded body of non-file params, only for multipart/form-data requests. See Uploading Files */
   readonly payload_json?: string
-  /** Attachment objects with filename and description. See [Uploading Files](#DOCS_REFERENCE/uploading-files */
+  /** Attachment objects with filename and description. See Uploading Files */
   readonly attachments?: Array<Attachment>
   /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
@@ -1203,6 +1241,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "POST",
         url: `/channels/${channelId}/messages/bulk-delete`,
+        params,
+        options,
+      }),
+    bulkGuildBan: (guildId, params, options) =>
+      fetch({
+        method: "POST",
+        url: `/guilds/${guildId}/bulk-ban`,
         params,
         options,
       }),
@@ -2508,6 +2553,8 @@ export interface EditCurrentApplicationParams {
   readonly role_connections_verification_url: string
   /** Settings for the app's default in-app authorization link, if enabled */
   readonly install_params: InstallParam
+  /** In preview. Default scopes and permissions for each supported installation context. Value for each key is an integration type configuration object */
+  readonly integration_types_config: ApplicationIntegrationType
   /** App's public flags */
   readonly flags: number
   /** Icon for the app */
@@ -2532,10 +2579,14 @@ export interface EditGlobalApplicationCommandParams {
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
-  /** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
+  /** Deprecated (use contexts instead); Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
   readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   readonly default_permission?: boolean
+  /** In preview. Installation context(s) where the command is available */
+  readonly integration_types?: Array<ApplicationIntegrationType>
+  /** In preview. Interaction context(s) where the command can be used */
+  readonly contexts?: Array<InteractionContextType>
   /** Indicates whether the command is age-restricted */
   readonly nsfw?: boolean
 }
@@ -2739,7 +2790,7 @@ export interface Endpoints<O> {
     guildId: string,
     options?: O,
   ) => RestResponse<any>
-  /** Begin a prune operation. Requires the KICK_MEMBERS permission. Returns an object with one pruned key indicating the number of members that were removed in the prune operation. For large guilds it's recommended to set the compute_prune_count option to false, forcing pruned to null. Fires multiple Guild Member Remove Gateway events. */
+  /** Begin a prune operation. Requires the MANAGE_GUILD and KICK_MEMBERS permissions. Returns an object with one pruned key indicating the number of members that were removed in the prune operation. For large guilds it's recommended to set the compute_prune_count option to false, forcing pruned to null. Fires multiple Guild Member Remove Gateway events. */
   beginGuildPrune: (
     guildId: string,
     params?: Partial<BeginGuildPruneParams>,
@@ -2751,6 +2802,12 @@ export interface Endpoints<O> {
     params?: Partial<BulkDeleteMessageParams>,
     options?: O,
   ) => RestResponse<any>
+  /** Ban up to 200 users from a guild, and optionally delete previous messages sent by the banned users. Requires both the BAN_MEMBERS and MANAGE_GUILD permissions. Returns a 200 response on success, including the fields banned_users with the IDs of the banned users and failed_users with IDs that could not be banned or were already banned. */
+  bulkGuildBan: (
+    guildId: string,
+    params?: Partial<BulkGuildBanParams>,
+    options?: O,
+  ) => RestResponse<BulkGuildBanResponse>
   /** Takes a list of application commands, overwriting the existing global command list for this application. Returns 200 and a list of application command objects. Commands that do not already exist will count toward daily application command create limits. */
   bulkOverwriteGlobalApplicationCommands: (
     applicationId: string,
@@ -3294,7 +3351,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   /** Returns the guild preview object for the given id.
 If the user is not in the guild, then the guild must be discoverable. */
   getGuildPreview: (guildId: string, options?: O) => RestResponse<GuildPreview>
-  /** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. Requires the KICK_MEMBERS permission. */
+  /** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. Requires the MANAGE_GUILD and KICK_MEMBERS permissions. */
   getGuildPruneCount: (
     guildId: string,
     params?: Partial<GetGuildPruneCountParams>,
@@ -4637,14 +4694,18 @@ export interface Interaction {
   readonly version: number
   /** For components, the message they were attached to */
   readonly message?: Message
-  /** Bitwise set of permissions the app or bot has within the channel the interaction was sent from */
-  readonly app_permissions?: string
+  /** Bitwise set of permissions the app has in the source location of the interaction */
+  readonly app_permissions: string
   /** Selected language of the invoking user */
   readonly locale?: string
   /** Guild's preferred locale, if invoked in a guild */
   readonly guild_locale?: string
   /** For monetized apps, any entitlements for the invoking user, representing access to premium SKUs */
   readonly entitlements: Array<Entitlement>
+  /** Mapping of installation contexts that the interaction was authorized for to related user or guild IDs. See Authorizing Integration Owners Object for details */
+  readonly authorizing_integration_owners: ApplicationIntegrationType
+  /** Context where the interaction was triggered from */
+  readonly context?: InteractionContextType
 }
 export interface InteractionCallbackAutocomplete {
   /** autocomplete choices (max of 25 choices) */
@@ -4695,6 +4756,14 @@ export enum InteractionCallbackType {
   MODAL = 9,
   /** respond to an interaction with an upgrade button, only available for apps with monetization enabled */
   PREMIUM_REQUIRED = 10,
+}
+export enum InteractionContextType {
+  /** Interaction can be used within servers */
+  GUILD = 0,
+  /** Interaction can be used within DMs with the app's bot user */
+  BOT_DM = 1,
+  /** Interaction can be used within Group DMs and DMs other than the app's bot user */
+  PRIVATE_CHANNEL = 2,
 }
 export type InteractionCreateEvent = Interaction
 export type InteractionDatum =
@@ -4990,7 +5059,9 @@ export interface Message {
   readonly flags?: number
   /** the message associated with the message_reference */
   readonly referenced_message?: Message | null
-  /** sent if the message is a response to an Interaction */
+  /** In preview. Sent if the message is sent as a result of an interaction */
+  readonly interaction_metadata?: MessageInteractionMetadatum
+  /** Deprecated in favor of interaction_metadata; sent if the message is a response to an interaction */
   readonly interaction?: MessageInteraction
   /** the thread that was started from this message, includes thread member object */
   readonly thread?: Channel
@@ -5089,6 +5160,22 @@ export interface MessageInteraction {
   readonly user: User
   /** Member who invoked the interaction in the guild */
   readonly member?: GuildMember
+}
+export interface MessageInteractionMetadatum {
+  /** ID of the interaction */
+  readonly id: Snowflake
+  /** Type of interaction */
+  readonly type: InteractionType
+  /** ID of the user who triggered the interaction */
+  readonly user_id: Snowflake
+  /** IDs for installation context(s) related to an interaction. Details in Authorizing Integration Owners Object */
+  readonly authorizing_integration_owners: ApplicationIntegrationType
+  /** ID of the original response message, present only on follow-up messages */
+  readonly original_response_message_id?: Snowflake
+  /** ID of the message that contained interactive component, present only on messages created from component interactions */
+  readonly interacted_message_id?: Snowflake
+  /** Metadata for the interaction that was used to open the modal, present only on modal submit interactions */
+  readonly triggering_interaction_metadata?: MessageInteractionMetadatum
 }
 export interface MessageReactionAddEvent {
   /** ID of the user */
