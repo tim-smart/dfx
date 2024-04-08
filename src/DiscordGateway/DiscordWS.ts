@@ -22,23 +22,22 @@ export interface OpenOpts {
 
 export interface DiscordWSCodecService {
   type: "json" | "etf"
-  encode: (p: Discord.GatewayPayload) => Uint8Array
-  decode: (p: Uint8Array) => Discord.GatewayPayload
+  encode: (p: Discord.GatewayPayload) => Uint8Array | string
+  decode: (p: Uint8Array | string) => Discord.GatewayPayload
 }
 export interface DiscordWSCodec {
   readonly _: unique symbol
 }
 
 const decoder = new TextDecoder()
-const encoder = new TextEncoder()
 
 export const DiscordWSCodec = GenericTag<DiscordWSCodec, DiscordWSCodecService>(
   "dfx/DiscordGateway/DiscordWS/Codec",
 )
 export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
   type: "json",
-  encode: p => encoder.encode(JSON.stringify(p)),
-  decode: p => JSON.parse(decoder.decode(p)),
+  encode: p => JSON.stringify(p),
+  decode: p => JSON.parse(typeof p === "string" ? p : decoder.decode(p)),
 })
 
 const make = Effect.gen(function* (_) {
@@ -83,7 +82,7 @@ const make = Effect.gen(function* (_) {
       yield* _(
         onConnecting,
         Effect.zipRight(
-          socket.run(_ => {
+          socket.runRaw(_ => {
             const message = encoding.decode(_)
             return Effect.zipRight(
               Effect.logTrace(message),

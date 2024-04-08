@@ -62,6 +62,7 @@ const MainLive = GreetLive.pipe(
       token: Config.secret("DISCORD_BOT_TOKEN"),
     }),
   ),
+  Layer.provide(Logger.logFmt),
 )
 
 Layer.launch(MainLive).pipe(
