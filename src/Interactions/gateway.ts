@@ -95,12 +95,17 @@ export const run =
           )
         : Effect.never
 
-      const handle = handlers(ix.definitions, (i, r) =>
-        rest.createInteractionResponse(i.id, i.token, r).pipe(Effect.scoped),
+      const handle = handlers(
+        ix.definitions,
+        (i, r) => rest.createInteractionResponse(i.id, i.token, r).effect,
       )
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
-        Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
+        Effect.withSpan(
+          Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
+          "dfx.Interaction",
+          { attributes: { interactionId: i.id } },
+        ),
       )
 
       const sync = yield* _(FiberRef.get(interactionsSync))

@@ -6,6 +6,7 @@ import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
 import { flattenDefinitions, splitDefinitions } from "dfx/Interactions/utils"
 import * as Discord from "dfx/types"
+import type { Scope } from "effect/Scope"
 
 export class DefinitionNotFound {
   readonly _tag = "DefinitionNotFound"
@@ -31,7 +32,7 @@ export const handlers = <R, E, TE, A, B>(
   ) => Effect.Effect<A, E, R>,
 ): Record<
   Discord.InteractionType,
-  (i: Discord.Interaction) => Handler<R, E, B>
+  (i: Discord.Interaction) => Handler<Exclude<R, Scope>, E, B>
 > => {
   const flattened = flattenDefinitions(definitions, handleResponse)
 
@@ -54,7 +55,7 @@ export const handlers = <R, E, TE, A, B>(
             command.handle(i),
             Ctx.ApplicationCommand,
             data,
-          ) as Handler<R, E, B>,
+          ) as Handler<Exclude<R, Scope>, E, B>,
       })
     },
 
@@ -75,7 +76,7 @@ export const handlers = <R, E, TE, A, B>(
               ) as Handler<R, E, B>,
           }),
         ),
-      )
+      ) as Handler<Exclude<R, Scope>, E, B>
     },
 
     [Discord.InteractionType.MESSAGE_COMPONENT]: i => {
@@ -95,7 +96,7 @@ export const handlers = <R, E, TE, A, B>(
               ) as Handler<R, E, B>,
           }),
         ),
-      )
+      ) as Handler<Exclude<R, Scope>, E, B>
     },
 
     [Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE]: i => {
@@ -123,7 +124,7 @@ export const handlers = <R, E, TE, A, B>(
               }),
             ),
           ),
-      })
+      }) as Handler<Exclude<R, Scope>, E, B>
     },
   }
 }

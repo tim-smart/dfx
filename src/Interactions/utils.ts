@@ -41,15 +41,17 @@ export const flattenDefinitions = <R, E, TE, A, B>(
   Chunk.map(definitions, ([definition, transform]) => ({
     ...definition,
     handle: (i: Discord.Interaction) =>
-      Effect.isEffect(definition.handle)
-        ? transform(
-            Effect.flatMap(definition.handle, _ => handleResponse(i, _)),
-          )
-        : transform(
-            Effect.flatMap(definition.handle(context), _ =>
-              handleResponse(i, _),
+      Effect.scoped(
+        Effect.isEffect(definition.handle)
+          ? transform(
+              Effect.flatMap(definition.handle, _ => handleResponse(i, _)),
+            )
+          : transform(
+              Effect.flatMap(definition.handle(context), _ =>
+                handleResponse(i, _),
+              ),
             ),
-          ),
+      ),
   }))
 
 export const splitDefinitions = <R, E, TE, A>(
@@ -81,10 +83,10 @@ export const splitDefinitions = <R, E, TE, A>(
     Chunk.reduce(
       {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
       (acc, d) =>
-        (({
+        ({
           ...acc,
-          [d.command.name]: d
-        }) as any),
+          [d.command.name]: d,
+        }) as any,
     ),
   )
 

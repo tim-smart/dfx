@@ -59,6 +59,7 @@
     "@changesets/cli": "^2.27.1",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.7.6",
+    "@effect/experimental": "^0.14.12",
     "@effect/language-service": "^0.1.0",
     "@effect/platform": "^0.48.27",
     "@effect/platform-node": "^0.45.29",

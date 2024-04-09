@@ -10,6 +10,7 @@ import type {
 } from "dfx/Interactions/context"
 import type * as Discord from "dfx/types"
 import type { NoSuchElementException } from "effect/Cause"
+import type { Scope } from "effect/Scope"
 
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
@@ -36,7 +37,7 @@ export const global = <
   handle: CommandHandler<R, E, A>,
 ) =>
   new GlobalApplicationCommand<
-    Exclude<R, DiscordInteraction | DiscordApplicationCommand>,
+    Exclude<R, DiscordInteraction | DiscordApplicationCommand | Scope>,
     E
   >(command as any, handle as any)
 
@@ -58,7 +59,7 @@ export const guild = <
   handle: CommandHandler<R, E, A>,
 ) =>
   new GuildApplicationCommand<
-    Exclude<R, DiscordInteraction | DiscordApplicationCommand>,
+    Exclude<R, DiscordInteraction | DiscordApplicationCommand | Scope>,
     E
   >(command as any, handle as any)
 
@@ -75,7 +76,7 @@ export const messageComponent = <R1, R2, E1, E2>(
   handle: CommandHandler<R2, E2, Discord.InteractionResponse>,
 ) =>
   new MessageComponent<
-    Exclude<R1 | R2, DiscordInteraction | DiscordMessageComponent>,
+    Exclude<R1 | R2, DiscordInteraction | DiscordMessageComponent | Scope>,
     E1 | E2
   >(pred as any, handle as any)
 
@@ -92,7 +93,7 @@ export const modalSubmit = <R1, R2, E1, E2>(
   handle: Effect.Effect<Discord.InteractionResponse, E2, R2>,
 ) =>
   new ModalSubmit<
-    Exclude<R1 | R2, DiscordInteraction | DiscordModalSubmit>,
+    Exclude<R1 | R2, DiscordInteraction | DiscordModalSubmit | Scope>,
     E1 | E2
   >(pred as any, handle as any)
 
@@ -117,7 +118,10 @@ export const autocomplete = <R1, R2, E1, E2>(
   new Autocomplete<
     Exclude<
       R1 | R2,
-      DiscordInteraction | DiscordApplicationCommand | DiscordFocusedOption
+      | DiscordInteraction
+      | DiscordApplicationCommand
+      | DiscordFocusedOption
+      | Scope
     >,
     E1 | E2
   >(pred as any, handle as any)

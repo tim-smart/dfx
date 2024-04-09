@@ -131,10 +131,14 @@ const run = <R, E>(
     WebhookConfig | Exclude<R, DiscordInteraction>
   > =>
     Effect.flatMap(fromHeadersAndBody(headers, body), interaction =>
-      Effect.provideService(
-        handler[interaction.type](interaction),
-        Interaction,
-        interaction,
+      Effect.withSpan(
+        Effect.provideService(
+          handler[interaction.type](interaction),
+          Interaction,
+          interaction,
+        ),
+        "dfx.Interaction",
+        { attributes: { interactionId: interaction.id } },
       ),
     )
 }

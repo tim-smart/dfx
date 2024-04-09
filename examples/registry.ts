@@ -7,6 +7,7 @@ import {
 import Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 import * as NodeHttp from "@effect/platform-node/NodeHttpClient"
+import * as DevTools from "@effect/experimental/DevTools"
 
 Dotenv.config()
 
@@ -63,6 +64,7 @@ const MainLive = GreetLive.pipe(
     }),
   ),
   Layer.provide(Logger.logFmt),
+  Layer.provide(DevTools.layer()),
 )
 
 Layer.launch(MainLive).pipe(

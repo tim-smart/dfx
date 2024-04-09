@@ -57,7 +57,7 @@ export class InteractionBuilder<R, E, TE> {
 
   private transformHandlers<R1, E1>(
     f: (
-      selr: Effect.Effect<Discord.InteractionResponse, E, R>,
+      self: Effect.Effect<Discord.InteractionResponse, E, R>,
     ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
   ) {
     return new InteractionBuilder<
