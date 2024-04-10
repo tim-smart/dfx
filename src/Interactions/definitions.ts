@@ -30,8 +30,7 @@ export class GlobalApplicationCommand<R, E> {
 export const global = <
   R,
   E,
-  const A extends
-    DeepReadonlyObject<Discord.CreateGlobalApplicationCommandParams>,
+  const A extends Discord.CreateGlobalApplicationCommandParams,
 >(
   command: A,
   handle: CommandHandler<R, E, A>,
@@ -52,8 +51,7 @@ export class GuildApplicationCommand<R, E> {
 export const guild = <
   R,
   E,
-  const A extends
-    DeepReadonlyObject<Discord.CreateGuildApplicationCommandParams>,
+  const A extends Discord.CreateGuildApplicationCommandParams,
 >(
   command: A,
   handle: CommandHandler<R, E, A>,
@@ -66,36 +64,36 @@ export const guild = <
 export class MessageComponent<R, E> {
   readonly _tag = "MessageComponent"
   constructor(
-    readonly predicate: (customId: string) => Effect.Effect<boolean, E, R>,
+    readonly predicate: (customId: string) => boolean,
     readonly handle: Effect.Effect<Discord.InteractionResponse, E, R>,
   ) {}
 }
 
-export const messageComponent = <R1, R2, E1, E2>(
-  pred: (customId: string) => Effect.Effect<boolean, E1, R1>,
-  handle: CommandHandler<R2, E2, Discord.InteractionResponse>,
+export const messageComponent = <R, E>(
+  pred: (customId: string) => boolean,
+  handle: CommandHandler<R, E, Discord.InteractionResponse>,
 ) =>
   new MessageComponent<
-    Exclude<R1 | R2, DiscordInteraction | DiscordMessageComponent | Scope>,
-    E1 | E2
-  >(pred as any, handle as any)
+    Exclude<R, DiscordInteraction | DiscordMessageComponent | Scope>,
+    E
+  >(pred, handle as any)
 
 export class ModalSubmit<R, E> {
   readonly _tag = "ModalSubmit"
   constructor(
-    readonly predicate: (customId: string) => Effect.Effect<boolean, E, R>,
+    readonly predicate: (customId: string) => boolean,
     readonly handle: Effect.Effect<Discord.InteractionResponse, E, R>,
   ) {}
 }
 
-export const modalSubmit = <R1, R2, E1, E2>(
-  pred: (customId: string) => Effect.Effect<boolean, E1, R1>,
-  handle: Effect.Effect<Discord.InteractionResponse, E2, R2>,
+export const modalSubmit = <R, E>(
+  pred: (customId: string) => boolean,
+  handle: Effect.Effect<Discord.InteractionResponse, E, R>,
 ) =>
   new ModalSubmit<
-    Exclude<R1 | R2, DiscordInteraction | DiscordModalSubmit | Scope>,
-    E1 | E2
-  >(pred as any, handle as any)
+    Exclude<R, DiscordInteraction | DiscordModalSubmit | Scope>,
+    E
+  >(pred, handle as any)
 
 export class Autocomplete<R, E> {
   readonly _tag = "Autocomplete"
@@ -103,42 +101,30 @@ export class Autocomplete<R, E> {
     readonly predicate: (
       data: Discord.ApplicationCommandDatum,
       focusedOption: Discord.ApplicationCommandInteractionDataOption,
-    ) => Effect.Effect<boolean, E, R>,
+    ) => boolean,
     readonly handle: Effect.Effect<Discord.InteractionResponse, E, R>,
   ) {}
 }
 
-export const autocomplete = <R1, R2, E1, E2>(
+export const autocomplete = <R, E>(
   pred: (
     data: Discord.ApplicationCommandDatum,
     focusedOption: Discord.ApplicationCommandInteractionDataOption,
-  ) => Effect.Effect<boolean, E1, R1>,
-  handle: Effect.Effect<Discord.InteractionResponse, E2, R2>,
+  ) => boolean,
+  handle: Effect.Effect<Discord.InteractionResponse, E, R>,
 ) =>
   new Autocomplete<
     Exclude<
-      R1 | R2,
+      R,
       | DiscordInteraction
       | DiscordApplicationCommand
       | DiscordFocusedOption
       | Scope
     >,
-    E1 | E2
-  >(pred as any, handle as any)
+    E
+  >(pred, handle as any)
 
 // ==== Command handler helpers
-type DeepReadonly<T> =
-  T extends Array<infer R>
-    ? ReadonlyArray<DeepReadonly<R>>
-    : T extends Function
-      ? T
-      : T extends object
-        ? DeepReadonlyObject<T>
-        : T
-type DeepReadonlyObject<T> = {
-  readonly [P in keyof T]: DeepReadonly<T[P]>
-}
-
 export type CommandHandler<R, E, A = any> =
   | Effect.Effect<Discord.InteractionResponse, E, R>
   | CommandHandlerFn<R, E, A>

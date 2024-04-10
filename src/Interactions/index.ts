@@ -1,4 +1,3 @@
-import * as Effect from "effect/Effect"
 import type * as Discord from "dfx/types"
 
 export { response } from "dfx/Helpers/interactions"
@@ -14,14 +13,13 @@ export {
 } from "dfx/Interactions/definitions"
 
 // Filters
-export const id = (query: string) => (customId: string) =>
-  Effect.succeed(query === customId)
+export const id = (query: string) => (customId: string) => query === customId
 
 export const idStartsWith = (query: string) => (customId: string) =>
-  Effect.succeed(customId.startsWith(query))
+  customId.startsWith(query)
 
 export const idRegex = (query: RegExp) => (customId: string) =>
-  Effect.succeed(query.test(customId))
+  query.test(customId)
 
 export const option =
   (command: string, optionName: string) =>
@@ -32,7 +30,7 @@ export const option =
       "name"
     >,
   ) =>
-    Effect.succeed(data.name === command && focusedOption.name === optionName)
+    data.name === command && focusedOption.name === optionName
 
 export const optionOnly =
   (optionName: string) =>
@@ -43,4 +41,4 @@ export const optionOnly =
       "name"
     >,
   ) =>
-    Effect.succeed(focusedOption.name === optionName)
+    focusedOption.name === optionName

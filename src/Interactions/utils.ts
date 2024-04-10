@@ -3,6 +3,7 @@ import * as Effect from "effect/Effect"
 import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
+import * as ReadonlyArray from "effect/ReadonlyArray"
 
 export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
@@ -38,60 +39,66 @@ export const flattenDefinitions = <R, E, TE, A, B>(
     _: Discord.InteractionResponse,
   ) => Effect.Effect<A, E, R>,
 ) =>
-  Chunk.map(definitions, ([definition, transform]) => ({
-    ...definition,
-    handle: (i: Discord.Interaction) =>
-      Effect.scoped(
-        Effect.isEffect(definition.handle)
-          ? transform(
-              Effect.flatMap(definition.handle, _ => handleResponse(i, _)),
+  ReadonlyArray.map(
+    Chunk.toReadonlyArray(definitions),
+    ([definition, transform]) => ({
+      ...definition,
+      handle: Effect.isEffect(definition.handle)
+        ? (i: Discord.Interaction) =>
+            Effect.scoped(
+              transform(
+                Effect.flatMap(
+                  definition.handle as Effect.Effect<Discord.InteractionResponse>,
+                  _ => handleResponse(i, _),
+                ),
+              ),
             )
-          : transform(
-              Effect.flatMap(definition.handle(context), _ =>
-                handleResponse(i, _),
+        : (i: Discord.Interaction) =>
+            Effect.scoped(
+              transform(
+                Effect.flatMap(
+                  (
+                    definition.handle as (
+                      _: any,
+                    ) => Effect.Effect<Discord.InteractionResponse>
+                  )(context),
+                  _ => handleResponse(i, _),
+                ),
               ),
             ),
-      ),
-  }))
-
-export const splitDefinitions = <R, E, TE, A>(
-  definitions: Chunk.Chunk<DefinitionFlattened<R, E, TE, A>>,
-) => {
-  const grouped = Chunk.reduce(
-    definitions,
-    {
-      Autocomplete: Chunk.empty(),
-      GlobalApplicationCommand: Chunk.empty(),
-      GuildApplicationCommand: Chunk.empty(),
-      MessageComponent: Chunk.empty(),
-      ModalSubmit: Chunk.empty(),
-    } as {
-      [K in D.InteractionDefinition<R, E>["_tag"]]: Chunk.Chunk<
-        Extract<DefinitionFlattened<R, E, TE, A>, { _tag: K }>
-      >
-    },
-    (acc, d) => ({
-      ...acc,
-      [d._tag]: Chunk.append(acc[d._tag] as Chunk.Chunk<any>, d),
     }),
   )
 
-  const Commands = Chunk.appendAll(
-    grouped.GlobalApplicationCommand,
-    grouped.GuildApplicationCommand,
-  ).pipe(
-    Chunk.reduce(
-      {} as Record<string, DefinitionFlattenedCommand<R, E, TE, A>>,
-      (acc, d) =>
-        ({
-          ...acc,
-          [d.command.name]: d,
-        }) as any,
-    ),
+export const splitDefinitions = <R, E, TE, A>(
+  definitions: ReadonlyArray<DefinitionFlattened<R, E, TE, A>>,
+) => {
+  const grouped = ReadonlyArray.reduce(
+    definitions,
+    {
+      Autocomplete: [],
+      GlobalApplicationCommand: [],
+      GuildApplicationCommand: [],
+      MessageComponent: [],
+      ModalSubmit: [],
+      Commands: {},
+    } as {
+      [K in D.InteractionDefinition<R, E>["_tag"]]: Array<
+        Extract<DefinitionFlattened<R, E, TE, A>, { _tag: K }>
+      >
+    } & {
+      readonly Commands: Record<string, DefinitionFlattenedCommand<R, E, TE, A>>
+    },
+    (acc, d) => {
+      acc[d._tag].push(d as any)
+      if (
+        d._tag === "GlobalApplicationCommand" ||
+        d._tag === "GuildApplicationCommand"
+      ) {
+        acc.Commands[d.command.name] = d as any
+      }
+      return acc
+    },
   )
 
-  return {
-    ...grouped,
-    Commands,
-  }
+  return grouped
 }

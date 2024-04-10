@@ -43,12 +43,9 @@ export const ModalSubmitData = GenericTag<
 export interface DiscordFocusedOption {
   readonly _: unique symbol
 }
-export interface FocusedOptionContext {
-  readonly focusedOption: Discord.ApplicationCommandInteractionDataOption
-}
 export const FocusedOptionContext = GenericTag<
   DiscordFocusedOption,
-  FocusedOptionContext
+  Discord.ApplicationCommandInteractionDataOption
 >("dfx/Interactions/FocusedOptionContext")
 
 export interface DiscordSubCommand {
@@ -78,7 +75,7 @@ export const resolved = <A>(
 
 export const focusedOptionValue = Effect.map(
   FocusedOptionContext,
-  _ => _.focusedOption.value ?? "",
+  _ => _.value ?? "",
 )
 
 export class SubCommandNotFound extends TypeIdError(
