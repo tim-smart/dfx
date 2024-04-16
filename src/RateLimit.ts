@@ -13,13 +13,9 @@ export type BucketDetails = {
 }
 
 export interface RateLimitStoreService {
-  readonly hasBucket: (
-    bucketKey: string,
-  ) => Effect.Effect<boolean>
+  readonly hasBucket: (bucketKey: string) => Effect.Effect<boolean>
 
-  readonly putBucket: (
-    bucket: BucketDetails,
-  ) => Effect.Effect<void>
+  readonly putBucket: (bucket: BucketDetails) => Effect.Effect<void>
 
   readonly getBucketForRoute: (
     route: string,
@@ -72,9 +68,9 @@ const makeLimiter = Effect.gen(function* (_) {
         }),
       ),
       Effect.tap(_ =>
-        Duration.toMillis(_) === 0 ? Effect.unit : Effect.sleep(_),
+        Duration.toMillis(_) === 0 ? Effect.void : Effect.sleep(_),
       ),
-      Effect.asUnit,
+      Effect.asVoid,
     )
   }
 

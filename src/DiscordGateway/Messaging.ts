@@ -29,7 +29,7 @@ const handleDispatchFactory =
       if (_.t === event) {
         return handle(_.d as any)
       }
-      return Effect.unit as any
+      return Effect.void as any
     })
 
 export const make = Effect.gen(function* (_) {

@@ -71,7 +71,7 @@ export const make = Effect.gen(function* (_) {
         setPhase(Phase.Connected),
         Effect.zipRight(Queue.takeAll(pendingQueue)),
         Effect.tap(_ => Queue.offerAll(outboundQueue, _)),
-        Effect.asUnit,
+        Effect.asVoid,
       )
 
       const onConnecting = pipe(
@@ -111,7 +111,7 @@ export const make = Effect.gen(function* (_) {
         Option.match(
           Option.map(isReady(p), p => p.d!),
           {
-            onNone: () => Effect.unit,
+            onNone: () => Effect.void,
             onSome: ({ resume_gateway_url }) =>
               socket.setUrl(resume_gateway_url),
           },
@@ -182,7 +182,7 @@ export const make = Effect.gen(function* (_) {
                 return prioritySend(Reconnect)
               }
               default: {
-                return Effect.unit
+                return Effect.void
               }
             }
           }),

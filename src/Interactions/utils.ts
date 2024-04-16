@@ -3,7 +3,7 @@ import * as Effect from "effect/Effect"
 import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
-import * as ReadonlyArray from "effect/ReadonlyArray"
+import * as Array from "effect/Array"
 
 export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
@@ -39,40 +39,37 @@ export const flattenDefinitions = <R, E, TE, A, B>(
     _: Discord.InteractionResponse,
   ) => Effect.Effect<A, E, R>,
 ) =>
-  ReadonlyArray.map(
-    Chunk.toReadonlyArray(definitions),
-    ([definition, transform]) => ({
-      ...definition,
-      handle: Effect.isEffect(definition.handle)
-        ? (i: Discord.Interaction) =>
-            Effect.scoped(
-              transform(
-                Effect.flatMap(
-                  definition.handle as Effect.Effect<Discord.InteractionResponse>,
-                  _ => handleResponse(i, _),
-                ),
-              ),
-            )
-        : (i: Discord.Interaction) =>
-            Effect.scoped(
-              transform(
-                Effect.flatMap(
-                  (
-                    definition.handle as (
-                      _: any,
-                    ) => Effect.Effect<Discord.InteractionResponse>
-                  )(context),
-                  _ => handleResponse(i, _),
-                ),
+  Array.map(Chunk.toReadonlyArray(definitions), ([definition, transform]) => ({
+    ...definition,
+    handle: Effect.isEffect(definition.handle)
+      ? (i: Discord.Interaction) =>
+          Effect.scoped(
+            transform(
+              Effect.flatMap(
+                definition.handle as Effect.Effect<Discord.InteractionResponse>,
+                _ => handleResponse(i, _),
               ),
             ),
-    }),
-  )
+          )
+      : (i: Discord.Interaction) =>
+          Effect.scoped(
+            transform(
+              Effect.flatMap(
+                (
+                  definition.handle as (
+                    _: any,
+                  ) => Effect.Effect<Discord.InteractionResponse>
+                )(context),
+                _ => handleResponse(i, _),
+              ),
+            ),
+          ),
+  }))
 
 export const splitDefinitions = <R, E, TE, A>(
   definitions: ReadonlyArray<DefinitionFlattened<R, E, TE, A>>,
 ) => {
-  const grouped = ReadonlyArray.reduce(
+  const grouped = Array.reduce(
     definitions,
     {
       Autocomplete: [],

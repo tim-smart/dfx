@@ -1,9 +1,9 @@
-import * as Duration from "effect/Duration"
-import * as Option from "effect/Option"
-import * as ReadonlyArray from "effect/ReadonlyArray"
-import * as Effect from "effect/Effect"
 import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
 import { createDriver, createParentDriver } from "dfx/Cache/driver"
+import * as Array from "effect/Array"
+import * as Duration from "effect/Duration"
+import * as Effect from "effect/Effect"
+import * as Option from "effect/Option"
 
 export interface MemoryTTLOpts {
   /** The approx. number of milliseconds to keep items */
@@ -172,7 +172,7 @@ export const createWithParent = <T>(
             ),
           ),
           Effect.map(
-            ReadonlyArray.reduce(new Map<string, T>(), (acc, [id, item]) =>
+            Array.reduce(new Map<string, T>(), (acc, [id, item]) =>
               item._tag === "Some" ? acc.set(id, item.value) : acc,
             ),
           ),

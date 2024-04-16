@@ -20,7 +20,7 @@ const maybeUpdateRef =
   ) =>
   (_: Discord.GatewayPayload): Effect.Effect<void> =>
     Option.match(f(_), {
-      onNone: () => Effect.unit,
+      onNone: () => Effect.void,
       onSome: a => Ref.set(ref, Option.some(a)),
     })
 

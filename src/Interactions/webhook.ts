@@ -52,7 +52,7 @@ const checkSignature = (
     ),
     Effect.filterOrFail(identity, () => new BadWebhookSignature()),
     Effect.catchAllCause(() => Effect.fail(new BadWebhookSignature())),
-    Effect.asUnit,
+    Effect.asVoid,
   )
 
 export interface MakeConfigOpts {

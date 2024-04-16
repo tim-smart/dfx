@@ -7,7 +7,7 @@ import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import type * as HashMap from "effect/HashMap"
 import * as Option from "effect/Option"
-import * as Arr from "effect/ReadonlyArray"
+import * as Arr from "effect/Array"
 
 export interface DiscordInteraction {
   readonly _: unique symbol

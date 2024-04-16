@@ -48,7 +48,7 @@ export const createWithParent = <T>(): Effect.Effect<
           map.delete(parentId)
         }),
 
-      refreshTTL: () => Effect.unit,
+      refreshTTL: () => Effect.void,
 
       run: Effect.never,
     })
@@ -76,7 +76,7 @@ export const create = <T>(): Effect.Effect<CacheDriver<never, T>> =>
           map.delete(resourceId)
         }),
 
-      refreshTTL: () => Effect.unit,
+      refreshTTL: () => Effect.void,
 
       run: Effect.never,
     })

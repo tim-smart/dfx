@@ -45,7 +45,7 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       const run = pipe(
         self,
         Effect.tap(() =>
-          fiber ? fiber.interruptAsFork(fiberId) : Effect.unit,
+          fiber ? fiber.interruptAsFork(fiberId) : Effect.void,
         ),
         Effect.flatMap(_ =>
           pipe(

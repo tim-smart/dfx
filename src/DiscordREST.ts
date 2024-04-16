@@ -1,13 +1,4 @@
-import { GenericTag } from "effect/Context"
-import * as Duration from "effect/Duration"
-import { millis } from "effect/Duration"
-import { pipe } from "effect/Function"
-import * as HashSet from "effect/HashSet"
-import * as Option from "effect/Option"
-import * as Secret from "effect/Secret"
-import * as Effect from "effect/Effect"
-import * as Layer from "effect/Layer"
-import * as Ref from "effect/Ref"
+import { TypeIdError } from "@effect/platform/Error"
 import * as Http from "@effect/platform/HttpClient"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import type { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
@@ -16,12 +7,21 @@ import {
   retryAfter,
   routeFromConfig,
 } from "dfx/DiscordREST/utils"
-import { RateLimiterLive, RateLimiter, RateLimitStore } from "dfx/RateLimit"
+import { RateLimitStore, RateLimiter, RateLimiterLive } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
-import type { Scope } from "effect/Scope"
+import { GenericTag } from "effect/Context"
+import * as Duration from "effect/Duration"
+import { millis } from "effect/Duration"
+import * as Effect from "effect/Effect"
 import * as Effectable from "effect/Effectable"
-import { TypeIdError } from "@effect/platform/Error"
+import { pipe } from "effect/Function"
+import * as HashSet from "effect/HashSet"
+import * as Layer from "effect/Layer"
+import * as Option from "effect/Option"
+import * as Ref from "effect/Ref"
+import type { Scope } from "effect/Scope"
+import * as Secret from "effect/Secret"
 
 export const DiscordRESTErrorTypeId = Symbol.for(
   "dfx/DiscordREST/DiscordRESTError",
@@ -76,9 +76,9 @@ const make = Effect.gen(function* (_) {
       Effect.tap(invalid =>
         invalid
           ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
-          : Effect.unit,
+          : Effect.void,
       ),
-      Effect.asUnit,
+      Effect.asVoid,
     )
 
   // Request rate limiting
