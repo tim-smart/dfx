@@ -78,30 +78,28 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     parentId: string,
   ) => Effect.Effect<Array<[id: string, resource: A]>, EPMiss>
 }): Effect.Effect<ParentCache<EDriver, EMiss, EPMiss, A>, never, Scope.Scope> =>
-  Effect.gen(function* (_) {
-    yield* _(
-      Stream.runDrain(
-        Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
-          switch (op.op) {
-            case "create":
-            case "update":
-              return driver.set(op.parentId, op.resourceId, op.resource)
+  Effect.gen(function* () {
+    yield Stream.runDrain(
+      Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
+        switch (op.op) {
+          case "create":
+          case "update":
+            return driver.set(op.parentId, op.resourceId, op.resource)
 
-            case "delete":
-              return driver.delete(op.parentId, op.resourceId)
+          case "delete":
+            return driver.delete(op.parentId, op.resourceId)
 
-            case "parentDelete":
-              return driver.parentDelete(op.parentId)
-          }
-        }),
-      ),
+          case "parentDelete":
+            return driver.parentDelete(op.parentId)
+        }
+      }),
+    ).pipe(
       Effect.tapErrorCause(_ => Effect.logError("ops error, restarting", _)),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
       Effect.interruptible,
     )
-    yield* _(
-      driver.run,
+    yield driver.run.pipe(
       Effect.tapErrorCause(_ =>
         Effect.logError("cache driver error, restarting", _),
       ),
@@ -194,28 +192,26 @@ export const make = <EOps, EDriver, EMiss, A>({
   id: (_: A) => string
   onMiss: (id: string) => Effect.Effect<A, EMiss>
 }): Effect.Effect<Cache<EDriver, EMiss, A>, never, Scope.Scope> =>
-  Effect.gen(function* (_) {
-    yield* _(
-      Stream.runDrain(
-        Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
-          switch (op.op) {
-            case "create":
-            case "update":
-              return driver.set(op.resourceId, op.resource)
+  Effect.gen(function* () {
+    yield Stream.runDrain(
+      Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
+        switch (op.op) {
+          case "create":
+          case "update":
+            return driver.set(op.resourceId, op.resource)
 
-            case "delete":
-              return driver.delete(op.resourceId)
-          }
-        }),
-      ),
+          case "delete":
+            return driver.delete(op.resourceId)
+        }
+      }),
+    ).pipe(
       Effect.tapErrorCause(_ => Effect.logError("ops error, restarting", _)),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
       Effect.interruptible,
     )
 
-    yield* _(
-      driver.run,
+    yield driver.run.pipe(
       Effect.tapErrorCause(_ =>
         Effect.logError("cache driver error, restarting", _),
       ),

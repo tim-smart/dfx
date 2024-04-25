@@ -30,9 +30,9 @@ export interface DiscordGateway {
 
 export const DiscordGateway = GenericTag<DiscordGateway>("dfx/DiscordGateway")
 
-export const make = Effect.gen(function* (_) {
-  const sharder = yield* _(Sharder)
-  const messaging = yield* _(Messaging)
+export const make = Effect.gen(function* () {
+  const sharder = yield* Sharder
+  const messaging = yield* Messaging
 
   return DiscordGateway.of({
     [TypeId]: TypeId,

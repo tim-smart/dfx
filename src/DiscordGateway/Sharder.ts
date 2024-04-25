@@ -20,16 +20,15 @@ const claimRepeatPolicy = Schedule.spaced("3 minutes").pipe(
   Schedule.passthrough,
 ) as Schedule.Schedule<Option.Some<number>, Option.Option<number>>
 
-const make = Effect.gen(function* (_) {
-  const store = yield* _(ShardStore)
-  const rest = yield* _(DiscordREST)
-  const { gateway: config } = yield* _(DiscordConfig)
-  const limiter = yield* _(RateLimiter)
-  const shard = yield* _(Shard)
-  const currentShards = yield* _(Ref.make(HashSet.empty<RunningShard>()))
+const make = Effect.gen(function* () {
+  const store = yield* ShardStore
+  const rest = yield* DiscordREST
+  const { gateway: config } = yield* DiscordConfig
+  const limiter = yield* RateLimiter
+  const shard = yield* Shard
+  const currentShards = yield* Ref.make(HashSet.empty<RunningShard>())
 
-  const gateway = yield* _(
-    rest.getGatewayBot(),
+  const gateway = yield* rest.getGatewayBot().pipe(
     Effect.flatMap(r => r.json),
     Effect.catchAll(() =>
       Effect.succeed<Discord.GetGatewayBotResponse>({
@@ -46,7 +45,7 @@ const make = Effect.gen(function* (_) {
   )
 
   const totalCount = config.shardCount ?? gateway.shards
-  const currentCount = yield* _(Ref.make(0))
+  const currentCount = yield* Ref.make(0)
   const claimId = (sharderCount: number): Effect.Effect<number> =>
     pipe(
       store.claimId({
@@ -81,12 +80,11 @@ const make = Effect.gen(function* (_) {
     Effect.forever,
   )
 
-  yield* _(
-    Effect.replicateEffect(
-      spawner,
-      gateway.session_start_limit.max_concurrency,
-      { concurrency: "unbounded", discard: true },
-    ),
+  yield Effect.replicateEffect(
+    spawner,
+    gateway.session_start_limit.max_concurrency,
+    { concurrency: "unbounded", discard: true },
+  ).pipe(
     Effect.scoped,
     Effect.catchAllCause(Effect.logError),
     Effect.ensuring(Ref.set(currentShards, HashSet.empty())),

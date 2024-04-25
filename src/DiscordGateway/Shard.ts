@@ -30,17 +30,17 @@ const enum Phase {
   Connected,
 }
 
-export const make = Effect.gen(function* (_) {
-  const { gateway, token } = yield* _(DiscordConfig)
-  const limiter = yield* _(RateLimiter)
-  const dws = yield* _(DiscordWS)
-  const { hub, sendQueue } = yield* _(Messaging)
+export const make = Effect.gen(function* () {
+  const { gateway, token } = yield* DiscordConfig
+  const limiter = yield* RateLimiter
+  const dws = yield* DiscordWS
+  const { hub, sendQueue } = yield* Messaging
 
   const connect = (shard: [id: number, count: number]) =>
-    Effect.gen(function* (_) {
-      const outboundQueue = yield* _(Queue.unbounded<Message>())
-      const pendingQueue = yield* _(Queue.unbounded<Message>())
-      const phase = yield* _(Ref.make(Phase.Connecting))
+    Effect.gen(function* () {
+      const outboundQueue = yield* Queue.unbounded<Message>()
+      const pendingQueue = yield* Queue.unbounded<Message>()
+      const phase = yield* Ref.make(Phase.Connecting)
       const setPhase = (p: Phase) =>
         Effect.zipLeft(
           Ref.set(phase, p),
@@ -92,7 +92,7 @@ export const make = Effect.gen(function* (_) {
         Effect.zipRight(setPhase(Phase.Connecting)),
       )
 
-      const socket = yield* _(dws.connect({ outbound, onConnecting }))
+      const socket = yield* dws.connect({ outbound, onConnecting })
 
       const isReady = Option.liftPredicate(
         (
@@ -101,11 +101,11 @@ export const make = Effect.gen(function* (_) {
           p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY",
       )
 
-      const [latestReady, updateLatestReady] = yield* _(
-        Utils.latest(p => Option.map(isReady(p), p => p.d!)),
+      const [latestReady, updateLatestReady] = yield* Utils.latest(p =>
+        Option.map(isReady(p), p => p.d!),
       )
-      const [latestSequence, updateLatestSequence] = yield* _(
-        Utils.latest(p => Option.fromNullable(p.s)),
+      const [latestSequence, updateLatestSequence] = yield* Utils.latest(p =>
+        Option.fromNullable(p.s),
       )
       const maybeUpdateUrl = (p: Discord.GatewayPayload) =>
         Option.match(
@@ -117,22 +117,17 @@ export const make = Effect.gen(function* (_) {
           },
         )
 
-      const hellos = yield* _(
-        Effect.acquireRelease(
-          Queue.unbounded<Discord.GatewayPayload>(),
-          Queue.shutdown,
-        ),
+      const hellos = yield* Effect.acquireRelease(
+        Queue.unbounded<Discord.GatewayPayload>(),
+        Queue.shutdown,
       )
-      const acks = yield* _(
-        Effect.acquireRelease(
-          Queue.unbounded<Discord.GatewayPayload>(),
-          Queue.shutdown,
-        ),
+      const acks = yield* Effect.acquireRelease(
+        Queue.unbounded<Discord.GatewayPayload>(),
+        Queue.shutdown,
       )
 
       // heartbeats
-      yield* _(
-        Heartbeats.send(hellos, acks, latestSequence, heartbeatSend),
+      yield Heartbeats.send(hellos, acks, latestSequence, heartbeatSend).pipe(
         Effect.forkScoped,
         Effect.interruptible,
       )
@@ -188,16 +183,14 @@ export const make = Effect.gen(function* (_) {
           }),
         )
 
-      yield* _(
-        Queue.take(sendQueue),
+      yield Queue.take(sendQueue).pipe(
         Effect.tap(send),
         Effect.forever,
         Effect.forkScoped,
         Effect.interruptible,
       )
 
-      yield* _(
-        socket.take,
+      yield socket.take.pipe(
         Effect.flatMap(onPayload),
         Effect.forever,
         Effect.forkScoped,

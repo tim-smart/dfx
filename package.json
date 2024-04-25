@@ -42,7 +42,7 @@
   },
   "peerDependencies": {
     "@effect/platform": "^0.50.2",
-    "effect": "^3.0.0"
+    "effect": "^3.0.5"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",

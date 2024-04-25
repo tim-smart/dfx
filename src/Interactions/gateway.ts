@@ -51,7 +51,7 @@ export const run =
     E2 | DiscordRESTError | Http.error.ResponseError,
     DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>
   > =>
-    Effect.gen(function* (_) {
+    Effect.gen(function* () {
       const GlobalApplicationCommand = ix.definitions.pipe(
         Chunk.map(_ => _[0]),
         Chunk.filter(
@@ -69,12 +69,10 @@ export const run =
         Chunk.toReadonlyArray,
       )
 
-      const gateway = yield* _(DiscordGateway)
-      const rest = yield* _(DiscordREST)
+      const gateway = yield* DiscordGateway
+      const rest = yield* DiscordREST
 
-      const application = yield* _(
-        rest.getCurrentBotApplicationInformation().json,
-      )
+      const application = yield* rest.getCurrentBotApplicationInformation().json
 
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
@@ -108,27 +106,23 @@ export const run =
         ),
       )
 
-      const sync = yield* _(FiberRef.get(interactionsSync))
+      const sync = yield* FiberRef.get(interactionsSync)
 
-      return yield* _(
-        sync
-          ? Effect.forever(
-              Effect.all([run, globalSync, guildSync], {
-                concurrency: "unbounded",
-                discard: true,
-              }),
-            )
-          : run,
-      )
+      return yield* sync
+        ? Effect.forever(
+            Effect.all([run, globalSync, guildSync], {
+              concurrency: "unbounded",
+              discard: true,
+            }),
+          )
+        : run
     })
 
-const makeRegistry = Effect.gen(function* (_) {
-  const ref = yield* _(
-    Ref.make(builder as InteractionBuilder<never, never, never>),
+const makeRegistry = Effect.gen(function* () {
+  const ref = yield* Ref.make(
+    builder as InteractionBuilder<never, never, never>,
   )
-  const queue = yield* _(
-    Queue.sliding<InteractionBuilder<never, never, never>>(1),
-  )
+  const queue = yield* Queue.sliding<InteractionBuilder<never, never, never>>(1)
 
   const register = <E>(ix: InteractionBuilder<never, E, never>) =>
     Effect.flatMap(
@@ -136,14 +130,13 @@ const makeRegistry = Effect.gen(function* (_) {
       _ => Queue.offer(queue, _),
     )
 
-  yield* _(
-    EffectUtils.foreverSwitch(Queue.take(queue), ix =>
-      pipe(
-        ix,
-        run(Effect.catchAllCause(_ => Effect.logError("unhandled error", _))),
-        Effect.delay(Duration.seconds(0.1)),
-      ),
+  yield EffectUtils.foreverSwitch(Queue.take(queue), ix =>
+    pipe(
+      ix,
+      run(Effect.catchAllCause(_ => Effect.logError("unhandled error", _))),
+      Effect.delay(Duration.seconds(0.1)),
     ),
+  ).pipe(
     Effect.tapErrorCause(_ => Effect.logError("registry error", _)),
     Effect.retry(
       Schedule.exponential("1 seconds").pipe(

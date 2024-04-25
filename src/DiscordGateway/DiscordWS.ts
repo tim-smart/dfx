@@ -40,8 +40,8 @@ export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
   decode: p => JSON.parse(typeof p === "string" ? p : decoder.decode(p)),
 })
 
-const make = Effect.gen(function* (_) {
-  const encoding = yield* _(DiscordWSCodec)
+const make = Effect.gen(function* () {
+  const encoding = yield* DiscordWSCodec
 
   const connect = ({
     onConnecting,
@@ -49,22 +49,19 @@ const make = Effect.gen(function* (_) {
     url = "wss://gateway.discord.gg/",
     version = 10,
   }: OpenOpts) =>
-    Effect.gen(function* (_) {
-      const urlRef = yield* _(
-        Ref.make(`${url}?v=${version}&encoding=${encoding.type}`),
+    Effect.gen(function* () {
+      const urlRef = yield* Ref.make(
+        `${url}?v=${version}&encoding=${encoding.type}`,
       )
       const setUrl = (url: string) =>
         Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
-      const messages = yield* _(Queue.unbounded<Discord.GatewayPayload>())
-      const socket = yield* _(
-        Socket.makeWebSocket(Ref.get(urlRef), {
-          closeCodeIsError: _ => true,
-          openTimeout: 5000,
-        }),
-      )
-      const write = yield* _(socket.writer)
-      yield* _(
-        outbound,
+      const messages = yield* Queue.unbounded<Discord.GatewayPayload>()
+      const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
+        closeCodeIsError: _ => true,
+        openTimeout: 5000,
+      })
+      const write = yield* socket.writer
+      yield outbound.pipe(
         Effect.flatMap(_ => {
           if (_ === Reconnect) {
             return Effect.zipRight(
@@ -79,8 +76,7 @@ const make = Effect.gen(function* (_) {
         Effect.forkScoped,
         Effect.interruptible,
       )
-      yield* _(
-        onConnecting,
+      yield onConnecting.pipe(
         Effect.zipRight(
           socket.runRaw(_ => {
             const message = encoding.decode(_)

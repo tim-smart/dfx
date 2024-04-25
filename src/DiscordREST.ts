@@ -42,12 +42,12 @@ export class DiscordRESTError extends TypeIdError(
   }
 }
 
-const make = Effect.gen(function* (_) {
-  const { rest, token } = yield* _(DiscordConfig)
+const make = Effect.gen(function* () {
+  const { rest, token } = yield* DiscordConfig
 
-  const http = yield* _(Http.client.Client)
-  const store = yield* _(RateLimitStore)
-  const { maybeWait } = yield* _(RateLimiter)
+  const http = yield* Http.client.Client
+  const store = yield* RateLimitStore
+  const { maybeWait } = yield* RateLimiter
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
@@ -56,7 +56,7 @@ const make = Effect.gen(function* (_) {
   )
 
   // Invalid route handling (40x)
-  const badRoutesRef = yield* _(Ref.make(HashSet.empty<string>()))
+  const badRoutesRef = yield* Ref.make(HashSet.empty<string>())
   const tenMinutes = Duration.toMillis(Duration.minutes(10))
   const addBadRoute = (route: string) =>
     Effect.logDebug("bad route").pipe(

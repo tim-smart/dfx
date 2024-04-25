@@ -32,19 +32,15 @@ const handleDispatchFactory =
       return Effect.void as any
     })
 
-export const make = Effect.gen(function* (_) {
-  const hub = yield* _(
-    Effect.acquireRelease(
-      PubSub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),
-      PubSub.shutdown,
-    ),
+export const make = Effect.gen(function* () {
+  const hub = yield* Effect.acquireRelease(
+    PubSub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),
+    PubSub.shutdown,
   )
 
-  const sendQueue = yield* _(
-    Effect.acquireRelease(
-      Queue.unbounded<Discord.GatewayPayload<Discord.SendEvent>>(),
-      Queue.shutdown,
-    ),
+  const sendQueue = yield* Effect.acquireRelease(
+    Queue.unbounded<Discord.GatewayPayload<Discord.SendEvent>>(),
+    Queue.shutdown,
   )
   const send = (payload: Discord.GatewayPayload<Discord.SendEvent>) =>
     sendQueue.offer(payload)

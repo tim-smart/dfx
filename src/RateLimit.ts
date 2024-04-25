@@ -44,8 +44,8 @@ export const RateLimitStore = GenericTag<RateLimitStore, RateLimitStoreService>(
 )
 export const MemoryRateLimitStoreLive = Layer.sync(RateLimitStore, Memory.make)
 
-const makeLimiter = Effect.gen(function* (_) {
-  const store = yield* _(RateLimitStore)
+const makeLimiter = Effect.gen(function* () {
+  const store = yield* RateLimitStore
 
   const maybeWait = (
     key: string,
