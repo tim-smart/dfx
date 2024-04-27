@@ -1200,6 +1200,8 @@ export interface CreateMessageParams {
   readonly flags?: number
   /** If true and nonce is present, it will be checked for uniqueness in the past few minutes. If another message was created by the same author with the same nonce, that message will be returned and no new message will be created. */
   readonly enforce_nonce?: boolean
+  /** A poll! */
+  readonly poll?: PollCreateRequest
 }
 export function createRoutes<O = any>(
   fetch: <R, P>(route: Route<P, O>) => RestResponse<R>,
@@ -1267,6 +1269,12 @@ export function createRoutes<O = any>(
         method: "PUT",
         url: `/applications/${applicationId}/guilds/${guildId}/commands`,
         params,
+        options,
+      }),
+    consumeAnEntitlement: (applicationId, entitlementId, options) =>
+      fetch({
+        method: "POST",
+        url: `/applications/${applicationId}/entitlements/${entitlementId}/consume`,
         options,
       }),
     createAutoModerationRule: (guildId, params, options) =>
@@ -1689,6 +1697,12 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    endPoll: (channelId, messageId, options) =>
+      fetch({
+        method: "POST",
+        url: `/channels/${channelId}/polls/${messageId}/expire`,
+        options,
+      }),
     executeGitHubCompatibleWebhook: (webhookId, webhookToken, options) =>
       fetch({
         method: "POST",
@@ -1712,6 +1726,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "POST",
         url: `/channels/${channelId}/followers`,
+        params,
+        options,
+      }),
+    getAnswerVoters: (channelId, messageId, answerId, params, options) =>
+      fetch({
+        method: "GET",
+        url: `/channels/${channelId}/polls/${messageId}/answers/${answerId}`,
         params,
         options,
       }),
@@ -2820,6 +2841,12 @@ export interface Endpoints<O> {
     params?: Partial<BulkOverwriteGuildApplicationCommandParams>,
     options?: O,
   ) => RestResponse<Array<ApplicationCommand>>
+  /** For One-Time Purchase consumable SKUs, marks a given entitlement for the user as consumed. The entitlement will have consumed: true when using List Entitlements. */
+  consumeAnEntitlement: (
+    applicationId: string,
+    entitlementId: string,
+    options?: O,
+  ) => RestResponse<any>
   /** Create a new rule. Returns an auto moderation rule on success. Fires an Auto Moderation Rule Create Gateway event. */
   createAutoModerationRule: (
     guildId: string,
@@ -3159,6 +3186,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<EditWebhookMessageParams>,
     options?: O,
   ) => RestResponse<Message>
+  /** Immediately ends the poll. You cannot end polls from other users. */
+  endPoll: (
+    channelId: string,
+    messageId: string,
+    options?: O,
+  ) => RestResponse<Message>
   /** Add a new webhook to your GitHub repo (in the repo's settings), and use this endpoint as the "Payload URL." You can choose what events your Discord channel receives by choosing the "Let me select individual events" option and selecting individual events for the new webhook you're configuring. The supported events are commit_comment, create, delete, fork, issue_comment, issues, member, public, pull_request, pull_request_review, pull_request_review_comment, push, release, watch, check_run, check_suite, discussion, and discussion_comment. */
   executeGitHubCompatibleWebhook: (
     webhookId: string,
@@ -3184,6 +3217,14 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<FollowAnnouncementChannelParams>,
     options?: O,
   ) => RestResponse<FollowedChannel>
+  /** Get a list of users that voted for this specific answer. */
+  getAnswerVoters: (
+    channelId: string,
+    messageId: string,
+    answerId: string,
+    params?: Partial<GetAnswerVoterParams>,
+    options?: O,
+  ) => RestResponse<GetAnswerVoterResponse>
   /** Fetches permissions for a specific command for your application in a guild. Returns a guild application command permissions object. */
   getApplicationCommandPermissions: (
     applicationId: string,
@@ -3543,7 +3584,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListScheduledEventsForGuildParams>,
     options?: O,
   ) => RestResponse<Array<GuildScheduledEvent>>
-  /** Returns all SKUs for a given application. Because of how our SKU and subscription systems work, you will see two SKUs for your premium offering. For integration and testing entitlements, you should use the SKU with type: 5. */
+  /** Returns all SKUs for a given application. */
   listSkUs: (applicationId: string, options?: O) => RestResponse<any>
   /** Returns a list of available sticker packs. */
   listStickerPacks: (options?: O) => RestResponse<any>
@@ -3798,10 +3839,26 @@ export interface Entitlement {
   readonly ends_at?: string
   /** ID of the guild that is granted access to the entitlement's sku */
   readonly guild_id?: Snowflake
+  /** For consumable items, whether or not the entitlement has been consumed */
+  readonly consumed?: boolean
 }
 export type EntitlementCreateEvent = Entitlement
 export type EntitlementDeleteEvent = Entitlement
 export enum EntitlementType {
+  /** Entitlement was purchased by user */
+  PURCHASE = 1,
+  /** Entitlement for Discord Nitro subscription */
+  PREMIUM_SUBSCRIPTION = 2,
+  /** Entitlement was gifted by developer */
+  DEVELOPER_GIFT = 3,
+  /** Entitlement was purchased by a dev in application test mode */
+  TEST_MODE_PURCHASE = 4,
+  /** Entitlement was granted when the SKU was free */
+  FREE_PURCHASE = 5,
+  /** Entitlement was gifted by another user */
+  USER_GIFT = 6,
+  /** Entitlement was claimed by user for free as a Nitro Subscriber */
+  PREMIUM_PURCHASE = 7,
   /** Entitlement was purchased as an app subscription */
   APPLICATION_SUBSCRIPTION = 8,
 }
@@ -3837,6 +3894,8 @@ export interface ExecuteWebhookParams {
   readonly thread_name: string
   /** array of tag ids to apply to the thread (requires the webhook channel to be a forum or media channel) */
   readonly applied_tags: Array<Snowflake>
+  /** A poll! */
+  readonly poll: PollCreateRequest
 }
 export enum ExplicitContentFilterLevel {
   /** media content will not be scanned */
@@ -3912,6 +3971,8 @@ export const GatewayIntents = {
   GUILD_SCHEDULED_EVENTS: 1 << 16,
   AUTO_MODERATION_CONFIGURATION: 1 << 20,
   AUTO_MODERATION_EXECUTION: 1 << 21,
+  GUILD_MESSAGE_POLLS: 1 << 24,
+  DIRECT_MESSAGE_POLLS: 1 << 25,
 } as const
 export enum GatewayOpcode {
   /** An event was dispatched. */
@@ -3954,6 +4015,16 @@ export interface GatewayUrlQueryStringParam {
   readonly encoding: string
   /** The optional transport compression of gateway packets */
   readonly compress?: string
+}
+export interface GetAnswerVoterParams {
+  /** Get users after this user ID */
+  readonly after?: Snowflake
+  /** Max number of users to return (1-100) */
+  readonly limit?: number
+}
+export interface GetAnswerVoterResponse {
+  /** Users who voted for this answer */
+  readonly users: Array<User>
 }
 export interface GetChannelMessageParams {
   /** Get messages around this message ID */
@@ -4730,6 +4801,8 @@ export interface InteractionCallbackMessage {
   readonly components?: Array<Component>
   /** attachment objects with filename and description */
   readonly attachments?: Array<Attachment>
+  /** A poll! */
+  readonly poll?: PollCreateRequest
 }
 export interface InteractionCallbackModal {
   /** a developer-defined identifier for the modal, max 100 characters */
@@ -4877,6 +4950,10 @@ export enum KeywordPresetType {
   SEXUAL_CONTENT = 2,
   /** personal insults or words that may be considered hate speech */
   SLURS = 3,
+}
+export enum LayoutType {
+  /** The, uhm, default layout type. */
+  DEFAULT = 1,
 }
 export interface ListActiveGuildThreadResponse {
   /** the active threads */
@@ -5077,6 +5154,8 @@ export interface Message {
   readonly role_subscription_data?: RoleSubscriptionDatum
   /** data for users, members, channels, and roles in the message's auto-populated select menus */
   readonly resolved?: ResolvedDatum
+  /** A poll! */
+  readonly poll?: PollCreateRequest
 }
 export interface MessageActivity {
   /** type of message activity */
@@ -5166,8 +5245,8 @@ export interface MessageInteractionMetadatum {
   readonly id: Snowflake
   /** Type of interaction */
   readonly type: InteractionType
-  /** ID of the user who triggered the interaction */
-  readonly user_id: Snowflake
+  /** User who triggered the interaction */
+  readonly user: User
   /** IDs for installation context(s) related to an interaction. Details in Authorizing Integration Owners Object */
   readonly authorizing_integration_owners: ApplicationIntegrationType
   /** ID of the original response message, present only on follow-up messages */
@@ -5176,6 +5255,30 @@ export interface MessageInteractionMetadatum {
   readonly interacted_message_id?: Snowflake
   /** Metadata for the interaction that was used to open the modal, present only on modal submit interactions */
   readonly triggering_interaction_metadata?: MessageInteractionMetadatum
+}
+export interface MessagePollVoteAddEvent {
+  /** ID of the user */
+  readonly user_id: Snowflake
+  /** ID of the channel */
+  readonly channel_id: Snowflake
+  /** ID of the message */
+  readonly message_id: Snowflake
+  /** ID of the guild */
+  readonly guild_id?: Snowflake
+  /** ID of the answer */
+  readonly answer_id: number
+}
+export interface MessagePollVoteRemoveEvent {
+  /** ID of the user */
+  readonly user_id: Snowflake
+  /** ID of the channel */
+  readonly channel_id: Snowflake
+  /** ID of the message */
+  readonly message_id: Snowflake
+  /** ID of the guild */
+  readonly guild_id?: Snowflake
+  /** ID of the answer */
+  readonly answer_id: number
 }
 export interface MessageReactionAddEvent {
   /** ID of the user */
@@ -5752,7 +5855,61 @@ export const PermissionFlag = {
   USE_EXTERNAL_SOUNDS: BigInt(1) << BigInt(45),
   /** Allows sending voice messages */
   SEND_VOICE_MESSAGES: BigInt(1) << BigInt(46),
+  /** Allows sending polls */
+  SEND_POLLS: BigInt(1) << BigInt(49),
 } as const
+export interface Poll {
+  /** The question of the poll. Only text is supported. */
+  readonly question: PollMedia
+  /** Each of the answers available in the poll. */
+  readonly answers: Array<PollAnswer>
+  /** The time when the poll ends. */
+  readonly expiry?: string | null
+  /** Whether a user can select multiple answers */
+  readonly allow_multiselect: boolean
+  /** The layout type of the poll */
+  readonly layout_type: LayoutType
+  /** The results of the poll */
+  readonly results?: PollResult
+}
+export interface PollAnswer {
+  /** The ID of the answer */
+  readonly answer_id: number
+  /** The data of the answer */
+  readonly poll_media: PollMedia
+}
+export interface PollAnswerCount {
+  /** The answer_id */
+  readonly id: number
+  /** The number of votes for this answer */
+  readonly count: number
+  /** Whether the current user voted for this answer */
+  readonly me_voted: boolean
+}
+export interface PollCreateRequest {
+  /** The question of the poll. Only text is supported. */
+  readonly question: PollMedia
+  /** Each of the answers available in the poll, up to 10 */
+  readonly answers: Array<PollAnswer>
+  /** Number of hours the poll should be open for, up to 7 days */
+  readonly duration: number
+  /** Whether a user can select multiple answers */
+  readonly allow_multiselect: boolean
+  /** The layout type of the poll. Defaults to... DEFAULT! */
+  readonly layout_type?: LayoutType
+}
+export interface PollMedia {
+  /** The text of the field */
+  readonly text?: string
+  /** The emoji of the field */
+  readonly emoji?: Emoji
+}
+export interface PollResult {
+  /** Whether the votes have been precisely counted */
+  readonly is_finalized: boolean
+  /** The counts for each answer */
+  readonly answer_counts: Array<PollAnswerCount>
+}
 export enum PremiumTier {
   /** guild has not unlocked any Server Boost perks */
   NONE = 0,
@@ -5915,6 +6072,8 @@ export type ReceiveEvent =
   | VoiceStateUpdateEvent
   | VoiceServerUpdateEvent
   | WebhooksUpdateEvent
+  | MessagePollVoteAddEvent
+  | MessagePollVoteRemoveEvent
 export interface ReceiveEvents {
   HELLO: HelloEvent
   READY: ReadyEvent
@@ -5983,6 +6142,8 @@ export interface ReceiveEvents {
   VOICE_STATE_UPDATE: VoiceStateUpdateEvent
   VOICE_SERVER_UPDATE: VoiceServerUpdateEvent
   WEBHOOKS_UPDATE: WebhooksUpdateEvent
+  MESSAGE_POLL_VOTE_ADD: MessagePollVoteAddEvent
+  MESSAGE_POLL_VOTE_REMOVE: MessagePollVoteRemoveEvent
 }
 export type ReconnectEvent = null
 export interface RequestGuildMember {
@@ -6192,6 +6353,10 @@ export const SkuFlag = {
   USER_SUBSCRIPTION: 1 << 8,
 } as const
 export enum SkuType {
+  /** Durable one-time purchase */
+  DURABLE = 2,
+  /** Consumable one-time purchase */
+  CONSUMABLE = 3,
   /** Represents a recurring subscription */
   SUBSCRIPTION = 5,
   /** System-generated group for each SUBSCRIPTION SKU created */

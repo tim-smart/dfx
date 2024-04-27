@@ -63,7 +63,7 @@
     "@effect/language-service": "^0.1.0",
     "@effect/platform": "^0.50.6",
     "@effect/platform-node": "^0.47.6",
-    "@tim-smart/discord-api-docs-parser": "^0.5.11",
+    "@tim-smart/discord-api-docs-parser": "^0.5.12",
     "@types/chai": "^4.3.14",
     "@types/node": "^20.12.7",
     "@types/ws": "^8.5.10",

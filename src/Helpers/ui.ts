@@ -2,6 +2,9 @@ import type {
   ActionRow,
   Button,
   Component,
+  PollAnswer,
+  PollCreateRequest,
+  PollMedia,
   SelectMenu,
   SelectOption,
   TextInput,
@@ -98,4 +101,16 @@ export const textInput = (input: TextInputOpts): TextInput => ({
   type: ComponentType.TEXT_INPUT,
   style: TextInputStyle.SHORT,
   ...input,
+})
+
+/**
+ * Helper to create a poll
+ */
+export const poll = (
+  input: Omit<PollCreateRequest, "answers"> & {
+    readonly answers: ReadonlyArray<PollMedia>
+  },
+): PollCreateRequest => ({
+  ...input,
+  answers: input.answers.map(poll_media => ({ poll_media }) as PollAnswer),
 })

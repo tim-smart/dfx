@@ -56,8 +56,8 @@ devDependencies:
     specifier: ^0.47.6
     version: 0.47.6(@effect/platform@0.50.6)(bufferutil@4.0.8)(effect@3.0.6)(utf-8-validate@6.0.3)
   '@tim-smart/discord-api-docs-parser':
-    specifier: ^0.5.11
-    version: 0.5.11
+    specifier: ^0.5.12
+    version: 0.5.12
   '@types/chai':
     specifier: ^4.3.14
     version: 4.3.14
@@ -2190,8 +2190,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@tim-smart/discord-api-docs-parser@0.5.11:
-    resolution: {integrity: sha512-+fmM64eTCAvXHSKiGa0fEa1ULzEvnlzXSCpRxh/ZoXqsHU62PqcvQhLPOVmsTYvWmxhUHz0DLl1Rptz51HURiw==}
+  /@tim-smart/discord-api-docs-parser@0.5.12:
+    resolution: {integrity: sha512-bVayqbM0RPtmIKVmEsLiN9LAAonBeiIu6nsWCqVYmEhhzlU2DAu1tx3jBws/jze/J+DEYAJo+pf+0Qb4qzM3HQ==}
     hasBin: true
     dependencies:
       cheerio: 1.0.0-rc.12
