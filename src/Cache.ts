@@ -79,7 +79,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   ) => Effect.Effect<Array<[id: string, resource: A]>, EPMiss>
 }): Effect.Effect<ParentCache<EDriver, EMiss, EPMiss, A>, never, Scope.Scope> =>
   Effect.gen(function* () {
-    yield Stream.runDrain(
+    yield* Stream.runDrain(
       Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
         switch (op.op) {
           case "create":
@@ -99,7 +99,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       Effect.forkScoped,
       Effect.interruptible,
     )
-    yield driver.run.pipe(
+    yield* driver.run.pipe(
       Effect.tapErrorCause(_ =>
         Effect.logError("cache driver error, restarting", _),
       ),
@@ -193,7 +193,7 @@ export const make = <EOps, EDriver, EMiss, A>({
   onMiss: (id: string) => Effect.Effect<A, EMiss>
 }): Effect.Effect<Cache<EDriver, EMiss, A>, never, Scope.Scope> =>
   Effect.gen(function* () {
-    yield Stream.runDrain(
+    yield* Stream.runDrain(
       Stream.tap(ops, (op): Effect.Effect<void, EDriver> => {
         switch (op.op) {
           case "create":
@@ -211,7 +211,7 @@ export const make = <EOps, EDriver, EMiss, A>({
       Effect.interruptible,
     )
 
-    yield driver.run.pipe(
+    yield* driver.run.pipe(
       Effect.tapErrorCause(_ =>
         Effect.logError("cache driver error, restarting", _),
       ),

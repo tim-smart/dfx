@@ -61,7 +61,7 @@ const make = Effect.gen(function* () {
         openTimeout: 5000,
       })
       const write = yield* socket.writer
-      yield outbound.pipe(
+      yield* outbound.pipe(
         Effect.flatMap(_ => {
           if (_ === Reconnect) {
             return Effect.zipRight(
@@ -76,7 +76,7 @@ const make = Effect.gen(function* () {
         Effect.forkScoped,
         Effect.interruptible,
       )
-      yield onConnecting.pipe(
+      yield* onConnecting.pipe(
         Effect.zipRight(
           socket.runRaw(_ => {
             const message = encoding.decode(_)

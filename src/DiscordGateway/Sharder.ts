@@ -80,7 +80,7 @@ const make = Effect.gen(function* () {
     Effect.forever,
   )
 
-  yield Effect.replicateEffect(
+  yield* Effect.replicateEffect(
     spawner,
     gateway.session_start_limit.max_concurrency,
     { concurrency: "unbounded", discard: true },

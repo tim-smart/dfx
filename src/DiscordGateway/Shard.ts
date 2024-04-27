@@ -127,7 +127,7 @@ export const make = Effect.gen(function* () {
       )
 
       // heartbeats
-      yield Heartbeats.send(hellos, acks, latestSequence, heartbeatSend).pipe(
+      yield* Heartbeats.send(hellos, acks, latestSequence, heartbeatSend).pipe(
         Effect.forkScoped,
         Effect.interruptible,
       )
@@ -183,14 +183,14 @@ export const make = Effect.gen(function* () {
           }),
         )
 
-      yield Queue.take(sendQueue).pipe(
+      yield* Queue.take(sendQueue).pipe(
         Effect.tap(send),
         Effect.forever,
         Effect.forkScoped,
         Effect.interruptible,
       )
 
-      yield socket.take.pipe(
+      yield* socket.take.pipe(
         Effect.flatMap(onPayload),
         Effect.forever,
         Effect.forkScoped,

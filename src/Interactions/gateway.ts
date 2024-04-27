@@ -130,7 +130,7 @@ const makeRegistry = Effect.gen(function* () {
       _ => Queue.offer(queue, _),
     )
 
-  yield EffectUtils.foreverSwitch(Queue.take(queue), ix =>
+  yield* EffectUtils.foreverSwitch(Queue.take(queue), ix =>
     pipe(
       ix,
       run(Effect.catchAllCause(_ => Effect.logError("unhandled error", _))),
