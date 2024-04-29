@@ -3,6 +3,7 @@ import { DiscordGatewayLive } from "dfx/DiscordGateway"
 import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
 import { JsonDiscordWSCodecLive } from "dfx/DiscordGateway/DiscordWS"
 import * as Shard from "dfx/DiscordGateway/Shard"
+import { MemoryShardStateStoreLive } from "dfx/DiscordGateway/Shard/StateStore"
 import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
 import * as ShardStore from "dfx/DiscordGateway/ShardStore"
 import { MemoryShardStoreLive } from "dfx/DiscordGateway/ShardStore"
@@ -31,6 +32,7 @@ export const DiscordLive = Layer.mergeAll(
   Layer.provide(JsonDiscordWSCodecLive),
   Layer.provide(MemoryRateLimitStoreLive),
   Layer.provide(MemoryShardStoreLive),
+  Layer.provide(MemoryShardStateStoreLive),
 )
 
 export const DiscordIxLive = InteractionsRegistryLive.pipe(
