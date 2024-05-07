@@ -6,3 +6,4 @@ tsconfig.tsbuildinfo
 .DS_Store
 build/
 src/version.ts
+.direnv/

@@ -1,9 +1,8 @@
-import { runMain } from "@effect/platform-node/NodeRuntime"
+import { NodeHttpClient, NodeRuntime, NodeSocket } from "@effect/platform-node"
 import { DiscordConfig, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer } from "effect"
-import * as NodeHttp from "@effect/platform-node/NodeHttpClient"
 
 Dotenv.config()
 
@@ -43,9 +42,10 @@ const HelloLive = Layer.effectDiscard(
 
 // Construct the main layer
 const MainLive = HelloLive.pipe(
-  Layer.provide(NodeHttp.layer),
+  Layer.provide(NodeHttpClient.layerUndici),
+  Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(DiscordConfigLive),
 )
 
 // run it
-runMain(Layer.launch(MainLive))
+NodeRuntime.runMain(Layer.launch(MainLive))

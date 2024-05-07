@@ -1,8 +1,8 @@
+import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix } from "dfx"
 import { DiscordLive, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Cause, Config, Effect, Layer, Option, pipe } from "effect"
-import * as NodeHttp from "@effect/platform-node/NodeHttpClient"
 
 Dotenv.config()
 
@@ -80,7 +80,8 @@ const program = Effect.gen(function* (_) {
 })
 
 const EnvLive = DiscordLive.pipe(
-  Layer.provide(NodeHttp.layer),
+  Layer.provide(NodeHttpClient.layerUndici),
+  Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(DiscordConfigLive),
 )
 

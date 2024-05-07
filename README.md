@@ -10,10 +10,13 @@ A Discord library built on top of effect
 ## Example
 
 ```typescript
-import { runMain } from "@effect/platform-node/Runtime"
+import { NodeHttpClient, NodeRuntime, NodeSocket } from "@effect/platform-node"
 import { DiscordConfig, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
+import * as Dotenv from "dotenv"
 import { Config, Effect, Layer } from "effect"
+
+Dotenv.config()
 
 // Create a config layer
 const DiscordConfigLive = DiscordConfig.layerConfig({
@@ -45,13 +48,17 @@ const HelloLive = Layer.effectDiscard(
     )
   }),
 ).pipe(
-  // provide discord interactions layer
+  // provide discord ix layer
   Layer.provide(DiscordIxLive),
 )
 
 // Construct the main layer
-const MainLive = HelloLive.pipe(Layer.provide(DiscordConfigLive))
+const MainLive = HelloLive.pipe(
+  Layer.provide(NodeHttpClient.layerUndici),
+  Layer.provide(NodeSocket.layerWebSocketConstructor),
+  Layer.provide(DiscordConfigLive),
+)
 
 // run it
-runMain(Layer.launch(MainLive))
+NodeRuntime.runMain(Layer.launch(MainLive))
 ```

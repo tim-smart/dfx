@@ -1,13 +1,9 @@
+import * as DevTools from "@effect/experimental/DevTools"
+import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix } from "dfx"
-import {
-  DiscordLive,
-  InteractionsRegistry,
-  InteractionsRegistryLive,
-} from "dfx/gateway"
+import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
-import * as NodeHttp from "@effect/platform-node/NodeHttpClient"
-import * as DevTools from "@effect/experimental/DevTools"
 
 Dotenv.config()
 
@@ -55,9 +51,9 @@ const GreetLive = Layer.effectDiscard(makeGreetService)
 
 // Main layer
 const MainLive = GreetLive.pipe(
-  Layer.provide(InteractionsRegistryLive),
-  Layer.provide(DiscordLive),
-  Layer.provide(NodeHttp.layer),
+  Layer.provide(DiscordIxLive),
+  Layer.provide(NodeHttpClient.layerUndici),
+  Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(
     DiscordConfig.layerConfig({
       token: Config.secret("DISCORD_BOT_TOKEN"),
