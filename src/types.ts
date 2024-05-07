@@ -1184,7 +1184,7 @@ export interface CreateMessageParams {
   readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
-  /** Include to make your message a reply or a forward */
+  /** Include to make your message a reply */
   readonly message_reference?: MessageReference
   /** Components to include with the message */
   readonly components?: Array<Component>
@@ -5109,7 +5109,7 @@ export interface Message {
   /** roles specifically mentioned in this message */
   readonly mention_roles: Array<Snowflake>
   /** channels specifically mentioned in this message */
-  readonly mention_channels: Array<ChannelMention>
+  readonly mention_channels?: Array<ChannelMention>
   /** any attached files */
   readonly attachments: Array<Attachment>
   /** any embedded content */
@@ -5130,12 +5130,10 @@ export interface Message {
   readonly application?: Application
   /** if the message is an Interaction or application-owned webhook, this is the id of the application */
   readonly application_id?: Snowflake
-  /** message flags combined as a bitfield */
-  readonly flags?: number
   /** data showing the source of a crosspost, channel follow add, pin, or reply message */
   readonly message_reference?: MessageReference
-  /** the message associated with the message_reference. This is a minimal subset of fields in a message (e.g. author is excluded.) */
-  readonly message_snapshots: Array<MessageSnapshot>
+  /** message flags combined as a bitfield */
+  readonly flags?: number
   /** the message associated with the message_reference */
   readonly referenced_message?: Message | null
   /** In preview. Sent if the message is sent as a result of an interaction */
@@ -5145,7 +5143,7 @@ export interface Message {
   /** the thread that was started from this message, includes thread member object */
   readonly thread?: Channel
   /** sent if the message contains components like buttons, action rows, or other interactive components */
-  readonly components: Array<Component>
+  readonly components?: Array<Component>
   /** sent if the message contains stickers */
   readonly sticker_items?: Array<StickerItem>
   /** Deprecated the stickers sent with the message */
@@ -5329,8 +5327,6 @@ export interface MessageReactionRemoveEvent {
   readonly emoji: Emoji
 }
 export interface MessageReference {
-  /** type of reference. */
-  readonly type?: MessageReferenceType
   /** id of the originating message */
   readonly message_id?: Snowflake
   /** id of the originating message's channel */
@@ -5339,18 +5335,6 @@ export interface MessageReference {
   readonly guild_id?: Snowflake
   /** when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true */
   readonly fail_if_not_exists?: boolean
-}
-export enum MessageReferenceType {
-  /** A standard reference used by replies. */
-  DEFAULT = 0,
-  /** Reference used to point to a message at a point in time. */
-  FORWARD = 1,
-}
-export interface MessageSnapshot {
-  /** subset of fields in the message object */
-  readonly message: Message
-  /** ID of the origin message's guild */
-  readonly guild_id?: Snowflake
 }
 export enum MessageType {
   DEFAULT = 0,
