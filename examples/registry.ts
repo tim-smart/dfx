@@ -1,4 +1,3 @@
-import * as DevTools from "@effect/experimental/DevTools"
 import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
@@ -60,7 +59,6 @@ const MainLive = GreetLive.pipe(
     }),
   ),
   Layer.provide(Logger.logFmt),
-  Layer.provide(DevTools.layer()),
 )
 
 Layer.launch(MainLive).pipe(
