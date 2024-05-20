@@ -102,7 +102,7 @@ export const run =
         Effect.withSpan(
           Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
           "dfx.Interaction",
-          { attributes: { interactionId: i.id } },
+          { attributes: { interactionId: i.id }, captureStackTrace: false },
         ),
       )
 

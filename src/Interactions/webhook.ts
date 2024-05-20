@@ -138,7 +138,10 @@ const run = <R, E>(
           interaction,
         ),
         "dfx.Interaction",
-        { attributes: { interactionId: interaction.id } },
+        {
+          attributes: { interactionId: interaction.id },
+          captureStackTrace: false,
+        },
       ),
     )
 }
