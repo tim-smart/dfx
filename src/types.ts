@@ -278,23 +278,23 @@ export interface ApplicationCommandOption {
   readonly description: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
-  /** If the parameter is required or optional--default false */
+  /** Whether the parameter is required or optional, default false */
   readonly required?: boolean
-  /** Choices for STRING, INTEGER, and NUMBER types for the user to pick from, max 25 */
+  /** Choices for the user to pick from, max 25 */
   readonly choices?: Array<ApplicationCommandOptionChoice>
-  /** If the option is a subcommand or subcommand group type, these nested options will be the parameters */
+  /** If the option is a subcommand or subcommand group type, these nested options will be the parameters or subcommands respectively; up to 25 */
   readonly options?: Array<ApplicationCommandOption>
-  /** If the option is a channel type, the channels shown will be restricted to these types */
+  /** The channels shown will be restricted to these types */
   readonly channel_types?: Array<ChannelType>
-  /** If the option is an INTEGER or NUMBER type, the minimum value permitted */
+  /** The minimum value permitted */
   readonly min_value?: number
-  /** If the option is an INTEGER or NUMBER type, the maximum value permitted */
+  /** The maximum value permitted */
   readonly max_value?: number
-  /** For option type STRING, the minimum allowed length (minimum of 0, maximum of 6000) */
+  /** The minimum allowed length (minimum of 0, maximum of 6000) */
   readonly min_length?: number
-  /** For option type STRING, the maximum allowed length (minimum of 1, maximum of 6000) */
+  /** The maximum allowed length (minimum of 1, maximum of 6000) */
   readonly max_length?: number
-  /** If autocomplete interactions are enabled for this STRING, INTEGER, or NUMBER type option */
+  /** If autocomplete interactions are enabled for this option */
   readonly autocomplete?: boolean
 }
 export interface ApplicationCommandOptionChoice {
@@ -622,6 +622,20 @@ export enum AuditLogEvent {
   CREATOR_MONETIZATION_REQUEST_CREATED = 150,
   /** Creator monetization terms were accepted */
   CREATOR_MONETIZATION_TERMS_ACCEPTED = 151,
+  /** Guild Onboarding Question was created */
+  ONBOARDING_PROMPT_CREATE = 163,
+  /** Guild Onboarding Question was updated */
+  ONBOARDING_PROMPT_UPDATE = 164,
+  /** Guild Onboarding Question was deleted */
+  ONBOARDING_PROMPT_DELETE = 165,
+  /** Guild Onboarding was created */
+  ONBOARDING_CREATE = 166,
+  /** Guild Onboarding was updated */
+  ONBOARDING_UPDATE = 167,
+  /** Guild Server Guide was created */
+  HOME_SETTINGS_CREATE = 190,
+  /** Guild Server Guide was updated */
+  HOME_SETTINGS_UPDATE = 191,
 }
 export interface AutoModerationAction {
   /** the type of action */
@@ -680,6 +694,12 @@ export interface AutoModerationRule {
 export type AutoModerationRuleCreateEvent = AutoModerationRule
 export type AutoModerationRuleDeleteEvent = AutoModerationRule
 export type AutoModerationRuleUpdateEvent = AutoModerationRule
+export interface AvatarDecorationDatum {
+  /** the avatar decoration hash */
+  readonly asset: string
+  /** id of the avatar decoration's SKU */
+  readonly sku_id: Snowflake
+}
 export interface Ban {
   /** the reason for the ban */
   readonly reason?: string | null
@@ -994,7 +1014,7 @@ export interface CreateGlobalApplicationCommandParams {
   readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
-  /** the parameters for the command */
+  /** the parameters for the command, max of 25 */
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
@@ -1026,7 +1046,7 @@ export interface CreateGuildApplicationCommandParams {
   readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
-  /** Parameters for the command */
+  /** Parameters for the command, max of 25 */
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
@@ -2620,7 +2640,7 @@ export interface EditGuildApplicationCommandParams {
   readonly description?: string
   /** Localization dictionary for the description field. Values follow the same restrictions as description */
   readonly description_localizations?: Locale | null
-  /** Parameters for the command */
+  /** Parameters for the command, max of  25 */
   readonly options?: Array<ApplicationCommandOption>
   /** Set of permissions represented as a bit set */
   readonly default_member_permissions?: string | null
@@ -4129,6 +4149,8 @@ export interface GetInviteParams {
   readonly guild_scheduled_event_id?: Snowflake
 }
 export interface GetReactionParams {
+  /** The type of reaction */
+  readonly type?: ReactionType
   /** Get users after this user ID */
   readonly after?: Snowflake
   /** Max number of users to return (1-100) */
@@ -4247,6 +4269,10 @@ export interface GuildApplicationCommandPermission {
   readonly permissions: Array<ApplicationCommandPermission>
 }
 export type GuildAuditLogEntryCreateEvent = AuditLogEntry
+export interface GuildAuditLogEntryCreateEventExtra {
+  /** ID of the guild */
+  readonly guild_id: Snowflake
+}
 export interface GuildBanAddEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
@@ -4376,6 +4402,8 @@ export interface GuildMember {
   readonly permissions?: string
   /** when the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
   readonly communication_disabled_until?: string | null
+  /** data for the member's guild avatar decoration */
+  readonly avatar_decoration_data?: AvatarDecorationDatum | null
 }
 export type GuildMemberAddEvent = GuildMember & GuildMemberAddExtra
 export interface GuildMemberAddExtra {
@@ -4437,6 +4465,8 @@ export interface GuildMemberUpdateEvent {
   readonly pending?: boolean
   /** When the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
   readonly communication_disabled_until?: string | null
+  /** Guild member flags represented as a bit set, defaults to 0 */
+  readonly flags?: number
 }
 export enum GuildNsfwLevel {
   DEFAULT = 0,
@@ -4750,6 +4780,8 @@ export interface Interaction {
   /** Interaction data payload */
   readonly data?: InteractionDatum
   /** Guild that the interaction was sent from */
+  readonly guild?: Guild
+  /** Guild that the interaction was sent from */
   readonly guild_id?: Snowflake
   /** Channel that the interaction was sent from */
   readonly channel?: Channel
@@ -4858,6 +4890,8 @@ export enum InteractionType {
 }
 export type InvalidSessionEvent = boolean
 export interface Invite {
+  /** the type of invite */
+  readonly type: InviteType
   /** the invite code (unique ID) */
   readonly code: string
   /** the guild this invite is for */
@@ -4942,6 +4976,11 @@ export interface InviteStageInstance {
 export enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
+}
+export enum InviteType {
+  GUILD = 0,
+  GROUP_DM = 1,
+  FRIEND = 2,
 }
 export enum KeywordPresetType {
   /** words that may be considered forms of swearing or cursing */
@@ -5155,7 +5194,9 @@ export interface Message {
   /** data for users, members, channels, and roles in the message's auto-populated select menus */
   readonly resolved?: ResolvedDatum
   /** A poll! */
-  readonly poll?: PollCreateRequest
+  readonly poll?: Poll
+  /** the call associated with the message */
+  readonly call?: MessageCall
 }
 export interface MessageActivity {
   /** type of message activity */
@@ -5168,6 +5209,12 @@ export enum MessageActivityType {
   SPECTATE = 2,
   LISTEN = 3,
   JOIN_REQUEST = 5,
+}
+export interface MessageCall {
+  /** array of user object ids that participated in the call */
+  readonly participants: Array<Snowflake>
+  /** time when call ended */
+  readonly ended_timestamp?: string | null
 }
 export interface MessageComponentDatum {
   /** the custom_id of the component */
@@ -5295,6 +5342,12 @@ export interface MessageReactionAddEvent {
   readonly emoji: Emoji
   /** ID of the user who authored the message which was reacted to */
   readonly message_author_id?: Snowflake
+  /** true if this is a super-reaction */
+  readonly burst: boolean
+  /** Colors used for super-reaction animation in "#rrggbb" format */
+  readonly burst_colors?: Array<string>
+  /** The type of reaction */
+  readonly type: ReactionType
 }
 export interface MessageReactionRemoveAllEvent {
   /** ID of the channel */
@@ -5325,6 +5378,10 @@ export interface MessageReactionRemoveEvent {
   readonly guild_id?: Snowflake
   /** Emoji used to react - example */
   readonly emoji: Emoji
+  /** true if this was a super-reaction */
+  readonly burst: boolean
+  /** The type of reaction */
+  readonly type: ReactionType
 }
 export interface MessageReference {
   /** id of the originating message */
@@ -5479,6 +5536,8 @@ export interface ModifyCurrentUserParams {
   readonly username: string
   /** if passed, modifies the user's avatar */
   readonly avatar?: string | null
+  /** if passed, modifies the user's banner */
+  readonly banner?: string | null
 }
 export interface ModifyCurrentUserVoiceStateParams {
   /** the id of the channel the user is currently in */
@@ -5987,6 +6046,10 @@ export interface ReactionCountDetail {
   readonly burst: number
   /** Count of normal reactions */
   readonly normal: number
+}
+export enum ReactionType {
+  NORMAL = 0,
+  BURST = 1,
 }
 export interface ReadyEvent {
   /** API version */
@@ -6541,7 +6604,7 @@ export enum TeamMemberRoleType {
   ADMIN = "admin",
   /** Developers can access information about team-owned apps, like the client secret or public key. They can also take limited actions on team-owned apps, like configuring interaction endpoints or resetting the bot token. Members with the Developer role cannot manage the team or its members, or take destructive actions on team-owned apps. */
   DEVELOPER = "developer",
-  /** Read-only members can access information about a team and any team-owned apps. Some examples include getting the IDs of applications and exporting payout records. */
+  /** Read-only members can access information about a team and any team-owned apps. Some examples include getting the IDs of applications and exporting payout records. Members can also invite bots associated with team-owned apps that are marked private. */
   READONLY = "read_only",
 }
 export interface TextInput {
@@ -6729,8 +6792,8 @@ export interface User {
   readonly premium_type?: PremiumType
   /** the public flags on a user's account */
   readonly public_flags?: number
-  /** the user's avatar decoration hash */
-  readonly avatar_decoration?: string | null
+  /** data for the user's avatar decoration */
+  readonly avatar_decoration_data?: AvatarDecorationDatum | null
 }
 export const UserFlag = {
   /** Discord Employee */
