@@ -92,6 +92,5 @@
     "vite": "^5.2.13",
     "vitest": "1.6.0"
   },
-  "sideEffects": false,
-  "gitHead": "e4a2cd1ed8a3b8e631e6b661703400b9c3546a3c"
+  "gitHead": "781225ad6e1931ec1484fb889065f4580d8ae2f1"
 }
