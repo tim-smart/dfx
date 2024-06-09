@@ -21,6 +21,8 @@ export enum ActionType {
   SEND_ALERT_MESSAGE = 2,
   /** timeout user for a specified duration * */
   TIMEOUT = 3,
+  /** prevents a member from using text, voice, or other interactions */
+  BLOCK_MEMBER_INTERACTION = 4,
 }
 export interface Activity {
   /** Activity's name */
@@ -3886,6 +3888,8 @@ export type EntitlementUpdateEvent = Entitlement
 export enum EventType {
   /** when a member sends or edits a message in the guild */
   MESSAGE_SEND = 1,
+  /** when a member edits their profile */
+  MEMBER_UPDATE = 2,
 }
 export interface ExecuteWebhookParams {
   /** the message contents (up to 2000 characters) */
@@ -5425,6 +5429,10 @@ export enum MessageType {
   STAGE_SPEAKER = 29,
   STAGE_TOPIC = 31,
   GUILD_APPLICATION_PREMIUM_SUBSCRIPTION = 32,
+  GUILD_INCIDENT_ALERT_MODE_ENABLED = 36,
+  GUILD_INCIDENT_ALERT_MODE_DISABLED = 37,
+  GUILD_INCIDENT_REPORT_RAID = 38,
+  GUILD_INCIDENT_REPORT_FALSE_ALARM = 39,
 }
 export type MessageUpdateEvent = MessageCreateEvent
 export enum MfaLevel {
@@ -6598,7 +6606,7 @@ export interface TeamMember {
   readonly role: TeamMemberRoleType
 }
 export enum TeamMemberRoleType {
-  /** Owners are the most permissiable role, and can take destructive, irreversible actions like deleting team-owned apps or the team itself. Teams are limited to 1 owner. */
+  /** Owners are the most permissible role, and can take destructive, irreversible actions like deleting team-owned apps or the team itself. Teams are limited to 1 owner. */
   OWNER = "",
   /** Admins have similar access as owners, except they cannot take destructive actions on the team or team-owned apps. */
   ADMIN = "admin",
@@ -6690,13 +6698,13 @@ export interface ThreadMetadatum {
 }
 export type ThreadUpdateEvent = Channel
 export interface TriggerMetadatum {
-  /** KEYWORD */
+  /** KEYWORD, MEMBER_PROFILE */
   readonly keyword_filter: Array<string>
-  /** KEYWORD */
+  /** KEYWORD, MEMBER_PROFILE */
   readonly regex_patterns: Array<string>
   /** KEYWORD_PRESET */
   readonly presets: Array<KeywordPresetType>
-  /** KEYWORD, KEYWORD_PRESET */
+  /** KEYWORD, KEYWORD_PRESET, MEMBER_PROFILE */
   readonly allow_list: Array<string>
   /** MENTION_SPAM */
   readonly mention_total_limit: number
@@ -6712,6 +6720,8 @@ export enum TriggerType {
   KEYWORD_PRESET = 4,
   /** check if content contains more unique mentions than allowed */
   MENTION_SPAM = 5,
+  /** check if member profile contains words from a user defined list of keywords */
+  MEMBER_PROFILE = 6,
 }
 export interface TypingStartEvent {
   /** ID of the channel */
