@@ -42,7 +42,7 @@
     }
   },
   "peerDependencies": {
-    "@effect/platform": "^0.55.0",
+    "@effect/platform": "^0.57.0",
     "effect": "^3.2.1"
   },
   "optionalDependencies": {
