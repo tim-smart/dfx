@@ -4471,6 +4471,8 @@ export interface GuildMemberUpdateEvent {
   readonly communication_disabled_until?: string | null
   /** Guild member flags represented as a bit set, defaults to 0 */
   readonly flags?: number
+  /** Data for the member's guild avatar decoration */
+  readonly avatar_decoration_data?: AvatarDecorationDatum | null
 }
 export enum GuildNsfwLevel {
   DEFAULT = 0,
@@ -5433,6 +5435,7 @@ export enum MessageType {
   GUILD_INCIDENT_ALERT_MODE_DISABLED = 37,
   GUILD_INCIDENT_REPORT_RAID = 38,
   GUILD_INCIDENT_REPORT_FALSE_ALARM = 39,
+  PURCHASE_NOTIFICATION = 44,
 }
 export type MessageUpdateEvent = MessageCreateEvent
 export enum MfaLevel {
@@ -5924,6 +5927,8 @@ export const PermissionFlag = {
   SEND_VOICE_MESSAGES: BigInt(1) << BigInt(46),
   /** Allows sending polls */
   SEND_POLLS: BigInt(1) << BigInt(49),
+  /** Allows user-installed apps to send public responses. When disabled, users will still be allowed to use their apps but the responses will be ephemeral. This only applies to apps not also installed to the server. */
+  USE_EXTERNAL_APPS: BigInt(1) << BigInt(50),
 } as const
 export interface Poll {
   /** The question of the poll. Only text is supported. */
