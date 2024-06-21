@@ -1,5 +1,8 @@
 import { TypeIdError } from "@effect/platform/Error"
-import * as Http from "@effect/platform/HttpClient"
+import * as HttpClient from "@effect/platform/HttpClient"
+import * as HttpRequest from "@effect/platform/HttpClientRequest"
+import type * as HttpResponse from "@effect/platform/HttpClientResponse"
+import type * as HttpError from "@effect/platform/HttpClientError"
 import { DiscordConfig } from "dfx/DiscordConfig"
 import type { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
 import {
@@ -21,7 +24,7 @@ import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
 import type { Scope } from "effect/Scope"
-import * as Secret from "effect/Secret"
+import * as Redacted from "effect/Redacted"
 
 export const DiscordRESTErrorTypeId = Symbol.for(
   "dfx/DiscordREST/DiscordRESTError",
@@ -31,7 +34,7 @@ export class DiscordRESTError extends TypeIdError(
   DiscordRESTErrorTypeId,
   "DiscordRESTError",
 )<{
-  error: Http.error.HttpClientError
+  error: HttpError.HttpClientError
   body?: unknown
 }> {
   get message() {
@@ -45,7 +48,7 @@ export class DiscordRESTError extends TypeIdError(
 const make = Effect.gen(function* () {
   const { rest, token } = yield* DiscordConfig
 
-  const http = yield* Http.client.Client
+  const http = yield* HttpClient.HttpClient
   const store = yield* RateLimitStore
   const { maybeWait } = yield* RateLimiter
 
@@ -84,7 +87,7 @@ const make = Effect.gen(function* () {
   // Request rate limiting
   const requestRateLimit = (
     path: string,
-    request: Http.request.ClientRequest,
+    request: HttpRequest.HttpClientRequest,
   ) =>
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(path, request.method)),
@@ -107,8 +110,8 @@ const make = Effect.gen(function* () {
 
   // Update rate limit buckets
   const updateBuckets = (
-    request: Http.request.ClientRequest,
-    response: Http.response.ClientResponse,
+    request: HttpRequest.HttpClientRequest,
+    response: HttpResponse.HttpClientResponse,
   ) =>
     Effect.Do.pipe(
       Effect.let("route", () => routeFromConfig(request.url, request.method)),
@@ -145,17 +148,17 @@ const make = Effect.gen(function* () {
     )
 
   const httpExecutor = pipe(
-    Http.client.filterStatusOk(http),
-    Http.client.mapRequest(req =>
+    HttpClient.filterStatusOk(http),
+    HttpClient.mapRequest(req =>
       pipe(
-        Http.request.prependUrl(req, rest.baseUrl),
-        Http.request.setHeaders({
-          Authorization: `Bot ${Secret.value(token)}`,
+        HttpRequest.prependUrl(req, rest.baseUrl),
+        HttpRequest.setHeaders({
+          Authorization: `Bot ${Redacted.value(token)}`,
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       ),
     ),
-    Http.client.catchAll(error =>
+    HttpClient.catchAll(error =>
       error.reason === "StatusCode"
         ? error.response.json.pipe(
             Effect.mapError(_ => new DiscordRESTError({ error })),
@@ -168,7 +171,7 @@ const make = Effect.gen(function* () {
   )
 
   const executor = <A = unknown>(
-    request: Http.request.ClientRequest,
+    request: HttpRequest.HttpClientRequest,
   ): Effect.Effect<ResponseWithData<A>, DiscordRESTError, Scope> =>
     requestRateLimit(request.url, request).pipe(
       Effect.zipLeft(globalRateLimit),
@@ -234,7 +237,7 @@ const make = Effect.gen(function* () {
       }),
     )
 
-  const routes = Discord.createRoutes<Partial<Http.request.Options.NoUrl>>(
+  const routes = Discord.createRoutes<Partial<HttpRequest.Options.NoUrl>>(
     <R, P>({
       method,
       options = {},
@@ -242,19 +245,19 @@ const make = Effect.gen(function* () {
       url,
     }: Discord.Route<
       P,
-      Partial<Http.request.Options.NoUrl>
+      Partial<HttpRequest.Options.NoUrl>
     >): RestResponse<R> => {
       const hasBody = method !== "GET" && method !== "DELETE"
-      let request = Http.request.make(method as any)(url, options)
+      let request = HttpRequest.make(method as any)(url, options)
 
       if (!hasBody) {
         if (params) {
-          request = Http.request.appendUrlParams(request, params as any)
+          request = HttpRequest.appendUrlParams(request, params as any)
         }
       } else if (params && request.body._tag === "FormData") {
         request.body.formData.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        request = Http.request.unsafeJsonBody(request, params)
+        request = HttpRequest.unsafeJsonBody(request, params)
       }
 
       return new RestResponseImpl(executor(request))
@@ -299,9 +302,9 @@ export interface DiscordREST {
 }
 
 export interface DiscordRESTService
-  extends Discord.Endpoints<Partial<Http.request.Options.NoUrl>> {
+  extends Discord.Endpoints<Partial<HttpRequest.Options.NoUrl>> {
   readonly executor: <A = unknown>(
-    request: Http.request.ClientRequest,
+    request: HttpRequest.HttpClientRequest,
   ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError, Scope>
 }
 

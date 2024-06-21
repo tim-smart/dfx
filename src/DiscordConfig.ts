@@ -1,11 +1,11 @@
-import { GenericTag } from "effect/Context"
-import * as Duration from "effect/Duration"
+import * as Discord from "dfx/types"
 import * as Config from "effect/Config"
 import type * as ConfigError from "effect/ConfigError"
-import type * as Secret from "effect/Secret"
+import { GenericTag } from "effect/Context"
+import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
-import * as Discord from "dfx/types"
+import type * as Redacted from "effect/Redacted"
 
 const VERSION = 10
 
@@ -14,7 +14,7 @@ export interface DiscordConfig {
 }
 
 export interface DiscordConfigService {
-  readonly token: Secret.Secret
+  readonly token: Redacted.Redacted
   readonly rest: {
     readonly baseUrl: string
     readonly globalRateLimit: {
@@ -35,7 +35,7 @@ export const DiscordConfig = GenericTag<DiscordConfig, DiscordConfigService>(
 )
 
 export interface MakeOpts {
-  readonly token: Secret.Secret
+  readonly token: Redacted.Redacted
   readonly rest?: Partial<DiscordConfigService["rest"]>
   readonly gateway?: Partial<DiscordConfigService["gateway"]>
 }
@@ -62,9 +62,7 @@ export const make = ({
   },
 })
 
-export const layer = (
-  opts: MakeOpts,
-): Layer.Layer<DiscordConfig> =>
+export const layer = (opts: MakeOpts): Layer.Layer<DiscordConfig> =>
   Layer.succeed(DiscordConfig, make(opts))
 
 export const layerConfig = (

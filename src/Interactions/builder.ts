@@ -3,7 +3,7 @@ import { identity } from "effect/Function"
 import type * as Cause from "effect/Cause"
 import * as Effect from "effect/Effect"
 import { catchTag } from "effect/Effect"
-import * as Http from "@effect/platform/HttpClient"
+import * as HttpBody from "@effect/platform/HttpBody"
 import { DiscordREST, type DiscordRESTError } from "dfx/DiscordREST"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
@@ -137,7 +137,7 @@ export class InteractionBuilder<R, E, TE> {
         Effect.flatMap(r => r.json),
         Effect.flatMap(app =>
           rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-            body: Http.body.unsafeJson(Chunk.toReadonlyArray(commands)),
+            body: HttpBody.unsafeJson(Chunk.toReadonlyArray(commands)),
           }),
         ),
       ),

@@ -6,7 +6,8 @@ import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
-import * as Http from "@effect/platform/HttpClient"
+import * as HttpBody from "@effect/platform/HttpBody"
+import type * as HttpClientError from "@effect/platform/HttpClientError"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
@@ -48,7 +49,7 @@ export const run =
     ix: InteractionBuilder<R, E, TE>,
   ): Effect.Effect<
     never,
-    E2 | DiscordRESTError | Http.error.ResponseError,
+    E2 | DiscordRESTError | HttpClientError.ResponseError,
     DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>
   > =>
     Effect.gen(function* () {
@@ -77,7 +78,7 @@ export const run =
       const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
         application.id,
         {
-          body: Http.body.unsafeJson(
+          body: HttpBody.unsafeJson(
             GlobalApplicationCommand.map(_ => _.command),
           ),
         },

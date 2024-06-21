@@ -8,7 +8,7 @@ Dotenv.config()
 
 // Create the dependencies layer
 const DiscordConfigLive = DiscordConfig.layerConfig({
-  token: Config.secret("DISCORD_BOT_TOKEN"),
+  token: Config.redacted("DISCORD_BOT_TOKEN"),
 })
 
 // Create your interaction definitions.

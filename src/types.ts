@@ -779,6 +779,8 @@ export interface Button {
   readonly emoji?: Emoji
   /** Developer-defined identifier for the button; max 100 characters */
   readonly custom_id?: string
+  /** Identifier for a purchasable SKU, only available when using premium-style buttons */
+  readonly sku_id?: Snowflake
   /** URL for link-style buttons */
   readonly url?: string
   /** Whether the button is disabled (defaults to false) */
@@ -790,6 +792,7 @@ export enum ButtonStyle {
   SUCCESS = 3,
   DANGER = 4,
   LINK = 5,
+  PREMIUM = 6,
 }
 export interface Channel {
   /** the id of this channel */
@@ -4865,7 +4868,7 @@ export enum InteractionCallbackType {
   APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8,
   /** respond to an interaction with a popup modal */
   MODAL = 9,
-  /** respond to an interaction with an upgrade button, only available for apps with monetization enabled */
+  /** Deprecated; respond to an interaction with an upgrade button, only available for apps with monetization enabled */
   PREMIUM_REQUIRED = 10,
 }
 export enum InteractionContextType {

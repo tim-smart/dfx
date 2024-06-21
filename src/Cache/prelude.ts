@@ -3,7 +3,7 @@ import type * as Scope from "effect/Scope"
 import * as Stream from "effect/Stream"
 import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
-import type { ResponseError } from "@effect/platform/Http/ClientError"
+import type { ResponseError } from "@effect/platform/HttpClientError"
 import type {
   CacheDriver,
   CacheOp,

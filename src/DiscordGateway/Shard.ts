@@ -21,8 +21,8 @@ import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as PubSub from "effect/PubSub"
 import * as Queue from "effect/Queue"
+import * as Redacted from "effect/Redacted"
 import * as Ref from "effect/Ref"
-import * as Secret from "effect/Secret"
 import type * as Types from "effect/Types"
 
 const enum Phase {
@@ -123,7 +123,7 @@ export const make = Effect.gen(function* () {
       // identify
       const identify = Identify.identifyOrResume(
         {
-          token: Secret.value(token),
+          token: Redacted.value(token),
           shard,
           intents: gateway.intents,
           presence: gateway.presence,
