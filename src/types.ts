@@ -234,9 +234,9 @@ export interface ApplicationCommand {
   readonly default_permission?: boolean | null
   /** Indicates whether the command is age-restricted, defaults to false */
   readonly nsfw?: boolean
-  /** In preview. Installation context(s) where the command is available, only for globally-scoped commands. Defaults to GUILD_INSTALL (0) */
+  /** Installation contexts where the command is available, only for globally-scoped commands. Defaults to your app's configured contexts */
   readonly integration_types?: Array<ApplicationIntegrationType>
-  /** In preview. Interaction context(s) where the command can be used, only for globally-scoped commands. By default, all interaction context types included for new commands. */
+  /** Interaction context(s) where the command can be used, only for globally-scoped commands. By default, all interaction context types included for new commands. */
   readonly contexts?: Array<InteractionContextType> | null
   /** Autoincrementing version identifier updated during substantial record changes */
   readonly version: Snowflake
@@ -416,6 +416,8 @@ export interface Attachment {
   readonly id: Snowflake
   /** name of file attached */
   readonly filename: string
+  /** the title of the file */
+  readonly title?: string
   /** description for the file (max 1024 characters) */
   readonly description?: string
   /** the attachment's media type */
@@ -759,9 +761,9 @@ export interface BulkOverwriteGuildApplicationCommandParams {
   readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   readonly default_permission?: boolean
-  /** In preview. Installation context(s) where the command is available, defaults to GUILD_INSTALL ([0]) */
+  /** Installation context(s) where the command is available, defaults to GUILD_INSTALL ([0]) */
   readonly integration_types: Array<ApplicationIntegrationType>
-  /** In preview. Interaction context(s) where the command can be used, defaults to all contexts [0,1,2] */
+  /** Interaction context(s) where the command can be used, defaults to all contexts [0,1,2] */
   readonly contexts: Array<InteractionContextType>
   /** Type of command, defaults 1 if not set */
   readonly type?: ApplicationCommandType
@@ -801,7 +803,7 @@ export interface Channel {
   readonly type: ChannelType
   /** the id of the guild (may be missing for some channel objects received over gateway guild dispatches) */
   readonly guild_id?: Snowflake
-  /** sorting position of the channel */
+  /** sorting position of the channel (channels with the same position are sorted by id) */
   readonly position?: number
   /** explicit permission overwrites for members and roles */
   readonly permission_overwrites?: Array<Overwrite>
@@ -1081,7 +1083,7 @@ export interface CreateGuildChannelParams {
   readonly user_limit: number
   /** amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected */
   readonly rate_limit_per_user: number
-  /** sorting position of the channel */
+  /** sorting position of the channel (channels with the same position are sorted by id) */
   readonly position: number
   /** the channel's permission overwrites */
   readonly permission_overwrites: Array<Overwrite>
@@ -2629,9 +2631,9 @@ export interface EditGlobalApplicationCommandParams {
   readonly dm_permission?: boolean | null
   /** Replaced by default_member_permissions and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to true */
   readonly default_permission?: boolean
-  /** In preview. Installation context(s) where the command is available */
+  /** Installation context(s) where the command is available */
   readonly integration_types?: Array<ApplicationIntegrationType>
-  /** In preview. Interaction context(s) where the command can be used */
+  /** Interaction context(s) where the command can be used */
   readonly contexts?: Array<InteractionContextType>
   /** Indicates whether the command is age-restricted */
   readonly nsfw?: boolean
@@ -2889,7 +2891,6 @@ export interface Endpoints<O> {
     params?: Partial<CreateDmParams>,
     options?: O,
   ) => RestResponse<Channel>
-  /** Create a followup message for an Interaction. Functions the same as Execute Webhook, but wait is always true. The thread_id, avatar_url, and username parameters are not supported when using this endpoint for interaction followups. */
   createFollowupMessage: (
     applicationId: string,
     interactionToken: string,
@@ -5480,7 +5481,7 @@ export interface ModifyChannelGuildChannelParams {
   readonly name: string
   /** the type of channel; only conversion between text and announcement is supported and only in guilds with the "NEWS" feature */
   readonly type: ChannelType
-  /** the position of the channel in the left-hand listing */
+  /** the position of the channel in the left-hand listing (channels with the same position are sorted by id) */
   readonly position?: number | null
   /** 0-1024 character channel topic (0-4096 characters for GUILD_FORUM and GUILD_MEDIA channels) */
   readonly topic?: string | null
@@ -5564,7 +5565,7 @@ export interface ModifyCurrentUserVoiceStateParams {
 export interface ModifyGuildChannelPositionParams {
   /** channel id */
   readonly id: Snowflake
-  /** sorting position of the channel */
+  /** sorting position of the channel (channels with the same position are sorted by id) */
   readonly position?: number | null
   /** syncs the permission overwrites with the new parent, if moving to a new category */
   readonly lock_permissions?: boolean | null
@@ -5670,7 +5671,7 @@ export interface ModifyGuildRoleParams {
 export interface ModifyGuildRolePositionParams {
   /** role */
   readonly id: Snowflake
-  /** sorting position of the role */
+  /** sorting position of the role (roles with the same position are sorted by id) */
   readonly position?: number | null
 }
 export interface ModifyGuildScheduledEventParams {
@@ -5966,10 +5967,10 @@ export interface PollCreateRequest {
   readonly question: PollMedia
   /** Each of the answers available in the poll, up to 10 */
   readonly answers: Array<PollAnswer>
-  /** Number of hours the poll should be open for, up to 7 days */
-  readonly duration: number
-  /** Whether a user can select multiple answers */
-  readonly allow_multiselect: boolean
+  /** Number of hours the poll should be open for, up to 32 days. Defaults to 24 */
+  readonly duration?: number
+  /** Whether a user can select multiple answers. Defaults to false */
+  readonly allow_multiselect?: boolean
   /** The layout type of the poll. Defaults to... DEFAULT! */
   readonly layout_type?: LayoutType
 }
@@ -6293,7 +6294,7 @@ export interface Role {
   readonly icon?: string | null
   /** role unicode emoji */
   readonly unicode_emoji?: string | null
-  /** position of this role */
+  /** position of this role (roles with the same position are sorted by id) */
   readonly position: number
   /** permission bit set */
   readonly permissions: string
