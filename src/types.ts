@@ -112,7 +112,7 @@ export interface ActivityTimestamp {
   readonly end?: number
 }
 export enum ActivityType {
-  GAME = 0,
+  PLAYING = 0,
   STREAMING = 1,
   LISTENING = 2,
   WATCHING = 3,
@@ -202,7 +202,7 @@ export interface Application {
   readonly tags?: Array<string>
   /** Settings for the app's default in-app authorization link, if enabled */
   readonly install_params?: InstallParam
-  /** In preview. Default scopes and permissions for each supported installation context. Value for each key is an integration type configuration object */
+  /** Default scopes and permissions for each supported installation context. Value for each key is an integration type configuration object */
   readonly integration_types_config?: ApplicationIntegrationType
   /** Default custom authorization URL for the app, if enabled */
   readonly custom_install_url?: string
@@ -974,6 +974,12 @@ export interface Connection {
   /** visibility of this connection */
   readonly visibility: VisibilityType
 }
+export interface CreateApplicationEmojiParams {
+  /** name of the emoji */
+  readonly name: string
+  /** the 128x128 emoji image */
+  readonly image: string
+}
 export interface CreateAutoModerationRuleParams {
   /** the rule name */
   readonly name: string
@@ -1183,6 +1189,8 @@ export interface CreateGuildScheduledEventParams {
   readonly entity_type: GuildScheduledEventEntityType
   /** the cover image of the scheduled event */
   readonly image?: string
+  /** the definition for how often this event should recur */
+  readonly recurrence_rule?: GuildScheduledEventRecurrenceRule
 }
 export interface CreateGuildStickerParams {
   /** name of the sticker (2-30 characters) */
@@ -1211,7 +1219,7 @@ export interface CreateMessageParams {
   readonly embeds?: Array<Embed>
   /** Allowed mentions for the message */
   readonly allowed_mentions?: AllowedMention
-  /** Include to make your message a reply */
+  /** Include to make your message a reply or a forward */
   readonly message_reference?: MessageReference
   /** Components to include with the message */
   readonly components?: Array<Component>
@@ -1302,6 +1310,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "POST",
         url: `/applications/${applicationId}/entitlements/${entitlementId}/consume`,
+        options,
+      }),
+    createApplicationEmoji: (applicationId, params, options) =>
+      fetch({
+        method: "POST",
+        url: `/applications/${applicationId}/emojis`,
+        params,
         options,
       }),
     createAutoModerationRule: (guildId, params, options) =>
@@ -1477,6 +1492,12 @@ export function createRoutes<O = any>(
       fetch({
         method: "DELETE",
         url: `/channels/${channelId}/messages/${messageId}/reactions/${emoji}`,
+        options,
+      }),
+    deleteApplicationEmoji: (applicationId, emojiId, options) =>
+      fetch({
+        method: "DELETE",
+        url: `/applications/${applicationId}/emojis/${emojiId}`,
         options,
       }),
     deleteAutoModerationRule: (guildId, autoModerationRuleId, options) =>
@@ -1774,6 +1795,12 @@ export function createRoutes<O = any>(
         url: `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
         options,
       }),
+    getApplicationEmoji: (applicationId, emojiId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/emojis/${emojiId}`,
+        options,
+      }),
     getApplicationRoleConnectionMetadataRecords: (applicationId, options) =>
       fetch({
         method: "GET",
@@ -1864,6 +1891,12 @@ export function createRoutes<O = any>(
         method: "GET",
         url: `/users/@me/guilds`,
         params,
+        options,
+      }),
+    getCurrentUserVoiceState: (guildId, options) =>
+      fetch({
+        method: "GET",
+        url: `/guilds/${guildId}/voice-states/@me`,
         options,
       }),
     getFollowupMessage: (
@@ -2142,6 +2175,12 @@ export function createRoutes<O = any>(
         url: `/users/${userId}`,
         options,
       }),
+    getUserVoiceState: (guildId, userId, options) =>
+      fetch({
+        method: "GET",
+        url: `/guilds/${guildId}/voice-states/${userId}`,
+        options,
+      }),
     getWebhook: (webhookId, options) =>
       fetch({
         method: "GET",
@@ -2196,6 +2235,12 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/guilds/${guildId}/threads/active`,
+        options,
+      }),
+    listApplicationEmojis: (applicationId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/emojis`,
         options,
       }),
     listAutoModerationRulesForGuild: (guildId, options) =>
@@ -2280,6 +2325,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/voice/regions`,
+        options,
+      }),
+    modifyApplicationEmoji: (applicationId, emojiId, params, options) =>
+      fetch({
+        method: "PATCH",
+        url: `/applications/${applicationId}/emojis/${emojiId}`,
+        params,
         options,
       }),
     modifyAutoModerationRule: (
@@ -2601,7 +2653,7 @@ export interface EditCurrentApplicationParams {
   readonly role_connections_verification_url: string
   /** Settings for the app's default in-app authorization link, if enabled */
   readonly install_params: InstallParam
-  /** In preview. Default scopes and permissions for each supported installation context. Value for each key is an integration type configuration object */
+  /** Default scopes and permissions for each supported installation context. Value for each key is an integration type configuration object */
   readonly integration_types_config: ApplicationIntegrationType
   /** App's public flags */
   readonly flags: number
@@ -2874,6 +2926,12 @@ export interface Endpoints<O> {
     entitlementId: string,
     options?: O,
   ) => RestResponse<any>
+  /** Create a new emoji for the application. Returns the new emoji object on success. */
+  createApplicationEmoji: (
+    applicationId: string,
+    params?: Partial<CreateApplicationEmojiParams>,
+    options?: O,
+  ) => RestResponse<Emoji>
   /** Create a new rule. Returns an auto moderation rule on success. Fires an Auto Moderation Rule Create Gateway event. */
   createAutoModerationRule: (
     guildId: string,
@@ -3021,6 +3079,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     channelId: string,
     messageId: string,
     emoji: string,
+    options?: O,
+  ) => RestResponse<any>
+  /** Delete the given emoji. Returns 204 No Content on success. */
+  deleteApplicationEmoji: (
+    applicationId: string,
+    emojiId: string,
     options?: O,
   ) => RestResponse<any>
   /** Delete a rule. Returns a 204 on success. Fires an Auto Moderation Rule Delete Gateway event. */
@@ -3258,6 +3322,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     commandId: string,
     options?: O,
   ) => RestResponse<GuildApplicationCommandPermission>
+  /** Returns an emoji object for the given application and emoji IDs. Includes the user field. */
+  getApplicationEmoji: (
+    applicationId: string,
+    emojiId: string,
+    options?: O,
+  ) => RestResponse<Emoji>
   /** Returns a list of application role connection metadata objects for the given application. */
   getApplicationRoleConnectionMetadataRecords: (
     applicationId: string,
@@ -3322,6 +3392,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<GetCurrentUserGuildParams>,
     options?: O,
   ) => RestResponse<Array<Guild>>
+  /** Returns the current user's voice state in the guild. */
+  getCurrentUserVoiceState: (
+    guildId: string,
+    options?: O,
+  ) => RestResponse<VoiceState>
   /** Returns a followup message for an Interaction. Functions the same as Get Webhook Message. */
   getFollowupMessage: (
     applicationId: string,
@@ -3526,6 +3601,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<ThreadMember>
   /** Returns a user object for a given user ID. */
   getUser: (userId: string, options?: O) => RestResponse<User>
+  /** Returns the specified user's voice state in the guild. */
+  getUserVoiceState: (
+    guildId: string,
+    userId: string,
+    options?: O,
+  ) => RestResponse<VoiceState>
   /** Returns the new webhook object for the given id. */
   getWebhook: (webhookId: string, options?: O) => RestResponse<Webhook>
   /** Returns a previously-sent webhook message from the same token. Returns a message object on success. */
@@ -3566,6 +3647,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<ListActiveGuildThreadResponse>
+  /** Returns an object containing a list of emoji objects for the given application under the items key. Includes a user object for the team member that uploaded the emoji from the app's settings, or for the bot user if uploaded using the API. */
+  listApplicationEmojis: (
+    applicationId: string,
+    options?: O,
+  ) => RestResponse<Array<Emoji>>
   /** Get a list of all rules currently configured for the guild. Returns a list of auto moderation rule objects for the given guild. */
   listAutoModerationRulesForGuild: (
     guildId: string,
@@ -3621,6 +3707,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<Array<ThreadMember>>
   /** Returns an array of voice region objects that can be used when setting a voice or stage channel's rtc_region. */
   listVoiceRegions: (options?: O) => RestResponse<Array<VoiceRegion>>
+  /** Modify the given emoji. Returns the updated emoji object on success. */
+  modifyApplicationEmoji: (
+    applicationId: string,
+    emojiId: string,
+    params?: Partial<ModifyApplicationEmojiParams>,
+    options?: O,
+  ) => RestResponse<Emoji>
   /** Modify an existing rule. Returns an auto moderation rule on success. Fires an Auto Moderation Rule Update Gateway event. */
   modifyAutoModerationRule: (
     guildId: string,
@@ -4114,7 +4207,7 @@ export interface GetGuildAuditLogParams {
 }
 export interface GetGuildBanParams {
   /** number of users to return (up to maximum 1000) */
-  readonly limit?: Number
+  readonly limit?: number
   /** consider only users before given user id */
   readonly before?: Snowflake
   /** consider only users after given user id */
@@ -4136,7 +4229,7 @@ export interface GetGuildScheduledEventParams {
 }
 export interface GetGuildScheduledEventUserParams {
   /** number of users to return (up to maximum 100) */
-  readonly limit?: Number
+  readonly limit?: number
   /** include guild member data if it exists */
   readonly with_member?: boolean
   /** consider only users before given user id */
@@ -4571,6 +4664,8 @@ export interface GuildScheduledEvent {
   readonly user_count?: number
   /** the cover image hash of the scheduled event */
   readonly image?: string | null
+  /** the definition for how often this event should recur */
+  readonly recurrence_rule?: GuildScheduledEventRecurrenceRule | null
 }
 export type GuildScheduledEventCreateEvent = GuildScheduledEvent
 export type GuildScheduledEventDeleteEvent = GuildScheduledEvent
@@ -4586,6 +4681,63 @@ export enum GuildScheduledEventEntityType {
 export enum GuildScheduledEventPrivacyLevel {
   /** the scheduled event is only accessible to guild members */
   GUILD_ONLY = 2,
+}
+export interface GuildScheduledEventRecurrenceRule {
+  /** Starting time of the recurrence interval */
+  readonly start: string
+  /** Ending time of the recurrence interval */
+  readonly end?: string | null
+  /** How often the event occurs */
+  readonly frequency: GuildScheduledEventRecurrenceRuleFrequency
+  /** The spacing between the events, defined by frequency. For example, frecency of WEEKLY and an interval of 2 would be "every-other week" */
+  readonly interval: number
+  /** Set of specific days within a week for the event to recur on */
+  readonly by_weekday?: Array<GuildScheduledEventRecurrenceRuleWeekday> | null
+  /** List of specific days within a specific week (1-5) to recur on */
+  readonly by_n_weekday?: Array<GuildScheduledEventRecurrenceRuleNWeekday> | null
+  /** Set of specific months to recur on */
+  readonly by_month?: Array<GuildScheduledEventRecurrenceRuleMonth> | null
+  /** Set of specific dates within a month to recur on */
+  readonly by_month_day?: Array<number> | null
+  /** Set of days within a year to recur on (1-364) */
+  readonly by_year_day?: Array<number> | null
+  /** The total amount of times that the event is allowed to recur before stopping */
+  readonly count?: number | null
+}
+export enum GuildScheduledEventRecurrenceRuleFrequency {
+  YEARLY = 0,
+  MONTHLY = 1,
+  WEEKLY = 2,
+  DAILY = 3,
+}
+export enum GuildScheduledEventRecurrenceRuleMonth {
+  JANUARY = 1,
+  FEBRUARY = 2,
+  MARCH = 3,
+  APRIL = 4,
+  MAY = 5,
+  JUNE = 6,
+  JULY = 7,
+  AUGUST = 8,
+  SEPTEMBER = 9,
+  OCTOBER = 10,
+  NOVEMBER = 11,
+  DECEMBER = 12,
+}
+export interface GuildScheduledEventRecurrenceRuleNWeekday {
+  /** The week to reoccur on. 1 - 5 */
+  readonly n: number
+  /** The day within the week to reoccur on */
+  readonly day: GuildScheduledEventRecurrenceRuleWeekday
+}
+export enum GuildScheduledEventRecurrenceRuleWeekday {
+  MONDAY = 0,
+  TUESDAY = 1,
+  WEDNESDAY = 2,
+  THURSDAY = 3,
+  FRIDAY = 4,
+  SATURDAY = 5,
+  SUNDAY = 6,
 }
 export enum GuildScheduledEventStatus {
   SCHEDULED = 1,
@@ -5158,7 +5310,7 @@ export interface Message {
   /** roles specifically mentioned in this message */
   readonly mention_roles: Array<Snowflake>
   /** channels specifically mentioned in this message */
-  readonly mention_channels?: Array<ChannelMention>
+  readonly mention_channels: Array<ChannelMention>
   /** any attached files */
   readonly attachments: Array<Attachment>
   /** any embedded content */
@@ -5179,10 +5331,12 @@ export interface Message {
   readonly application?: Application
   /** if the message is an Interaction or application-owned webhook, this is the id of the application */
   readonly application_id?: Snowflake
-  /** data showing the source of a crosspost, channel follow add, pin, or reply message */
-  readonly message_reference?: MessageReference
   /** message flags combined as a bitfield */
   readonly flags?: number
+  /** data showing the source of a crosspost, channel follow add, pin, or reply message */
+  readonly message_reference?: MessageReference
+  /** the message associated with the message_reference. This is a minimal subset of fields in a message (e.g. author is excluded.) */
+  readonly message_snapshots: Array<MessageSnapshot>
   /** the message associated with the message_reference */
   readonly referenced_message?: Message | null
   /** In preview. Sent if the message is sent as a result of an interaction */
@@ -5192,7 +5346,7 @@ export interface Message {
   /** the thread that was started from this message, includes thread member object */
   readonly thread?: Channel
   /** sent if the message contains components like buttons, action rows, or other interactive components */
-  readonly components?: Array<Component>
+  readonly components: Array<Component>
   /** sent if the message contains stickers */
   readonly sticker_items?: Array<StickerItem>
   /** Deprecated the stickers sent with the message */
@@ -5204,7 +5358,7 @@ export interface Message {
   /** data for users, members, channels, and roles in the message's auto-populated select menus */
   readonly resolved?: ResolvedDatum
   /** A poll! */
-  readonly poll?: Poll
+  readonly poll: Poll
   /** the call associated with the message */
   readonly call?: MessageCall
 }
@@ -5394,6 +5548,8 @@ export interface MessageReactionRemoveEvent {
   readonly type: ReactionType
 }
 export interface MessageReference {
+  /** type of reference. */
+  readonly type?: MessageReferenceType
   /** id of the originating message */
   readonly message_id?: Snowflake
   /** id of the originating message's channel */
@@ -5402,6 +5558,16 @@ export interface MessageReference {
   readonly guild_id?: Snowflake
   /** when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true */
   readonly fail_if_not_exists?: boolean
+}
+export enum MessageReferenceType {
+  /** A standard reference used by replies. */
+  DEFAULT = 0,
+  /** Reference used to point to a message at a point in time. */
+  FORWARD = 1,
+}
+export interface MessageSnapshot {
+  /** minimal subset of fields in the forwarded message */
+  readonly message: Message
 }
 export enum MessageType {
   DEFAULT = 0,
@@ -5453,6 +5619,10 @@ export interface ModalSubmitDatum {
   readonly custom_id: string
   /** the values submitted by the user */
   readonly components: Array<Component>
+}
+export interface ModifyApplicationEmojiParams {
+  /** name of the emoji */
+  readonly name: string
 }
 export interface ModifyAutoModerationRuleParams {
   /** the rule name */
@@ -5695,6 +5865,8 @@ export interface ModifyGuildScheduledEventParams {
   readonly status?: GuildScheduledEventStatus
   /** the cover image of the scheduled event */
   readonly image?: string
+  /** the definition for how often this event should recur */
+  readonly recurrence_rule?: GuildScheduledEventRecurrenceRule
 }
 export interface ModifyGuildStickerParams {
   /** name of the sticker (2-30 characters) */

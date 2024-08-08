@@ -37,20 +37,20 @@ importers:
         specifier: ^0.7.7
         version: 0.7.7
       '@effect/experimental':
-        specifier: ^0.22.1
-        version: 0.22.1(@effect/platform-node@0.56.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4))(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        specifier: ^0.22.2
+        version: 0.22.2(@effect/platform-node@0.56.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4))(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@effect/language-service':
         specifier: ^0.1.0
         version: 0.1.0
       '@effect/platform':
-        specifier: ^0.61.4
-        version: 0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
+        specifier: ^0.61.5
+        version: 0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
       '@effect/platform-node':
-        specifier: ^0.56.4
-        version: 0.56.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4)
+        specifier: ^0.56.5
+        version: 0.56.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4)
       '@tim-smart/discord-api-docs-parser':
-        specifier: ^0.5.14
-        version: 0.5.14
+        specifier: ^0.5.16
+        version: 0.5.16
       '@types/chai':
         specifier: ^4.3.17
         version: 4.3.17
@@ -386,11 +386,11 @@ packages:
     engines: {node: '>=16.17.1'}
     hasBin: true
 
-  '@effect/experimental@0.22.1':
-    resolution: {integrity: sha512-jhcNYyeIZVjg6rnvLzf/+lSBww3VVsnNlx/qz2g6m4URvke7FCBE0iWBCrgU3ahqgFxBd6GZq277bfHi4PQkqQ==}
+  '@effect/experimental@0.22.2':
+    resolution: {integrity: sha512-EtpEf9dtZMzjiYa60RQ9dI+qb9UmcLjjD0nCNhmP7eo2wlj66fnoijq2Oxvn8SgbsrQIH1ULKg1I703wiFcBDA==}
     peerDependencies:
-      '@effect/platform': ^0.61.4
-      '@effect/platform-node': ^0.56.4
+      '@effect/platform': ^0.61.5
+      '@effect/platform-node': ^0.56.5
       '@effect/schema': ^0.70.2
       effect: ^3.6.1
       ioredis: ^5
@@ -409,20 +409,20 @@ packages:
   '@effect/language-service@0.1.0':
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
 
-  '@effect/platform-node-shared@0.11.4':
-    resolution: {integrity: sha512-Wius9GYWj41MYgOZCpjZE4lUFzaJ0IZVZCw8FnAfSr/esD71Q1zDND1hdHCdBe/URvWlSZy9ZY2rDG+M5aA86Q==}
+  '@effect/platform-node-shared@0.11.5':
+    resolution: {integrity: sha512-kFc31qbgsFZBG6n5fBabtqI6gwZ1OW69FXKzkDuVzQYHmK6Ibl9eDutaWyuEphmgsEGatOWVbMgSu+eqAg0U5A==}
     peerDependencies:
-      '@effect/platform': ^0.61.4
+      '@effect/platform': ^0.61.5
       effect: ^3.6.1
 
-  '@effect/platform-node@0.56.4':
-    resolution: {integrity: sha512-3/7uzuoZw2dN1EZFY3N2s07PZ1981PfOoNKz9fQPn5ylysjTHEKOUL1BABLpAwaIAVidL/4HJFxr1x9Edi0g8A==}
+  '@effect/platform-node@0.56.5':
+    resolution: {integrity: sha512-USlvcvSK93WcVf78dpVUrJCG9yvnwzzptiDE1NeNLORS/r8F/raN8AMETScJixb8jaw1d21/etgSss0nOB+y3A==}
     peerDependencies:
-      '@effect/platform': ^0.61.4
+      '@effect/platform': ^0.61.5
       effect: ^3.6.1
 
-  '@effect/platform@0.61.4':
-    resolution: {integrity: sha512-PCdpJnc7Rp/Su/kFQt+S3qhNmF0gv03ANAIXqR9oKm1/fLID4UA+U5yTb31qMQuK6YE6U61mKslR6MkhsovaQQ==}
+  '@effect/platform@0.61.5':
+    resolution: {integrity: sha512-76kyzyBFj8Lod3zXOHbuDL8ptFo3gjil4/6OWiIlm6izwcoB/IXetfvBnXCDiyjywuVZmSFwMfANiPEO0Q4hLA==}
     peerDependencies:
       '@effect/schema': ^0.70.2
       effect: ^3.6.1
@@ -1108,8 +1108,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@tim-smart/discord-api-docs-parser@0.5.14':
-    resolution: {integrity: sha512-uB9WkM1o9fiGIDUnNmm9FjRA2w/G6bBR1htarIq1eJoRG5Y+ANtHjcqvDK5HY4l2CTkNcqCUbhQOSkJYNZea2w==}
+  '@tim-smart/discord-api-docs-parser@0.5.16':
+    resolution: {integrity: sha512-zWj2N9pz44YHyEjIB/hkdK8uM+PqP2JIbKhgu6MkFeOZyXZ27r/JvkGZ8bVSh/PEKsQfUu5Xd+KovJEaE7OspA==}
     hasBin: true
 
   '@ts-graphviz/adapter@2.0.3':
@@ -2542,8 +2542,8 @@ packages:
   fp-ts@2.16.5:
     resolution: {integrity: sha512-N8T8PwMSeTKKtkm9lkj/zSTAnPC/aJIIrQhnHxxkL0KLsRCNUPANksJOlMXxcKKCo7H1ORP3No9EMD+fP0tsdA==}
 
-  fp-ts@2.16.6:
-    resolution: {integrity: sha512-v7w209VPj4L6pPn/ftFRJu31Oa8QagwcVw7BZmLCUWU4AQoc954rX9ogSIahDf67Pg+GjPbkW/Kn9XWnlWJG0g==}
+  fp-ts@2.16.9:
+    resolution: {integrity: sha512-+I2+FnVB+tVaxcYyQkHUq7ZdKScaBlX53A41mxQtpIccsfyv8PzdzP7fzp2AY832T4aoK6UZ5WRX/ebGd8uZuQ==}
 
   front-matter@4.0.2:
     resolution: {integrity: sha512-I8ZuJ/qG92NWX8i5x1Y8qyj3vizhXS31OxjKDu3LKP+7/qBgfIKValiZIEwoVoJKUHlhWtYrktkxV1XsX+pPlg==}
@@ -5368,29 +5368,29 @@ snapshots:
 
   '@effect/build-utils@0.7.7': {}
 
-  '@effect/experimental@0.22.1(@effect/platform-node@0.56.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4))(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@effect/experimental@0.22.2(@effect/platform-node@0.56.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4))(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      '@effect/platform': 0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
+      '@effect/platform': 0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
       '@effect/schema': 0.70.2(effect@3.6.1)
       effect: 3.6.1
       msgpackr: 1.11.0
     optionalDependencies:
-      '@effect/platform-node': 0.56.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4)
+      '@effect/platform-node': 0.56.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4)
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@effect/language-service@0.1.0': {}
 
-  '@effect/platform-node-shared@0.11.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1)':
+  '@effect/platform-node-shared@0.11.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1)':
     dependencies:
-      '@effect/platform': 0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
+      '@effect/platform': 0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
       '@parcel/watcher': 2.4.1
       effect: 3.6.1
       multipasta: 0.2.5
 
-  '@effect/platform-node@0.56.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4)':
+  '@effect/platform-node@0.56.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(bufferutil@4.0.8)(effect@3.6.1)(utf-8-validate@6.0.4)':
     dependencies:
-      '@effect/platform': 0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
-      '@effect/platform-node-shared': 0.11.4(@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1)
+      '@effect/platform': 0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
+      '@effect/platform-node-shared': 0.11.5(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1)
       effect: 3.6.1
       mime: 3.0.0
       undici: 6.19.5
@@ -5399,7 +5399,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.61.4(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)':
+  '@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)':
     dependencies:
       '@effect/schema': 0.70.2(effect@3.6.1)
       effect: 3.6.1
@@ -6140,10 +6140,10 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@tim-smart/discord-api-docs-parser@0.5.14':
+  '@tim-smart/discord-api-docs-parser@0.5.16':
     dependencies:
       cheerio: 1.0.0-rc.12
-      fp-ts: 2.16.6
+      fp-ts: 2.16.9
       glob-to-regexp: 0.4.1
       marked: 2.1.3
       pluralize: 8.0.0
@@ -7908,7 +7908,7 @@ snapshots:
 
   fp-ts@2.16.5: {}
 
-  fp-ts@2.16.6: {}
+  fp-ts@2.16.9: {}
 
   front-matter@4.0.2:
     dependencies:
