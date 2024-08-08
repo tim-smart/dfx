@@ -34,11 +34,11 @@ export class DiscordRESTError extends TypeIdError(
   DiscordRESTErrorTypeId,
   "DiscordRESTError",
 )<{
-  error: HttpError.HttpClientError
+  cause: HttpError.HttpClientError
   body?: unknown
 }> {
   get message() {
-    const httpMessage = this.error.message
+    const httpMessage = this.cause.message
     return this.body !== undefined
       ? `${httpMessage}: ${JSON.stringify(this.body)}`
       : httpMessage
@@ -158,15 +158,15 @@ const make = Effect.gen(function* () {
         }),
       ),
     ),
-    HttpClient.catchAll(error =>
-      error.reason === "StatusCode"
-        ? error.response.json.pipe(
-            Effect.mapError(_ => new DiscordRESTError({ error })),
+    HttpClient.catchAll(cause =>
+      cause.reason === "StatusCode"
+        ? cause.response.json.pipe(
+            Effect.mapError(_ => new DiscordRESTError({ cause })),
             Effect.flatMap(body =>
-              Effect.fail(new DiscordRESTError({ error, body })),
+              Effect.fail(new DiscordRESTError({ cause, body })),
             ),
           )
-        : Effect.fail(new DiscordRESTError({ error })),
+        : Effect.fail(new DiscordRESTError({ cause })),
     ),
   )
 
@@ -184,11 +184,11 @@ const make = Effect.gen(function* () {
       ),
       Effect.tap(response => updateBuckets(request, response)),
       Effect.catchTag("DiscordRESTError", e => {
-        if (e.error.reason !== "StatusCode") {
+        if (e.cause.reason !== "StatusCode") {
           return Effect.fail(e)
         }
 
-        const response = e.error.response
+        const response = e.cause.response
 
         switch (response.status) {
           case 403:
