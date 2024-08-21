@@ -149,6 +149,12 @@ export enum AllowedMentionType {
   /** Controls @everyone and @here mentions */
   EVERYONE_MENTIONS = "everyone",
 }
+export enum AnimationType {
+  /** A fun animation, sent by a Nitro subscriber */
+  PREMIUM = 0,
+  /** The standard animation */
+  BASIC = 1,
+}
 export interface Application {
   /** ID of the app */
   readonly id: Snowflake
@@ -192,6 +198,8 @@ export interface Application {
   readonly flags?: number
   /** Approximate count of guilds the app has been added to */
   readonly approximate_guild_count?: number
+  /** Approximate count of users that have installed the app */
+  readonly approximate_user_install_count?: number
   /** Array of redirect URIs for the app */
   readonly redirect_uris?: Array<string>
   /** Interactions endpoint URL for the app */
@@ -2032,6 +2040,12 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    getGuildRole: (guildId, roleId, options) =>
+      fetch({
+        method: "GET",
+        url: `/guilds/${guildId}/roles/${roleId}`,
+        options,
+      }),
     getGuildRoles: (guildId, options) =>
       fetch({
         method: "GET",
@@ -2160,6 +2174,12 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/stickers/${stickerId}`,
+        options,
+      }),
+    getStickerPack: (packId, options) =>
+      fetch({
+        method: "GET",
+        url: `/sticker-packs/${packId}`,
         options,
       }),
     getThreadMember: (channelId, userId, params, options) =>
@@ -2835,6 +2855,8 @@ export enum EmbedType {
   ARTICLE = "article",
   /** link embed */
   LINK = "link",
+  /** poll result embed */
+  POLL_RESULT = "poll_result",
 }
 export interface EmbedVideo {
   /** source url of video */
@@ -3499,6 +3521,12 @@ If the user is not in the guild, then the guild must be discoverable. */
     params?: Partial<GetGuildPruneCountParams>,
     options?: O,
   ) => RestResponse<any>
+  /** Returns a role object for the specified role. */
+  getGuildRole: (
+    guildId: string,
+    roleId: string,
+    options?: O,
+  ) => RestResponse<Role>
   /** Returns a list of role objects for the guild. */
   getGuildRoles: (guildId: string, options?: O) => RestResponse<Array<Role>>
   /** Get a guild scheduled event. Returns a guild scheduled event object on success. */
@@ -3592,6 +3620,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getStageInstance: (channelId: string, options?: O) => RestResponse<any>
   /** Returns a sticker object for the given sticker ID. */
   getSticker: (stickerId: string, options?: O) => RestResponse<Sticker>
+  /** Returns a sticker pack object for the given sticker pack ID. */
+  getStickerPack: (packId: string, options?: O) => RestResponse<StickerPack>
   /** Returns a thread member object for the specified user if they are a member of the thread, returns a 404 response otherwise. */
   getThreadMember: (
     channelId: string,
@@ -4689,7 +4719,7 @@ export interface GuildScheduledEventRecurrenceRule {
   readonly end?: string | null
   /** How often the event occurs */
   readonly frequency: GuildScheduledEventRecurrenceRuleFrequency
-  /** The spacing between the events, defined by frequency. For example, frecency of WEEKLY and an interval of 2 would be "every-other week" */
+  /** The spacing between the events, defined by frequency. For example, frequency of WEEKLY and an interval of 2 would be "every-other week" */
   readonly interval: number
   /** Set of specific days within a week for the event to recur on */
   readonly by_weekday?: Array<GuildScheduledEventRecurrenceRuleWeekday> | null
@@ -5606,6 +5636,7 @@ export enum MessageType {
   GUILD_INCIDENT_REPORT_RAID = 38,
   GUILD_INCIDENT_REPORT_FALSE_ALARM = 39,
   PURCHASE_NOTIFICATION = 44,
+  POLL_RESULT = 46,
 }
 export type MessageUpdateEvent = MessageCreateEvent
 export enum MfaLevel {
@@ -5866,7 +5897,7 @@ export interface ModifyGuildScheduledEventParams {
   /** the cover image of the scheduled event */
   readonly image?: string
   /** the definition for how often this event should recur */
-  readonly recurrence_rule?: GuildScheduledEventRecurrenceRule
+  readonly recurrence_rule?: GuildScheduledEventRecurrenceRule | null
 }
 export interface ModifyGuildStickerParams {
   /** name of the sticker (2-30 characters) */
@@ -6321,6 +6352,7 @@ export type ReceiveEvent =
   | StageInstanceDeleteEvent
   | TypingStartEvent
   | UserUpdateEvent
+  | VoiceChannelEffectSendEvent
   | VoiceStateUpdateEvent
   | VoiceServerUpdateEvent
   | WebhooksUpdateEvent
@@ -6391,6 +6423,7 @@ export interface ReceiveEvents {
   STAGE_INSTANCE_DELETE: StageInstanceDeleteEvent
   TYPING_START: TypingStartEvent
   USER_UPDATE: UserUpdateEvent
+  VOICE_CHANNEL_EFFECT_SEND: VoiceChannelEffectSendEvent
   VOICE_STATE_UPDATE: VoiceStateUpdateEvent
   VOICE_SERVER_UPDATE: VoiceServerUpdateEvent
   WEBHOOKS_UPDATE: WebhooksUpdateEvent
@@ -7042,6 +7075,24 @@ export enum VisibilityType {
   NONE = 0,
   /** visible to everyone */
   EVERYONE = 1,
+}
+export interface VoiceChannelEffectSendEvent {
+  /** ID of the channel the effect was sent in */
+  readonly channel_id: Snowflake
+  /** ID of the guild the effect was sent in */
+  readonly guild_id: Snowflake
+  /** ID of the user who sent the effect */
+  readonly user_id: Snowflake
+  /** The emoji sent, for emoji reaction and soundboard effects */
+  readonly emoji?: Emoji | null
+  /** The type of emoji animation, for emoji reaction and soundboard effects */
+  readonly animation_type?: AnimationType | null
+  /** The ID of the emoji animation, for emoji reaction and soundboard effects */
+  readonly animation_id?: number
+  /** The ID of the soundboard sound, for soundboard effects */
+  readonly sound_id?: Snowflake
+  /** The volume of the soundboard sound, from 0 to 1, for soundboard effects */
+  readonly sound_volume?: number
 }
 export enum VoiceOpcode {
   /** Begin a voice websocket connection. */
