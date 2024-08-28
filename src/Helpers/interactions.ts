@@ -236,5 +236,8 @@ export type InteractionResponse =
       type: Discord.InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
       data: Discord.InteractionCallbackAutocomplete
     }
+  | {
+      type: Discord.InteractionCallbackType.LAUNCH_ACTIVITY
+    }
 
 export const response = (r: InteractionResponse) => r

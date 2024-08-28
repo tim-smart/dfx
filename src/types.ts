@@ -91,6 +91,34 @@ export const ActivityFlag = {
   PARTY_PRIVACY_VOICE_CHANNEL: 1 << 7,
   EMBEDDED: 1 << 8,
 } as const
+export interface ActivityInstance {
+  /** Application ID */
+  readonly application_id: Snowflake
+  /** Activity Instance ID */
+  readonly instance_id: string
+  /** Unique identifier for the launch */
+  readonly launch_id: Snowflake
+  /** The Location the instance is runnning in */
+  readonly location: ActivityLocation
+  /** The IDs of the Users currently connected to the instance */
+  readonly users: Array<Snowflake>
+}
+export interface ActivityLocation {
+  /** The unique identifier for the location */
+  readonly id: string
+  /** Enum describing kind of location */
+  readonly kind: ActivityLocationKind
+  /** The id of the Channel */
+  readonly channel_id: Snowflake
+  /** The id of the Guild */
+  readonly guild_id?: Snowflake | null
+}
+export enum ActivityLocationKind {
+  /** The Location is a Guild Channel */
+  GC = "'gc'",
+  /** The Location is a Private Channel, such as a DM or GDM */
+  PC = "'pc'",
+}
 export interface ActivityParty {
   /** ID of the party */
   readonly id?: string
@@ -248,21 +276,23 @@ export interface ApplicationCommand {
   readonly contexts?: Array<InteractionContextType> | null
   /** Autoincrementing version identifier updated during substantial record changes */
   readonly version: Snowflake
+  /** Determines whether the interaction is handled by the app's interactions handler or by Discord */
+  readonly handler?: EntryPointCommandHandlerType
 }
 export interface ApplicationCommandDatum {
-  /** the ID of the invoked command */
+  /** ID of the invoked command */
   readonly id: Snowflake
-  /** the name of the invoked command */
+  /** name of the invoked command */
   readonly name: string
-  /** the type of the invoked command */
+  /** type of the invoked command */
   readonly type: number
-  /** converted users + roles + channels + attachments */
+  /** Converted users + roles + channels + attachments */
   readonly resolved?: ResolvedDatum
-  /** the params + values from the user */
+  /** Params + values from the user */
   readonly options?: Array<ApplicationCommandInteractionDataOption>
-  /** the id of the guild the command is registered to */
+  /** ID of the guild the command is registered to */
   readonly guild_id?: Snowflake
-  /** id of the user or message targeted by a user or message command */
+  /** ID of the user or message targeted by a user or message command */
   readonly target_id?: Snowflake
 }
 export interface ApplicationCommandInteractionDataOption {
@@ -350,6 +380,8 @@ export enum ApplicationCommandType {
   USER = 2,
   /** A UI-based command that shows up when you right click or tap on a message */
   MESSAGE = 3,
+  /** A UI-based command that represents the primary way to invoke an app's Activity */
+  PRIMARY_ENTRY_POINT = 4,
 }
 export const ApplicationFlag = {
   /** Indicates if an app uses the Auto Moderation API */
@@ -1792,6 +1824,12 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    getApplicationActivityInstance: (applicationId, instanceId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/activity-instances/${instanceId}`,
+        options,
+      }),
     getApplicationCommandPermissions: (
       applicationId,
       guildId,
@@ -3047,7 +3085,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildTemplateParams>,
     options?: O,
   ) => RestResponse<GuildTemplate>
-  /** Create a response to an Interaction from the gateway. Body is an interaction response. Returns 204 No Content. */
+  /** Create a response to an Interaction. Body is an interaction response. Returns 204 unless with_response is set to true which returns 200 with the body as  interaction response. */
   createInteractionResponse: (
     interactionId: string,
     interactionToken: string,
@@ -3337,6 +3375,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<GetAnswerVoterParams>,
     options?: O,
   ) => RestResponse<GetAnswerVoterResponse>
+  /** Returns a serialized activity instance, if it exists. Useful for preventing unwanted activity sessions. */
+  getApplicationActivityInstance: (
+    applicationId: string,
+    instanceId: string,
+    options?: O,
+  ) => RestResponse<any>
   /** Fetches permissions for a specific command for your application in a guild. Returns a guild application command permissions object. */
   getApplicationCommandPermissions: (
     applicationId: string,
@@ -4012,6 +4056,10 @@ export enum EntitlementType {
   APPLICATION_SUBSCRIPTION = 8,
 }
 export type EntitlementUpdateEvent = Entitlement
+export enum EntryPointCommandHandlerType {
+  APP_HANDLER = 1,
+  DISCORD_LAUNCH_ACTIVITY = 2,
+}
 export enum EventType {
   /** when a member sends or edits a message in the guild */
   MESSAGE_SEND = 1,
@@ -5002,6 +5050,24 @@ export interface Interaction {
   /** Context where the interaction was triggered from */
   readonly context?: InteractionContextType
 }
+export interface InteractionCallback {
+  /**  */
+  readonly id: Snowflake
+  /** Interaction type */
+  readonly type: InteractionType
+  /** Instance ID of the Activity if one was launched or joined */
+  readonly activity_instance_id?: string
+  /** ID of the message that was created by the interaction */
+  readonly response_message_id?: Snowflake
+  /** Whether or not the message is in a loading state */
+  readonly response_message_loading?: boolean
+  /** Whether or not the response message was ephemeral */
+  readonly response_message_ephemeral?: boolean
+}
+export interface InteractionCallbackActivityInstanceResource {
+  /** Instance ID of the Activity if one was launched or joined. */
+  readonly id: string
+}
 export interface InteractionCallbackAutocomplete {
   /** autocomplete choices (max of 25 choices) */
   readonly choices: Array<ApplicationCommandOptionChoice>
@@ -5011,48 +5077,64 @@ export type InteractionCallbackDatum =
   | InteractionCallbackMessage
   | InteractionCallbackModal
 export interface InteractionCallbackMessage {
-  /** is the response TTS */
+  /** Whether the response is TTS */
   readonly tts?: boolean
-  /** message content */
+  /** Message content */
   readonly content?: string
-  /** supports up to 10 embeds */
+  /** Supports up to 10 embeds */
   readonly embeds?: Array<Embed>
-  /** allowed mentions object */
+  /** Allowed mentions object */
   readonly allowed_mentions?: AllowedMention
-  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS, EPHEMERAL, and SUPPRESS_NOTIFICATIONS can be set) */
+  /** Message flags combined as a bitfield (only SUPPRESS_EMBEDS, EPHEMERAL, and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags?: number
-  /** message components */
+  /** Message components */
   readonly components?: Array<Component>
-  /** attachment objects with filename and description */
+  /** Attachment objects with filename and description */
   readonly attachments?: Array<Attachment>
-  /** A poll! */
+  /** Details about the poll */
   readonly poll?: PollCreateRequest
 }
 export interface InteractionCallbackModal {
-  /** a developer-defined identifier for the modal, max 100 characters */
+  /** Developer-defined identifier for the modal, max 100 characters */
   readonly custom_id: string
-  /** the title of the popup modal, max 45 characters */
+  /** Title of the popup modal, max 45 characters */
   readonly title: string
-  /** between 1 and 5 (inclusive) components that make up the modal */
+  /** Between 1 and 5 (inclusive) components that make up the modal */
   readonly components: Array<Component>
+}
+export interface InteractionCallbackResource {
+  /** Interaction callback type */
+  readonly type: InteractionCallbackType
+  /** Represents the Activity launched by this interaction. */
+  readonly activity_instance?: InteractionCallbackActivityInstanceResource
+  /** Message created by the interaction. */
+  readonly message?: Message
+}
+export interface InteractionCallbackResponse {
+  /** The interaction object associated with the */
+  readonly interaction: InteractionCallback
+  /** The resource that was created by the interaction response. */
+  readonly resource?: InteractionCallbackResource
 }
 export enum InteractionCallbackType {
   /** ACK a Ping */
   PONG = 1,
-  /** respond to an interaction with a message */
+  /** Respond to an interaction with a message */
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
   /** ACK an interaction and edit a response later, the user sees a loading state */
   DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5,
-  /** for components, ACK an interaction and edit the original message later; the user does not see a loading state */
+  /** For components, ACK an interaction and edit the original message later; the user does not see a loading state */
   DEFERRED_UPDATE_MESSAGE = 6,
-  /** for components, edit the message the component was attached to */
+  /** For components, edit the message the component was attached to */
   UPDATE_MESSAGE = 7,
-  /** respond to an autocomplete interaction with suggested choices */
+  /** Respond to an autocomplete interaction with suggested choices */
   APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8,
-  /** respond to an interaction with a popup modal */
+  /** Respond to an interaction with a popup modal */
   MODAL = 9,
   /** Deprecated; respond to an interaction with an upgrade button, only available for apps with monetization enabled */
   PREMIUM_REQUIRED = 10,
+  /** Launch the Activity associated with the app. Only available for apps with Activities enabled */
+  LAUNCH_ACTIVITY = 12,
 }
 export enum InteractionContextType {
   /** Interaction can be used within servers */
@@ -5068,9 +5150,9 @@ export type InteractionDatum =
   | MessageComponentDatum
   | ModalSubmitDatum
 export interface InteractionResponse {
-  /** the type of response */
+  /** Type of response */
   readonly type: InteractionCallbackType
-  /** an optional response message */
+  /** An optional response message */
   readonly data?: InteractionCallbackDatum
 }
 export enum InteractionType {
@@ -5411,13 +5493,13 @@ export interface MessageCall {
   readonly ended_timestamp?: string | null
 }
 export interface MessageComponentDatum {
-  /** the custom_id of the component */
+  /** custom_id of the component */
   readonly custom_id: string
-  /** the type of the component */
+  /** type of the component */
   readonly component_type: ComponentType
-  /** values the user selected in a select menu component */
+  /** Values the user selected in a select menu component */
   readonly values?: Array<SelectOption>
-  /** resolved entities from selected options */
+  /** Resolved entities from selected options */
   readonly resolved?: ResolvedDatum
 }
 export type MessageCreateEvent = Message & MessageCreateExtra
@@ -5646,9 +5728,9 @@ export enum MfaLevel {
   ELEVATED = 1,
 }
 export interface ModalSubmitDatum {
-  /** the custom_id of the modal */
+  /** custom_id of the modal */
   readonly custom_id: string
-  /** the values submitted by the user */
+  /** Values submitted by the user */
   readonly components: Array<Component>
 }
 export interface ModifyApplicationEmojiParams {
@@ -6446,17 +6528,17 @@ export interface RequestGuildMember {
   readonly nonce?: string
 }
 export interface ResolvedDatum {
-  /** the ids and User objects */
+  /** IDs and User objects */
   readonly users?: Record<Snowflake, User>
-  /** the ids and partial Member objects */
+  /** IDs and partial Member objects */
   readonly members?: Record<Snowflake, GuildMember>
-  /** the ids and Role objects */
+  /** IDs and Role objects */
   readonly roles?: Record<Snowflake, Role>
-  /** the ids and partial Channel objects */
+  /** IDs and partial Channel objects */
   readonly channels?: Record<Snowflake, Channel>
-  /** the ids and partial Message objects */
+  /** IDs and partial Message objects */
   readonly messages?: Record<Snowflake, Message>
-  /** the ids and attachment objects */
+  /** IDs and attachment objects */
   readonly attachments?: Record<Snowflake, Attachment>
 }
 export interface Response {
