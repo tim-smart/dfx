@@ -206,8 +206,6 @@ export interface Application {
   readonly privacy_policy_url?: string
   /** Partial user object for the owner of the app */
   readonly owner?: User
-  /** deprecated and will be removed in v11. An empty string. */
-  readonly summary: string
   /** Hex encoded key for verification in interactions and the GameSDK's GetTicket */
   readonly verify_key: string
   /** If the app belongs to a team, this will be a list of the members of that team */
@@ -231,9 +229,9 @@ export interface Application {
   /** Array of redirect URIs for the app */
   readonly redirect_uris?: Array<string>
   /** Interactions endpoint URL for the app */
-  readonly interactions_endpoint_url?: string
+  readonly interactions_endpoint_url?: string | null
   /** Role connection verification URL for the app */
-  readonly role_connections_verification_url?: string
+  readonly role_connections_verification_url?: string | null
   /** List of tags describing the content and functionality of the app. Max of 5 tags. */
   readonly tags?: Array<string>
   /** Settings for the app's default in-app authorization link, if enabled */
@@ -2202,6 +2200,12 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    getSkuSubscription: (skuId, subscriptionId, options) =>
+      fetch({
+        method: "GET",
+        url: `/skus/${skuId}/subscriptions/${subscriptionId}`,
+        options,
+      }),
     getStageInstance: (channelId, options) =>
       fetch({
         method: "GET",
@@ -2364,6 +2368,12 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/applications/${applicationId}/skus`,
+        options,
+      }),
+    listSkuSubscriptions: (skuId, options) =>
+      fetch({
+        method: "GET",
+        url: `/skus/${skuId}/subscriptions`,
         options,
       }),
     listStickerPacks: options =>
@@ -2799,6 +2809,8 @@ export interface EditWebhookMessageParams {
   readonly payload_json: string
   /** attached files to keep and possible descriptions for new files */
   readonly attachments: Array<Attachment>
+  /** A poll! */
+  readonly poll: PollCreateRequest
 }
 export interface Embed {
   /** title of embed */
@@ -3085,7 +3097,7 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildTemplateParams>,
     options?: O,
   ) => RestResponse<GuildTemplate>
-  /** Create a response to an Interaction. Body is an interaction response. Returns 204 unless with_response is set to true which returns 200 with the body as  interaction response. */
+  /** Create a response to an Interaction. Body is an interaction response. Returns 204 unless with_response is set to true which returns 200 with the body as interaction callback response. */
   createInteractionResponse: (
     interactionId: string,
     interactionToken: string,
@@ -3660,6 +3672,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<GetReactionParams>,
     options?: O,
   ) => RestResponse<Array<User>>
+  /** Get a subscription by its ID. Returns a subscription object. */
+  getSkuSubscription: (
+    skuId: string,
+    subscriptionId: string,
+    options?: O,
+  ) => RestResponse<Subscription>
   /** Gets the stage instance associated with the Stage channel, if it exists. */
   getStageInstance: (channelId: string, options?: O) => RestResponse<any>
   /** Returns a sticker object for the given sticker ID. */
@@ -3772,6 +3790,11 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   ) => RestResponse<Array<GuildScheduledEvent>>
   /** Returns all SKUs for a given application. */
   listSkUs: (applicationId: string, options?: O) => RestResponse<any>
+  /** Returns all subscriptions containing the SKU, filtered by user. Returns a list of subscription objects. */
+  listSkuSubscriptions: (
+    skuId: string,
+    options?: O,
+  ) => RestResponse<Array<Subscription>>
   /** Returns a list of available sticker packs. */
   listStickerPacks: (options?: O) => RestResponse<any>
   listThreadMembers: (
@@ -4087,7 +4110,7 @@ export interface ExecuteWebhookParams {
   readonly payload_json: string
   /** attachment objects with filename and description */
   readonly attachments: Array<Attachment>
-  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set can be set) */
+  /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and SUPPRESS_NOTIFICATIONS can be set) */
   readonly flags: number
   /** name of thread to create (requires the webhook channel to be a forum or media channel) */
   readonly thread_name: string
@@ -4598,6 +4621,16 @@ export const GuildMemberFlag = {
   BYPASSES_VERIFICATION: 1 << 2,
   /** Member has started onboarding */
   STARTED_ONBOARDING: 1 << 3,
+  /** Member is a guest and can only access the voice channel they were invited to */
+  IS_GUEST: 1 << 4,
+  /** Member has started Server Guide new member actions */
+  STARTED_HOME_ACTIONS: 1 << 5,
+  /** Member has completed Server Guide new member actions */
+  COMPLETED_HOME_ACTIONS: 1 << 6,
+  /** Member's username, display name, or nickname is blocked by AutoMod */
+  AUTOMOD_QUARANTINED_USERNAME: 1 << 7,
+  /** Member has dismissed the DM settings upsell */
+  DM_SETTINGS_UPSELL_ACKNOWLEDGED: 1 << 9,
 } as const
 export interface GuildMemberRemoveEvent {
   /** ID of the guild */
@@ -6432,6 +6465,9 @@ export type ReceiveEvent =
   | StageInstanceCreateEvent
   | StageInstanceUpdateEvent
   | StageInstanceDeleteEvent
+  | SubscriptionCreateEvent
+  | SubscriptionUpdateEvent
+  | SubscriptionDeleteEvent
   | TypingStartEvent
   | UserUpdateEvent
   | VoiceChannelEffectSendEvent
@@ -6503,6 +6539,9 @@ export interface ReceiveEvents {
   STAGE_INSTANCE_CREATE: StageInstanceCreateEvent
   STAGE_INSTANCE_UPDATE: StageInstanceUpdateEvent
   STAGE_INSTANCE_DELETE: StageInstanceDeleteEvent
+  SUBSCRIPTION_CREATE: SubscriptionCreateEvent
+  SUBSCRIPTION_UPDATE: SubscriptionUpdateEvent
+  SUBSCRIPTION_DELETE: SubscriptionDeleteEvent
   TYPING_START: TypingStartEvent
   USER_UPDATE: UserUpdateEvent
   VOICE_CHANNEL_EFFECT_SEND: VoiceChannelEffectSendEvent
@@ -6814,8 +6853,6 @@ export interface Sticker {
   readonly description?: string | null
   /** autocomplete/suggestion tags for the sticker (max 200 characters) */
   readonly tags: string
-  /** Deprecated previously the sticker asset hash, now an empty string */
-  readonly asset?: string
   /** type of sticker */
   readonly type: StickerType
   /** type of sticker format */
@@ -6865,6 +6902,37 @@ export enum StickerType {
   /** a sticker uploaded to a guild for the guild's members */
   GUILD = 2,
 }
+export interface Subscription {
+  /** ID of the subscription */
+  readonly id: Snowflake
+  /** ID of the user who is subscribed */
+  readonly user_id: Snowflake
+  /** List of SKUs subscribed to */
+  readonly sku_ids: Array<Snowflake>
+  /** List of entitlements granted for this subscription */
+  readonly entitlement_ids: Array<Snowflake>
+  /** Start of the current subscription period */
+  readonly current_period_start: string
+  /** End of the current subscription period */
+  readonly current_period_end: string
+  /** Current status of the subscription */
+  readonly status: SubscriptionStatus
+  /** When the subscription was canceled */
+  readonly canceled_at: string
+  /** ISO3166-1 alpha-2 country code of the payment source used to purchase the subscription. Missing unless queried with a private OAuth scope. */
+  readonly country?: string
+}
+export type SubscriptionCreateEvent = Subscription
+export type SubscriptionDeleteEvent = Subscription
+export enum SubscriptionStatus {
+  /** Subscription is active and scheduled to renew. */
+  ACTIVE = 0,
+  /** Subscription is active but will not renew. */
+  ENDING = 1,
+  /** Subscription is inactive and not being charged. */
+  INACTIVE = 2,
+}
+export type SubscriptionUpdateEvent = Subscription
 export const SystemChannelFlag = {
   /** Suppress member join notifications */
   SUPPRESS_JOIN_NOTIFICATIONS: 1 << 0,

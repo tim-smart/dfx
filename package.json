@@ -64,7 +64,7 @@
     "@eslint/compat": "^1.1.1",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.10.0",
-    "@tim-smart/discord-api-docs-parser": "^0.5.19",
+    "@tim-smart/discord-api-docs-parser": "^0.5.20",
     "@types/chai": "^4.3.19",
     "@types/node": "^22.5.4",
     "@types/ws": "^8.5.12",
