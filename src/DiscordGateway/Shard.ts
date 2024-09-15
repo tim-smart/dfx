@@ -20,7 +20,8 @@ import { pipe } from "effect/Function"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as PubSub from "effect/PubSub"
-import * as Queue from "effect/Queue"
+import * as Mailbox from "effect/Mailbox"
+
 import * as Redacted from "effect/Redacted"
 import * as Ref from "effect/Ref"
 import type * as Types from "effect/Types"
@@ -35,13 +36,13 @@ export const make = Effect.gen(function* () {
   const { gateway, token } = yield* DiscordConfig
   const limiter = yield* RateLimiter
   const dws = yield* DiscordWS
-  const { hub, sendQueue } = yield* Messaging
+  const { hub, sendMailbox } = yield* Messaging
   const shardState = yield* ShardStateStore
 
   const connect = (shard: [id: number, count: number]) =>
     Effect.gen(function* (_) {
-      const outboundQueue = yield* Queue.unbounded<Message>()
-      const pendingQueue = yield* Queue.unbounded<Message>()
+      const outboundQueue = yield* Mailbox.make<Message>()
+      const pendingQueue = yield* Mailbox.make<Message>()
       const phase = yield* Ref.make(Phase.Connecting)
       const stateStore = shardState.forShard(shard)
       const resumeState: Types.Mutable<ShardState> = Option.getOrElse(
@@ -57,39 +58,40 @@ export const make = Effect.gen(function* () {
           Ref.set(phase, p),
           Effect.annotateLogs(Effect.logTrace("phase transition"), "phase", p),
         )
-      const outbound = Effect.zipLeft(
-        Queue.take(outboundQueue),
-        limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
+      const outbound = Effect.orDie(
+        Effect.zipLeft(
+          outboundQueue.take,
+          limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
+        ),
       )
 
       const send = (p: Message) =>
         Effect.flatMap(Ref.get(phase), phase =>
           phase === Phase.Connected
-            ? Queue.offer(outboundQueue, p)
-            : Queue.offer(pendingQueue, p),
+            ? outboundQueue.offer(p)
+            : pendingQueue.offer(p),
         )
 
       const heartbeatSend = (p: Message) =>
         Effect.flatMap(Ref.get(phase), phase =>
           phase !== Phase.Connecting
-            ? Queue.offer(outboundQueue, p)
+            ? outboundQueue.offer(p)
             : Effect.succeed(false),
         )
 
-      const prioritySend = (p: Message) => Queue.offer(outboundQueue, p)
+      const prioritySend = (p: Message) => outboundQueue.offer(p)
 
       const resume = pipe(
         setPhase(Phase.Connected),
-        Effect.zipRight(Queue.takeAll(pendingQueue)),
-        Effect.tap(_ => Queue.offerAll(outboundQueue, _)),
+        Effect.zipRight(pendingQueue.clear),
+        Effect.tap(_ => outboundQueue.offerAll(_)),
         Effect.asVoid,
       )
 
       const onConnecting = pipe(
-        Queue.takeAll(outboundQueue),
+        outboundQueue.clear,
         Effect.tap(msgs =>
-          Queue.offerAll(
-            pendingQueue,
+          pendingQueue.offerAll(
             Chunk.filter(
               msgs,
               msg =>
@@ -106,12 +108,12 @@ export const make = Effect.gen(function* () {
       const socket = yield* dws.connect({ outbound, onConnecting })
 
       const hellos = yield* Effect.acquireRelease(
-        Queue.unbounded<Discord.GatewayPayload>(),
-        Queue.shutdown,
+        Mailbox.make<Discord.GatewayPayload>(),
+        _ => _.shutdown,
       )
       const acks = yield* Effect.acquireRelease(
-        Queue.unbounded<Discord.GatewayPayload>(),
-        Queue.shutdown,
+        Mailbox.make<Discord.GatewayPayload>(),
+        _ => _.shutdown,
       )
 
       // heartbeats
@@ -157,11 +159,11 @@ export const make = Effect.gen(function* () {
                 return pipe(
                   Effect.tap(identify, prioritySend),
                   Effect.zipRight(setPhase(Phase.Handshake)),
-                  Effect.zipRight(Queue.offer(hellos, p)),
+                  Effect.zipRight(hellos.offer(p)),
                 )
               }
               case Discord.GatewayOpcode.HEARTBEAT_ACK: {
-                return Queue.offer(acks, p)
+                return acks.offer(p)
               }
               case Discord.GatewayOpcode.INVALID_SESSION: {
                 if (p.d) {
@@ -186,7 +188,7 @@ export const make = Effect.gen(function* () {
           }),
         )
 
-      yield* Queue.take(sendQueue).pipe(
+      yield* sendMailbox.take.pipe(
         Effect.tap(send),
         Effect.forever,
         Effect.forkScoped,
@@ -224,5 +226,6 @@ export const ShardLive = Layer.effect(Shard, make).pipe(
   Layer.provide(RateLimiterLive),
 )
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface RunningShard
   extends Effect.Effect.Success<ReturnType<ShardService["connect"]>> {}

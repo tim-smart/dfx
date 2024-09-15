@@ -147,7 +147,7 @@ const make = Effect.gen(function* () {
       Effect.ignore,
     )
 
-  const httpExecutor = pipe(
+  const httpClient = pipe(
     HttpClient.filterStatusOk(http),
     HttpClient.mapRequest(req =>
       pipe(
@@ -176,7 +176,7 @@ const make = Effect.gen(function* () {
     requestRateLimit(request.url, request).pipe(
       Effect.zipLeft(globalRateLimit),
       Effect.zipRight(
-        httpExecutor(request) as Effect.Effect<
+        httpClient.execute(request) as Effect.Effect<
           ResponseWithData<A>,
           DiscordRESTError,
           Scope
@@ -257,7 +257,7 @@ const make = Effect.gen(function* () {
       } else if (params && request.body._tag === "FormData") {
         request.body.formData.append("payload_json", JSON.stringify(params))
       } else if (params) {
-        request = HttpRequest.unsafeJsonBody(request, params)
+        request = HttpRequest.bodyUnsafeJson(request, params)
       }
 
       return new RestResponseImpl(executor(request))

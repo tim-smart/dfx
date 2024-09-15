@@ -4,8 +4,11 @@ import * as Layer from "effect/Layer"
 import * as Ref from "effect/Ref"
 import type * as Discord from "dfx/types"
 import * as Socket from "@effect/platform/Socket"
-import * as Queue from "effect/Queue"
+import * as Mailbox from "effect/Mailbox"
 import * as Schedule from "effect/Schedule"
+import * as Cause from "effect/Cause"
+import * as Option from "effect/Option"
+import * as LogLevel from "effect/LogLevel"
 
 export type Message = Discord.GatewayPayload | Reconnect
 
@@ -30,6 +33,7 @@ export interface DiscordWSCodec {
 }
 
 const decoder = new TextDecoder()
+const logLevelDebug = Option.some(LogLevel.Debug)
 
 export const DiscordWSCodec = GenericTag<DiscordWSCodec, DiscordWSCodecService>(
   "dfx/DiscordGateway/DiscordWS/Codec",
@@ -55,7 +59,7 @@ const make = Effect.gen(function* () {
       )
       const setUrl = (url: string) =>
         Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
-      const messages = yield* Queue.unbounded<Discord.GatewayPayload>()
+      const messages = yield* Mailbox.make<Discord.GatewayPayload>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
         closeCodeIsError: _ => true,
         openTimeout: 5000,
@@ -78,13 +82,13 @@ const make = Effect.gen(function* () {
       )
       yield* onConnecting.pipe(
         Effect.zipRight(
-          socket.runRaw(_ => {
-            const message = encoding.decode(_)
-            return Effect.zipRight(
-              Effect.logTrace(message),
-              messages.offer(message),
-            )
-          }),
+          Effect.withFiberRuntime<void, Socket.SocketError>(fiber =>
+            socket.runRaw(_ => {
+              const message = encoding.decode(_)
+              messages.unsafeOffer(message)
+              ;(fiber as any).log([message], Cause.empty, logLevelDebug)
+            }),
+          ),
         ),
         Effect.retry({
           while: e => e.reason === "Close" && e.code === 1012,
@@ -103,7 +107,7 @@ const make = Effect.gen(function* () {
       )
 
       return {
-        take: Queue.take(messages),
+        take: messages.take,
         setUrl,
       } as const
     }).pipe(

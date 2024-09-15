@@ -2,7 +2,7 @@ import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
-import * as Queue from "effect/Queue"
+import * as Mailbox from "effect/Mailbox"
 import * as Stream from "effect/Stream"
 import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
@@ -38,12 +38,12 @@ export const make = Effect.gen(function* () {
     PubSub.shutdown,
   )
 
-  const sendQueue = yield* Effect.acquireRelease(
-    Queue.unbounded<Discord.GatewayPayload<Discord.SendEvent>>(),
-    Queue.shutdown,
+  const sendMailbox = yield* Effect.acquireRelease(
+    Mailbox.make<Discord.GatewayPayload<Discord.SendEvent>>(),
+    _ => _.shutdown,
   )
   const send = (payload: Discord.GatewayPayload<Discord.SendEvent>) =>
-    sendQueue.offer(payload)
+    sendMailbox.offer(payload)
 
   const dispatch = Stream.fromPubSub(hub)
   const fromDispatch = fromDispatchFactory(dispatch)
@@ -51,7 +51,7 @@ export const make = Effect.gen(function* () {
 
   return {
     hub,
-    sendQueue,
+    sendMailbox,
     dispatch,
     fromDispatch,
     handleDispatch,

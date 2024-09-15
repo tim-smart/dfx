@@ -1,7 +1,7 @@
 {
   "name": "dfx",
   "version": "0.101.1",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@9.10.0",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
@@ -42,8 +42,8 @@
     }
   },
   "peerDependencies": {
-    "@effect/platform": "^0.64",
-    "effect": "^3.7"
+    "@effect/platform": "^0.65",
+    "effect": "^3.8"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -57,25 +57,25 @@
     "@changesets/cli": "^2.27.8",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.7.8",
-    "@effect/experimental": "^0.25.1",
+    "@effect/experimental": "^0.26.0",
     "@effect/language-service": "^0.1.0",
-    "@effect/platform": "^0.64.0",
-    "@effect/platform-node": "^0.59.0",
+    "@effect/platform": "^0.65.0",
+    "@effect/platform-node": "^0.60.0",
     "@eslint/compat": "^1.1.1",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.10.0",
     "@tim-smart/discord-api-docs-parser": "^0.5.20",
     "@types/chai": "^4.3.19",
-    "@types/node": "^22.5.4",
+    "@types/node": "^22.5.5",
     "@types/ws": "^8.5.12",
     "@typescript-eslint/eslint-plugin": "^8.5.0",
     "@typescript-eslint/parser": "^8.5.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "@vitest/coverage-v8": "^2.0.5",
+    "@vitest/coverage-v8": "^2.1.1",
     "babel-plugin-annotate-pure-calls": "^0.4.0",
-    "concurrently": "^9.0.0",
+    "concurrently": "^9.0.1",
     "dotenv": "^16.4.5",
-    "effect": "^3.7.2",
+    "effect": "^3.8.0",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
@@ -90,10 +90,10 @@
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.0",
+    "tsx": "^4.19.1",
     "typescript": "^5.6.2",
-    "vite": "^5.4.3",
-    "vitest": "2.0.5"
+    "vite": "^5.4.5",
+    "vitest": "2.1.1"
   },
   "gitHead": "781225ad6e1931ec1484fb889065f4580d8ae2f1"
 }
