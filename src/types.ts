@@ -648,6 +648,12 @@ export enum AuditLogEvent {
   THREAD_DELETE = 112,
   /** Permissions were updated for a command */
   APPLICATION_COMMAND_PERMISSION_UPDATE = 121,
+  /** Soundboard sound was created */
+  SOUNDBOARD_SOUND_CREATE = 130,
+  /** Soundboard sound was updated */
+  SOUNDBOARD_SOUND_UPDATE = 131,
+  /** Soundboard sound was deleted */
+  SOUNDBOARD_SOUND_DELETE = 132,
   /** Auto Moderation rule was created */
   AUTO_MODERATION_RULE_CREATE = 140,
   /** Auto Moderation rule was updated */
@@ -1230,6 +1236,18 @@ export interface CreateGuildScheduledEventParams {
   /** the definition for how often this event should recur */
   readonly recurrence_rule?: GuildScheduledEventRecurrenceRule
 }
+export interface CreateGuildSoundboardSoundParams {
+  /** name of the soundboard sound (2-32 characters) */
+  readonly name: string
+  /** the mp3 or ogg sound data, base64 encoded, similar to image data */
+  readonly sound: string
+  /** the volume of the soundboard sound, from 0 to 1, defaults to 1 */
+  readonly volume?: number | null
+  /** the id of the custom emoji for the soundboard sound */
+  readonly emoji_id?: Snowflake | null
+  /** the unicode character of a standard emoji for the soundboard sound */
+  readonly emoji_name?: string | null
+}
 export interface CreateGuildStickerParams {
   /** name of the sticker (2-30 characters) */
   readonly name: string
@@ -1455,6 +1473,13 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    createGuildSoundboardSound: (guildId, params, options) =>
+      fetch({
+        method: "POST",
+        url: `/guilds/${guildId}/soundboard-sounds`,
+        params,
+        options,
+      }),
     createGuildSticker: (guildId, params, options) =>
       fetch({
         method: "POST",
@@ -1612,6 +1637,12 @@ export function createRoutes<O = any>(
       fetch({
         method: "DELETE",
         url: `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
+        options,
+      }),
+    deleteGuildSoundboardSound: (guildId, soundId, options) =>
+      fetch({
+        method: "DELETE",
+        url: `/guilds/${guildId}/soundboard-sounds/${soundId}`,
         options,
       }),
     deleteGuildSticker: (guildId, stickerId, options) =>
@@ -2107,6 +2138,12 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    getGuildSoundboardSound: (guildId, soundId, options) =>
+      fetch({
+        method: "GET",
+        url: `/guilds/${guildId}/soundboard-sounds/${soundId}`,
+        options,
+      }),
     getGuildSticker: (guildId, stickerId, options) =>
       fetch({
         method: "GET",
@@ -2311,6 +2348,12 @@ export function createRoutes<O = any>(
         url: `/guilds/${guildId}/auto-moderation/rules`,
         options,
       }),
+    listDefaultSoundboardSounds: options =>
+      fetch({
+        method: "GET",
+        url: `/soundboard-default-sounds`,
+        options,
+      }),
     listEntitlements: (applicationId, options) =>
       fetch({
         method: "GET",
@@ -2328,6 +2371,12 @@ export function createRoutes<O = any>(
         method: "GET",
         url: `/guilds/${guildId}/members`,
         params,
+        options,
+      }),
+    listGuildSoundboardSounds: (guildId, options) =>
+      fetch({
+        method: "GET",
+        url: `/guilds/${guildId}/soundboard-sounds`,
         options,
       }),
     listGuildStickers: (guildId, options) =>
@@ -2517,6 +2566,13 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    modifyGuildSoundboardSound: (guildId, soundId, params, options) =>
+      fetch({
+        method: "PATCH",
+        url: `/guilds/${guildId}/soundboard-sounds/${soundId}`,
+        params,
+        options,
+      }),
     modifyGuildSticker: (guildId, stickerId, params, options) =>
       fetch({
         method: "PATCH",
@@ -2605,6 +2661,13 @@ export function createRoutes<O = any>(
       fetch({
         method: "GET",
         url: `/guilds/${guildId}/members/search`,
+        params,
+        options,
+      }),
+    sendSoundboardSound: (channelId, params, options) =>
+      fetch({
+        method: "POST",
+        url: `/channels/${channelId}/send-soundboard-sound`,
         params,
         options,
       }),
@@ -3085,6 +3148,12 @@ export interface Endpoints<O> {
     params?: Partial<CreateGuildScheduledEventParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent>
+  /** Create a new soundboard sound for the guild. Requires the CREATE_GUILD_EXPRESSIONS permission. Returns the new soundboard sound object on success. Fires a Guild Soundboard Sound Create Gateway event. */
+  createGuildSoundboardSound: (
+    guildId: string,
+    params?: Partial<CreateGuildSoundboardSoundParams>,
+    options?: O,
+  ) => RestResponse<SoundboardSound>
   /** Create a new sticker for the guild. Send a multipart/form-data body. Requires the CREATE_GUILD_EXPRESSIONS permission. Returns the new sticker object on success. Fires a Guild Stickers Update Gateway event. */
   createGuildSticker: (
     guildId: string,
@@ -3217,6 +3286,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   deleteGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
+    options?: O,
+  ) => RestResponse<any>
+  /** Delete the given soundboard sound. For sounds created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other sounds, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Soundboard Sound Delete Gateway event. */
+  deleteGuildSoundboardSound: (
+    guildId: string,
+    soundId: string,
     options?: O,
   ) => RestResponse<any>
   /** Delete the given sticker. For stickers created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other stickers, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns 204 No Content on success. Fires a Guild Stickers Update Gateway event. */
@@ -3599,6 +3674,12 @@ If the user is not in the guild, then the guild must be discoverable. */
     params?: Partial<GetGuildScheduledEventUserParams>,
     options?: O,
   ) => RestResponse<Array<GuildScheduledEventUser>>
+  /** Returns a soundboard sound object for the given sound id. Includes the user field if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
+  getGuildSoundboardSound: (
+    guildId: string,
+    soundId: string,
+    options?: O,
+  ) => RestResponse<SoundboardSound>
   /** Returns a sticker object for the given guild and sticker IDs. Includes the user field if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
   getGuildSticker: (
     guildId: string,
@@ -3749,6 +3830,10 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<Array<AutoModerationRule>>
+  /** Returns an array of soundboard sound objects that can be used by all users. */
+  listDefaultSoundboardSounds: (
+    options?: O,
+  ) => RestResponse<Array<SoundboardSound>>
   /** Returns all entitlements for a given app, active and expired. */
   listEntitlements: (applicationId: string, options?: O) => RestResponse<any>
   /** Returns a list of emoji objects for the given guild. Includes user fields if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
@@ -3759,6 +3844,8 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ListGuildMemberParams>,
     options?: O,
   ) => RestResponse<Array<GuildMember>>
+  /** Returns a list of the guild's soundboard sounds. Includes user fields if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
+  listGuildSoundboardSounds: (guildId: string, options?: O) => RestResponse<any>
   /** Returns an array of sticker objects for the given guild. Includes user fields if the bot has the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. */
   listGuildStickers: (
     guildId: string,
@@ -3904,6 +3991,13 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildScheduledEventParams>,
     options?: O,
   ) => RestResponse<GuildScheduledEvent>
+  /** Modify the given soundboard sound. For sounds created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other sounds, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated soundboard sound object on success. Fires a Guild Soundboard Sound Update Gateway event. */
+  modifyGuildSoundboardSound: (
+    guildId: string,
+    soundId: string,
+    params?: Partial<ModifyGuildSoundboardSoundParams>,
+    options?: O,
+  ) => RestResponse<SoundboardSound>
   /** Modify the given sticker. For stickers created by the current user, requires either the CREATE_GUILD_EXPRESSIONS or MANAGE_GUILD_EXPRESSIONS permission. For other stickers, requires the MANAGE_GUILD_EXPRESSIONS permission. Returns the updated sticker object on success. Fires a Guild Stickers Update Gateway event. */
   modifyGuildSticker: (
     guildId: string,
@@ -3991,6 +4085,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<SearchGuildMemberParams>,
     options?: O,
   ) => RestResponse<Array<GuildMember>>
+  /** Send a soundboard sound to a voice channel the user is connected to. Fires a Voice Channel Effect Send Gateway event. */
+  sendSoundboardSound: (
+    channelId: string,
+    params?: Partial<SendSoundboardSoundParams>,
+    options?: O,
+  ) => RestResponse<any>
   /** Creates a new thread from an existing message. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. Fires a Thread Create and a Message Update Gateway event. */
   startThreadFromMessage: (
     channelId: string,
@@ -4177,7 +4277,7 @@ export const GatewayIntents = {
   GUILDS: 1 << 0,
   GUILD_MEMBERS: 1 << 1,
   GUILD_MODERATION: 1 << 2,
-  GUILD_EMOJIS_AND_STICKERS: 1 << 3,
+  GUILD_EXPRESSIONS: 1 << 3,
   GUILD_INTEGRATIONS: 1 << 4,
   GUILD_WEBHOOKS: 1 << 5,
   GUILD_INVITES: 1 << 6,
@@ -4219,6 +4319,8 @@ export enum GatewayOpcode {
   HELLO = 10,
   /** Sent in response to receiving a heartbeat to acknowledge that it has been received. */
   HEARTBEAT_ACK = 11,
+  /** Request information about soundboard sounds in a set of guilds. */
+  REQUEST_SOUNDBOARD_SOUNDS = 31,
 }
 export interface GatewayPayload<T = any | null> {
   /** opcode for the payload */
@@ -4511,6 +4613,8 @@ export interface GuildCreateExtra {
   readonly stage_instances: Array<StageInstance>
   /** Scheduled events in the guild */
   readonly guild_scheduled_events: Array<GuildScheduledEvent>
+  /** Soundboard sounds in the guild */
+  readonly soundboard_sounds: Array<SoundboardSound>
 }
 export type GuildDeleteEvent = UnavailableGuild
 export interface GuildEmojisUpdateEvent {
@@ -4548,6 +4652,8 @@ export enum GuildFeature {
   INVITE_SPLASH = "INVITE_SPLASH",
   /** guild has enabled Membership Screening */
   MEMBER_VERIFICATION_GATE_ENABLED = "MEMBER_VERIFICATION_GATE_ENABLED",
+  /** guild has increased custom soundboard sound slots */
+  MORE_SOUNDBOARD = "MORE_SOUNDBOARD",
   /** guild has increased custom sticker slots */
   MORE_STICKERS = "MORE_STICKERS",
   /** guild has access to create announcement channels */
@@ -4564,6 +4670,8 @@ export enum GuildFeature {
   ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE = "ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE",
   /** guild has enabled role subscriptions */
   ROLE_SUBSCRIPTIONS_ENABLED = "ROLE_SUBSCRIPTIONS_ENABLED",
+  /** guild has created soundboard sounds */
+  SOUNDBOARD = "SOUNDBOARD",
   /** guild has enabled ticketed events */
   TICKETED_EVENTS_ENABLED = "TICKETED_EVENTS_ENABLED",
   /** guild has access to set a vanity URL */
@@ -4881,6 +4989,15 @@ export interface GuildScheduledEventUserRemoveEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
 }
+export type GuildSoundboardSoundCreateEvent = SoundboardSound
+export interface GuildSoundboardSoundDeleteEvent {
+  /** ID of the sound that was deleted */
+  readonly sound_id: Snowflake
+  /** ID of the guild the sound was in */
+  readonly guild_id: Snowflake
+}
+export type GuildSoundboardSoundsUpdateEvent = SoundboardSound
+export type GuildSoundboardSoundUpdateEvent = SoundboardSound
 export interface GuildStickersUpdateEvent {
   /** ID of the guild */
   readonly guild_id: Snowflake
@@ -6014,6 +6131,16 @@ export interface ModifyGuildScheduledEventParams {
   /** the definition for how often this event should recur */
   readonly recurrence_rule?: GuildScheduledEventRecurrenceRule | null
 }
+export interface ModifyGuildSoundboardSoundParams {
+  /** name of the soundboard sound (2-32 characters) */
+  readonly name: string
+  /** the volume of the soundboard sound, from 0 to 1 */
+  readonly volume?: number | null
+  /** the id of the custom emoji for the soundboard sound */
+  readonly emoji_id?: Snowflake | null
+  /** the unicode character of a standard emoji for the soundboard sound */
+  readonly emoji_name?: string | null
+}
 export interface ModifyGuildStickerParams {
   /** name of the sticker (2-30 characters) */
   readonly name: string
@@ -6447,6 +6574,11 @@ export type ReceiveEvent =
   | GuildScheduledEventDeleteEvent
   | GuildScheduledEventUserAddEvent
   | GuildScheduledEventUserRemoveEvent
+  | GuildSoundboardSoundCreateEvent
+  | GuildSoundboardSoundUpdateEvent
+  | GuildSoundboardSoundDeleteEvent
+  | GuildSoundboardSoundsUpdateEvent
+  | SoundboardSoundEvent
   | IntegrationCreateEvent
   | IntegrationUpdateEvent
   | IntegrationDeleteEvent
@@ -6521,6 +6653,11 @@ export interface ReceiveEvents {
   GUILD_SCHEDULED_EVENT_DELETE: GuildScheduledEventDeleteEvent
   GUILD_SCHEDULED_EVENT_USER_ADD: GuildScheduledEventUserAddEvent
   GUILD_SCHEDULED_EVENT_USER_REMOVE: GuildScheduledEventUserRemoveEvent
+  GUILD_SOUNDBOARD_SOUND_CREATE: GuildSoundboardSoundCreateEvent
+  GUILD_SOUNDBOARD_SOUND_UPDATE: GuildSoundboardSoundUpdateEvent
+  GUILD_SOUNDBOARD_SOUND_DELETE: GuildSoundboardSoundDeleteEvent
+  GUILD_SOUNDBOARD_SOUNDS_UPDATE: GuildSoundboardSoundsUpdateEvent
+  SOUNDBOARD_SOUNDS: SoundboardSoundEvent
   INTEGRATION_CREATE: IntegrationCreateEvent
   INTEGRATION_UPDATE: IntegrationUpdateEvent
   INTEGRATION_DELETE: IntegrationDeleteEvent
@@ -6565,6 +6702,10 @@ export interface RequestGuildMember {
   readonly user_ids?: Array<Snowflake>
   /** nonce to identify the Guild Members Chunk response */
   readonly nonce?: string
+}
+export interface RequestSoundboardSound {
+  /** IDs of the guilds to get soundboard sounds for */
+  readonly guild_ids: Array<Snowflake>
 }
 export interface ResolvedDatum {
   /** IDs and User objects */
@@ -6716,6 +6857,7 @@ export type SendEvent =
   | Resume
   | Heartbeat
   | RequestGuildMember
+  | RequestSoundboardSound
   | UpdateVoiceState
   | UpdatePresence
 export interface SendEvents {
@@ -6723,8 +6865,15 @@ export interface SendEvents {
   RESUME: Resume
   HEARTBEAT: Heartbeat
   REQUEST_GUILD_MEMBERS: RequestGuildMember
+  REQUEST_SOUNDBOARD_SOUNDS: RequestSoundboardSound
   UPDATE_VOICE_STATE: UpdateVoiceState
   UPDATE_PRESENCE: UpdatePresence
+}
+export interface SendSoundboardSoundParams {
+  /** the id of the soundboard sound to play */
+  readonly sound_id: Snowflake
+  /** the id of the guild the soundboard sound is from, required to play sounds from different servers */
+  readonly source_guild_id?: Snowflake
 }
 export interface SessionStartLimit {
   /** Total number of session starts the current user is allowed */
@@ -6774,6 +6923,30 @@ export enum SortOrderType {
   LATEST_ACTIVITY = 0,
   /** Sort forum posts by creation time (from most recent to oldest) */
   CREATION_DATE = 1,
+}
+export interface SoundboardSound {
+  /** the name of this sound */
+  readonly name: string
+  /** the id of this sound */
+  readonly sound_id: Snowflake
+  /** the volume of this sound, from 0 to 1 */
+  readonly volume: number
+  /** the id of this sound's custom emoji */
+  readonly emoji_id?: Snowflake | null
+  /** the unicode character of this sound's standard emoji */
+  readonly emoji_name?: string | null
+  /** the id of the guild this sound is in */
+  readonly guild_id?: Snowflake
+  /** whether this sound can be used, may be false due to loss of Server Boosts */
+  readonly available: boolean
+  /** the user who created this sound */
+  readonly user?: User
+}
+export interface SoundboardSoundEvent {
+  /** The guild's soundboard sounds */
+  readonly soundboard_sounds: Array<SoundboardSound>
+  /** ID of the guild */
+  readonly guild_id: Snowflake
 }
 export interface StageInstance {
   /** The id of this Stage instance */
@@ -7265,8 +7438,32 @@ export enum VoiceOpcode {
   HELLO = 8,
   /** Acknowledge a successful session resume. */
   RESUMED = 9,
+  /** One or more clients have connected to the voice channel */
+  CLIENTS_CONNECT = 11,
   /** A client has disconnected from the voice channel */
   CLIENT_DISCONNECT = 13,
+  /** A downgrade from the DAVE protocol is upcoming */
+  DAVE_PREPARE_TRANSITION = 21,
+  /** Execute a previously announced protocol transition */
+  DAVE_EXECUTE_TRANSITION = 22,
+  /** Acknowledge readiness previously announced transition */
+  DAVE_TRANSITION_READY = 23,
+  /** A DAVE protocol version or group change is upcoming */
+  DAVE_PREPARE_EPOCH = 24,
+  /** Credential and public key for MLS external sender */
+  DAVE_MLS_EXTERNAL_SENDER = 25,
+  /** MLS Key Package for pending group member */
+  DAVE_MLS_KEY_PACKAGE = 26,
+  /** MLS Proposals to be appended or revoked */
+  DAVE_MLS_PROPOSALS = 27,
+  /** MLS Commit with optional MLS Welcome messages */
+  DAVE_MLS_COMMIT_WELCOME = 28,
+  /** MLS Commit to be processed for upcoming transition */
+  DAVE_MLS_ANNOUNCE_COMMIT_TRANSITION = 29,
+  /** MLS Welcome to group for upcoming transition */
+  DAVE_MLS_WELCOME = 30,
+  /** Flag invalid commit or welcome, request re-add */
+  DAVE_MLS_INVALID_COMMIT_WELCOME = 31,
 }
 export interface VoiceRegion {
   /** unique ID for the region */
