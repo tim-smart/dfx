@@ -1,5 +1,7 @@
+import type { HttpClient } from "@effect/platform/HttpClient"
 import * as Cache from "dfx/Cache"
 import * as DiscordConfig from "dfx/DiscordConfig"
+import type { DiscordREST } from "dfx/DiscordREST"
 import { DiscordRESTLive } from "dfx/DiscordREST"
 import * as Flags from "dfx/Helpers/flags"
 import * as Intents from "dfx/Helpers/intents"
@@ -35,6 +37,8 @@ export {
   UI,
 }
 
-export const DiscordRESTMemoryLive = DiscordRESTLive.pipe(
-  Layer.provide(MemoryRateLimitStoreLive),
-)
+export const DiscordRESTMemoryLive: Layer.Layer<
+  DiscordREST,
+  never,
+  DiscordConfig.DiscordConfig | HttpClient.Service
+> = DiscordRESTLive.pipe(Layer.provide(MemoryRateLimitStoreLive))

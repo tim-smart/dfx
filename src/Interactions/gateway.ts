@@ -1,4 +1,5 @@
 import * as Chunk from "effect/Chunk"
+import type { Tag } from "effect/Context"
 import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { pipe } from "effect/Function"
@@ -165,11 +166,15 @@ export interface InteractionsRegistry {
   readonly _: unique symbol
 }
 
-export const InteractionsRegistry = GenericTag<
+export const InteractionsRegistry: Tag<
   InteractionsRegistry,
   InteractionsRegistryService
->("dfx/Interactions/InteractionsRegistry")
-export const InteractionsRegistryLive = Layer.scoped(
-  InteractionsRegistry,
-  makeRegistry,
+> = GenericTag<InteractionsRegistry, InteractionsRegistryService>(
+  "dfx/Interactions/InteractionsRegistry",
 )
+
+export const InteractionsRegistryLive: Layer.Layer<
+  InteractionsRegistry,
+  never,
+  DiscordREST | DiscordGateway
+> = Layer.scoped(InteractionsRegistry, makeRegistry)

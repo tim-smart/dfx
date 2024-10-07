@@ -1,6 +1,14 @@
+import type { HttpClient } from "@effect/platform/HttpClient"
+import type { WebSocketConstructor } from "@effect/platform/Socket"
+import type { DiscordConfig } from "dfx/DiscordConfig"
+import type { DiscordWSCodec } from "dfx/DiscordGateway/DiscordWS"
+import type { Messsaging } from "dfx/DiscordGateway/Messaging"
 import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
 import type { RunningShard } from "dfx/DiscordGateway/Shard"
+import type { ShardStateStore } from "dfx/DiscordGateway/Shard/StateStore"
 import { Sharder, SharderLive } from "dfx/DiscordGateway/Sharder"
+import type { ShardStore } from "dfx/DiscordGateway/ShardStore"
+import type { RateLimitStore } from "dfx/RateLimit"
 import type * as Discord from "dfx/types"
 import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
@@ -30,21 +38,32 @@ export interface DiscordGateway {
 
 export const DiscordGateway = GenericTag<DiscordGateway>("dfx/DiscordGateway")
 
-export const make = Effect.gen(function* () {
-  const sharder = yield* Sharder
-  const messaging = yield* Messaging
+export const make: Effect.Effect<DiscordGateway, never, Messsaging | Sharder> =
+  Effect.gen(function* () {
+    const sharder = yield* Sharder
+    const messaging = yield* Messaging
 
-  return DiscordGateway.of({
-    [TypeId]: TypeId,
-    dispatch: messaging.dispatch,
-    fromDispatch: messaging.fromDispatch,
-    handleDispatch: messaging.handleDispatch,
-    send: messaging.send,
-    shards: sharder.shards,
+    return DiscordGateway.of({
+      [TypeId]: TypeId,
+      dispatch: messaging.dispatch,
+      fromDispatch: messaging.fromDispatch,
+      handleDispatch: messaging.handleDispatch,
+      send: messaging.send,
+      shards: sharder.shards,
+    })
   })
-})
 
-export const DiscordGatewayLive = Layer.effect(DiscordGateway, make).pipe(
+export const DiscordGatewayLive: Layer.Layer<
+  DiscordGateway,
+  never,
+  | ShardStore
+  | DiscordConfig
+  | RateLimitStore
+  | DiscordWSCodec
+  | ShardStateStore
+  | WebSocketConstructor
+  | HttpClient.Service
+> = Layer.effect(DiscordGateway, make).pipe(
   Layer.provide(MesssagingLive),
   Layer.provide(SharderLive),
 )

@@ -5,7 +5,7 @@ import * as Option from "effect/Option"
 import type * as Cause from "effect/Cause"
 import type * as Config from "effect/Config"
 import type * as ConfigError from "effect/ConfigError"
-import * as Secret from "effect/Secret"
+import * as Redacted from "effect/Redacted"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import type * as D from "dfx/Interactions/definitions"
@@ -57,7 +57,7 @@ const checkSignature = (
 
 export interface MakeConfigOpts {
   readonly applicationId: string
-  readonly publicKey: Secret.Secret
+  readonly publicKey: Redacted.Redacted
   readonly crypto: SubtleCrypto
   readonly algorithm: keyof typeof Verify.PlatformAlgorithm
 }
@@ -68,7 +68,7 @@ const makeConfig = ({
   publicKey,
 }: MakeConfigOpts) => ({
   applicationId,
-  publicKey: Secret.value(publicKey),
+  publicKey: Redacted.value(publicKey),
   crypto,
   algorithm: Verify.PlatformAlgorithm[algorithm],
 })

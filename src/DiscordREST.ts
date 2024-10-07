@@ -311,6 +311,8 @@ export interface DiscordRESTService
 export const DiscordREST = GenericTag<DiscordREST, DiscordRESTService>(
   "dfx/DiscordREST",
 )
-export const DiscordRESTLive = Layer.effect(DiscordREST, make).pipe(
-  Layer.provide(RateLimiterLive),
-)
+export const DiscordRESTLive: Layer.Layer<
+  DiscordREST,
+  never,
+  DiscordConfig | HttpClient.HttpClient.Service | RateLimitStore
+> = Layer.effect(DiscordREST, make).pipe(Layer.provide(RateLimiterLive))
