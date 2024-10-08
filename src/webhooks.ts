@@ -19,7 +19,7 @@ export {
 export const DiscordLive: Layer.Layer<
   DiscordREST | RateLimiter,
   never,
-  DiscordConfig | HttpClient.Service
+  DiscordConfig | HttpClient
 > = Layer.mergeAll(DiscordRESTLive, RateLimiterLive).pipe(
   Layer.provide(MemoryRateLimitStoreLive),
 )

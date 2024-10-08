@@ -62,7 +62,7 @@ export const DiscordGatewayLive: Layer.Layer<
   | DiscordWSCodec
   | ShardStateStore
   | WebSocketConstructor
-  | HttpClient.Service
+  | HttpClient
 > = Layer.effect(DiscordGateway, make).pipe(
   Layer.provide(MesssagingLive),
   Layer.provide(SharderLive),

@@ -34,7 +34,7 @@ export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore }
 export const DiscordLive: Layer.Layer<
   RateLimiter | DiscordGateway | DiscordREST,
   never,
-  DiscordConfig | WebSocketConstructor | HttpClient.HttpClient.Service
+  DiscordConfig | WebSocketConstructor | HttpClient.HttpClient
 > = Layer.mergeAll(RateLimiterLive, DiscordGatewayLive).pipe(
   Layer.provideMerge(DiscordRESTLive),
   Layer.provide(JsonDiscordWSCodecLive),
@@ -46,5 +46,5 @@ export const DiscordLive: Layer.Layer<
 export const DiscordIxLive: Layer.Layer<
   RateLimiter | DiscordGateway | DiscordREST | InteractionsRegistry,
   never,
-  DiscordConfig | WebSocketConstructor | HttpClient.HttpClient.Service
+  DiscordConfig | WebSocketConstructor | HttpClient.HttpClient
 > = InteractionsRegistryLive.pipe(Layer.provideMerge(DiscordLive))

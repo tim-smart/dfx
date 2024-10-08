@@ -40,5 +40,5 @@ export {
 export const DiscordRESTMemoryLive: Layer.Layer<
   DiscordREST,
   never,
-  DiscordConfig.DiscordConfig | HttpClient.Service
+  DiscordConfig.DiscordConfig | HttpClient
 > = DiscordRESTLive.pipe(Layer.provide(MemoryRateLimitStoreLive))
