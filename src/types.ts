@@ -3526,7 +3526,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
   getCurrentBotApplicationInformation: (
     options?: O,
   ) => RestResponse<Application>
-  /** Returns the user object of the requester's account. For OAuth2, this requires the identify scope, which will return the object without an email, and optionally the email scope, which returns the object with an email. */
+  /** Returns the user object of the requester's account. For OAuth2, this requires the identify scope, which will return the object without an email, and optionally the email scope, which returns the object with an email if the user has one. */
   getCurrentUser: (options?: O) => RestResponse<User>
   /** Returns the application role connection for the user. Requires an OAuth2 access token with role_connections.write scope for the application specified in the path. */
   getCurrentUserApplicationRoleConnection: (
@@ -4694,6 +4694,8 @@ export interface GuildMember {
   readonly nick?: string | null
   /** the member's guild avatar hash */
   readonly avatar?: string | null
+  /** the member's guild banner hash */
+  readonly banner?: string | null
   /** array of role object ids */
   readonly roles: Array<Snowflake>
   /** when the user joined the guild */
@@ -4773,6 +4775,8 @@ export interface GuildMemberUpdateEvent {
   readonly nick?: string | null
   /** Member's guild avatar hash */
   readonly avatar?: string | null
+  /** Member's guild banner hash */
+  readonly banner?: string | null
   /** When the user joined the guild */
   readonly joined_at?: string | null
   /** When the user starting boosting the guild */
@@ -4996,7 +5000,12 @@ export interface GuildSoundboardSoundDeleteEvent {
   /** ID of the guild the sound was in */
   readonly guild_id: Snowflake
 }
-export type GuildSoundboardSoundsUpdateEvent = SoundboardSound
+export interface GuildSoundboardSoundsUpdateEvent {
+  /** The guild's soundboard sounds */
+  readonly soundboard_sounds: Array<SoundboardSound>
+  /** ID of the guild */
+  readonly guild_id: Snowflake
+}
 export type GuildSoundboardSoundUpdateEvent = SoundboardSound
 export interface GuildStickersUpdateEvent {
   /** ID of the guild */
@@ -5201,7 +5210,7 @@ export interface Interaction {
   readonly context?: InteractionContextType
 }
 export interface InteractionCallback {
-  /**  */
+  /** ID of the interaction */
   readonly id: Snowflake
   /** Interaction type */
   readonly type: InteractionType
@@ -5261,7 +5270,7 @@ export interface InteractionCallbackResource {
   readonly message?: Message
 }
 export interface InteractionCallbackResponse {
-  /** The interaction object associated with the */
+  /** The interaction object associated with the interaction response. */
   readonly interaction: InteractionCallback
   /** The resource that was created by the interaction response. */
   readonly resource?: InteractionCallbackResource
