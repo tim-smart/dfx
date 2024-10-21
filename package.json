@@ -42,41 +42,41 @@
     }
   },
   "peerDependencies": {
-    "@effect/platform": "^0.68",
-    "effect": "^3.9"
+    "@effect/platform": "^0.69",
+    "effect": "^3.10"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.7",
-    "@babel/core": "^7.25.7",
+    "@babel/core": "^7.25.8",
     "@babel/plugin-syntax-import-attributes": "^7.25.7",
     "@babel/plugin-transform-modules-commonjs": "^7.25.7",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.9",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.7.8",
-    "@effect/experimental": "^0.29.0",
-    "@effect/language-service": "^0.1.0",
-    "@effect/platform": "^0.68.0",
-    "@effect/platform-node": "^0.63.0",
-    "@eslint/compat": "^1.2.0",
+    "@effect/experimental": "^0.30.0",
+    "@effect/language-service": "^0.2.0",
+    "@effect/platform": "^0.69.0",
+    "@effect/platform-node": "^0.64.0",
+    "@eslint/compat": "^1.2.1",
     "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.12.0",
+    "@eslint/js": "^9.13.0",
     "@tim-smart/discord-api-docs-parser": "^0.5.21",
     "@types/chai": "^5.0.0",
-    "@types/node": "^22.7.5",
+    "@types/node": "^22.7.7",
     "@types/ws": "^8.5.12",
-    "@typescript-eslint/eslint-plugin": "^8.8.1",
-    "@typescript-eslint/parser": "^8.8.1",
-    "@vitejs/plugin-react": "^4.3.2",
-    "@vitest/coverage-v8": "^2.1.2",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
+    "@typescript-eslint/parser": "^8.11.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@vitest/coverage-v8": "^2.1.3",
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "concurrently": "^9.0.1",
     "dotenv": "^16.4.5",
-    "effect": "^3.9.1",
-    "eslint": "^9.12.0",
+    "effect": "^3.10.0",
+    "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-codegen": "0.29.0",
@@ -92,8 +92,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3",
-    "vite": "^5.4.8",
-    "vitest": "2.1.2"
+    "vite": "^5.4.9",
+    "vitest": "2.1.3"
   },
   "gitHead": "781225ad6e1931ec1484fb889065f4580d8ae2f1"
 }
