@@ -1,7 +1,7 @@
 import { pipe } from "effect/Function"
 import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
-import type * as Fiber from "effect/Fiber"
+import * as Fiber from "effect/Fiber"
 import * as PubSub from "effect/PubSub"
 import * as Queue from "effect/Queue"
 
@@ -14,10 +14,10 @@ export const subscribeForEachPar = <R, E, A, X>(
       PubSub.subscribe(self),
       Effect.flatMap(queue =>
         Effect.forever(
-          Effect.flatMap(Queue.take(queue), _ =>
+          Effect.flatMap(Queue.take(queue), a =>
             Effect.fork(
-              Effect.catchAllCause(effect(_), _ =>
-                Deferred.failCause(deferred, _),
+              Effect.catchAllCause(effect(a), cause =>
+                Deferred.failCause(deferred, cause),
               ),
             ),
           ),
@@ -27,45 +27,28 @@ export const subscribeForEachPar = <R, E, A, X>(
       Effect.interruptible,
     )
 
-    return Effect.all([run, Deferred.await(deferred)], {
-      concurrency: "unbounded",
-      discard: true,
-    }) as Effect.Effect<never, E, R>
+    return Effect.raceFirst(run, Deferred.await(deferred))
   })
 
 export const foreverSwitch = <R, E, A, R1, E1, X>(
   self: Effect.Effect<A, E, R>,
   f: (_: A) => Effect.Effect<X, E1, R1>,
 ): Effect.Effect<never, E | E1, R | R1> =>
-  pipe(
-    Effect.all([Deferred.make<never, E1>(), Effect.fiberId]),
-    Effect.flatMap(([causeDeferred, fiberId]) => {
-      let fiber: Fiber.RuntimeFiber<unknown, unknown> | undefined
-
-      const run = pipe(
-        self,
-        Effect.tap(() =>
-          fiber ? fiber.interruptAsFork(fiberId) : Effect.void,
-        ),
-        Effect.flatMap(_ =>
-          pipe(
-            f(_),
-            Effect.tapErrorCause(_ => Deferred.failCause(causeDeferred, _)),
-            Effect.fork,
-          ),
-        ),
-        Effect.tap(fiber_ =>
-          Effect.sync(() => {
+  Effect.gen(function* () {
+    const deferred = yield* Deferred.make<never, E1>()
+    let fiber: Fiber.RuntimeFiber<unknown, unknown> | undefined
+    return yield* self.pipe(
+      Effect.tap(() => (fiber ? Fiber.interruptFork(fiber) : Effect.void)),
+      Effect.flatMap(a =>
+        f(a).pipe(
+          Effect.catchAllCause(cause => Deferred.failCause(deferred, cause)),
+          Effect.fork,
+          Effect.tap(fiber_ => {
             fiber = fiber_
           }),
         ),
-        Effect.forever,
-        Effect.interruptible,
-      )
-
-      return Effect.all([run, Deferred.await(causeDeferred)], {
-        concurrency: "unbounded",
-        discard: true,
-      }) as Effect.Effect<never, E | E1, R | R1>
-    }),
-  )
+      ),
+      Effect.forever,
+      Effect.raceFirst(Deferred.await(deferred)),
+    )
+  })
