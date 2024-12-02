@@ -98,25 +98,25 @@ export interface ActivityInstance {
   readonly instance_id: string
   /** Unique identifier for the launch */
   readonly launch_id: Snowflake
-  /** The Location the instance is runnning in */
+  /** Location the instance is runnning in */
   readonly location: ActivityLocation
-  /** The IDs of the Users currently connected to the instance */
+  /** IDs of the Users currently connected to the instance */
   readonly users: Array<Snowflake>
 }
 export interface ActivityLocation {
-  /** The unique identifier for the location */
+  /** Unique identifier for the location */
   readonly id: string
   /** Enum describing kind of location */
   readonly kind: ActivityLocationKind
-  /** The id of the Channel */
+  /** ID of the Channel */
   readonly channel_id: Snowflake
-  /** The id of the Guild */
+  /** ID of the Guild */
   readonly guild_id?: Snowflake | null
 }
 export enum ActivityLocationKind {
-  /** The Location is a Guild Channel */
+  /** Location is a Guild Channel */
   GC = "'gc'",
-  /** The Location is a Private Channel, such as a DM or GDM */
+  /** Location is a Private Channel, such as a DM or GDM */
   PC = "'pc'",
 }
 export interface ActivityParty {
@@ -232,6 +232,12 @@ export interface Application {
   readonly interactions_endpoint_url?: string | null
   /** Role connection verification URL for the app */
   readonly role_connections_verification_url?: string | null
+  /** Event webhooks URL for the app to receive webhook events */
+  readonly event_webhooks_url?: string | null
+  /** If webhook events are enabled for the app. 1 (default) means disabled, 2 means enabled, and 3 means disabled by Discord */
+  readonly event_webhooks_status: ApplicationEventWebhookStatus
+  /** List of Webhook event types the app subscribes to */
+  readonly event_webhooks_types?: Array<EventType>
   /** List of tags describing the content and functionality of the app. Max of 5 tags. */
   readonly tags?: Array<string>
   /** Settings for the app's default in-app authorization link, if enabled */
@@ -240,6 +246,16 @@ export interface Application {
   readonly integration_types_config?: ApplicationIntegrationType
   /** Default custom authorization URL for the app, if enabled */
   readonly custom_install_url?: string
+}
+export interface ApplicationAuthorized {
+  /** Installation context for the authorization. Either guild (0) if installed to a server or user (1) if installed to a user's account */
+  readonly integration_type?: ApplicationIntegrationType
+  /** User who authorized the app */
+  readonly user: User
+  /** List of scopes the user authorized */
+  readonly scopes: Array<OAuth2Scope>
+  /** Server which app was authorized for (when integration type is 0) */
+  readonly guild?: Guild
 }
 export interface ApplicationCommand {
   /** Unique ID of command */
@@ -304,6 +320,22 @@ export interface ApplicationCommandInteractionDataOption {
   readonly options?: Array<ApplicationCommandInteractionDataOption>
   /** true if this option is the currently focused option for autocomplete */
   readonly focused?: boolean
+}
+export interface ApplicationCommandInteractionMetadatum {
+  /** ID of the interaction */
+  readonly id: Snowflake
+  /** Type of interaction */
+  readonly type: InteractionType
+  /** User who triggered the interaction */
+  readonly user: User
+  /** IDs for installation context(s) related to an interaction. Details in Authorizing Integration Owners Object */
+  readonly authorizing_integration_owners: ApplicationIntegrationType
+  /** ID of the original response message, present only on follow-up messages */
+  readonly original_response_message_id?: Snowflake
+  /** The user the command was run on, present only on user command interactions */
+  readonly target_user?: User
+  /** The ID of the message the command was run on, present only on message command interactions. The original response message will also have message_reference and referenced_message pointing to this message. */
+  readonly target_message_id?: Snowflake
 }
 export interface ApplicationCommandOption {
   /** Type of option */
@@ -380,6 +412,14 @@ export enum ApplicationCommandType {
   MESSAGE = 3,
   /** A UI-based command that represents the primary way to invoke an app's Activity */
   PRIMARY_ENTRY_POINT = 4,
+}
+export enum ApplicationEventWebhookStatus {
+  /** Webhook events are disabled by developer */
+  DISABLED = 1,
+  /** Webhook events are enabled by developer */
+  ENABLED = 2,
+  /** Webhook events are disabled by Discord, usually due to inactivity */
+  DISABLED_BY_DISCORD = 3,
 }
 export const ApplicationFlag = {
   /** Indicates if an app uses the Auto Moderation API */
@@ -1974,6 +2014,12 @@ export function createRoutes<O = any>(
         url: `/guilds/${guildId}/voice-states/@me`,
         options,
       }),
+    getEntitlement: (applicationId, entitlementId, options) =>
+      fetch({
+        method: "GET",
+        url: `/applications/${applicationId}/entitlements/${entitlementId}`,
+        options,
+      }),
     getFollowupMessage: (
       applicationId,
       interactionToken,
@@ -2796,6 +2842,12 @@ export interface EditCurrentApplicationParams {
   readonly interactions_endpoint_url: string
   /** List of tags describing the content and functionality of the app (max of 20 characters per tag). Max of 5 tags. */
   readonly tags: Array<string>
+  /** Event webhooks URL for the app to receive webhook events */
+  readonly event_webhooks_url: string
+  /** If webhook events are enabled for the app. 1 to disable, and 2 to enable */
+  readonly event_webhooks_status: ApplicationEventWebhookStatus
+  /** List of Webhook event types to subscribe to */
+  readonly event_webhooks_types: Array<EventType>
 }
 export interface EditGlobalApplicationCommandParams {
   /** Name of command, 1-32 characters */
@@ -3550,6 +3602,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     guildId: string,
     options?: O,
   ) => RestResponse<VoiceState>
+  /** Returns an entitlement. */
+  getEntitlement: (
+    applicationId: string,
+    entitlementId: string,
+    options?: O,
+  ) => RestResponse<any>
   /** Returns a followup message for an Interaction. Functions the same as Get Webhook Message. */
   getFollowupMessage: (
     applicationId: string,
@@ -4159,6 +4217,7 @@ export interface Entitlement {
   readonly consumed?: boolean
 }
 export type EntitlementCreateEvent = Entitlement
+export type EntitlementCreateStructureEvent = Entitlement
 export type EntitlementDeleteEvent = Entitlement
 export enum EntitlementType {
   /** Entitlement was purchased by user */
@@ -4182,6 +4241,22 @@ export type EntitlementUpdateEvent = Entitlement
 export enum EntryPointCommandHandlerType {
   APP_HANDLER = 1,
   DISCORD_LAUNCH_ACTIVITY = 2,
+}
+export interface EventBody {
+  /** Event type */
+  readonly type: EventType
+  /** Timestamp of when the event occurred in ISO8601 format */
+  readonly timestamp: string
+  /** Data for the event. The shape depends on the event type */
+  readonly data?: EventType
+}
+export enum EventType {
+  /** Sent when an app was authorized by a user to a server or their account */
+  APPLICATION_AUTHORIZED = "APPLICATION_AUTHORIZED",
+  /** Entitlement was created */
+  ENTITLEMENT_CREATE = "ENTITLEMENT_CREATE",
+  /** User was added to a Quest (currently unavailable) */
+  QUEST_USER_ENROLLMENT = "QUEST_USER_ENROLLMENT",
 }
 export enum EventType {
   /** when a member sends or edits a message in the guild */
@@ -4753,7 +4828,7 @@ export interface GuildMembersChunkEvent {
   readonly guild_id: Snowflake
   /** Set of guild members */
   readonly members: Array<GuildMember>
-  /** Chunk index in the expected chunks for this response (0 <= chunk_index < chunk_count) */
+  /** Chunk index in the expected chunks for this response (0 <= chunk\_index < chunk\_count) */
   readonly chunk_index: number
   /** Total number of expected chunks for this response */
   readonly chunk_count: number
@@ -5032,7 +5107,7 @@ export interface GuildTemplate {
   readonly updated_at: string
   /** the ID of the guild this template is based on */
   readonly source_guild_id: Snowflake
-  /** the guild snapshot this template contains */
+  /** the guild snapshot this template contains; placeholder IDs are given as integers */
   readonly serialized_source_guild: Guild
   /** whether the template has unsynced changes */
   readonly is_dirty?: boolean | null
@@ -5610,7 +5685,7 @@ export interface Message {
   readonly message_snapshots: Array<MessageSnapshot>
   /** the message associated with the message_reference */
   readonly referenced_message?: Message | null
-  /** In preview. Sent if the message is sent as a result of an interaction */
+  /** Sent if the message is sent as a result of an interaction */
   readonly interaction_metadata?: MessageInteractionMetadatum
   /** Deprecated in favor of interaction_metadata; sent if the message is a response to an interaction */
   readonly interaction?: MessageInteraction
@@ -5660,6 +5735,20 @@ export interface MessageComponentDatum {
   readonly values?: Array<SelectOption>
   /** Resolved entities from selected options */
   readonly resolved?: ResolvedDatum
+}
+export interface MessageComponentInteractionMetadatum {
+  /** ID of the interaction */
+  readonly id: Snowflake
+  /** Type of interaction */
+  readonly type: InteractionType
+  /** User who triggered the interaction */
+  readonly user: User
+  /** IDs for installation context(s) related to an interaction. Details in Authorizing Integration Owners Object */
+  readonly authorizing_integration_owners: ApplicationIntegrationType
+  /** ID of the original response message, present only on follow-up messages */
+  readonly original_response_message_id?: Snowflake
+  /** ID of the message that contained the interactive component */
+  readonly interacted_message_id: Snowflake
 }
 export type MessageCreateEvent = Message & MessageCreateExtra
 export interface MessageCreateExtra {
@@ -5722,22 +5811,10 @@ export interface MessageInteraction {
   /** Member who invoked the interaction in the guild */
   readonly member?: GuildMember
 }
-export interface MessageInteractionMetadatum {
-  /** ID of the interaction */
-  readonly id: Snowflake
-  /** Type of interaction */
-  readonly type: InteractionType
-  /** User who triggered the interaction */
-  readonly user: User
-  /** IDs for installation context(s) related to an interaction. Details in Authorizing Integration Owners Object */
-  readonly authorizing_integration_owners: ApplicationIntegrationType
-  /** ID of the original response message, present only on follow-up messages */
-  readonly original_response_message_id?: Snowflake
-  /** ID of the message that contained interactive component, present only on messages created from component interactions */
-  readonly interacted_message_id?: Snowflake
-  /** Metadata for the interaction that was used to open the modal, present only on modal submit interactions */
-  readonly triggering_interaction_metadata?: MessageInteractionMetadatum
-}
+export type MessageInteractionMetadatum =
+  | ApplicationCommandInteractionMetadatum
+  | MessageComponentInteractionMetadatum
+  | ModalSubmitInteractionMetadatum
 export interface MessagePollVoteAddEvent {
   /** ID of the user */
   readonly user_id: Snowflake
@@ -5891,6 +5968,20 @@ export interface ModalSubmitDatum {
   readonly custom_id: string
   /** Values submitted by the user */
   readonly components: Array<Component>
+}
+export interface ModalSubmitInteractionMetadatum {
+  /** ID of the interaction */
+  readonly id: Snowflake
+  /** Type of interaction */
+  readonly type: InteractionType
+  /** User who triggered the interaction */
+  readonly user: User
+  /** IDs for installation context(s) related to an interaction. Details in Authorizing Integration Owners Object */
+  readonly authorizing_integration_owners: ApplicationIntegrationType
+  /** ID of the original response message, present only on follow-up messages */
+  readonly original_response_message_id?: Snowflake
+  /** Metadata for the interaction that was used to open the modal */
+  readonly triggering_interaction_metadata: ApplicationCommandInteractionMetadatum
 }
 export interface ModifyApplicationEmojiParams {
   /** name of the emoji */
@@ -7554,6 +7645,12 @@ export interface WebhooksUpdateEvent {
   readonly guild_id: Snowflake
   /** ID of the channel */
   readonly channel_id: Snowflake
+}
+export enum WebhookType {
+  /** PING event sent to verify your Webhook Event URL is active */
+  PING = 0,
+  /** Webhook event (details for event in event body object) */
+  EVENT = 1,
 }
 export enum WebhookType {
   /** Incoming Webhooks can post messages to channels with a generated token */
