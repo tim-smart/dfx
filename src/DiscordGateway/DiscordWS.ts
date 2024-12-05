@@ -74,10 +74,10 @@ const make = Effect.gen(function* () {
           if (message === Reconnect) {
             ;(fiber as any).log(["Reconnecting"], Cause.empty, logLevelTrace)
             yield* write(new Socket.CloseEvent(1012, "reconnecting"))
-            return
+          } else {
+            ;(fiber as any).log([message], Cause.empty, logLevelTrace)
+            yield* write(encoding.encode(message))
           }
-          ;(fiber as any).log([message], Cause.empty, logLevelTrace)
-          yield* write(encoding.encode(message))
         }
       }).pipe(
         Effect.annotateLogs("channel", "outbound"),
