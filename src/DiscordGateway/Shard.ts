@@ -16,15 +16,14 @@ import * as Chunk from "effect/Chunk"
 import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
-import { pipe } from "effect/Function"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
-import * as PubSub from "effect/PubSub"
 import * as Mailbox from "effect/Mailbox"
-
 import * as Redacted from "effect/Redacted"
 import * as Ref from "effect/Ref"
 import type * as Types from "effect/Types"
+import { genFn } from "dfx/utils/Effect"
+import * as FiberHandle from "effect/FiberHandle"
 
 const enum Phase {
   Connecting,
@@ -43,6 +42,7 @@ export const make = Effect.gen(function* () {
     Effect.gen(function* (_) {
       const outboundQueue = yield* Mailbox.make<Message>()
       const pendingQueue = yield* Mailbox.make<Message>()
+      const reconnectHandle = yield* FiberHandle.make()
       const phase = yield* Ref.make(Phase.Connecting)
       const stateStore = shardState.forShard(shard)
       const resumeState: Types.Mutable<ShardState> = Option.getOrElse(
@@ -65,45 +65,54 @@ export const make = Effect.gen(function* () {
         ),
       )
 
-      const send = (p: Message) =>
-        Effect.flatMap(Ref.get(phase), phase =>
-          phase === Phase.Connected
-            ? outboundQueue.offer(p)
-            : pendingQueue.offer(p),
-        )
+      function* send(p: Message) {
+        if ((yield* Ref.get(phase)) === Phase.Connected) {
+          outboundQueue.unsafeOffer(p)
+        } else {
+          pendingQueue.unsafeOffer(p)
+        }
+      }
 
-      const heartbeatSend = (p: Message) =>
-        Effect.flatMap(Ref.get(phase), phase =>
-          phase !== Phase.Connecting
-            ? outboundQueue.offer(p)
-            : Effect.succeed(false),
-        )
+      const heartbeatSend = genFn(function* (p: Message) {
+        if ((yield* Ref.get(phase)) !== Phase.Connecting) {
+          outboundQueue.unsafeOffer(p)
+          return true
+        }
+        return false
+      })
 
       const prioritySend = (p: Message) => outboundQueue.offer(p)
 
-      const resume = pipe(
-        setPhase(Phase.Connected),
-        Effect.zipRight(pendingQueue.clear),
-        Effect.tap(_ => outboundQueue.offerAll(_)),
-        Effect.asVoid,
-      )
-
-      const onConnecting = pipe(
-        outboundQueue.clear,
-        Effect.tap(msgs =>
-          pendingQueue.offerAll(
-            Chunk.filter(
-              msgs,
-              msg =>
-                msg !== Reconnect &&
-                msg.op !== Discord.GatewayOpcode.IDENTIFY &&
-                msg.op !== Discord.GatewayOpcode.RESUME &&
-                msg.op !== Discord.GatewayOpcode.HEARTBEAT,
-            ),
+      const resume = Effect.gen(function* () {
+        yield* FiberHandle.clear(reconnectHandle)
+        yield* setPhase(Phase.Connected)
+        const msgs = yield* pendingQueue.clear
+        outboundQueue.unsafeOfferAll(
+          Chunk.filter(
+            msgs,
+            msg =>
+              msg !== Reconnect &&
+              msg.op !== Discord.GatewayOpcode.IDENTIFY &&
+              msg.op !== Discord.GatewayOpcode.RESUME &&
+              msg.op !== Discord.GatewayOpcode.HEARTBEAT,
           ),
-        ),
-        Effect.zipRight(setPhase(Phase.Connecting)),
-      )
+        )
+      })
+
+      const onConnecting = Effect.gen(function* () {
+        const msgs = yield* outboundQueue.clear
+        pendingQueue.unsafeOfferAll(
+          Chunk.filter(
+            msgs,
+            msg =>
+              msg !== Reconnect &&
+              msg.op !== Discord.GatewayOpcode.IDENTIFY &&
+              msg.op !== Discord.GatewayOpcode.RESUME &&
+              msg.op !== Discord.GatewayOpcode.HEARTBEAT,
+          ),
+        )
+        yield* setPhase(Phase.Connecting)
+      })
 
       const socket = yield* dws.connect({ outbound, onConnecting })
 
@@ -133,74 +142,74 @@ export const make = Effect.gen(function* () {
         stateStore.get,
       )
 
-      const onPayload = (p: Discord.GatewayPayload) =>
-        pipe(
-          Effect.suspend(() => {
-            if (typeof p.s === "number") {
-              resumeState.sequence = p.s
-            }
-            if (p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY") {
-              const payload = p.d as Discord.ReadyEvent
-              resumeState.sessionId = payload.session_id
-              resumeState.resumeUrl = payload.resume_gateway_url
-              return Effect.zipRight(
-                stateStore.set(resumeState),
-                socket.setUrl(payload.resume_gateway_url),
-              )
-            }
-            if (resumeState.resumeUrl !== "" && resumeState.sessionId !== "") {
-              return stateStore.set(resumeState)
-            }
-            return Effect.void
-          }),
-          Effect.tap(() => {
-            switch (p.op) {
-              case Discord.GatewayOpcode.HELLO: {
-                return pipe(
-                  Effect.tap(identify, prioritySend),
-                  Effect.zipRight(setPhase(Phase.Handshake)),
-                  Effect.zipRight(hellos.offer(p)),
-                )
-              }
-              case Discord.GatewayOpcode.HEARTBEAT_ACK: {
-                return acks.offer(p)
-              }
-              case Discord.GatewayOpcode.INVALID_SESSION: {
-                if (p.d) {
-                  return send(Reconnect)
-                }
-                resumeState.sessionId = ""
-                return Effect.zipRight(stateStore.clear, send(Reconnect))
-              }
-              case Discord.GatewayOpcode.DISPATCH: {
-                if (p.t === "READY" || p.t === "RESUMED") {
-                  return Effect.zipRight(resume, PubSub.publish(hub, p))
-                }
-                return PubSub.publish(hub, p)
-              }
-              case Discord.GatewayOpcode.RECONNECT: {
-                return prioritySend(Reconnect)
-              }
-              default: {
-                return Effect.void
-              }
-            }
-          }),
-        )
+      // delayed reconnect
+      const delayedReconnect = Effect.gen(function* () {
+        yield* Effect.sleep(30_000)
+        yield* prioritySend(Reconnect)
+      })
 
-      yield* sendMailbox.take.pipe(
-        Effect.tap(send),
-        Effect.forever,
-        Effect.forkScoped,
-        Effect.interruptible,
-      )
+      function* onPayload(p: Discord.GatewayPayload) {
+        if (typeof p.s === "number") {
+          resumeState.sequence = p.s
+        }
+        if (p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY") {
+          const payload = p.d as Discord.ReadyEvent
+          resumeState.sessionId = payload.session_id
+          resumeState.resumeUrl = payload.resume_gateway_url
+          yield* stateStore.set(resumeState)
+          yield* socket.setUrl(payload.resume_gateway_url)
+        } else if (
+          resumeState.resumeUrl !== "" &&
+          resumeState.sessionId !== ""
+        ) {
+          yield* stateStore.set(resumeState)
+        }
 
-      yield* socket.take.pipe(
-        Effect.flatMap(onPayload),
-        Effect.forever,
-        Effect.forkScoped,
-        Effect.interruptible,
-      )
+        switch (p.op) {
+          case Discord.GatewayOpcode.HELLO: {
+            yield* prioritySend(yield* identify)
+            yield* setPhase(Phase.Handshake)
+            hellos.unsafeOffer(p)
+            yield* FiberHandle.run(reconnectHandle, delayedReconnect)
+            break
+          }
+          case Discord.GatewayOpcode.HEARTBEAT_ACK: {
+            acks.unsafeOffer(p)
+            break
+          }
+          case Discord.GatewayOpcode.INVALID_SESSION: {
+            if (!p.d) {
+              resumeState.sessionId = ""
+              yield* stateStore.clear
+            }
+            yield* send(Reconnect)
+            break
+          }
+          case Discord.GatewayOpcode.DISPATCH: {
+            if (p.t === "READY" || p.t === "RESUMED") {
+              yield* resume
+            }
+            hub.unsafeOffer(p)
+            break
+          }
+          case Discord.GatewayOpcode.RECONNECT: {
+            yield* prioritySend(Reconnect)
+            break
+          }
+        }
+      }
+
+      yield* Effect.gen(function* () {
+        while (true) {
+          yield* send(yield* sendMailbox.take)
+        }
+      }).pipe(Effect.forkScoped, Effect.interruptible)
+
+      yield* Effect.gen(function* () {
+        while (true) {
+          yield* onPayload(yield* socket.take)
+        }
+      }).pipe(Effect.forkScoped, Effect.interruptible)
 
       return { id: shard, send } as const
     }).pipe(

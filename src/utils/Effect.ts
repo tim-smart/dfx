@@ -4,6 +4,7 @@ import * as Effect from "effect/Effect"
 import * as Fiber from "effect/Fiber"
 import * as PubSub from "effect/PubSub"
 import * as Queue from "effect/Queue"
+import type { YieldWrap } from "effect/Utils"
 
 export const subscribeForEachPar = <R, E, A, X>(
   self: PubSub.PubSub<A>,
@@ -52,3 +53,29 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       Effect.raceFirst(Deferred.await(deferred)),
     )
   })
+
+export function genFn<
+  Eff extends YieldWrap<Effect.Effect<any, any, any>>,
+  AEff,
+  Args extends Array<any>,
+>(
+  body: (...args: Args) => Generator<Eff, AEff, never>,
+): (
+  ...args: Args
+) => Effect.Effect<
+  AEff,
+  [Eff] extends [never]
+    ? never
+    : [Eff] extends [YieldWrap<Effect.Effect<infer _A, infer E, infer _R>>]
+      ? E
+      : never,
+  [Eff] extends [never]
+    ? never
+    : [Eff] extends [YieldWrap<Effect.Effect<infer _A, infer _E, infer R>>]
+      ? R
+      : never
+> {
+  return function (...args) {
+    return Effect.gen(() => body(...args))
+  }
+}

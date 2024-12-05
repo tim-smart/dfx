@@ -9,6 +9,7 @@ import * as Schedule from "effect/Schedule"
 import * as Cause from "effect/Cause"
 import * as Option from "effect/Option"
 import * as LogLevel from "effect/LogLevel"
+import * as Fiber from "effect/Fiber"
 
 export type Message = Discord.GatewayPayload | Reconnect
 
@@ -34,6 +35,7 @@ export interface DiscordWSCodec {
 
 const decoder = new TextDecoder()
 const logLevelDebug = Option.some(LogLevel.Debug)
+const logLevelTrace = Option.some(LogLevel.Trace)
 
 export const DiscordWSCodec = GenericTag<DiscordWSCodec, DiscordWSCodecService>(
   "dfx/DiscordGateway/DiscordWS/Codec",
@@ -65,17 +67,19 @@ const make = Effect.gen(function* () {
         openTimeout: 5000,
       })
       const write = yield* socket.writer
-      yield* outbound.pipe(
-        Effect.flatMap(_ => {
-          if (_ === Reconnect) {
-            return Effect.zipRight(
-              Effect.logTrace("Reconnecting"),
-              write(new Socket.CloseEvent(1012, "reconnecting")),
-            )
+      yield* Effect.gen(function* () {
+        const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
+        while (true) {
+          const message = yield* outbound
+          if (message === Reconnect) {
+            ;(fiber as any).log(["Reconnecting"], Cause.empty, logLevelTrace)
+            yield* write(new Socket.CloseEvent(1012, "reconnecting"))
+            return
           }
-          return Effect.zipRight(Effect.logTrace(_), write(encoding.encode(_)))
-        }),
-        Effect.forever,
+          ;(fiber as any).log([message], Cause.empty, logLevelTrace)
+          yield* write(encoding.encode(message))
+        }
+      }).pipe(
         Effect.annotateLogs("channel", "outbound"),
         Effect.forkScoped,
         Effect.interruptible,
