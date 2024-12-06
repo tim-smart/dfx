@@ -32,19 +32,21 @@ export const send = (
   send: (p: DiscordWS.Message) => Effect.Effect<boolean>,
 ) =>
   Effect.flatMap(Ref.make(true), ackedRef => {
+    const sendPayload = payloadOrReconnect(ackedRef, state).pipe(
+      Effect.zipLeft(Ref.set(ackedRef, false)),
+      Effect.flatMap(send),
+    )
+
     const heartbeats = EffectU.foreverSwitch(
       Effect.zipLeft(hellos.take, Ref.set(ackedRef, true)),
       p =>
-        payloadOrReconnect(ackedRef, state).pipe(
-          Effect.zipLeft(Ref.set(ackedRef, false)),
-          Effect.tap(send),
-          Effect.schedule(
-            Schedule.andThen(
-              Schedule.duration(
-                Duration.millis(p.d!.heartbeat_interval * Math.random()),
-              ),
-              Schedule.spaced(Duration.millis(p.d!.heartbeat_interval)),
+        Effect.schedule(
+          sendPayload,
+          Schedule.andThen(
+            Schedule.duration(
+              Duration.millis(p.d!.heartbeat_interval * Math.random()),
             ),
+            Schedule.spaced(Duration.millis(p.d!.heartbeat_interval)),
           ),
         ),
     )
