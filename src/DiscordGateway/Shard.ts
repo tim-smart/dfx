@@ -19,9 +19,7 @@ import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Mailbox from "effect/Mailbox"
 import * as Redacted from "effect/Redacted"
-import * as Ref from "effect/Ref"
 import type * as Types from "effect/Types"
-import { genFn } from "dfx/utils/Effect"
 import * as FiberHandle from "effect/FiberHandle"
 
 const enum Phase {
@@ -40,7 +38,7 @@ export const make = Effect.gen(function* () {
   const connect = (shard: [id: number, count: number]) =>
     Effect.gen(function* (_) {
       const reconnectHandle = yield* FiberHandle.make()
-      const phase = yield* Ref.make(Phase.Connecting)
+      let phase = Phase.Connecting
       const stateStore = shardState.forShard(shard)
       const resumeState: Types.Mutable<ShardState> = Option.getOrElse(
         yield* stateStore.get,
@@ -51,25 +49,27 @@ export const make = Effect.gen(function* () {
         }),
       )
       const setPhase = (p: Phase): Effect.Effect<void> =>
-        Effect.zipLeft(
-          Ref.set(phase, p),
-          Effect.annotateLogs(Effect.logTrace("phase transition"), "phase", p),
-        )
+        Effect.suspend(() => {
+          phase = p
+          return Effect.annotateLogs(
+            Effect.logTrace("phase transition"),
+            "phase",
+            p,
+          )
+        })
 
-      const heartbeatSend = genFn(function* (p: Message) {
-        if ((yield* Ref.get(phase)) === Phase.Connecting) return false
-        yield* write(p)
-        return true
-      })
+      const heartbeatSend = (p: Message) =>
+        Effect.suspend(() => {
+          if (phase === Phase.Connecting) return Effect.void
+          return write(p)
+        })
 
       const resume = Effect.gen(function* () {
         yield* FiberHandle.clear(reconnectHandle)
         yield* setPhase(Phase.Connected)
       })
 
-      const onConnecting = Effect.gen(function* () {
-        yield* setPhase(Phase.Connecting)
-      })
+      const onConnecting = setPhase(Phase.Connecting)
 
       const socket = yield* dws.connect({ onConnecting })
       const write = (p: Message) =>
@@ -133,11 +133,11 @@ export const make = Effect.gen(function* () {
             yield* setPhase(Phase.Handshake)
             hellos.unsafeOffer(p)
             yield* FiberHandle.run(reconnectHandle, delayedReconnect)
-            break
+            return
           }
           case Discord.GatewayOpcode.HEARTBEAT_ACK: {
             acks.unsafeOffer(p)
-            break
+            return
           }
           case Discord.GatewayOpcode.INVALID_SESSION: {
             if (!p.d) {
@@ -145,18 +145,18 @@ export const make = Effect.gen(function* () {
               yield* stateStore.clear
             }
             yield* socket.write(Reconnect)
-            break
+            return
           }
           case Discord.GatewayOpcode.DISPATCH: {
             if (p.t === "READY" || p.t === "RESUMED") {
               yield* resume
             }
             hub.unsafeOffer(p)
-            break
+            return
           }
           case Discord.GatewayOpcode.RECONNECT: {
             yield* socket.write(Reconnect)
-            break
+            return
           }
         }
       }

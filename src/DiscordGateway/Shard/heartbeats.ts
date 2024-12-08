@@ -29,7 +29,7 @@ export const send = (
   hellos: Mailbox.ReadonlyMailbox<Discord.GatewayPayload>,
   acks: Mailbox.ReadonlyMailbox<Discord.GatewayPayload>,
   state: Effect.Effect<Option.Option<ShardState>>,
-  send: (p: DiscordWS.Message) => Effect.Effect<boolean>,
+  send: (p: DiscordWS.Message) => Effect.Effect<void>,
 ) =>
   Effect.flatMap(Ref.make(true), ackedRef => {
     const sendPayload = payloadOrReconnect(ackedRef, state).pipe(
