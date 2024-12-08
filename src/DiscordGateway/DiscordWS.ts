@@ -9,7 +9,6 @@ import * as Schedule from "effect/Schedule"
 import * as Cause from "effect/Cause"
 import * as Option from "effect/Option"
 import * as LogLevel from "effect/LogLevel"
-import * as Fiber from "effect/Fiber"
 
 export type Message = Discord.GatewayPayload | Reconnect
 
@@ -20,7 +19,6 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: DiscordWSCodec
-  outbound: Effect.Effect<Message>
   onConnecting: Effect.Effect<void>
 }
 
@@ -34,7 +32,6 @@ export interface DiscordWSCodec {
 }
 
 const decoder = new TextDecoder()
-const logLevelDebug = Option.some(LogLevel.Debug)
 const logLevelTrace = Option.some(LogLevel.Trace)
 
 export const DiscordWSCodec = GenericTag<DiscordWSCodec, DiscordWSCodecService>(
@@ -51,7 +48,6 @@ const make = Effect.gen(function* () {
 
   const connect = ({
     onConnecting,
-    outbound,
     url = "wss://gateway.discord.gg/",
     version = 10,
   }: OpenOpts) =>
@@ -66,31 +62,33 @@ const make = Effect.gen(function* () {
         closeCodeIsError: _ => true,
         openTimeout: 5000,
       })
-      const write = yield* socket.writer
-      yield* Effect.gen(function* () {
-        const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
-        while (true) {
-          const message = yield* outbound
-          if (message === Reconnect) {
-            ;(fiber as any).log(["Reconnecting"], Cause.empty, logLevelTrace)
-            yield* write(new Socket.CloseEvent(1012, "reconnecting"))
-          } else {
-            ;(fiber as any).log([message], Cause.empty, logLevelTrace)
-            yield* write(encoding.encode(message))
-          }
+      const writeRaw = yield* socket.writer
+      const logWriteError = (cause: Cause.Cause<Socket.SocketError>) =>
+        Effect.annotateLogs(Effect.logDebug(cause), {
+          module: "DiscordGateway/DiscordWS",
+          channel: "outbound",
+        })
+      const write = (
+        message: Discord.GatewayPayload | Reconnect,
+      ): Effect.Effect<void> => {
+        if (message === Reconnect) {
+          return Effect.catchAllCause(
+            writeRaw(new Socket.CloseEvent(1012, "reconnecting")),
+            logWriteError,
+          )
         }
-      }).pipe(
-        Effect.annotateLogs("channel", "outbound"),
-        Effect.forkScoped,
-        Effect.interruptible,
-      )
+        return Effect.catchAllCause(
+          writeRaw(encoding.encode(message)),
+          logWriteError,
+        )
+      }
       yield* onConnecting.pipe(
         Effect.zipRight(
           Effect.withFiberRuntime<void, Socket.SocketError>(fiber =>
             socket.runRaw(_ => {
               const message = encoding.decode(_)
               messages.unsafeOffer(message)
-              ;(fiber as any).log([message], Cause.empty, logLevelDebug)
+              ;(fiber as any).log([message], Cause.empty, logLevelTrace)
             }),
           ),
         ),
@@ -113,6 +111,7 @@ const make = Effect.gen(function* () {
       return {
         take: messages.take,
         setUrl,
+        write,
       } as const
     }).pipe(
       Effect.annotateLogs({

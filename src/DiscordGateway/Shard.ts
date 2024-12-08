@@ -12,7 +12,6 @@ import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
 import * as Identify from "dfx/DiscordGateway/Shard/identify"
 import { RateLimiter, RateLimiterLive } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
-import * as Chunk from "effect/Chunk"
 import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
@@ -40,8 +39,6 @@ export const make = Effect.gen(function* () {
 
   const connect = (shard: [id: number, count: number]) =>
     Effect.gen(function* (_) {
-      const outboundQueue = yield* Mailbox.make<Message>()
-      const pendingQueue = yield* Mailbox.make<Message>()
       const reconnectHandle = yield* FiberHandle.make()
       const phase = yield* Ref.make(Phase.Connecting)
       const stateStore = shardState.forShard(shard)
@@ -58,63 +55,28 @@ export const make = Effect.gen(function* () {
           Ref.set(phase, p),
           Effect.annotateLogs(Effect.logTrace("phase transition"), "phase", p),
         )
-      const outbound = Effect.orDie(
-        Effect.zipLeft(
-          outboundQueue.take,
-          limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
-        ),
-      )
-
-      function* send(p: Message) {
-        if ((yield* Ref.get(phase)) === Phase.Connected) {
-          outboundQueue.unsafeOffer(p)
-        } else {
-          pendingQueue.unsafeOffer(p)
-        }
-      }
 
       const heartbeatSend = genFn(function* (p: Message) {
-        if ((yield* Ref.get(phase)) !== Phase.Connecting) {
-          outboundQueue.unsafeOffer(p)
-          return true
-        }
-        return false
+        if ((yield* Ref.get(phase)) === Phase.Connecting) return false
+        yield* write(p)
+        return true
       })
-
-      const prioritySend = (p: Message) => outboundQueue.offer(p)
 
       const resume = Effect.gen(function* () {
         yield* FiberHandle.clear(reconnectHandle)
         yield* setPhase(Phase.Connected)
-        const msgs = yield* pendingQueue.clear
-        outboundQueue.unsafeOfferAll(
-          Chunk.filter(
-            msgs,
-            msg =>
-              msg !== Reconnect &&
-              msg.op !== Discord.GatewayOpcode.IDENTIFY &&
-              msg.op !== Discord.GatewayOpcode.RESUME &&
-              msg.op !== Discord.GatewayOpcode.HEARTBEAT,
-          ),
-        )
       })
 
       const onConnecting = Effect.gen(function* () {
-        const msgs = yield* outboundQueue.clear
-        pendingQueue.unsafeOfferAll(
-          Chunk.filter(
-            msgs,
-            msg =>
-              msg !== Reconnect &&
-              msg.op !== Discord.GatewayOpcode.IDENTIFY &&
-              msg.op !== Discord.GatewayOpcode.RESUME &&
-              msg.op !== Discord.GatewayOpcode.HEARTBEAT,
-          ),
-        )
         yield* setPhase(Phase.Connecting)
       })
 
-      const socket = yield* dws.connect({ outbound, onConnecting })
+      const socket = yield* dws.connect({ onConnecting })
+      const write = (p: Message) =>
+        Effect.zipRight(
+          limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
+          socket.write(p),
+        )
 
       const hellos = yield* Effect.acquireRelease(
         Mailbox.make<Discord.GatewayPayload>(),
@@ -145,7 +107,7 @@ export const make = Effect.gen(function* () {
       // delayed reconnect
       const delayedReconnect = Effect.gen(function* () {
         yield* Effect.sleep(30_000)
-        yield* prioritySend(Reconnect)
+        yield* socket.write(Reconnect)
       })
 
       function* onPayload(p: Discord.GatewayPayload) {
@@ -167,7 +129,7 @@ export const make = Effect.gen(function* () {
 
         switch (p.op) {
           case Discord.GatewayOpcode.HELLO: {
-            yield* prioritySend(yield* identify)
+            yield* write(yield* identify)
             yield* setPhase(Phase.Handshake)
             hellos.unsafeOffer(p)
             yield* FiberHandle.run(reconnectHandle, delayedReconnect)
@@ -182,7 +144,7 @@ export const make = Effect.gen(function* () {
               resumeState.sessionId = ""
               yield* stateStore.clear
             }
-            yield* send(Reconnect)
+            yield* socket.write(Reconnect)
             break
           }
           case Discord.GatewayOpcode.DISPATCH: {
@@ -193,7 +155,7 @@ export const make = Effect.gen(function* () {
             break
           }
           case Discord.GatewayOpcode.RECONNECT: {
-            yield* prioritySend(Reconnect)
+            yield* socket.write(Reconnect)
             break
           }
         }
@@ -201,7 +163,7 @@ export const make = Effect.gen(function* () {
 
       yield* Effect.gen(function* () {
         while (true) {
-          yield* send(yield* sendMailbox.take)
+          yield* write(yield* sendMailbox.take)
         }
       }).pipe(Effect.forkScoped, Effect.interruptible)
 
@@ -211,7 +173,7 @@ export const make = Effect.gen(function* () {
         }
       }).pipe(Effect.forkScoped, Effect.interruptible)
 
-      return { id: shard, send } as const
+      return { id: shard } as const
     }).pipe(
       Effect.annotateLogs({
         package: "dfx",
