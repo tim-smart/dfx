@@ -73,7 +73,7 @@ const make = Effect.gen(function* () {
       ): Effect.Effect<void> => {
         if (message === Reconnect) {
           return Effect.catchAllCause(
-            writeRaw(new Socket.CloseEvent(1012, "reconnecting")),
+            writeRaw(new Socket.CloseEvent(3000, "reconnecting")),
             logWriteError,
           )
         }
@@ -93,7 +93,7 @@ const make = Effect.gen(function* () {
           ),
         ),
         Effect.retry({
-          while: e => e.reason === "Close" && e.code === 1012,
+          while: e => e.reason === "Close" && e.code === 3000,
         }),
         Effect.catchAllCause(cause =>
           Effect.logDebug("Got socket error, reconnecting", cause),
