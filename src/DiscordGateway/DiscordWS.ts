@@ -46,12 +46,12 @@ export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
 const make = Effect.gen(function* () {
   const encoding = yield* DiscordWSCodec
 
-  const connect = ({
-    onConnecting,
-    url = "wss://gateway.discord.gg/",
-    version = 10,
-  }: OpenOpts) =>
-    Effect.gen(function* () {
+  const connect = Effect.fnUntraced(
+    function* ({
+      onConnecting,
+      url = "wss://gateway.discord.gg/",
+      version = 10,
+    }: OpenOpts) {
       const urlRef = yield* Ref.make(
         `${url}?v=${version}&encoding=${encoding.type}`,
       )
@@ -113,11 +113,11 @@ const make = Effect.gen(function* () {
         setUrl,
         write,
       } as const
-    }).pipe(
-      Effect.annotateLogs({
-        module: "DiscordGateway/DiscordWS",
-      }),
-    )
+    },
+    Effect.annotateLogs({
+      module: "DiscordGateway/DiscordWS",
+    }),
+  )
 
   return { connect } as const
 })

@@ -64,10 +64,10 @@ export const make = Effect.gen(function* () {
           return write(p)
         })
 
-      const resume = Effect.gen(function* () {
-        yield* FiberHandle.clear(reconnectHandle)
-        yield* setPhase(Phase.Connected)
-      })
+      const resume = Effect.zipRight(
+        FiberHandle.clear(reconnectHandle),
+        setPhase(Phase.Connected),
+      )
 
       const onConnecting = setPhase(Phase.Connecting)
 
@@ -105,10 +105,7 @@ export const make = Effect.gen(function* () {
       )
 
       // delayed reconnect
-      const delayedReconnect = Effect.gen(function* () {
-        yield* Effect.sleep(30_000)
-        yield* socket.write(Reconnect)
-      })
+      const delayedReconnect = Effect.delay(socket.write(Reconnect), 30_000)
 
       function* onPayload(p: Discord.GatewayPayload) {
         if (typeof p.s === "number") {

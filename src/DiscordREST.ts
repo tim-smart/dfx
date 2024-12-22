@@ -25,6 +25,7 @@ import * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
 import type { Scope } from "effect/Scope"
 import * as Redacted from "effect/Redacted"
+import type * as Fiber from "effect/Fiber"
 
 export const DiscordRESTErrorTypeId = Symbol.for(
   "dfx/DiscordREST/DiscordRESTError",
@@ -85,67 +86,59 @@ const make = Effect.gen(function* () {
     )
 
   // Request rate limiting
-  const requestRateLimit = (
+  const requestRateLimit = Effect.fnUntraced(function* (
     path: string,
     request: HttpRequest.HttpClientRequest,
-  ) =>
-    Effect.Do.pipe(
-      Effect.let("route", () => routeFromConfig(path, request.method)),
-      Effect.bind("maybeBucket", ({ route }) => store.getBucketForRoute(route)),
-      Effect.flatMap(({ maybeBucket, route }) =>
-        Option.match(maybeBucket, {
-          onNone: () => invalidRateLimit(route),
-          onSome: bucket =>
-            Effect.zipRight(
-              invalidRateLimit(route),
-              maybeWait(
-                `dfx.rest.${bucket.key}`,
-                millis(bucket.resetAfter),
-                bucket.limit,
-              ),
-            ),
-        }),
-      ),
+  ) {
+    const route = routeFromConfig(path, request.method)
+    const maybeBucket = yield* store.getBucketForRoute(route)
+    yield* invalidRateLimit(route)
+    if (Option.isNone(maybeBucket)) return
+    const bucket = maybeBucket.value
+    yield* maybeWait(
+      `dfx.rest.${bucket.key}`,
+      millis(bucket.resetAfter),
+      bucket.limit,
     )
+  })
 
   // Update rate limit buckets
-  const updateBuckets = (
+  const updateBuckets = Effect.fnUntraced(function* (
     request: HttpRequest.HttpClientRequest,
     response: HttpResponse.HttpClientResponse,
-  ) =>
-    Effect.Do.pipe(
-      Effect.let("route", () => routeFromConfig(request.url, request.method)),
-      Effect.bind("rateLimit", () => rateLimitFromHeaders(response.headers)),
-      Effect.bind("hasBucket", ({ rateLimit }) =>
-        store.hasBucket(rateLimit.bucket),
-      ),
-      Effect.flatMap(({ hasBucket, rateLimit, route }) => {
-        const effectsToRun = [
-          removeBadRoute(route),
-          store.putBucketRoute(route, rateLimit.bucket),
-        ]
+  ) {
+    const route = routeFromConfig(request.url, request.method)
+    const rateLimitOption = rateLimitFromHeaders(response.headers)
+    if (Option.isNone(rateLimitOption)) return
+    const rateLimit = rateLimitOption.value
+    const hasBucket = yield* store.hasBucket(rateLimit.bucket)
+    const fibers: Array<Fiber.RuntimeFiber<unknown, unknown>> = []
 
-        if (!hasBucket || rateLimit.limit - 1 === rateLimit.remaining) {
-          effectsToRun.push(
-            store.removeCounter(`dfx.rest.?.${route}`),
-            store.putBucket({
-              key: rateLimit.bucket,
-              resetAfter: Duration.toMillis(rateLimit.retryAfter),
-              limit:
-                !hasBucket && rateLimit.remaining > 0
-                  ? rateLimit.remaining
-                  : rateLimit.limit,
-            }),
-          )
-        }
-
-        return Effect.all(effectsToRun, {
-          concurrency: "unbounded",
-          discard: true,
-        })
-      }),
-      Effect.ignore,
+    fibers.push(yield* Effect.fork(removeBadRoute(route)))
+    fibers.push(
+      yield* Effect.fork(store.putBucketRoute(route, rateLimit.bucket)),
     )
+
+    if (!hasBucket || rateLimit.limit - 1 === rateLimit.remaining) {
+      fibers.push(
+        yield* Effect.fork(store.removeCounter(`dfx.rest.?.${route}`)),
+      )
+      fibers.push(
+        yield* Effect.fork(
+          store.putBucket({
+            key: rateLimit.bucket,
+            resetAfter: Duration.toMillis(rateLimit.retryAfter),
+            limit:
+              !hasBucket && rateLimit.remaining > 0
+                ? rateLimit.remaining
+                : rateLimit.limit,
+          }),
+        ),
+      )
+    }
+
+    for (const fiber of fibers) yield* fiber.await
+  })
 
   const httpClient = pipe(
     HttpClient.filterStatusOk(http),
