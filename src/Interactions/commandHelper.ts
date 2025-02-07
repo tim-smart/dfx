@@ -63,7 +63,7 @@ export class CommandHelper<A> {
     name: N,
     orElse: () => OrElse,
   ): CommandValue<A, N> {
-    return Option.getOrElse(this.option(name), orElse) as any
+    return Option.getOrElse(this.optionValueOptional(name), orElse) as any
   }
 
   subCommands<
