@@ -3,7 +3,7 @@ import * as Effect from "effect/Effect"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
 import * as Array from "effect/Array"
-import { CommandHelper } from "./commandHelper"
+import { CommandHelper } from "dfx/Interactions/commandHelper"
 
 export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
