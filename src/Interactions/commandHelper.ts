@@ -62,7 +62,7 @@ export class CommandHelper<A> {
   optionValueOrElse<N extends AllCommandOptions<A>["name"], const OrElse>(
     name: N,
     orElse: () => OrElse,
-  ): Option.Option<CommandValue<A, N>> {
+  ): CommandValue<A, N> {
     return Option.getOrElse(this.option(name), orElse) as any
   }
 
