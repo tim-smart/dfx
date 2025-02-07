@@ -130,6 +130,16 @@ export type CommandHandler<R, E, A = any> =
   | CommandHandlerFn<R, E, A>
 
 export interface CommandHelper<A> {
+  readonly target: CommandTypeMap<
+    A,
+    {
+      [Discord.ApplicationCommandType.CHAT_INPUT]: Discord.ApplicationCommand
+      [Discord.ApplicationCommandType.MESSAGE]: Discord.Message
+      [Discord.ApplicationCommandType.USER]: Discord.User
+      [Discord.ApplicationCommandType.PRIMARY_ENTRY_POINT]: undefined
+    }
+  >
+
   resolve: <T>(
     name: AllResolvables<A>["name"],
     f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
@@ -242,6 +252,15 @@ type CommandValue<A, N> = CommandWithName<
 >["type"] extends keyof OptionTypeValue
   ? OptionTypeValue[CommandWithName<A, N>["type"]]
   : string
+
+type CommandTypeMap<
+  A,
+  Options extends Record<Discord.ApplicationCommandType, any>,
+> = A extends { readonly type: infer T }
+  ? T extends keyof Options
+    ? Options[T]
+    : never
+  : Options[Discord.ApplicationCommandType.CHAT_INPUT]
 
 // == Required options
 type RequiredCommandOptions<A> = OptionsWithLiteral<

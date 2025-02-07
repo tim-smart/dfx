@@ -16,6 +16,28 @@ export const allSubCommands = (interaction: Discord.ApplicationCommandDatum) =>
   )
 
 /**
+ * Get the target for the application command data.
+ */
+export const target = (
+  interaction: Discord.ApplicationCommandDatum,
+): Discord.ApplicationCommandDatum | Discord.User | Discord.Message =>
+  targetTypes[interaction.type as Discord.ApplicationCommandType](interaction)
+
+const targetTypes: Record<
+  Discord.ApplicationCommandType,
+  (
+    data: Discord.ApplicationCommandDatum,
+  ) => Discord.User | Discord.Message | Discord.ApplicationCommandDatum
+> = {
+  [Discord.ApplicationCommandType.USER]: data =>
+    data.resolved!.users![data.target_id!],
+  [Discord.ApplicationCommandType.MESSAGE]: data =>
+    data.resolved!.messages![data.target_id!],
+  [Discord.ApplicationCommandType.CHAT_INPUT]: data => data,
+  [Discord.ApplicationCommandType.PRIMARY_ENTRY_POINT]: data => data,
+}
+
+/**
  * Option find a sub-command within the interaction options.
  */
 export const findSubCommand =

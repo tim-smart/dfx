@@ -23,8 +23,8 @@ const makeGreetService = Effect.gen(function* (_) {
         },
       ],
     },
-    ix =>
-      Effect.all({
+    ix => {
+      return Effect.all({
         name: ix.optionValue("name"),
       }).pipe(
         Effect.map(({ name }) =>
@@ -35,7 +35,8 @@ const makeGreetService = Effect.gen(function* (_) {
             },
           }),
         ),
-      ),
+      )
+    },
   )
 
   // create a builder

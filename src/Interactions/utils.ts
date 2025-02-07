@@ -2,8 +2,9 @@ import * as Chunk from "effect/Chunk"
 import * as Effect from "effect/Effect"
 import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
-import type * as Discord from "dfx/types"
+import * as Discord from "dfx/types"
 import * as Array from "effect/Array"
+import * as Helpers from "dfx/Helpers/interactions"
 
 export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
@@ -59,7 +60,13 @@ export const flattenDefinitions = <R, E, TE, A, B>(
                   definition.handle as (
                     _: any,
                   ) => Effect.Effect<Discord.InteractionResponse>
-                )(context),
+                )({
+                  ...context,
+                  target:
+                    i.type === Discord.InteractionType.APPLICATION_COMMAND
+                      ? Helpers.target(i.data as any)
+                      : undefined,
+                }),
                 _ => handleResponse(i, _),
               ),
             ),
