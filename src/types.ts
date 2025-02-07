@@ -2565,6 +2565,13 @@ export function createRoutes<O = any>(
         params,
         options,
       }),
+    modifyGuildIncidentActions: (guildId, params, options) =>
+      fetch({
+        method: "PUT",
+        url: `/guilds/${guildId}/incident-actions`,
+        params,
+        options,
+      }),
     modifyGuildMember: (guildId, userId, params, options) =>
       fetch({
         method: "PATCH",
@@ -3963,7 +3970,7 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyAutoModerationRuleParams>,
     options?: O,
   ) => RestResponse<AutoModerationRule>
-  /** Update a channel's settings. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. All JSON parameters are optional. */
+  /** Update a channel's settings. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. */
   modifyChannel: (
     channelId: string,
     params?: Partial<ModifyChannelParams>,
@@ -4010,6 +4017,12 @@ The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji
     params?: Partial<ModifyGuildEmojiParams>,
     options?: O,
   ) => RestResponse<Emoji>
+  /** Modifies the incident actions of the guild. Returns a 200 with the Incidents Data object for the guild. Requires the MANAGE_GUILD permission. */
+  modifyGuildIncidentActions: (
+    guildId: string,
+    params?: Partial<ModifyGuildIncidentActionParams>,
+    options?: O,
+  ) => RestResponse<IncidentsDatum>
   /** Modify attributes of a guild member. Returns a 200 OK with the guild member as the body. Fires a Guild Member Update Gateway event. If the channel_id is set to null, this will force the target user to be disconnected from voice. */
   modifyGuildMember: (
     guildId: string,
@@ -4207,10 +4220,10 @@ export interface Entitlement {
   readonly type: EntitlementType
   /** Entitlement was deleted */
   readonly deleted: boolean
-  /** Start date at which the entitlement is valid. Not present when using test entitlements. */
-  readonly starts_at?: string
-  /** Date at which the entitlement is no longer valid. Not present when using test entitlements. */
-  readonly ends_at?: string
+  /** Start date at which the entitlement is valid. */
+  readonly starts_at?: string | null
+  /** Date at which the entitlement is no longer valid. */
+  readonly ends_at?: string | null
   /** ID of the guild that is granted access to the entitlement's sku */
   readonly guild_id?: Snowflake
   /** For consumable items, whether or not the entitlement has been consumed */
@@ -4636,6 +4649,8 @@ export interface Guild {
   readonly premium_progress_bar_enabled: boolean
   /** the id of the channel where admins and moderators of Community guilds receive safety alerts from Discord */
   readonly safety_alerts_channel_id?: Snowflake | null
+  /** the incidents data for this guild */
+  readonly incidents_data?: IncidentsDatum | null
 }
 export interface GuildApplicationCommandPermission {
   /** ID of the command or the application ID */
@@ -5161,6 +5176,16 @@ export interface IdentifyConnectionProperty {
   readonly browser: string
   /** Your library name */
   readonly device: string
+}
+export interface IncidentsDatum {
+  /** when invites get enabled again */
+  readonly invites_disabled_until?: string | null
+  /** when direct messages get enabled again */
+  readonly dms_disabled_until?: string | null
+  /** when the dm spam was detected */
+  readonly dm_spam_detected_at?: string | null
+  /** when the raid was detected */
+  readonly raid_detected_at?: string | null
 }
 export interface InstallParam {
   /** Scopes to add the application to the server with */
@@ -5798,6 +5823,8 @@ export const MessageFlag = {
   SUPPRESS_NOTIFICATIONS: 1 << 12,
   /** this message is a voice message */
   IS_VOICE_MESSAGE: 1 << 13,
+  /** this message has a snapshot (via Message Forwarding) */
+  HAS_SNAPSHOT: 1 << 14,
 } as const
 export interface MessageInteraction {
   /** ID of the interaction */
@@ -6037,17 +6064,17 @@ export interface ModifyChannelGuildChannelParams {
   /** the default duration that the clients use (not the API) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity */
   readonly default_auto_archive_duration?: number | null
   /** channel flags combined as a bitfield. Currently only REQUIRE_TAG (1 << 4) is supported by GUILD_FORUM and GUILD_MEDIA channels. HIDE_MEDIA_DOWNLOAD_OPTIONS (1 << 15) is supported only by GUILD_MEDIA channels */
-  readonly flags?: number
+  readonly flags: number
   /** the set of tags that can be used in a GUILD_FORUM or a GUILD_MEDIA channel; limited to 20 */
-  readonly available_tags?: Array<ForumTag>
+  readonly available_tags: Array<ForumTag>
   /** the emoji to show in the add reaction button on a thread in a GUILD_FORUM or a GUILD_MEDIA channel */
   readonly default_reaction_emoji?: DefaultReaction | null
   /** the initial rate_limit_per_user to set on newly created threads in a channel. this field is copied to the thread at creation time and does not live update. */
-  readonly default_thread_rate_limit_per_user?: number
+  readonly default_thread_rate_limit_per_user: number
   /** the default sort order type used to order posts in GUILD_FORUM and GUILD_MEDIA channels */
   readonly default_sort_order?: SortOrderType | null
   /** the default forum layout type used to display posts in GUILD_FORUM channels */
-  readonly default_forum_layout?: ForumLayoutType
+  readonly default_forum_layout: ForumLayoutType
 }
 export type ModifyChannelParams =
   | ModifyChannelGroupDmParams
@@ -6110,6 +6137,12 @@ export interface ModifyGuildEmojiParams {
   readonly name: string
   /** roles allowed to use this emoji */
   readonly roles?: Array<Snowflake> | null
+}
+export interface ModifyGuildIncidentActionParams {
+  /** when invites will be enabled again */
+  readonly invites_disabled_until?: string | null
+  /** when direct messages will be enabled again */
+  readonly dms_disabled_until?: string | null
 }
 export interface ModifyGuildMemberParams {
   /** value to set user's nickname to */
@@ -6392,7 +6425,7 @@ export const PermissionFlag = {
   MANAGE_CHANNELS: BigInt(1) << BigInt(4),
   /** Allows management and editing of the guild */
   MANAGE_GUILD: BigInt(1) << BigInt(5),
-  /** Allows for the addition of reactions to messages */
+  /** Allows for adding new reactions to messages. This permission does not apply to reacting with an existing reaction on a message. */
   ADD_REACTIONS: BigInt(1) << BigInt(6),
   /** Allows for viewing of audit logs */
   VIEW_AUDIT_LOG: BigInt(1) << BigInt(7),
@@ -6458,7 +6491,7 @@ export const PermissionFlag = {
   USE_EXTERNAL_STICKERS: BigInt(1) << BigInt(37),
   /** Allows for sending messages in threads */
   SEND_MESSAGES_IN_THREADS: BigInt(1) << BigInt(38),
-  /** Allows for using Activities (applications with the EMBEDDED flag) in a voice channel */
+  /** Allows for using Activities (applications with the EMBEDDED flag) */
   USE_EMBEDDED_ACTIVITIES: BigInt(1) << BigInt(39),
   /** Allows for timing out users to prevent them from sending or reacting to messages in chat and threads, and from speaking in voice and stage channels */
   MODERATE_MEMBERS: BigInt(1) << BigInt(40),
@@ -7184,6 +7217,8 @@ export interface Subscription {
   readonly sku_ids: Array<Snowflake>
   /** List of entitlements granted for this subscription */
   readonly entitlement_ids: Array<Snowflake>
+  /** List of SKUs that this user will be subscribed to at renewal */
+  readonly renewal_sku_ids?: Array<Snowflake> | null
   /** Start of the current subscription period */
   readonly current_period_start: string
   /** End of the current subscription period */
@@ -7191,7 +7226,7 @@ export interface Subscription {
   /** Current status of the subscription */
   readonly status: SubscriptionStatus
   /** When the subscription was canceled */
-  readonly canceled_at: string
+  readonly canceled_at?: string | null
   /** ISO3166-1 alpha-2 country code of the payment source used to purchase the subscription. Missing unless queried with a private OAuth scope. */
   readonly country?: string
 }
