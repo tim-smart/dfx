@@ -7,8 +7,8 @@ import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 Dotenv.config()
 
 // Create your service and register your interactions
-const makeGreetService = Effect.gen(function* (_) {
-  const registry = yield* _(InteractionsRegistry)
+const makeGreetService = Effect.gen(function* () {
+  const registry = yield* InteractionsRegistry
 
   const greet = Ix.global(
     {
@@ -23,27 +23,22 @@ const makeGreetService = Effect.gen(function* (_) {
         },
       ],
     },
-    ix => {
-      return Effect.all({
-        name: ix.optionValue("name"),
-      }).pipe(
-        Effect.map(({ name }) =>
-          Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: `Hello ${name}!`,
-            },
-          }),
-        ),
-      )
-    },
+    ix =>
+      Effect.succeed(
+        Ix.response({
+          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: `Hello ${ix.optionValue("name")}!`,
+          },
+        }),
+      ),
   )
 
   // create a builder
   const ix = Ix.builder.add(greet).catchAllCause(Effect.logError)
 
   // register the interactions
-  yield* _(registry.register(ix))
+  yield* registry.register(ix)
 })
 
 // Greet service layer

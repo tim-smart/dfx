@@ -1,4 +1,3 @@
-import type * as Option from "effect/Option"
 import type * as Effect from "effect/Effect"
 import type {
   DiscordApplicationCommand,
@@ -6,11 +5,10 @@ import type {
   DiscordInteraction,
   DiscordMessageComponent,
   DiscordModalSubmit,
-  SubCommandContext,
 } from "dfx/Interactions/context"
 import type * as Discord from "dfx/types"
-import type { NoSuchElementException } from "effect/Cause"
 import type { Scope } from "effect/Scope"
+import type { CommandHelper } from "./commandHelper"
 
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>
@@ -129,188 +127,6 @@ export type CommandHandler<R, E, A = any> =
   | Effect.Effect<Discord.InteractionResponse, E, R>
   | CommandHandlerFn<R, E, A>
 
-export interface CommandHelper<A> {
-  readonly target: CommandTypeMap<
-    A,
-    {
-      [Discord.ApplicationCommandType.CHAT_INPUT]: Discord.ApplicationCommand
-      [Discord.ApplicationCommandType.MESSAGE]: Discord.Message
-      [Discord.ApplicationCommandType.USER]: Discord.User
-      [Discord.ApplicationCommandType.PRIMARY_ENTRY_POINT]: undefined
-    }
-  >
-
-  resolve: <T>(
-    name: AllResolvables<A>["name"],
-    f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
-  ) => Effect.Effect<T, NoSuchElementException, DiscordInteraction>
-
-  option: (
-    name: AllCommandOptions<A>["name"],
-  ) => Effect.Effect<
-    Option.Option<Discord.ApplicationCommandInteractionDataOption>,
-    never,
-    DiscordApplicationCommand
-  >
-
-  optionValue: <N extends AllRequiredCommandOptions<A>["name"]>(
-    name: N,
-  ) => Effect.Effect<CommandValue<A, N>, never, DiscordApplicationCommand>
-
-  optionValueOptional: <N extends AllCommandOptions<A>["name"]>(
-    name: N,
-  ) => Effect.Effect<
-    Option.Option<CommandValue<A, N>>,
-    never,
-    DiscordApplicationCommand
-  >
-
-  subCommands: <
-    NER extends SubCommandNames<A> extends never
-      ? never
-      : Record<
-          SubCommandNames<A>,
-          Effect.Effect<Discord.InteractionResponse, any, any>
-        >,
-  >(
-    commands: NER,
-  ) => Effect.Effect<
-    Discord.InteractionResponse,
-    [NER[keyof NER]] extends [
-      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-    ]
-      ? E
-      : never,
-    | Exclude<
-        [NER[keyof NER]] extends [
-          { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-        ]
-          ? R
-          : never,
-        SubCommandContext
-      >
-    | DiscordInteraction
-    | DiscordApplicationCommand
-  >
-}
-
 export type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
 ) => Effect.Effect<Discord.InteractionResponse, E, R>
-
-interface CommandOption {
-  readonly type: any
-  readonly name: string
-  readonly options?: ReadonlyArray<CommandOption>
-}
-
-// == Sub commands
-type SubCommands<A> = A extends {
-  readonly type: Discord.ApplicationCommandOptionType.SUB_COMMAND
-  readonly options?: ReadonlyArray<CommandOption>
-}
-  ? A
-  : A extends { readonly options: ReadonlyArray<CommandOption> }
-    ? SubCommands<A["options"][number]>
-    : never
-
-type SubCommandNames<A> = Option<SubCommands<A>>["name"]
-
-// == Command options
-type CommandOptionType = Exclude<
-  Discord.ApplicationCommandOptionType,
-  | Discord.ApplicationCommandOptionType.SUB_COMMAND
-  | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
->
-
-type CommandOptions<A> = OptionsWithLiteral<
-  A,
-  {
-    readonly type: CommandOptionType
-  }
->
-
-type SubCommandOptions<A> = Extract<
-  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
-  {
-    readonly type: CommandOptionType
-  }
->
-
-type AllCommandOptions<A> = CommandOptions<A> | SubCommandOptions<A>
-
-type CommandWithName<A, N> = Extract<AllCommandOptions<A>, { readonly name: N }>
-
-type OptionTypeValue = {
-  [Discord.ApplicationCommandOptionType.BOOLEAN]: boolean
-  [Discord.ApplicationCommandOptionType.INTEGER]: number
-  [Discord.ApplicationCommandOptionType.NUMBER]: number
-}
-type CommandValue<A, N> = CommandWithName<
-  A,
-  N
->["type"] extends keyof OptionTypeValue
-  ? OptionTypeValue[CommandWithName<A, N>["type"]]
-  : string
-
-type CommandTypeMap<
-  A,
-  Options extends Record<Discord.ApplicationCommandType, any>,
-> = A extends { readonly type: infer T }
-  ? T extends keyof Options
-    ? Options[T]
-    : never
-  : Options[Discord.ApplicationCommandType.CHAT_INPUT]
-
-// == Required options
-type RequiredCommandOptions<A> = OptionsWithLiteral<
-  A,
-  {
-    readonly type: CommandOptionType
-    readonly required: true
-  }
->
-
-type RequiredSubCommandOptions<A> = Extract<
-  SubCommandOptions<A>,
-  { readonly required: true }
->
-
-type AllRequiredCommandOptions<A> =
-  | RequiredCommandOptions<A>
-  | RequiredSubCommandOptions<A>
-
-// == Resolveables
-type ResolvableType =
-  | Discord.ApplicationCommandOptionType.ROLE
-  | Discord.ApplicationCommandOptionType.USER
-  | Discord.ApplicationCommandOptionType.MENTIONABLE
-  | Discord.ApplicationCommandOptionType.CHANNEL
-
-type Resolvables<A> = OptionsWithLiteral<A, { readonly type: ResolvableType }>
-type SubCommandResolvables<A> = Extract<
-  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
-  {
-    readonly type: ResolvableType
-  }
->
-type AllResolvables<A> = Resolvables<A> | SubCommandResolvables<A>
-
-// == Utilities
-type StringLiteral<T> = T extends string
-  ? string extends T
-    ? never
-    : T
-  : never
-
-type Option<A> = A extends { readonly name: infer N }
-  ? N extends StringLiteral<N>
-    ? A
-    : never
-  : never
-
-type OptionsWithLiteral<A, T> = A extends {
-  readonly options: ReadonlyArray<CommandOption>
-}
-  ? Extract<A["options"][number], Option<A["options"][number]> & T>
-  : never

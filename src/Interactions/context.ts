@@ -5,9 +5,9 @@ import type * as Discord from "dfx/types"
 import type { NoSuchElementException } from "effect/Cause"
 import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
-import type * as HashMap from "effect/HashMap"
-import * as Option from "effect/Option"
-import * as Arr from "effect/Array"
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as Types from "effect/Types"
 
 export interface DiscordInteraction {
   readonly _: unique symbol
@@ -85,57 +85,11 @@ export class SubCommandNotFound extends TypeIdError(
   data: Discord.ApplicationCommandDatum
 }> {}
 
-export const handleSubCommands = <
-  NER extends Record<
-    string,
-    Effect.Effect<Discord.InteractionResponse, any, any>
-  >,
->(
-  commands: NER,
-): Effect.Effect<
-  Discord.InteractionResponse,
-  | ([NER[keyof NER]] extends [
-      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-    ]
-      ? E
-      : never)
-  | SubCommandNotFound,
-  | Exclude<
-      [NER[keyof NER]] extends [
-        { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-      ]
-        ? R
-        : never,
-      SubCommandContext
-    >
-  | Discord.Interaction
-  | Discord.ApplicationCommandDatum
-> =>
-  ApplicationCommand.pipe(
-    Effect.flatMap(data =>
-      Effect.mapError(
-        Arr.findFirst(IxHelpers.allSubCommands(data), _ => !!commands[_.name]),
-        () => new SubCommandNotFound({ data }),
-      ),
-    ),
-    Effect.flatMap(command =>
-      Effect.provideService(commands[command.name], SubCommandContext, {
-        command,
-      }),
-    ),
-  )
-
 export const currentSubCommand: Effect.Effect<
   Discord.ApplicationCommandInteractionDataOption,
   never,
   DiscordSubCommand
 > = Effect.map(SubCommandContext, _ => _.command)
-
-export const optionsMap: Effect.Effect<
-  HashMap.HashMap<string, string | undefined>,
-  never,
-  DiscordApplicationCommand
-> = Effect.map(ApplicationCommand, IxHelpers.optionsMap)
 
 export class RequiredOptionNotFound {
   readonly _tag = "RequiredOptionNotFound"
@@ -146,29 +100,6 @@ export class RequiredOptionNotFound {
     readonly name: string,
   ) {}
 }
-
-export const option = (name: string) =>
-  Effect.map(ApplicationCommand, IxHelpers.getOption(name))
-
-export const optionValue = (name: string) =>
-  Effect.flatMap(option(name), _ =>
-    Option.match(
-      Option.flatMapNullable(_, a => a.value),
-      {
-        onNone: () =>
-          Effect.flatMap(ApplicationCommand, data =>
-            Effect.fail(new RequiredOptionNotFound(data, name)),
-          ),
-        onSome: Effect.succeed,
-      },
-    ),
-  )
-
-export const optionValueOptional = (name: string) =>
-  Effect.map(
-    option(name),
-    Option.flatMapNullable(o => o.value),
-  )
 
 export const modalValues = Effect.map(ModalSubmitData, IxHelpers.componentsMap)
 

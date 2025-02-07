@@ -1,10 +1,9 @@
 import * as Chunk from "effect/Chunk"
 import * as Effect from "effect/Effect"
-import * as Ctx from "dfx/Interactions/context"
 import type * as D from "dfx/Interactions/definitions"
-import * as Discord from "dfx/types"
+import type * as Discord from "dfx/types"
 import * as Array from "effect/Array"
-import * as Helpers from "dfx/Helpers/interactions"
+import { CommandHelper } from "./commandHelper"
 
 export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
@@ -19,14 +18,6 @@ export type DefinitionFlattenedCommand<R, E, TE, A> = Extract<
   DefinitionFlattened<R, E, TE, A>,
   { _tag: "GlobalApplicationCommand" | "GuildApplicationCommand" }
 >
-
-const context: D.CommandHelper<any> = {
-  resolve: Ctx.resolved,
-  option: Ctx.option,
-  optionValue: Ctx.optionValue,
-  optionValueOptional: Ctx.optionValueOptional,
-  subCommands: Ctx.handleSubCommands,
-} as any
 
 export const flattenDefinitions = <R, E, TE, A, B>(
   definitions: Chunk.Chunk<
@@ -60,13 +51,7 @@ export const flattenDefinitions = <R, E, TE, A, B>(
                   definition.handle as (
                     _: any,
                   ) => Effect.Effect<Discord.InteractionResponse>
-                )({
-                  ...context,
-                  target:
-                    i.type === Discord.InteractionType.APPLICATION_COMMAND
-                      ? Helpers.target(i.data as any)
-                      : undefined,
-                }),
+                )(new CommandHelper(i)),
                 _ => handleResponse(i, _),
               ),
             ),

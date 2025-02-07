@@ -2,7 +2,7 @@ import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix } from "dfx"
 import { DiscordLive, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Cause, Config, Effect, Layer, Option, pipe } from "effect"
+import { Cause, Config, Effect, Layer, pipe } from "effect"
 
 Dotenv.config()
 
@@ -46,25 +46,17 @@ const greeting = Ix.global(
     ],
   },
   ix =>
-    Effect.all({
-      who: ix.optionValue("who"),
-      greeting: Effect.map(
-        ix.optionValueOptional("greeting"),
-        Option.getOrElse(() => "Hello"),
-      ),
-      // fail: _.optionValue("fail"), // <- this would be a type error
-    }).pipe(
-      Effect.map(({ greeting, who }) => ({
-        type: 4,
-        data: {
-          content: `${greeting} ${who}!`,
-        },
-      })),
-    ),
+    Effect.succeed({
+      type: 4,
+      data: {
+        content: `${ix.optionValueOrElse("greeting", () => "Hello")} ${ix.optionValue("who")}!`,
+      },
+      // fail: ix.optionValue("fail"), // <- this would be a type error
+    }),
 )
 
 // Build your program use `Ix.builder`
-const program = Effect.gen(function* (_) {
+const program = Effect.gen(function* () {
   const interactions = pipe(
     Ix.builder.add(hello).add(greeting),
     runIx(
@@ -76,7 +68,7 @@ const program = Effect.gen(function* (_) {
     ),
   )
 
-  yield* _(interactions)
+  yield* interactions
 })
 
 const EnvLive = DiscordLive.pipe(
