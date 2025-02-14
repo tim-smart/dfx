@@ -47,7 +47,7 @@ export class ShardStateStore extends Context.Tag("dfx/Shard/StateStore")<
   static KVSLive: Layer.Layer<ShardStateStore, never, KVS.KeyValueStore> =
     Layer.effect(
       ShardStateStore,
-      Effect.gen(function* (_) {
+      Effect.gen(function* () {
         const store = yield* KVS.KeyValueStore
         return ShardStateStore.of({
           forShard([id, count]) {

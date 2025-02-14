@@ -21,6 +21,7 @@ import * as Mailbox from "effect/Mailbox"
 import * as Redacted from "effect/Redacted"
 import type * as Types from "effect/Types"
 import * as FiberHandle from "effect/FiberHandle"
+import { constant, constTrue, constVoid } from "effect/Function"
 
 const enum Phase {
   Connecting,
@@ -35,8 +36,8 @@ export const make = Effect.gen(function* () {
   const { hub, sendMailbox } = yield* Messaging
   const shardState = yield* ShardStateStore
 
-  const connect = (shard: [id: number, count: number]) =>
-    Effect.gen(function* (_) {
+  const connect = Effect.fnUntraced(
+    function* (shard: [id: number, count: number]) {
       const reconnectHandle = yield* FiberHandle.make()
       let phase = Phase.Connecting
       const stateStore = shardState.forShard(shard)
@@ -158,10 +159,10 @@ export const make = Effect.gen(function* () {
         }
       }
 
-      yield* Effect.gen(function* () {
-        while (true) {
-          yield* write(yield* sendMailbox.take)
-        }
+      yield* Effect.whileLoop({
+        while: constTrue,
+        body: constant(Effect.flatMap(sendMailbox.take, write)),
+        step: constVoid,
       }).pipe(Effect.forkScoped, Effect.interruptible)
 
       yield* Effect.gen(function* () {
@@ -171,13 +172,14 @@ export const make = Effect.gen(function* () {
       }).pipe(Effect.forkScoped, Effect.interruptible)
 
       return { id: shard } as const
-    }).pipe(
-      Effect.annotateLogs({
+    },
+    (effect, shard) =>
+      Effect.annotateLogs(effect, {
         package: "dfx",
         module: "DiscordGateway/Shard",
         shard,
       }),
-    )
+  )
 
   return { connect } as const
 })
