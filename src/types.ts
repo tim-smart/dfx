@@ -161,13 +161,13 @@ export interface AddGuildMemberParams {
 }
 export interface AllowedMention {
   /** An array of allowed mention types to parse from the content. */
-  readonly parse: Array<AllowedMentionType>
+  readonly parse?: Array<AllowedMentionType>
   /** Array of role_ids to mention (Max size of 100) */
-  readonly roles: Array<Snowflake>
+  readonly roles?: Array<Snowflake>
   /** Array of user_ids to mention (Max size of 100) */
-  readonly users: Array<Snowflake>
+  readonly users?: Array<Snowflake>
   /** For replies, whether to mention the author of the message being replied to (default false) */
-  readonly replied_user: boolean
+  readonly replied_user?: boolean
 }
 export enum AllowedMentionType {
   /** Controls role mentions */
