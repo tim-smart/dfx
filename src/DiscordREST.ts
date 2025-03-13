@@ -23,7 +23,6 @@ import * as HashSet from "effect/HashSet"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
-import type { Scope } from "effect/Scope"
 import * as Redacted from "effect/Redacted"
 import type * as Fiber from "effect/Fiber"
 
@@ -165,14 +164,13 @@ const make = Effect.gen(function* () {
 
   const executor = <A = unknown>(
     request: HttpRequest.HttpClientRequest,
-  ): Effect.Effect<ResponseWithData<A>, DiscordRESTError, Scope> =>
+  ): Effect.Effect<ResponseWithData<A>, DiscordRESTError> =>
     requestRateLimit(request.url, request).pipe(
       Effect.zipLeft(globalRateLimit),
       Effect.zipRight(
         httpClient.execute(request) as Effect.Effect<
           ResponseWithData<A>,
-          DiscordRESTError,
-          Scope
+          DiscordRESTError
         >,
       ),
       Effect.tap(response => updateBuckets(request, response)),
@@ -268,21 +266,17 @@ class RestResponseImpl<T>
   implements RestResponse<T>
 {
   constructor(
-    readonly effect: Effect.Effect<
-      ResponseWithData<T>,
-      DiscordRESTError,
-      Scope
-    >,
+    readonly effect: Effect.Effect<ResponseWithData<T>, DiscordRESTError>,
   ) {
     super()
   }
 
   commit(): Effect.Effect<ResponseWithData<T>, DiscordRESTError> {
-    return Effect.scoped(this.effect)
+    return this.effect
   }
 
   get json() {
-    return Effect.scoped(Effect.flatMap(this.effect, _ => _.json))
+    return Effect.flatMap(this.effect, _ => _.json)
   }
 
   get response() {
@@ -298,7 +292,7 @@ export interface DiscordRESTService
   extends Discord.Endpoints<Partial<HttpRequest.Options.NoUrl>> {
   readonly executor: <A = unknown>(
     request: HttpRequest.HttpClientRequest,
-  ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError, Scope>
+  ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError>
 }
 
 export const DiscordREST = GenericTag<DiscordREST, DiscordRESTService>(
