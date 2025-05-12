@@ -1,6 +1,6 @@
 {
   "name": "dfx",
-  "version": "0.116.0",
+  "version": "0.117.0",
   "packageManager": "pnpm@10.3.0",
   "publishConfig": {
     "access": "public",
