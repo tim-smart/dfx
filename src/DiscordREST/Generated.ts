@@ -15,20 +15,20 @@ export type Int53Type = number
 
 export interface UserAvatarDecorationResponse {
   readonly asset: string
-  readonly sku_id?: null | SnowflakeType
+  readonly sku_id?: null | SnowflakeType | undefined
 }
 
 export type NameplatePalette = string
 
 export interface UserNameplateResponse {
-  readonly sku_id?: null | SnowflakeType
-  readonly asset?: string | null
-  readonly label?: string | null
-  readonly palette?: null | NameplatePalette
+  readonly sku_id?: null | SnowflakeType | undefined
+  readonly asset?: string | null | undefined
+  readonly label?: string | null | undefined
+  readonly palette?: null | NameplatePalette | undefined
 }
 
 export interface UserCollectiblesResponse {
-  readonly nameplate?: null | UserNameplateResponse
+  readonly nameplate?: null | UserNameplateResponse | undefined
 }
 
 export interface UserPrimaryGuildResponse {}
@@ -36,18 +36,21 @@ export interface UserPrimaryGuildResponse {}
 export interface UserResponse {
   readonly id: SnowflakeType
   readonly username: string
-  readonly avatar?: string | null
+  readonly avatar?: string | null | undefined
   readonly discriminator: string
   readonly public_flags: number
   readonly flags: Int53Type
-  readonly bot?: boolean | null
-  readonly system?: boolean | null
-  readonly banner?: string | null
-  readonly accent_color?: number | null
-  readonly global_name?: string | null
-  readonly avatar_decoration_data?: null | UserAvatarDecorationResponse
-  readonly collectibles?: null | UserCollectiblesResponse
-  readonly clan?: null | UserPrimaryGuildResponse
+  readonly bot?: boolean | null | undefined
+  readonly system?: boolean | null | undefined
+  readonly banner?: string | null | undefined
+  readonly accent_color?: number | null | undefined
+  readonly global_name?: string | null | undefined
+  readonly avatar_decoration_data?:
+    | null
+    | UserAvatarDecorationResponse
+    | undefined
+  readonly collectibles?: null | UserCollectiblesResponse | undefined
+  readonly clan?: null | UserPrimaryGuildResponse | undefined
 }
 
 export const OAuth2Scopes = {
@@ -154,7 +157,7 @@ export interface TeamMemberResponse {
 
 export interface TeamResponse {
   readonly id: SnowflakeType
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly name: string
   readonly owner_user_id: SnowflakeType
   readonly members: ReadonlyArray<TeamMemberResponse>
@@ -163,59 +166,71 @@ export interface TeamResponse {
 export interface PrivateApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly description: string
-  readonly type?: null | ApplicationTypes
-  readonly cover_image?: string | null
-  readonly primary_sku_id?: null | SnowflakeType
-  readonly bot?: null | UserResponse
-  readonly slug?: string | null
-  readonly guild_id?: null | SnowflakeType
-  readonly rpc_origins?: ReadonlyArray<string> | null
-  readonly bot_public?: boolean | null
-  readonly bot_require_code_grant?: boolean | null
-  readonly terms_of_service_url?: string | null
-  readonly privacy_policy_url?: string | null
-  readonly custom_install_url?: string | null
-  readonly install_params?: null | ApplicationOAuth2InstallParamsResponse
-  readonly integration_types_config?: Record<string, unknown> | null
+  readonly type?: null | ApplicationTypes | undefined
+  readonly cover_image?: string | null | undefined
+  readonly primary_sku_id?: null | SnowflakeType | undefined
+  readonly bot?: null | UserResponse | undefined
+  readonly slug?: string | null | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly rpc_origins?: ReadonlyArray<string> | null | undefined
+  readonly bot_public?: boolean | null | undefined
+  readonly bot_require_code_grant?: boolean | null | undefined
+  readonly terms_of_service_url?: string | null | undefined
+  readonly privacy_policy_url?: string | null | undefined
+  readonly custom_install_url?: string | null | undefined
+  readonly install_params?:
+    | null
+    | ApplicationOAuth2InstallParamsResponse
+    | undefined
+  readonly integration_types_config?: Record<string, unknown> | null | undefined
   readonly verify_key: string
   readonly flags: number
-  readonly max_participants?: number | null
-  readonly tags?: ReadonlyArray<string> | null
+  readonly max_participants?: number | null | undefined
+  readonly tags?: ReadonlyArray<string> | null | undefined
   readonly redirect_uris: ReadonlyArray<string>
-  readonly interactions_endpoint_url?: string | null
-  readonly role_connections_verification_url?: string | null
+  readonly interactions_endpoint_url?: string | null | undefined
+  readonly role_connections_verification_url?: string | null | undefined
   readonly owner: UserResponse
-  readonly approximate_guild_count?: number | null
+  readonly approximate_guild_count?: number | null | undefined
   readonly approximate_user_install_count: number
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
-  readonly team?: null | TeamResponse
+  readonly team?: null | TeamResponse | undefined
 }
 
 export interface ApplicationOAuth2InstallParams {
-  readonly scopes?: ReadonlyArray<"applications.commands" | "bot"> | null
-  readonly permissions?: number | null
+  readonly scopes?:
+    | ReadonlyArray<"applications.commands" | "bot">
+    | null
+    | undefined
+  readonly permissions?: number | null | undefined
 }
 
 export interface ApplicationFormPartial {
-  readonly description?: {
-    readonly default: string
-    readonly localizations?: Record<string, unknown> | null
-  } | null
-  readonly icon?: string | null
-  readonly cover_image?: string | null
-  readonly team_id?: null | SnowflakeType
-  readonly flags?: number | null
-  readonly interactions_endpoint_url?: string | null
-  readonly explicit_content_filter?: null | ApplicationExplicitContentFilterTypes
-  readonly max_participants?: number | null
-  readonly type?: null | ApplicationTypes
-  readonly tags?: ReadonlyArray<string> | null
-  readonly custom_install_url?: string | null
-  readonly install_params?: null | ApplicationOAuth2InstallParams
-  readonly role_connections_verification_url?: string | null
-  readonly integration_types_config?: Record<string, unknown> | null
+  readonly description?:
+    | {
+        readonly default: string
+        readonly localizations?: Record<string, unknown> | null | undefined
+      }
+    | null
+    | undefined
+  readonly icon?: string | null | undefined
+  readonly cover_image?: string | null | undefined
+  readonly team_id?: null | SnowflakeType | undefined
+  readonly flags?: number | null | undefined
+  readonly interactions_endpoint_url?: string | null | undefined
+  readonly explicit_content_filter?:
+    | null
+    | ApplicationExplicitContentFilterTypes
+    | undefined
+  readonly max_participants?: number | null | undefined
+  readonly type?: null | ApplicationTypes | undefined
+  readonly tags?: ReadonlyArray<string> | null | undefined
+  readonly custom_install_url?: string | null | undefined
+  readonly install_params?: null | ApplicationOAuth2InstallParams | undefined
+  readonly role_connections_verification_url?: string | null | undefined
+  readonly integration_types_config?: Record<string, unknown> | null | undefined
 }
 
 export const EmbeddedActivityLocationKind = {
@@ -244,33 +259,40 @@ export interface EmbeddedActivityInstance {
   readonly application_id: SnowflakeType
   readonly instance_id: string
   readonly launch_id: string
-  readonly location?: GuildChannelLocation | PrivateChannelLocation | null
+  readonly location?:
+    | GuildChannelLocation
+    | PrivateChannelLocation
+    | null
+    | undefined
   readonly users: ReadonlyArray<SnowflakeType>
 }
 
 export interface ApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly description: string
-  readonly type?: null | ApplicationTypes
-  readonly cover_image?: string | null
-  readonly primary_sku_id?: null | SnowflakeType
-  readonly bot?: null | UserResponse
-  readonly slug?: string | null
-  readonly guild_id?: null | SnowflakeType
-  readonly rpc_origins?: ReadonlyArray<string> | null
-  readonly bot_public?: boolean | null
-  readonly bot_require_code_grant?: boolean | null
-  readonly terms_of_service_url?: string | null
-  readonly privacy_policy_url?: string | null
-  readonly custom_install_url?: string | null
-  readonly install_params?: null | ApplicationOAuth2InstallParamsResponse
-  readonly integration_types_config?: Record<string, unknown> | null
+  readonly type?: null | ApplicationTypes | undefined
+  readonly cover_image?: string | null | undefined
+  readonly primary_sku_id?: null | SnowflakeType | undefined
+  readonly bot?: null | UserResponse | undefined
+  readonly slug?: string | null | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly rpc_origins?: ReadonlyArray<string> | null | undefined
+  readonly bot_public?: boolean | null | undefined
+  readonly bot_require_code_grant?: boolean | null | undefined
+  readonly terms_of_service_url?: string | null | undefined
+  readonly privacy_policy_url?: string | null | undefined
+  readonly custom_install_url?: string | null | undefined
+  readonly install_params?:
+    | null
+    | ApplicationOAuth2InstallParamsResponse
+    | undefined
+  readonly integration_types_config?: Record<string, unknown> | null | undefined
   readonly verify_key: string
   readonly flags: number
-  readonly max_participants?: number | null
-  readonly tags?: ReadonlyArray<string> | null
+  readonly max_participants?: number | null | undefined
+  readonly tags?: ReadonlyArray<string> | null | undefined
 }
 
 export interface AttachmentResponse {
@@ -279,17 +301,17 @@ export interface AttachmentResponse {
   readonly size: number
   readonly url: string
   readonly proxy_url: string
-  readonly width?: number | null
-  readonly height?: number | null
-  readonly duration_secs?: number | null
-  readonly waveform?: string | null
-  readonly description?: string | null
-  readonly content_type?: string | null
-  readonly ephemeral?: boolean | null
-  readonly title?: string | null
-  readonly application?: null | ApplicationResponse
-  readonly clip_created_at?: string | null
-  readonly clip_participants?: ReadonlyArray<UserResponse> | null
+  readonly width?: number | null | undefined
+  readonly height?: number | null | undefined
+  readonly duration_secs?: number | null | undefined
+  readonly waveform?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly content_type?: string | null | undefined
+  readonly ephemeral?: boolean | null | undefined
+  readonly title?: string | null | undefined
+  readonly application?: null | ApplicationResponse | undefined
+  readonly clip_created_at?: string | null | undefined
+  readonly clip_participants?: ReadonlyArray<UserResponse> | null | undefined
 }
 
 export interface ActivitiesAttachmentResponse {
@@ -297,7 +319,7 @@ export interface ActivitiesAttachmentResponse {
 }
 
 export interface ListApplicationCommandsParams {
-  readonly with_localizations?: boolean
+  readonly with_localizations?: boolean | undefined
 }
 
 export const ApplicationCommandType = {
@@ -363,23 +385,29 @@ export type ApplicationCommandOptionType =
 export interface ApplicationCommandAttachmentOptionResponse {
   readonly type: 11
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandBooleanOptionResponse {
   readonly type: 5
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export const ChannelTypes = {
@@ -413,178 +441,229 @@ export type ChannelTypes = (typeof ChannelTypes)[keyof typeof ChannelTypes]
 export interface ApplicationCommandChannelOptionResponse {
   readonly type: 7
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly channel_types?: ReadonlyArray<ChannelTypes> | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly channel_types?: ReadonlyArray<ChannelTypes> | null | undefined
 }
 
 export interface ApplicationCommandOptionIntegerChoiceResponse {
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly value: Int53Type
 }
 
 export interface ApplicationCommandIntegerOptionResponse {
   readonly type: 4
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly autocomplete?: boolean | null
-  readonly choices?: ReadonlyArray<ApplicationCommandOptionIntegerChoiceResponse> | null
-  readonly min_value?: null | Int53Type
-  readonly max_value?: null | Int53Type
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly autocomplete?: boolean | null | undefined
+  readonly choices?:
+    | ReadonlyArray<ApplicationCommandOptionIntegerChoiceResponse>
+    | null
+    | undefined
+  readonly min_value?: null | Int53Type | undefined
+  readonly max_value?: null | Int53Type | undefined
 }
 
 export interface ApplicationCommandMentionableOptionResponse {
   readonly type: 9
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandOptionNumberChoiceResponse {
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly value: number
 }
 
 export interface ApplicationCommandNumberOptionResponse {
   readonly type: 10
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly autocomplete?: boolean | null
-  readonly choices?: ReadonlyArray<ApplicationCommandOptionNumberChoiceResponse> | null
-  readonly min_value?: number | null
-  readonly max_value?: number | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly autocomplete?: boolean | null | undefined
+  readonly choices?:
+    | ReadonlyArray<ApplicationCommandOptionNumberChoiceResponse>
+    | null
+    | undefined
+  readonly min_value?: number | null | undefined
+  readonly max_value?: number | null | undefined
 }
 
 export interface ApplicationCommandRoleOptionResponse {
   readonly type: 8
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandOptionStringChoiceResponse {
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly value: string
 }
 
 export interface ApplicationCommandStringOptionResponse {
   readonly type: 3
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly autocomplete?: boolean | null
-  readonly choices?: ReadonlyArray<ApplicationCommandOptionStringChoiceResponse> | null
-  readonly min_length?: number | null
-  readonly max_length?: number | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly autocomplete?: boolean | null | undefined
+  readonly choices?:
+    | ReadonlyArray<ApplicationCommandOptionStringChoiceResponse>
+    | null
+    | undefined
+  readonly min_length?: number | null | undefined
+  readonly max_length?: number | null | undefined
 }
 
 export interface ApplicationCommandUserOptionResponse {
   readonly type: 6
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandSubcommandOptionResponse {
   readonly type: 1
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly options?: ReadonlyArray<
-    | ApplicationCommandAttachmentOptionResponse
-    | ApplicationCommandBooleanOptionResponse
-    | ApplicationCommandChannelOptionResponse
-    | ApplicationCommandIntegerOptionResponse
-    | ApplicationCommandMentionableOptionResponse
-    | ApplicationCommandNumberOptionResponse
-    | ApplicationCommandRoleOptionResponse
-    | ApplicationCommandStringOptionResponse
-    | ApplicationCommandUserOptionResponse
-  > | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly options?:
+    | ReadonlyArray<
+        | ApplicationCommandAttachmentOptionResponse
+        | ApplicationCommandBooleanOptionResponse
+        | ApplicationCommandChannelOptionResponse
+        | ApplicationCommandIntegerOptionResponse
+        | ApplicationCommandMentionableOptionResponse
+        | ApplicationCommandNumberOptionResponse
+        | ApplicationCommandRoleOptionResponse
+        | ApplicationCommandStringOptionResponse
+        | ApplicationCommandUserOptionResponse
+      >
+    | null
+    | undefined
 }
 
 export interface ApplicationCommandSubcommandGroupOptionResponse {
   readonly type: 2
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly options?: ReadonlyArray<ApplicationCommandSubcommandOptionResponse> | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly options?:
+    | ReadonlyArray<ApplicationCommandSubcommandOptionResponse>
+    | null
+    | undefined
 }
 
 export interface ApplicationCommandResponse {
   readonly id: SnowflakeType
   readonly application_id: SnowflakeType
   readonly version: SnowflakeType
-  readonly default_member_permissions?: string | null
+  readonly default_member_permissions?: string | null | undefined
   readonly type: ApplicationCommandType
   readonly name: string
-  readonly name_localized?: string | null
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localized?: string | null | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localized?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly guild_id?: null | SnowflakeType
-  readonly dm_permission?: boolean | null
-  readonly contexts?: ReadonlyArray<InteractionContextType> | null
-  readonly integration_types?: ReadonlyArray<ApplicationIntegrationType> | null
-  readonly options?: ReadonlyArray<
-    | ApplicationCommandAttachmentOptionResponse
-    | ApplicationCommandBooleanOptionResponse
-    | ApplicationCommandChannelOptionResponse
-    | ApplicationCommandIntegerOptionResponse
-    | ApplicationCommandMentionableOptionResponse
-    | ApplicationCommandNumberOptionResponse
-    | ApplicationCommandRoleOptionResponse
-    | ApplicationCommandStringOptionResponse
-    | ApplicationCommandSubcommandGroupOptionResponse
-    | ApplicationCommandSubcommandOptionResponse
-    | ApplicationCommandUserOptionResponse
-  > | null
-  readonly nsfw?: boolean | null
+  readonly description_localized?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly dm_permission?: boolean | null | undefined
+  readonly contexts?: ReadonlyArray<InteractionContextType> | null | undefined
+  readonly integration_types?:
+    | ReadonlyArray<ApplicationIntegrationType>
+    | null
+    | undefined
+  readonly options?:
+    | ReadonlyArray<
+        | ApplicationCommandAttachmentOptionResponse
+        | ApplicationCommandBooleanOptionResponse
+        | ApplicationCommandChannelOptionResponse
+        | ApplicationCommandIntegerOptionResponse
+        | ApplicationCommandMentionableOptionResponse
+        | ApplicationCommandNumberOptionResponse
+        | ApplicationCommandRoleOptionResponse
+        | ApplicationCommandStringOptionResponse
+        | ApplicationCommandSubcommandGroupOptionResponse
+        | ApplicationCommandSubcommandOptionResponse
+        | ApplicationCommandUserOptionResponse
+      >
+    | null
+    | undefined
+  readonly nsfw?: boolean | null | undefined
 }
 
 export type ListApplicationCommands200 =
@@ -593,172 +672,229 @@ export type ListApplicationCommands200 =
 export interface ApplicationCommandAttachmentOption {
   readonly type: 11
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandBooleanOption {
   readonly type: 5
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandChannelOption {
   readonly type: 7
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly channel_types?: ReadonlyArray<ChannelTypes> | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly channel_types?: ReadonlyArray<ChannelTypes> | null | undefined
 }
 
 export interface ApplicationCommandOptionIntegerChoice {
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly value: Int53Type
 }
 
 export interface ApplicationCommandIntegerOption {
   readonly type: 4
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly autocomplete?: boolean | null
-  readonly choices?: ReadonlyArray<ApplicationCommandOptionIntegerChoice> | null
-  readonly min_value?: null | Int53Type
-  readonly max_value?: null | Int53Type
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly autocomplete?: boolean | null | undefined
+  readonly choices?:
+    | ReadonlyArray<ApplicationCommandOptionIntegerChoice>
+    | null
+    | undefined
+  readonly min_value?: null | Int53Type | undefined
+  readonly max_value?: null | Int53Type | undefined
 }
 
 export interface ApplicationCommandMentionableOption {
   readonly type: 9
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandOptionNumberChoice {
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly value: number
 }
 
 export interface ApplicationCommandNumberOption {
   readonly type: 10
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly autocomplete?: boolean | null
-  readonly choices?: ReadonlyArray<ApplicationCommandOptionNumberChoice> | null
-  readonly min_value?: number | null
-  readonly max_value?: number | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly autocomplete?: boolean | null | undefined
+  readonly choices?:
+    | ReadonlyArray<ApplicationCommandOptionNumberChoice>
+    | null
+    | undefined
+  readonly min_value?: number | null | undefined
+  readonly max_value?: number | null | undefined
 }
 
 export interface ApplicationCommandRoleOption {
   readonly type: 8
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandOptionStringChoice {
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly value: string
 }
 
 export interface ApplicationCommandStringOption {
   readonly type: 3
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly autocomplete?: boolean | null
-  readonly min_length?: number | null
-  readonly max_length?: number | null
-  readonly choices?: ReadonlyArray<ApplicationCommandOptionStringChoice> | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly autocomplete?: boolean | null | undefined
+  readonly min_length?: number | null | undefined
+  readonly max_length?: number | null | undefined
+  readonly choices?:
+    | ReadonlyArray<ApplicationCommandOptionStringChoice>
+    | null
+    | undefined
 }
 
 export interface ApplicationCommandUserOption {
   readonly type: 6
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
 }
 
 export interface ApplicationCommandSubcommandOption {
   readonly type: 1
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly options?: ReadonlyArray<
-    | ApplicationCommandAttachmentOption
-    | ApplicationCommandBooleanOption
-    | ApplicationCommandChannelOption
-    | ApplicationCommandIntegerOption
-    | ApplicationCommandMentionableOption
-    | ApplicationCommandNumberOption
-    | ApplicationCommandRoleOption
-    | ApplicationCommandStringOption
-    | ApplicationCommandUserOption
-  > | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly options?:
+    | ReadonlyArray<
+        | ApplicationCommandAttachmentOption
+        | ApplicationCommandBooleanOption
+        | ApplicationCommandChannelOption
+        | ApplicationCommandIntegerOption
+        | ApplicationCommandMentionableOption
+        | ApplicationCommandNumberOption
+        | ApplicationCommandRoleOption
+        | ApplicationCommandStringOption
+        | ApplicationCommandUserOption
+      >
+    | null
+    | undefined
 }
 
 export interface ApplicationCommandSubcommandGroupOption {
   readonly type: 2
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly required?: boolean | null
-  readonly options?: ReadonlyArray<ApplicationCommandSubcommandOption> | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly required?: boolean | null | undefined
+  readonly options?:
+    | ReadonlyArray<ApplicationCommandSubcommandOption>
+    | null
+    | undefined
 }
 
 export type ApplicationCommandHandler = number
 
 export interface ApplicationCommandUpdateRequest {
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
-  readonly description?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly options?: ReadonlyArray<
-    | ApplicationCommandAttachmentOption
-    | ApplicationCommandBooleanOption
-    | ApplicationCommandChannelOption
-    | ApplicationCommandIntegerOption
-    | ApplicationCommandMentionableOption
-    | ApplicationCommandNumberOption
-    | ApplicationCommandRoleOption
-    | ApplicationCommandStringOption
-    | ApplicationCommandSubcommandGroupOption
-    | ApplicationCommandSubcommandOption
-    | ApplicationCommandUserOption
-  > | null
-  readonly default_member_permissions?: number | null
-  readonly dm_permission?: boolean | null
-  readonly contexts?: ReadonlyArray<InteractionContextType> | null
-  readonly integration_types?: ReadonlyArray<ApplicationIntegrationType> | null
-  readonly handler?: null | ApplicationCommandHandler
-  readonly type?: null | ApplicationCommandType
-  readonly id?: null | SnowflakeType
+  readonly name_localizations?: Record<string, unknown> | null | undefined
+  readonly description?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly options?:
+    | ReadonlyArray<
+        | ApplicationCommandAttachmentOption
+        | ApplicationCommandBooleanOption
+        | ApplicationCommandChannelOption
+        | ApplicationCommandIntegerOption
+        | ApplicationCommandMentionableOption
+        | ApplicationCommandNumberOption
+        | ApplicationCommandRoleOption
+        | ApplicationCommandStringOption
+        | ApplicationCommandSubcommandGroupOption
+        | ApplicationCommandSubcommandOption
+        | ApplicationCommandUserOption
+      >
+    | null
+    | undefined
+  readonly default_member_permissions?: number | null | undefined
+  readonly dm_permission?: boolean | null | undefined
+  readonly contexts?: ReadonlyArray<InteractionContextType> | null | undefined
+  readonly integration_types?:
+    | ReadonlyArray<ApplicationIntegrationType>
+    | null
+    | undefined
+  readonly handler?: null | ApplicationCommandHandler | undefined
+  readonly type?: null | ApplicationCommandType | undefined
+  readonly id?: null | SnowflakeType | undefined
 }
 
 export type BulkSetApplicationCommandsRequest =
@@ -769,59 +905,77 @@ export type BulkSetApplicationCommands200 =
 
 export interface ApplicationCommandCreateRequest {
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
-  readonly description?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly options?: ReadonlyArray<
-    | ApplicationCommandAttachmentOption
-    | ApplicationCommandBooleanOption
-    | ApplicationCommandChannelOption
-    | ApplicationCommandIntegerOption
-    | ApplicationCommandMentionableOption
-    | ApplicationCommandNumberOption
-    | ApplicationCommandRoleOption
-    | ApplicationCommandStringOption
-    | ApplicationCommandSubcommandGroupOption
-    | ApplicationCommandSubcommandOption
-    | ApplicationCommandUserOption
-  > | null
-  readonly default_member_permissions?: number | null
-  readonly dm_permission?: boolean | null
-  readonly contexts?: ReadonlyArray<InteractionContextType> | null
-  readonly integration_types?: ReadonlyArray<ApplicationIntegrationType> | null
-  readonly handler?: null | ApplicationCommandHandler
-  readonly type?: null | ApplicationCommandType
+  readonly name_localizations?: Record<string, unknown> | null | undefined
+  readonly description?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly options?:
+    | ReadonlyArray<
+        | ApplicationCommandAttachmentOption
+        | ApplicationCommandBooleanOption
+        | ApplicationCommandChannelOption
+        | ApplicationCommandIntegerOption
+        | ApplicationCommandMentionableOption
+        | ApplicationCommandNumberOption
+        | ApplicationCommandRoleOption
+        | ApplicationCommandStringOption
+        | ApplicationCommandSubcommandGroupOption
+        | ApplicationCommandSubcommandOption
+        | ApplicationCommandUserOption
+      >
+    | null
+    | undefined
+  readonly default_member_permissions?: number | null | undefined
+  readonly dm_permission?: boolean | null | undefined
+  readonly contexts?: ReadonlyArray<InteractionContextType> | null | undefined
+  readonly integration_types?:
+    | ReadonlyArray<ApplicationIntegrationType>
+    | null
+    | undefined
+  readonly handler?: null | ApplicationCommandHandler | undefined
+  readonly type?: null | ApplicationCommandType | undefined
 }
 
 export interface ApplicationCommandPatchRequestPartial {
-  readonly name?: string
-  readonly name_localizations?: Record<string, unknown> | null
-  readonly description?: string | null
-  readonly description_localizations?: Record<string, unknown> | null
-  readonly options?: ReadonlyArray<
-    | ApplicationCommandAttachmentOption
-    | ApplicationCommandBooleanOption
-    | ApplicationCommandChannelOption
-    | ApplicationCommandIntegerOption
-    | ApplicationCommandMentionableOption
-    | ApplicationCommandNumberOption
-    | ApplicationCommandRoleOption
-    | ApplicationCommandStringOption
-    | ApplicationCommandSubcommandGroupOption
-    | ApplicationCommandSubcommandOption
-    | ApplicationCommandUserOption
-  > | null
-  readonly default_member_permissions?: number | null
-  readonly dm_permission?: boolean | null
-  readonly contexts?: ReadonlyArray<InteractionContextType> | null
-  readonly integration_types?: ReadonlyArray<ApplicationIntegrationType> | null
-  readonly handler?: null | ApplicationCommandHandler
+  readonly name?: string | undefined
+  readonly name_localizations?: Record<string, unknown> | null | undefined
+  readonly description?: string | null | undefined
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
+  readonly options?:
+    | ReadonlyArray<
+        | ApplicationCommandAttachmentOption
+        | ApplicationCommandBooleanOption
+        | ApplicationCommandChannelOption
+        | ApplicationCommandIntegerOption
+        | ApplicationCommandMentionableOption
+        | ApplicationCommandNumberOption
+        | ApplicationCommandRoleOption
+        | ApplicationCommandStringOption
+        | ApplicationCommandSubcommandGroupOption
+        | ApplicationCommandSubcommandOption
+        | ApplicationCommandUserOption
+      >
+    | null
+    | undefined
+  readonly default_member_permissions?: number | null | undefined
+  readonly dm_permission?: boolean | null | undefined
+  readonly contexts?: ReadonlyArray<InteractionContextType> | null | undefined
+  readonly integration_types?:
+    | ReadonlyArray<ApplicationIntegrationType>
+    | null
+    | undefined
+  readonly handler?: null | ApplicationCommandHandler | undefined
 }
 
 export interface EmojiResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
   readonly roles: ReadonlyArray<SnowflakeType>
   readonly require_colons: boolean
   readonly managed: boolean
@@ -839,19 +993,19 @@ export interface CreateApplicationEmojiRequest {
 }
 
 export interface UpdateApplicationEmojiRequest {
-  readonly name?: string
+  readonly name?: string | undefined
 }
 
 export interface GetEntitlementsParams {
-  readonly user_id?: SnowflakeType
+  readonly user_id?: SnowflakeType | undefined
   readonly sku_ids: string | ReadonlyArray<null | SnowflakeType>
-  readonly guild_id?: SnowflakeType
-  readonly before?: SnowflakeType
-  readonly after?: SnowflakeType
-  readonly limit?: number
-  readonly exclude_ended?: boolean
-  readonly exclude_deleted?: boolean
-  readonly only_active?: boolean
+  readonly guild_id?: SnowflakeType | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
+  readonly exclude_ended?: boolean | undefined
+  readonly exclude_deleted?: boolean | undefined
+  readonly only_active?: boolean | undefined
 }
 
 export const EntitlementTypes = {
@@ -879,14 +1033,17 @@ export interface EntitlementResponse {
   readonly sku_id: SnowflakeType
   readonly application_id: SnowflakeType
   readonly user_id: SnowflakeType
-  readonly guild_id?: null | SnowflakeType
+  readonly guild_id?: null | SnowflakeType | undefined
   readonly deleted: boolean
-  readonly starts_at?: string | null
-  readonly ends_at?: string | null
+  readonly starts_at?: string | null | undefined
+  readonly ends_at?: string | null | undefined
   readonly type: EntitlementTypes
-  readonly fulfilled_at?: string | null
-  readonly fulfillment_status?: null | EntitlementTenantFulfillmentStatusResponse
-  readonly consumed?: boolean | null
+  readonly fulfilled_at?: string | null | undefined
+  readonly fulfillment_status?:
+    | null
+    | EntitlementTenantFulfillmentStatusResponse
+    | undefined
+  readonly consumed?: boolean | null | undefined
 }
 
 export type GetEntitlements200 = ReadonlyArray<null | EntitlementResponse>
@@ -900,7 +1057,7 @@ export interface CreateEntitlementRequestData {
 }
 
 export interface ListGuildApplicationCommandsParams {
-  readonly with_localizations?: boolean
+  readonly with_localizations?: boolean | undefined
 }
 
 export type ListGuildApplicationCommands200 =
@@ -946,7 +1103,10 @@ export interface ApplicationCommandPermission {
 }
 
 export interface SetGuildApplicationCommandPermissionsRequest {
-  readonly permissions?: ReadonlyArray<ApplicationCommandPermission> | null
+  readonly permissions?:
+    | ReadonlyArray<ApplicationCommandPermission>
+    | null
+    | undefined
 }
 
 export const MetadataItemTypes = {
@@ -974,9 +1134,12 @@ export interface ApplicationRoleConnectionsMetadataItemResponse {
   readonly type: MetadataItemTypes
   readonly key: string
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
 }
 
 export type GetApplicationRoleConnectionsMetadata200 =
@@ -986,9 +1149,12 @@ export interface ApplicationRoleConnectionsMetadataItemRequest {
   readonly type: MetadataItemTypes
   readonly key: string
   readonly name: string
-  readonly name_localizations?: Record<string, unknown> | null
+  readonly name_localizations?: Record<string, unknown> | null | undefined
   readonly description: string
-  readonly description_localizations?: Record<string, unknown> | null
+  readonly description_localizations?:
+    | Record<string, unknown>
+    | null
+    | undefined
 }
 
 export type UpdateApplicationRoleConnectionsMetadataRequest =
@@ -1037,13 +1203,13 @@ export interface ForumTagResponse {
   readonly id: SnowflakeType
   readonly name: string
   readonly moderated: boolean
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
 }
 
 export interface DefaultReactionEmojiResponse {
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
 }
 
 export const ThreadSortOrder = {
@@ -1070,75 +1236,87 @@ export type ThreadSearchTagSetting = string
 export interface GuildChannelResponse {
   readonly id: SnowflakeType
   readonly type: 0 | 2 | 4 | 5 | 13 | 14 | 15
-  readonly last_message_id?: null | SnowflakeType
+  readonly last_message_id?: null | SnowflakeType | undefined
   readonly flags: number
-  readonly last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null | undefined
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly parent_id?: null | SnowflakeType
-  readonly rate_limit_per_user?: number | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
-  readonly permissions?: string | null
-  readonly topic?: string | null
-  readonly default_auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly default_thread_rate_limit_per_user?: number | null
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
+  readonly permissions?: string | null | undefined
+  readonly topic?: string | null | undefined
+  readonly default_auto_archive_duration?:
+    | null
+    | ThreadAutoArchiveDuration
+    | undefined
+  readonly default_thread_rate_limit_per_user?: number | null | undefined
   readonly position: number
-  readonly permission_overwrites?: ReadonlyArray<ChannelPermissionOverwriteResponse> | null
-  readonly nsfw?: boolean | null
-  readonly available_tags?: ReadonlyArray<ForumTagResponse> | null
-  readonly default_reaction_emoji?: null | DefaultReactionEmojiResponse
-  readonly default_sort_order?: null | ThreadSortOrder
-  readonly default_forum_layout?: null | ForumLayout
-  readonly default_tag_setting?: null | ThreadSearchTagSetting
-  readonly hd_streaming_until?: string | null
-  readonly hd_streaming_buyer_id?: null | SnowflakeType
+  readonly permission_overwrites?:
+    | ReadonlyArray<ChannelPermissionOverwriteResponse>
+    | null
+    | undefined
+  readonly nsfw?: boolean | null | undefined
+  readonly available_tags?: ReadonlyArray<ForumTagResponse> | null | undefined
+  readonly default_reaction_emoji?:
+    | null
+    | DefaultReactionEmojiResponse
+    | undefined
+  readonly default_sort_order?: null | ThreadSortOrder | undefined
+  readonly default_forum_layout?: null | ForumLayout | undefined
+  readonly default_tag_setting?: null | ThreadSearchTagSetting | undefined
+  readonly hd_streaming_until?: string | null | undefined
+  readonly hd_streaming_buyer_id?: null | SnowflakeType | undefined
 }
 
 export interface PrivateChannelResponse {
   readonly id: SnowflakeType
   readonly type: 1
-  readonly last_message_id?: null | SnowflakeType
+  readonly last_message_id?: null | SnowflakeType | undefined
   readonly flags: number
-  readonly last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null | undefined
   readonly recipients: ReadonlyArray<UserResponse>
 }
 
 export interface PrivateGroupChannelResponse {
   readonly id: SnowflakeType
   readonly type: 3
-  readonly last_message_id?: null | SnowflakeType
+  readonly last_message_id?: null | SnowflakeType | undefined
   readonly flags: number
-  readonly last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null | undefined
   readonly recipients: ReadonlyArray<UserResponse>
-  readonly name?: string | null
-  readonly icon?: string | null
-  readonly owner_id?: null | SnowflakeType
-  readonly managed?: boolean | null
-  readonly application_id?: null | SnowflakeType
+  readonly name?: string | null | undefined
+  readonly icon?: string | null | undefined
+  readonly owner_id?: null | SnowflakeType | undefined
+  readonly managed?: boolean | null | undefined
+  readonly application_id?: null | SnowflakeType | undefined
 }
 
 export interface ThreadMetadataResponse {
   readonly archived: boolean
-  readonly archive_timestamp?: string | null
+  readonly archive_timestamp?: string | null | undefined
   readonly auto_archive_duration: ThreadAutoArchiveDuration
   readonly locked: boolean
-  readonly create_timestamp?: string | null
-  readonly invitable?: boolean | null
+  readonly create_timestamp?: string | null | undefined
+  readonly invitable?: boolean | null | undefined
 }
 
 export interface GuildMemberResponse {
-  readonly avatar?: string | null
-  readonly avatar_decoration_data?: null | UserAvatarDecorationResponse
-  readonly banner?: string | null
-  readonly communication_disabled_until?: string | null
+  readonly avatar?: string | null | undefined
+  readonly avatar_decoration_data?:
+    | null
+    | UserAvatarDecorationResponse
+    | undefined
+  readonly banner?: string | null | undefined
+  readonly communication_disabled_until?: string | null | undefined
   readonly flags: number
   readonly joined_at: string
-  readonly nick?: string | null
+  readonly nick?: string | null | undefined
   readonly pending: boolean
-  readonly premium_since?: string | null
+  readonly premium_since?: string | null | undefined
   readonly roles: ReadonlyArray<SnowflakeType>
   readonly user: UserResponse
   readonly mute: boolean
@@ -1150,31 +1328,31 @@ export interface ThreadMemberResponse {
   readonly user_id: SnowflakeType
   readonly join_timestamp: string
   readonly flags: number
-  readonly member?: null | GuildMemberResponse
+  readonly member?: null | GuildMemberResponse | undefined
 }
 
 export interface ThreadResponse {
   readonly id: SnowflakeType
   readonly type: 10 | 11 | 12
-  readonly last_message_id?: null | SnowflakeType
+  readonly last_message_id?: null | SnowflakeType | undefined
   readonly flags: number
-  readonly last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null | undefined
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly parent_id?: null | SnowflakeType
-  readonly rate_limit_per_user?: number | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
-  readonly permissions?: string | null
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
+  readonly permissions?: string | null | undefined
   readonly owner_id: SnowflakeType
-  readonly thread_metadata?: null | ThreadMetadataResponse
+  readonly thread_metadata?: null | ThreadMetadataResponse | undefined
   readonly message_count: number
   readonly member_count: number
   readonly total_message_sent: number
-  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null
-  readonly member?: null | ThreadMemberResponse
+  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly member?: null | ThreadMemberResponse | undefined
 }
 
 export type GetChannel200 =
@@ -1190,70 +1368,82 @@ export type DeleteChannel200 =
   | ThreadResponse
 
 export interface UpdateDMRequestPartial {
-  readonly name?: string | null
+  readonly name?: string | null | undefined
 }
 
 export interface UpdateGroupDMRequestPartial {
-  readonly name?: string | null
-  readonly icon?: string | null
+  readonly name?: string | null | undefined
+  readonly icon?: string | null | undefined
 }
 
 export interface ChannelPermissionOverwriteRequest {
   readonly id: SnowflakeType
-  readonly type?: null | ChannelPermissionOverwrites
-  readonly allow?: number | null
-  readonly deny?: number | null
+  readonly type?: null | ChannelPermissionOverwrites | undefined
+  readonly allow?: number | null | undefined
+  readonly deny?: number | null | undefined
 }
 
 export interface UpdateDefaultReactionEmojiRequest {
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
 }
 
 export interface UpdateThreadTagRequest {
   readonly name: string
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
-  readonly moderated?: boolean | null
-  readonly id?: null | SnowflakeType
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
+  readonly moderated?: boolean | null | undefined
+  readonly id?: null | SnowflakeType | undefined
 }
 
 export interface UpdateGuildChannelRequestPartial {
-  readonly type?: null | 0 | 2 | 4 | 5 | 13 | 14 | 15
-  readonly name?: string
-  readonly position?: number | null
-  readonly topic?: string | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly nsfw?: boolean | null
-  readonly rate_limit_per_user?: number | null
-  readonly parent_id?: null | SnowflakeType
-  readonly permission_overwrites?: ReadonlyArray<ChannelPermissionOverwriteRequest> | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
-  readonly default_auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly default_reaction_emoji?: null | UpdateDefaultReactionEmojiRequest
-  readonly default_thread_rate_limit_per_user?: number | null
-  readonly default_sort_order?: null | ThreadSortOrder
-  readonly default_forum_layout?: null | ForumLayout
-  readonly default_tag_setting?: null | ThreadSearchTagSetting
-  readonly flags?: number | null
-  readonly available_tags?: ReadonlyArray<UpdateThreadTagRequest> | null
+  readonly type?: null | 0 | 2 | 4 | 5 | 13 | 14 | 15 | undefined
+  readonly name?: string | undefined
+  readonly position?: number | null | undefined
+  readonly topic?: string | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly nsfw?: boolean | null | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly permission_overwrites?:
+    | ReadonlyArray<ChannelPermissionOverwriteRequest>
+    | null
+    | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
+  readonly default_auto_archive_duration?:
+    | null
+    | ThreadAutoArchiveDuration
+    | undefined
+  readonly default_reaction_emoji?:
+    | null
+    | UpdateDefaultReactionEmojiRequest
+    | undefined
+  readonly default_thread_rate_limit_per_user?: number | null | undefined
+  readonly default_sort_order?: null | ThreadSortOrder | undefined
+  readonly default_forum_layout?: null | ForumLayout | undefined
+  readonly default_tag_setting?: null | ThreadSearchTagSetting | undefined
+  readonly flags?: number | null | undefined
+  readonly available_tags?:
+    | ReadonlyArray<UpdateThreadTagRequest>
+    | null
+    | undefined
 }
 
 export interface UpdateThreadRequestPartial {
-  readonly name?: string | null
-  readonly archived?: boolean | null
-  readonly locked?: boolean | null
-  readonly invitable?: boolean | null
-  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly rate_limit_per_user?: number | null
-  readonly flags?: number | null
-  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
+  readonly name?: string | null | undefined
+  readonly archived?: boolean | null | undefined
+  readonly locked?: boolean | null | undefined
+  readonly invitable?: boolean | null | undefined
+  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly flags?: number | null | undefined
+  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
 }
 
 export type UpdateChannelRequest =
@@ -1291,35 +1481,38 @@ export interface InviteChannelRecipientResponse {
 export interface InviteChannelResponse {
   readonly id: SnowflakeType
   readonly type: ChannelTypes
-  readonly name?: string | null
-  readonly icon?: string | null
-  readonly recipients?: ReadonlyArray<InviteChannelRecipientResponse> | null
+  readonly name?: string | null | undefined
+  readonly icon?: string | null | undefined
+  readonly recipients?:
+    | ReadonlyArray<InviteChannelRecipientResponse>
+    | null
+    | undefined
 }
 
 export interface FriendInviteResponse {
-  readonly type?: null | 2
+  readonly type?: null | 2 | undefined
   readonly code: string
-  readonly inviter?: null | UserResponse
-  readonly max_age?: number | null
-  readonly created_at?: string | null
-  readonly expires_at?: string | null
-  readonly friends_count?: number | null
-  readonly channel?: null | InviteChannelResponse
-  readonly is_contact?: boolean | null
-  readonly uses?: number | null
-  readonly max_uses?: number | null
-  readonly flags?: number | null
+  readonly inviter?: null | UserResponse | undefined
+  readonly max_age?: number | null | undefined
+  readonly created_at?: string | null | undefined
+  readonly expires_at?: string | null | undefined
+  readonly friends_count?: number | null | undefined
+  readonly channel?: null | InviteChannelResponse | undefined
+  readonly is_contact?: boolean | null | undefined
+  readonly uses?: number | null | undefined
+  readonly max_uses?: number | null | undefined
+  readonly flags?: number | null | undefined
 }
 
 export interface GroupDMInviteResponse {
-  readonly type?: null | 1
+  readonly type?: null | 1 | undefined
   readonly code: string
-  readonly inviter?: null | UserResponse
-  readonly max_age?: number | null
-  readonly created_at?: string | null
-  readonly expires_at?: string | null
-  readonly channel?: null | InviteChannelResponse
-  readonly approximate_member_count?: number | null
+  readonly inviter?: null | UserResponse | undefined
+  readonly max_age?: number | null | undefined
+  readonly created_at?: string | null | undefined
+  readonly expires_at?: string | null | undefined
+  readonly channel?: null | InviteChannelResponse | undefined
+  readonly approximate_member_count?: number | null | undefined
 }
 
 export const GuildFeatures = {
@@ -1408,16 +1601,16 @@ export type GuildNSFWContentLevel =
 export interface InviteGuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly splash?: string | null
-  readonly banner?: string | null
-  readonly description?: string | null
-  readonly icon?: string | null
+  readonly splash?: string | null | undefined
+  readonly banner?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly icon?: string | null | undefined
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly verification_level?: null | VerificationLevels
-  readonly vanity_url_code?: string | null
-  readonly nsfw_level?: null | GuildNSFWContentLevel
-  readonly nsfw?: boolean | null
-  readonly premium_subscription_count?: number | null
+  readonly verification_level?: null | VerificationLevels | undefined
+  readonly vanity_url_code?: string | null | undefined
+  readonly nsfw_level?: null | GuildNSFWContentLevel | undefined
+  readonly nsfw?: boolean | null | undefined
+  readonly premium_subscription_count?: number | null | undefined
 }
 
 export const InviteTargetTypes = {
@@ -1431,26 +1624,29 @@ export type InviteTargetTypes =
 export interface InviteApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly description: string
-  readonly type?: null | ApplicationTypes
-  readonly cover_image?: string | null
-  readonly primary_sku_id?: null | SnowflakeType
-  readonly bot?: null | UserResponse
-  readonly slug?: string | null
-  readonly guild_id?: null | SnowflakeType
-  readonly rpc_origins?: ReadonlyArray<string> | null
-  readonly bot_public?: boolean | null
-  readonly bot_require_code_grant?: boolean | null
-  readonly terms_of_service_url?: string | null
-  readonly privacy_policy_url?: string | null
-  readonly custom_install_url?: string | null
-  readonly install_params?: null | ApplicationOAuth2InstallParamsResponse
-  readonly integration_types_config?: Record<string, unknown> | null
+  readonly type?: null | ApplicationTypes | undefined
+  readonly cover_image?: string | null | undefined
+  readonly primary_sku_id?: null | SnowflakeType | undefined
+  readonly bot?: null | UserResponse | undefined
+  readonly slug?: string | null | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly rpc_origins?: ReadonlyArray<string> | null | undefined
+  readonly bot_public?: boolean | null | undefined
+  readonly bot_require_code_grant?: boolean | null | undefined
+  readonly terms_of_service_url?: string | null | undefined
+  readonly privacy_policy_url?: string | null | undefined
+  readonly custom_install_url?: string | null | undefined
+  readonly install_params?:
+    | null
+    | ApplicationOAuth2InstallParamsResponse
+    | undefined
+  readonly integration_types_config?: Record<string, unknown> | null | undefined
   readonly verify_key: string
   readonly flags: number
-  readonly max_participants?: number | null
-  readonly tags?: ReadonlyArray<string> | null
+  readonly max_participants?: number | null | undefined
+  readonly tags?: ReadonlyArray<string> | null | undefined
 }
 
 export const GuildScheduledEventStatuses = {
@@ -1476,51 +1672,51 @@ export type GuildScheduledEventPrivacyLevels = 2
 export interface ScheduledEventUserResponse {
   readonly guild_scheduled_event_id: SnowflakeType
   readonly user_id: SnowflakeType
-  readonly user?: null | UserResponse
-  readonly member?: null | GuildMemberResponse
+  readonly user?: null | UserResponse | undefined
+  readonly member?: null | GuildMemberResponse | undefined
 }
 
 export interface ScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly creator_id?: null | SnowflakeType
-  readonly creator?: null | UserResponse
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly creator_id?: null | SnowflakeType | undefined
+  readonly creator?: null | UserResponse | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: GuildScheduledEventEntityTypes
-  readonly entity_id?: null | SnowflakeType
-  readonly user_count?: number | null
+  readonly entity_id?: null | SnowflakeType | undefined
+  readonly user_count?: number | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
-  readonly user_rsvp?: null | ScheduledEventUserResponse
+  readonly user_rsvp?: null | ScheduledEventUserResponse | undefined
 }
 
 export interface GuildInviteResponse {
-  readonly type?: null | 0
+  readonly type?: null | 0 | undefined
   readonly code: string
-  readonly inviter?: null | UserResponse
-  readonly max_age?: number | null
-  readonly created_at?: string | null
-  readonly expires_at?: string | null
-  readonly is_contact?: boolean | null
-  readonly flags?: number | null
-  readonly guild?: null | InviteGuildResponse
-  readonly guild_id?: null | SnowflakeType
-  readonly channel?: null | InviteChannelResponse
-  readonly target_type?: null | InviteTargetTypes
-  readonly target_user?: null | UserResponse
-  readonly target_application?: null | InviteApplicationResponse
-  readonly guild_scheduled_event?: null | ScheduledEventResponse
-  readonly uses?: number | null
-  readonly max_uses?: number | null
-  readonly temporary?: boolean | null
-  readonly approximate_member_count?: number | null
-  readonly approximate_presence_count?: number | null
-  readonly is_nickname_changeable?: boolean | null
+  readonly inviter?: null | UserResponse | undefined
+  readonly max_age?: number | null | undefined
+  readonly created_at?: string | null | undefined
+  readonly expires_at?: string | null | undefined
+  readonly is_contact?: boolean | null | undefined
+  readonly flags?: number | null | undefined
+  readonly guild?: null | InviteGuildResponse | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly channel?: null | InviteChannelResponse | undefined
+  readonly target_type?: null | InviteTargetTypes | undefined
+  readonly target_user?: null | UserResponse | undefined
+  readonly target_application?: null | InviteApplicationResponse | undefined
+  readonly guild_scheduled_event?: null | ScheduledEventResponse | undefined
+  readonly uses?: number | null | undefined
+  readonly max_uses?: number | null | undefined
+  readonly temporary?: boolean | null | undefined
+  readonly approximate_member_count?: number | null | undefined
+  readonly approximate_presence_count?: number | null | undefined
+  readonly is_nickname_changeable?: boolean | null | undefined
 }
 
 export type ListChannelInvites200 = ReadonlyArray<
@@ -1528,17 +1724,17 @@ export type ListChannelInvites200 = ReadonlyArray<
 >
 
 export interface CreateGroupDMInviteRequest {
-  readonly max_age?: number | null
+  readonly max_age?: number | null | undefined
 }
 
 export interface CreateGuildInviteRequest {
-  readonly max_age?: number | null
-  readonly temporary?: boolean | null
-  readonly max_uses?: number | null
-  readonly unique?: boolean | null
-  readonly target_user_id?: null | SnowflakeType
-  readonly target_application_id?: null | SnowflakeType
-  readonly target_type?: null | 1 | 2
+  readonly max_age?: number | null | undefined
+  readonly temporary?: boolean | null | undefined
+  readonly max_uses?: number | null | undefined
+  readonly unique?: boolean | null | undefined
+  readonly target_user_id?: null | SnowflakeType | undefined
+  readonly target_application_id?: null | SnowflakeType | undefined
+  readonly target_type?: null | 1 | 2 | undefined
 }
 
 export type CreateChannelInviteRequest =
@@ -1551,10 +1747,10 @@ export type CreateChannelInvite200 =
   | GuildInviteResponse
 
 export interface ListMessagesParams {
-  readonly around?: SnowflakeType
-  readonly before?: SnowflakeType
-  readonly after?: SnowflakeType
-  readonly limit?: number
+  readonly around?: SnowflakeType | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
 }
 
 export const MessageType = {
@@ -1641,17 +1837,17 @@ export interface MessageAttachmentResponse {
   readonly size: number
   readonly url: string
   readonly proxy_url: string
-  readonly width?: number | null
-  readonly height?: number | null
-  readonly duration_secs?: number | null
-  readonly waveform?: string | null
-  readonly description?: string | null
-  readonly content_type?: string | null
-  readonly ephemeral?: boolean | null
-  readonly title?: string | null
-  readonly application?: null | ApplicationResponse
-  readonly clip_created_at?: string | null
-  readonly clip_participants?: ReadonlyArray<UserResponse> | null
+  readonly width?: number | null | undefined
+  readonly height?: number | null | undefined
+  readonly duration_secs?: number | null | undefined
+  readonly waveform?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly content_type?: string | null | undefined
+  readonly ephemeral?: boolean | null | undefined
+  readonly title?: string | null | undefined
+  readonly application?: null | ApplicationResponse | undefined
+  readonly clip_created_at?: string | null | undefined
+  readonly clip_participants?: ReadonlyArray<UserResponse> | null | undefined
 }
 
 export interface MessageEmbedFieldResponse {
@@ -1662,60 +1858,60 @@ export interface MessageEmbedFieldResponse {
 
 export interface MessageEmbedAuthorResponse {
   readonly name: string
-  readonly url?: string | null
-  readonly icon_url?: string | null
-  readonly proxy_icon_url?: string | null
+  readonly url?: string | null | undefined
+  readonly icon_url?: string | null | undefined
+  readonly proxy_icon_url?: string | null | undefined
 }
 
 export interface MessageEmbedProviderResponse {
   readonly name: string
-  readonly url?: string | null
+  readonly url?: string | null | undefined
 }
 
 export type UInt32Type = number
 
 export interface MessageEmbedImageResponse {
-  readonly url?: string | null
-  readonly proxy_url?: string | null
-  readonly width?: null | UInt32Type
-  readonly height?: null | UInt32Type
-  readonly placeholder?: string | null
-  readonly placeholder_version?: null | UInt32Type
-  readonly description?: string | null
-  readonly flags?: null | UInt32Type
+  readonly url?: string | null | undefined
+  readonly proxy_url?: string | null | undefined
+  readonly width?: null | UInt32Type | undefined
+  readonly height?: null | UInt32Type | undefined
+  readonly placeholder?: string | null | undefined
+  readonly placeholder_version?: null | UInt32Type | undefined
+  readonly description?: string | null | undefined
+  readonly flags?: null | UInt32Type | undefined
 }
 
 export interface MessageEmbedVideoResponse {
-  readonly url?: string | null
-  readonly proxy_url?: string | null
-  readonly width?: null | UInt32Type
-  readonly height?: null | UInt32Type
-  readonly placeholder?: string | null
-  readonly placeholder_version?: null | UInt32Type
-  readonly description?: string | null
-  readonly flags?: null | UInt32Type
+  readonly url?: string | null | undefined
+  readonly proxy_url?: string | null | undefined
+  readonly width?: null | UInt32Type | undefined
+  readonly height?: null | UInt32Type | undefined
+  readonly placeholder?: string | null | undefined
+  readonly placeholder_version?: null | UInt32Type | undefined
+  readonly description?: string | null | undefined
+  readonly flags?: null | UInt32Type | undefined
 }
 
 export interface MessageEmbedFooterResponse {
   readonly text: string
-  readonly icon_url?: string | null
-  readonly proxy_icon_url?: string | null
+  readonly icon_url?: string | null | undefined
+  readonly proxy_icon_url?: string | null | undefined
 }
 
 export interface MessageEmbedResponse {
   readonly type: string
-  readonly url?: string | null
-  readonly title?: string | null
-  readonly description?: string | null
-  readonly color?: number | null
-  readonly timestamp?: string | null
-  readonly fields?: ReadonlyArray<MessageEmbedFieldResponse> | null
-  readonly author?: null | MessageEmbedAuthorResponse
-  readonly provider?: null | MessageEmbedProviderResponse
-  readonly image?: null | MessageEmbedImageResponse
-  readonly thumbnail?: null | MessageEmbedImageResponse
-  readonly video?: null | MessageEmbedVideoResponse
-  readonly footer?: null | MessageEmbedFooterResponse
+  readonly url?: string | null | undefined
+  readonly title?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly color?: number | null | undefined
+  readonly timestamp?: string | null | undefined
+  readonly fields?: ReadonlyArray<MessageEmbedFieldResponse> | null | undefined
+  readonly author?: null | MessageEmbedAuthorResponse | undefined
+  readonly provider?: null | MessageEmbedProviderResponse | undefined
+  readonly image?: null | MessageEmbedImageResponse | undefined
+  readonly thumbnail?: null | MessageEmbedImageResponse | undefined
+  readonly video?: null | MessageEmbedVideoResponse | undefined
+  readonly footer?: null | MessageEmbedFooterResponse | undefined
 }
 
 export const MessageComponentTypes = {
@@ -1765,21 +1961,21 @@ export type ButtonStyleTypes =
   (typeof ButtonStyleTypes)[keyof typeof ButtonStyleTypes]
 
 export interface ComponentEmojiResponse {
-  readonly id?: null | SnowflakeType
+  readonly id?: null | SnowflakeType | undefined
   readonly name: string
-  readonly animated?: boolean | null
+  readonly animated?: boolean | null | undefined
 }
 
 export interface ButtonComponentResponse {
   readonly type: 2
   readonly id: number
-  readonly custom_id?: string | null
+  readonly custom_id?: string | null | undefined
   readonly style: ButtonStyleTypes
-  readonly label?: string | null
-  readonly disabled?: boolean | null
-  readonly emoji?: null | ComponentEmojiResponse
-  readonly url?: string | null
-  readonly sku_id?: null | SnowflakeType
+  readonly label?: string | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly emoji?: null | ComponentEmojiResponse | undefined
+  readonly url?: string | null | undefined
+  readonly sku_id?: null | SnowflakeType | undefined
 }
 
 export const SnowflakeSelectDefaultValueTypes = {
@@ -1799,12 +1995,15 @@ export interface ChannelSelectComponentResponse {
   readonly type: 8
   readonly id: number
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly channel_types?: ReadonlyArray<ChannelTypes> | null
-  readonly default_values?: ReadonlyArray<ChannelSelectDefaultValueResponse> | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly channel_types?: ReadonlyArray<ChannelTypes> | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<ChannelSelectDefaultValueResponse>
+    | null
+    | undefined
 }
 
 export interface RoleSelectDefaultValueResponse {
@@ -1821,42 +2020,48 @@ export interface MentionableSelectComponentResponse {
   readonly type: 7
   readonly id: number
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<
-    RoleSelectDefaultValueResponse | UserSelectDefaultValueResponse
-  > | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<
+        RoleSelectDefaultValueResponse | UserSelectDefaultValueResponse
+      >
+    | null
+    | undefined
 }
 
 export interface RoleSelectComponentResponse {
   readonly type: 6
   readonly id: number
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<RoleSelectDefaultValueResponse> | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<RoleSelectDefaultValueResponse>
+    | null
+    | undefined
 }
 
 export interface StringSelectOptionResponse {
   readonly label: string
   readonly value: string
-  readonly description?: string | null
-  readonly emoji?: null | ComponentEmojiResponse
-  readonly default?: boolean | null
+  readonly description?: string | null | undefined
+  readonly emoji?: null | ComponentEmojiResponse | undefined
+  readonly default?: boolean | null | undefined
 }
 
 export interface StringSelectComponentResponse {
   readonly type: 3
   readonly id: number
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
   readonly options: ReadonlyArray<StringSelectOptionResponse>
 }
 
@@ -1874,60 +2079,66 @@ export interface TextInputComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly style: TextInputStyleTypes
-  readonly label?: string | null
-  readonly value?: string | null
-  readonly placeholder?: string | null
-  readonly required?: boolean | null
-  readonly min_length?: number | null
-  readonly max_length?: number | null
+  readonly label?: string | null | undefined
+  readonly value?: string | null | undefined
+  readonly placeholder?: string | null | undefined
+  readonly required?: boolean | null | undefined
+  readonly min_length?: number | null | undefined
+  readonly max_length?: number | null | undefined
 }
 
 export interface UserSelectComponentResponse {
   readonly type: 5
   readonly id: number
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<UserSelectDefaultValueResponse> | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<UserSelectDefaultValueResponse>
+    | null
+    | undefined
 }
 
 export interface ActionRowComponentResponse {
   readonly type: 1
   readonly id: number
-  readonly components?: ReadonlyArray<
-    | ButtonComponentResponse
-    | ChannelSelectComponentResponse
-    | MentionableSelectComponentResponse
-    | RoleSelectComponentResponse
-    | StringSelectComponentResponse
-    | TextInputComponentResponse
-    | UserSelectComponentResponse
-  > | null
+  readonly components?:
+    | ReadonlyArray<
+        | ButtonComponentResponse
+        | ChannelSelectComponentResponse
+        | MentionableSelectComponentResponse
+        | RoleSelectComponentResponse
+        | StringSelectComponentResponse
+        | TextInputComponentResponse
+        | UserSelectComponentResponse
+      >
+    | null
+    | undefined
 }
 
 export interface UnfurledMediaResponse {
   readonly id: SnowflakeType
   readonly url: string
   readonly proxy_url: string
-  readonly width?: number | null
-  readonly height?: number | null
-  readonly content_type?: string | null
+  readonly width?: number | null | undefined
+  readonly height?: number | null | undefined
+  readonly content_type?: string | null | undefined
 }
 
 export interface FileComponentResponse {
   readonly type: 13
   readonly id: number
   readonly file: UnfurledMediaResponse
-  readonly name?: string | null
-  readonly size?: number | null
+  readonly name?: string | null | undefined
+  readonly size?: number | null | undefined
   readonly spoiler: boolean
 }
 
 export interface MediaGalleryItemResponse {
   readonly media: UnfurledMediaResponse
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly spoiler: boolean
 }
 
@@ -1947,7 +2158,7 @@ export interface ThumbnailComponentResponse {
   readonly type: 11
   readonly id: number
   readonly media: UnfurledMediaResponse
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly spoiler: boolean
 }
 
@@ -1977,7 +2188,7 @@ export interface SeparatorComponentResponse {
 export interface ContainerComponentResponse {
   readonly type: 17
   readonly id: number
-  readonly accent_color?: number | null
+  readonly accent_color?: number | null | undefined
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
     | FileComponentResponse
@@ -2018,11 +2229,11 @@ export interface GuildStickerResponse {
   readonly name: string
   readonly tags: string
   readonly type: 2
-  readonly format_type?: null | StickerFormatTypes
-  readonly description?: string | null
+  readonly format_type?: null | StickerFormatTypes | undefined
+  readonly description?: string | null | undefined
   readonly available: boolean
   readonly guild_id: SnowflakeType
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
 }
 
 export interface StandardStickerResponse {
@@ -2030,8 +2241,8 @@ export interface StandardStickerResponse {
   readonly name: string
   readonly tags: string
   readonly type: 1
-  readonly format_type?: null | StickerFormatTypes
-  readonly description?: string | null
+  readonly format_type?: null | StickerFormatTypes | undefined
+  readonly description?: string | null | undefined
   readonly pack_id: SnowflakeType
   readonly sort_value: number
 }
@@ -2043,7 +2254,7 @@ export interface MessageStickerItemResponse {
 }
 
 export interface MessageCallResponse {
-  readonly ended_timestamp?: string | null
+  readonly ended_timestamp?: string | null | undefined
   readonly participants: ReadonlyArray<SnowflakeType>
 }
 
@@ -2052,12 +2263,12 @@ export interface MessageActivityResponse {}
 export interface BasicApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly description: string
-  readonly type?: null | ApplicationTypes
-  readonly cover_image?: string | null
-  readonly primary_sku_id?: null | SnowflakeType
-  readonly bot?: null | UserResponse
+  readonly type?: null | ApplicationTypes | undefined
+  readonly cover_image?: string | null | undefined
+  readonly primary_sku_id?: null | SnowflakeType | undefined
+  readonly bot?: null | UserResponse | undefined
 }
 
 export const InteractionTypes = {
@@ -2079,17 +2290,17 @@ export interface MessageInteractionResponse {
   readonly id: SnowflakeType
   readonly type: InteractionTypes
   readonly name: string
-  readonly user?: null | UserResponse
-  readonly name_localized?: string | null
+  readonly user?: null | UserResponse | undefined
+  readonly name_localized?: string | null | undefined
 }
 
 export type MessageReferenceType = 0
 
 export interface MessageReferenceResponse {
-  readonly type?: null | MessageReferenceType
+  readonly type?: null | MessageReferenceType | undefined
   readonly channel_id: SnowflakeType
-  readonly message_id?: null | SnowflakeType
-  readonly guild_id?: null | SnowflakeType
+  readonly message_id?: null | SnowflakeType | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
 }
 
 export interface MessageMentionChannelResponse {
@@ -2115,18 +2326,21 @@ export interface GuildProductPurchaseResponse {
 
 export interface PurchaseNotificationResponse {
   readonly type: PurchaseType
-  readonly guild_product_purchase?: null | GuildProductPurchaseResponse
+  readonly guild_product_purchase?:
+    | null
+    | GuildProductPurchaseResponse
+    | undefined
 }
 
 export interface MessageReactionEmojiResponse {
-  readonly id?: null | SnowflakeType
-  readonly name?: string | null
-  readonly animated?: boolean | null
+  readonly id?: null | SnowflakeType | undefined
+  readonly name?: string | null | undefined
+  readonly animated?: boolean | null | undefined
 }
 
 export interface PollMediaResponse {
-  readonly text?: string | null
-  readonly emoji?: null | MessageReactionEmojiResponse
+  readonly text?: string | null | undefined
+  readonly emoji?: null | MessageReactionEmojiResponse | undefined
 }
 
 export interface PollAnswerResponse {
@@ -2139,11 +2353,14 @@ export type PollLayoutTypes = number
 export interface PollResultsEntryResponse {
   readonly id: number
   readonly count: number
-  readonly me_voted?: boolean | null
+  readonly me_voted?: boolean | null | undefined
 }
 
 export interface PollResultsResponse {
-  readonly answer_counts?: ReadonlyArray<PollResultsEntryResponse> | null
+  readonly answer_counts?:
+    | ReadonlyArray<PollResultsEntryResponse>
+    | null
+    | undefined
   readonly is_finalized: boolean
 }
 
@@ -2159,28 +2376,28 @@ export interface PollResponse {
 export interface ApplicationCommandInteractionMetadataResponse {
   readonly id: SnowflakeType
   readonly type: 2
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
   readonly authorizing_integration_owners: Record<string, unknown>
-  readonly original_response_message_id?: null | SnowflakeType
-  readonly target_user?: null | UserResponse
-  readonly target_message_id?: null | SnowflakeType
+  readonly original_response_message_id?: null | SnowflakeType | undefined
+  readonly target_user?: null | UserResponse | undefined
+  readonly target_message_id?: null | SnowflakeType | undefined
 }
 
 export interface MessageComponentInteractionMetadataResponse {
   readonly id: SnowflakeType
   readonly type: 3
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
   readonly authorizing_integration_owners: Record<string, unknown>
-  readonly original_response_message_id?: null | SnowflakeType
+  readonly original_response_message_id?: null | SnowflakeType | undefined
   readonly interacted_message_id: SnowflakeType
 }
 
 export interface ModalSubmitInteractionMetadataResponse {
   readonly id: SnowflakeType
   readonly type: 5
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
   readonly authorizing_integration_owners: Record<string, unknown>
-  readonly original_response_message_id?: null | SnowflakeType
+  readonly original_response_message_id?: null | SnowflakeType | undefined
   readonly triggering_interaction_metadata:
     | ApplicationCommandInteractionMetadataResponse
     | MessageComponentInteractionMetadataResponse
@@ -2194,7 +2411,7 @@ export interface MinimalContentMessageResponse {
   readonly attachments: ReadonlyArray<MessageAttachmentResponse>
   readonly embeds: ReadonlyArray<MessageEmbedResponse>
   readonly timestamp: string
-  readonly edited_timestamp?: string | null
+  readonly edited_timestamp?: string | null | undefined
   readonly flags: number
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
@@ -2205,15 +2422,19 @@ export interface MinimalContentMessageResponse {
     | SeparatorComponentResponse
     | TextDisplayComponentResponse
   >
-  readonly resolved?: null | ResolvedObjectsResponse
-  readonly stickers?: ReadonlyArray<
-    GuildStickerResponse | StandardStickerResponse
-  > | null
-  readonly sticker_items?: ReadonlyArray<MessageStickerItemResponse> | null
+  readonly resolved?: null | ResolvedObjectsResponse | undefined
+  readonly stickers?:
+    | ReadonlyArray<GuildStickerResponse | StandardStickerResponse>
+    | null
+    | undefined
+  readonly sticker_items?:
+    | ReadonlyArray<MessageStickerItemResponse>
+    | null
+    | undefined
 }
 
 export interface MessageSnapshotResponse {
-  readonly message?: null | MinimalContentMessageResponse
+  readonly message?: null | MinimalContentMessageResponse | undefined
 }
 
 export interface MessageReactionCountDetailsResponse {
@@ -2238,7 +2459,7 @@ export interface BasicMessageResponse {
   readonly attachments: ReadonlyArray<MessageAttachmentResponse>
   readonly embeds: ReadonlyArray<MessageEmbedResponse>
   readonly timestamp: string
-  readonly edited_timestamp?: string | null
+  readonly edited_timestamp?: string | null | undefined
   readonly flags: number
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
@@ -2249,37 +2470,54 @@ export interface BasicMessageResponse {
     | SeparatorComponentResponse
     | TextDisplayComponentResponse
   >
-  readonly resolved?: null | ResolvedObjectsResponse
-  readonly stickers?: ReadonlyArray<
-    GuildStickerResponse | StandardStickerResponse
-  > | null
-  readonly sticker_items?: ReadonlyArray<MessageStickerItemResponse> | null
+  readonly resolved?: null | ResolvedObjectsResponse | undefined
+  readonly stickers?:
+    | ReadonlyArray<GuildStickerResponse | StandardStickerResponse>
+    | null
+    | undefined
+  readonly sticker_items?:
+    | ReadonlyArray<MessageStickerItemResponse>
+    | null
+    | undefined
   readonly id: SnowflakeType
   readonly channel_id: SnowflakeType
   readonly author: UserResponse
   readonly pinned: boolean
   readonly mention_everyone: boolean
   readonly tts: boolean
-  readonly call?: null | MessageCallResponse
-  readonly activity?: null | MessageActivityResponse
-  readonly application?: null | BasicApplicationResponse
-  readonly application_id?: null | SnowflakeType
-  readonly interaction?: null | MessageInteractionResponse
-  readonly nonce?: number | string | null
-  readonly webhook_id?: null | SnowflakeType
-  readonly message_reference?: null | MessageReferenceResponse
-  readonly thread?: null | ThreadResponse
-  readonly mention_channels?: ReadonlyArray<null | MessageMentionChannelResponse> | null
-  readonly role_subscription_data?: null | MessageRoleSubscriptionDataResponse
-  readonly purchase_notification?: null | PurchaseNotificationResponse
-  readonly position?: number | null
-  readonly poll?: null | PollResponse
+  readonly call?: null | MessageCallResponse | undefined
+  readonly activity?: null | MessageActivityResponse | undefined
+  readonly application?: null | BasicApplicationResponse | undefined
+  readonly application_id?: null | SnowflakeType | undefined
+  readonly interaction?: null | MessageInteractionResponse | undefined
+  readonly nonce?: number | string | null | undefined
+  readonly webhook_id?: null | SnowflakeType | undefined
+  readonly message_reference?: null | MessageReferenceResponse | undefined
+  readonly thread?: null | ThreadResponse | undefined
+  readonly mention_channels?:
+    | ReadonlyArray<null | MessageMentionChannelResponse>
+    | null
+    | undefined
+  readonly role_subscription_data?:
+    | null
+    | MessageRoleSubscriptionDataResponse
+    | undefined
+  readonly purchase_notification?:
+    | null
+    | PurchaseNotificationResponse
+    | undefined
+  readonly position?: number | null | undefined
+  readonly poll?: null | PollResponse | undefined
   readonly interaction_metadata?:
     | ApplicationCommandInteractionMetadataResponse
     | MessageComponentInteractionMetadataResponse
     | ModalSubmitInteractionMetadataResponse
     | null
-  readonly message_snapshots?: ReadonlyArray<MessageSnapshotResponse> | null
+    | undefined
+  readonly message_snapshots?:
+    | ReadonlyArray<MessageSnapshotResponse>
+    | null
+    | undefined
 }
 
 export interface MessageResponse {
@@ -2290,7 +2528,7 @@ export interface MessageResponse {
   readonly attachments: ReadonlyArray<MessageAttachmentResponse>
   readonly embeds: ReadonlyArray<MessageEmbedResponse>
   readonly timestamp: string
-  readonly edited_timestamp?: string | null
+  readonly edited_timestamp?: string | null | undefined
   readonly flags: number
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
@@ -2301,109 +2539,126 @@ export interface MessageResponse {
     | SeparatorComponentResponse
     | TextDisplayComponentResponse
   >
-  readonly resolved?: null | ResolvedObjectsResponse
-  readonly stickers?: ReadonlyArray<
-    GuildStickerResponse | StandardStickerResponse
-  > | null
-  readonly sticker_items?: ReadonlyArray<MessageStickerItemResponse> | null
+  readonly resolved?: null | ResolvedObjectsResponse | undefined
+  readonly stickers?:
+    | ReadonlyArray<GuildStickerResponse | StandardStickerResponse>
+    | null
+    | undefined
+  readonly sticker_items?:
+    | ReadonlyArray<MessageStickerItemResponse>
+    | null
+    | undefined
   readonly id: SnowflakeType
   readonly channel_id: SnowflakeType
   readonly author: UserResponse
   readonly pinned: boolean
   readonly mention_everyone: boolean
   readonly tts: boolean
-  readonly call?: null | MessageCallResponse
-  readonly activity?: null | MessageActivityResponse
-  readonly application?: null | BasicApplicationResponse
-  readonly application_id?: null | SnowflakeType
-  readonly interaction?: null | MessageInteractionResponse
-  readonly nonce?: number | string | null
-  readonly webhook_id?: null | SnowflakeType
-  readonly message_reference?: null | MessageReferenceResponse
-  readonly thread?: null | ThreadResponse
-  readonly mention_channels?: ReadonlyArray<null | MessageMentionChannelResponse> | null
-  readonly role_subscription_data?: null | MessageRoleSubscriptionDataResponse
-  readonly purchase_notification?: null | PurchaseNotificationResponse
-  readonly position?: number | null
-  readonly poll?: null | PollResponse
+  readonly call?: null | MessageCallResponse | undefined
+  readonly activity?: null | MessageActivityResponse | undefined
+  readonly application?: null | BasicApplicationResponse | undefined
+  readonly application_id?: null | SnowflakeType | undefined
+  readonly interaction?: null | MessageInteractionResponse | undefined
+  readonly nonce?: number | string | null | undefined
+  readonly webhook_id?: null | SnowflakeType | undefined
+  readonly message_reference?: null | MessageReferenceResponse | undefined
+  readonly thread?: null | ThreadResponse | undefined
+  readonly mention_channels?:
+    | ReadonlyArray<null | MessageMentionChannelResponse>
+    | null
+    | undefined
+  readonly role_subscription_data?:
+    | null
+    | MessageRoleSubscriptionDataResponse
+    | undefined
+  readonly purchase_notification?:
+    | null
+    | PurchaseNotificationResponse
+    | undefined
+  readonly position?: number | null | undefined
+  readonly poll?: null | PollResponse | undefined
   readonly interaction_metadata?:
     | ApplicationCommandInteractionMetadataResponse
     | MessageComponentInteractionMetadataResponse
     | ModalSubmitInteractionMetadataResponse
     | null
-  readonly message_snapshots?: ReadonlyArray<MessageSnapshotResponse> | null
-  readonly reactions?: ReadonlyArray<MessageReactionResponse> | null
-  readonly referenced_message?: null | BasicMessageResponse
+    | undefined
+  readonly message_snapshots?:
+    | ReadonlyArray<MessageSnapshotResponse>
+    | null
+    | undefined
+  readonly reactions?: ReadonlyArray<MessageReactionResponse> | null | undefined
+  readonly referenced_message?: null | BasicMessageResponse | undefined
 }
 
 export type ListMessages200 = ReadonlyArray<MessageResponse>
 
 export interface RichEmbedAuthor {
-  readonly name?: string | null
-  readonly url?: string | null
-  readonly icon_url?: string | null
+  readonly name?: string | null | undefined
+  readonly url?: string | null | undefined
+  readonly icon_url?: string | null | undefined
 }
 
 export interface RichEmbedImage {
-  readonly url?: string | null
-  readonly width?: number | null
-  readonly height?: number | null
-  readonly placeholder?: string | null
-  readonly placeholder_version?: number | null
-  readonly is_animated?: boolean | null
-  readonly description?: string | null
+  readonly url?: string | null | undefined
+  readonly width?: number | null | undefined
+  readonly height?: number | null | undefined
+  readonly placeholder?: string | null | undefined
+  readonly placeholder_version?: number | null | undefined
+  readonly is_animated?: boolean | null | undefined
+  readonly description?: string | null | undefined
 }
 
 export interface RichEmbedThumbnail {
-  readonly url?: string | null
-  readonly width?: number | null
-  readonly height?: number | null
-  readonly placeholder?: string | null
-  readonly placeholder_version?: number | null
-  readonly is_animated?: boolean | null
-  readonly description?: string | null
+  readonly url?: string | null | undefined
+  readonly width?: number | null | undefined
+  readonly height?: number | null | undefined
+  readonly placeholder?: string | null | undefined
+  readonly placeholder_version?: number | null | undefined
+  readonly is_animated?: boolean | null | undefined
+  readonly description?: string | null | undefined
 }
 
 export interface RichEmbedFooter {
-  readonly text?: string | null
-  readonly icon_url?: string | null
+  readonly text?: string | null | undefined
+  readonly icon_url?: string | null | undefined
 }
 
 export interface RichEmbedField {
   readonly name: string
   readonly value: string
-  readonly inline?: boolean | null
+  readonly inline?: boolean | null | undefined
 }
 
 export interface RichEmbedProvider {
-  readonly name?: string | null
-  readonly url?: string | null
+  readonly name?: string | null | undefined
+  readonly url?: string | null | undefined
 }
 
 export interface RichEmbedVideo {
-  readonly url?: string | null
-  readonly width?: number | null
-  readonly height?: number | null
-  readonly placeholder?: string | null
-  readonly placeholder_version?: number | null
-  readonly is_animated?: boolean | null
-  readonly description?: string | null
+  readonly url?: string | null | undefined
+  readonly width?: number | null | undefined
+  readonly height?: number | null | undefined
+  readonly placeholder?: string | null | undefined
+  readonly placeholder_version?: number | null | undefined
+  readonly is_animated?: boolean | null | undefined
+  readonly description?: string | null | undefined
 }
 
 export interface RichEmbed {
-  readonly type?: string | null
-  readonly url?: string | null
-  readonly title?: string | null
-  readonly color?: number | null
-  readonly timestamp?: string | null
-  readonly description?: string | null
-  readonly author?: null | RichEmbedAuthor
-  readonly image?: null | RichEmbedImage
-  readonly thumbnail?: null | RichEmbedThumbnail
-  readonly footer?: null | RichEmbedFooter
-  readonly fields?: ReadonlyArray<RichEmbedField> | null
-  readonly provider?: null | RichEmbedProvider
-  readonly video?: null | RichEmbedVideo
+  readonly type?: string | null | undefined
+  readonly url?: string | null | undefined
+  readonly title?: string | null | undefined
+  readonly color?: number | null | undefined
+  readonly timestamp?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly author?: null | RichEmbedAuthor | undefined
+  readonly image?: null | RichEmbedImage | undefined
+  readonly thumbnail?: null | RichEmbedThumbnail | undefined
+  readonly footer?: null | RichEmbedFooter | undefined
+  readonly fields?: ReadonlyArray<RichEmbedField> | null | undefined
+  readonly provider?: null | RichEmbedProvider | undefined
+  readonly video?: null | RichEmbedVideo | undefined
 }
 
 export const AllowedMentionTypes = {
@@ -2418,26 +2673,26 @@ export type AllowedMentionTypes =
   (typeof AllowedMentionTypes)[keyof typeof AllowedMentionTypes]
 
 export interface MessageAllowedMentionsRequest {
-  readonly parse?: ReadonlyArray<null | AllowedMentionTypes> | null
-  readonly users?: ReadonlyArray<null | SnowflakeType> | null
-  readonly roles?: ReadonlyArray<null | SnowflakeType> | null
-  readonly replied_user?: boolean | null
+  readonly parse?: ReadonlyArray<null | AllowedMentionTypes> | null | undefined
+  readonly users?: ReadonlyArray<null | SnowflakeType> | null | undefined
+  readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
+  readonly replied_user?: boolean | null | undefined
 }
 
 export interface ComponentEmojiForMessageRequest {
-  readonly id?: null | SnowflakeType
+  readonly id?: null | SnowflakeType | undefined
   readonly name: string
 }
 
 export interface ButtonComponentForMessageRequest {
   readonly type: 2
-  readonly custom_id?: string | null
+  readonly custom_id?: string | null | undefined
   readonly style: ButtonStyleTypes
-  readonly label?: string | null
-  readonly disabled?: boolean | null
-  readonly url?: string | null
-  readonly sku_id?: null | SnowflakeType
-  readonly emoji?: null | ComponentEmojiForMessageRequest
+  readonly label?: string | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly url?: string | null | undefined
+  readonly sku_id?: null | SnowflakeType | undefined
+  readonly emoji?: null | ComponentEmojiForMessageRequest | undefined
 }
 
 export interface ChannelSelectDefaultValue {
@@ -2448,12 +2703,15 @@ export interface ChannelSelectDefaultValue {
 export interface ChannelSelectComponentForMessageRequest {
   readonly type: 8
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<ChannelSelectDefaultValue> | null
-  readonly channel_types?: ReadonlyArray<ChannelTypes> | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<ChannelSelectDefaultValue>
+    | null
+    | undefined
+  readonly channel_types?: ReadonlyArray<ChannelTypes> | null | undefined
 }
 
 export interface RoleSelectDefaultValue {
@@ -2469,51 +2727,58 @@ export interface UserSelectDefaultValue {
 export interface MentionableSelectComponentForMessageRequest {
   readonly type: 7
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<
-    RoleSelectDefaultValue | UserSelectDefaultValue
-  > | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<RoleSelectDefaultValue | UserSelectDefaultValue>
+    | null
+    | undefined
 }
 
 export interface RoleSelectComponentForMessageRequest {
   readonly type: 6
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<RoleSelectDefaultValue> | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<RoleSelectDefaultValue>
+    | null
+    | undefined
 }
 
 export interface StringSelectOptionForMessageRequest {
   readonly label: string
   readonly value: string
-  readonly description?: string | null
-  readonly default?: boolean | null
-  readonly emoji?: null | ComponentEmojiForMessageRequest
+  readonly description?: string | null | undefined
+  readonly default?: boolean | null | undefined
+  readonly emoji?: null | ComponentEmojiForMessageRequest | undefined
 }
 
 export interface StringSelectComponentForMessageRequest {
   readonly type: 3
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
   readonly options: ReadonlyArray<StringSelectOptionForMessageRequest>
 }
 
 export interface UserSelectComponentForMessageRequest {
   readonly type: 5
   readonly custom_id: string
-  readonly placeholder?: string | null
-  readonly min_values?: number | null
-  readonly max_values?: number | null
-  readonly disabled?: boolean | null
-  readonly default_values?: ReadonlyArray<UserSelectDefaultValue> | null
+  readonly placeholder?: string | null | undefined
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly disabled?: boolean | null | undefined
+  readonly default_values?:
+    | ReadonlyArray<UserSelectDefaultValue>
+    | null
+    | undefined
 }
 
 export interface ActionRowComponentForMessageRequest {
@@ -2534,7 +2799,7 @@ export interface UnfurledMediaRequestWithAttachmentReferenceRequired {
 
 export interface FileComponentForMessageRequest {
   readonly type: 13
-  readonly spoiler?: boolean | null
+  readonly spoiler?: boolean | null | undefined
   readonly file: UnfurledMediaRequestWithAttachmentReferenceRequired
 }
 
@@ -2543,8 +2808,8 @@ export interface UnfurledMediaRequest {
 }
 
 export interface MediaGalleryItemRequest {
-  readonly description?: string | null
-  readonly spoiler?: boolean | null
+  readonly description?: string | null | undefined
+  readonly spoiler?: boolean | null | undefined
   readonly media: UnfurledMediaRequest
 }
 
@@ -2560,8 +2825,8 @@ export interface TextDisplayComponentForMessageRequest {
 
 export interface ThumbnailComponentForMessageRequest {
   readonly type: 11
-  readonly description?: string | null
-  readonly spoiler?: boolean | null
+  readonly description?: string | null | undefined
+  readonly spoiler?: boolean | null | undefined
   readonly media: UnfurledMediaRequest
 }
 
@@ -2575,13 +2840,13 @@ export interface SectionComponentForMessageRequest {
 
 export interface SeparatorComponentForMessageRequest {
   readonly type: 14
-  readonly spacing?: null | MessageComponentSeparatorSpacingSize
-  readonly divider?: boolean | null
+  readonly spacing?: null | MessageComponentSeparatorSpacingSize | undefined
+  readonly divider?: boolean | null | undefined
 }
 
 export interface ContainerComponentForMessageRequest {
   readonly type: 17
-  readonly accent_color?: number | null
+  readonly accent_color?: number | null | undefined
   readonly components: ReadonlyArray<
     | ActionRowComponentForMessageRequest
     | FileComponentForMessageRequest
@@ -2590,39 +2855,39 @@ export interface ContainerComponentForMessageRequest {
     | SeparatorComponentForMessageRequest
     | TextDisplayComponentForMessageRequest
   >
-  readonly spoiler?: boolean | null
+  readonly spoiler?: boolean | null | undefined
 }
 
 export interface MessageAttachmentRequest {
   readonly id: SnowflakeType
-  readonly filename?: string | null
-  readonly description?: string | null
-  readonly duration_secs?: number | null
-  readonly waveform?: string | null
-  readonly title?: string | null
-  readonly is_remix?: boolean | null
+  readonly filename?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly duration_secs?: number | null | undefined
+  readonly waveform?: string | null | undefined
+  readonly title?: string | null | undefined
+  readonly is_remix?: boolean | null | undefined
 }
 
 export interface PollEmoji {
-  readonly id?: null | SnowflakeType
-  readonly name?: string | null
-  readonly animated?: boolean | null
+  readonly id?: null | SnowflakeType | undefined
+  readonly name?: string | null | undefined
+  readonly animated?: boolean | null | undefined
 }
 
 export interface PollMedia {
-  readonly text?: string | null
-  readonly emoji?: null | PollEmoji
+  readonly text?: string | null | undefined
+  readonly emoji?: null | PollEmoji | undefined
 }
 
 export interface PollEmojiCreateRequest {
-  readonly id?: null | SnowflakeType
-  readonly name?: string | null
-  readonly animated?: boolean | null
+  readonly id?: null | SnowflakeType | undefined
+  readonly name?: string | null | undefined
+  readonly animated?: boolean | null | undefined
 }
 
 export interface PollMediaCreateRequest {
-  readonly text?: string | null
-  readonly emoji?: null | PollEmojiCreateRequest
+  readonly text?: string | null | undefined
+  readonly emoji?: null | PollEmojiCreateRequest | undefined
 }
 
 export interface PollAnswerCreateRequest {
@@ -2632,43 +2897,49 @@ export interface PollAnswerCreateRequest {
 export interface PollCreateRequest {
   readonly question: PollMedia
   readonly answers: ReadonlyArray<PollAnswerCreateRequest>
-  readonly allow_multiselect?: boolean | null
-  readonly layout_type?: null | PollLayoutTypes
-  readonly duration?: number | null
+  readonly allow_multiselect?: boolean | null | undefined
+  readonly layout_type?: null | PollLayoutTypes | undefined
+  readonly duration?: number | null | undefined
 }
 
 export interface ConfettiPotionCreateRequest {}
 
 export interface MessageReferenceRequest {
-  readonly guild_id?: null | SnowflakeType
-  readonly channel_id?: null | SnowflakeType
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
   readonly message_id: SnowflakeType
-  readonly fail_if_not_exists?: boolean | null
-  readonly type?: null | MessageReferenceType
+  readonly fail_if_not_exists?: boolean | null | undefined
+  readonly type?: null | MessageReferenceType | undefined
 }
 
 export interface MessageCreateRequest {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly flags?: number | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly poll?: null | PollCreateRequest
-  readonly confetti_potion?: null | ConfettiPotionCreateRequest
-  readonly message_reference?: null | MessageReferenceRequest
-  readonly nonce?: number | string | null
-  readonly enforce_nonce?: boolean | null
-  readonly tts?: boolean | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly flags?: number | null | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly poll?: null | PollCreateRequest | undefined
+  readonly confetti_potion?: null | ConfettiPotionCreateRequest | undefined
+  readonly message_reference?: null | MessageReferenceRequest | undefined
+  readonly nonce?: number | string | null | undefined
+  readonly enforce_nonce?: boolean | null | undefined
+  readonly tts?: boolean | null | undefined
 }
 
 export interface BulkDeleteMessagesRequest {
@@ -2676,21 +2947,27 @@ export interface BulkDeleteMessagesRequest {
 }
 
 export interface MessageEditRequestPartial {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly flags?: number | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly flags?: number | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
 }
 
 export const ReactionTypes = {
@@ -2702,39 +2979,39 @@ export const ReactionTypes = {
 export type ReactionTypes = (typeof ReactionTypes)[keyof typeof ReactionTypes]
 
 export interface ListMessageReactionsByEmojiParams {
-  readonly after?: SnowflakeType
-  readonly limit?: number
-  readonly type?: ReactionTypes
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
+  readonly type?: ReactionTypes | undefined
 }
 
 export type ListMessageReactionsByEmoji200 = ReadonlyArray<UserResponse>
 
 export interface CreateTextThreadWithMessageRequest {
   readonly name: string
-  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly rate_limit_per_user?: number | null
+  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration | undefined
+  readonly rate_limit_per_user?: number | null | undefined
 }
 
 export interface SetChannelPermissionOverwriteRequest {
-  readonly type?: null | ChannelPermissionOverwrites
-  readonly allow?: number | null
-  readonly deny?: number | null
+  readonly type?: null | ChannelPermissionOverwrites | undefined
+  readonly allow?: number | null | undefined
+  readonly deny?: number | null | undefined
 }
 
 export type ListPinnedMessages200 = ReadonlyArray<MessageResponse>
 
 export interface GetAnswerVotersParams {
-  readonly after?: SnowflakeType
-  readonly limit?: number
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
 }
 
 export interface PollAnswerDetailsResponse {
-  readonly users?: ReadonlyArray<UserResponse> | null
+  readonly users?: ReadonlyArray<UserResponse> | null | undefined
 }
 
 export interface AddGroupDmUserRequest {
-  readonly access_token?: string | null
-  readonly nick?: string | null
+  readonly access_token?: string | null | undefined
+  readonly nick?: string | null | undefined
 }
 
 export type AddGroupDmUser201 =
@@ -2743,55 +3020,61 @@ export type AddGroupDmUser201 =
 
 export interface SoundboardSoundSendRequest {
   readonly sound_id: SnowflakeType
-  readonly source_guild_id?: null | SnowflakeType
+  readonly source_guild_id?: null | SnowflakeType | undefined
 }
 
 export interface ListThreadMembersParams {
-  readonly with_member?: boolean
-  readonly limit?: number
-  readonly after?: SnowflakeType
+  readonly with_member?: boolean | undefined
+  readonly limit?: number | undefined
+  readonly after?: SnowflakeType | undefined
 }
 
 export type ListThreadMembers200 = ReadonlyArray<ThreadMemberResponse>
 
 export interface GetThreadMemberParams {
-  readonly with_member?: boolean
+  readonly with_member?: boolean | undefined
 }
 
 export interface BaseCreateMessageCreateRequest {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly flags?: number | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly poll?: null | PollCreateRequest
-  readonly confetti_potion?: null | ConfettiPotionCreateRequest
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly flags?: number | null | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly poll?: null | PollCreateRequest | undefined
+  readonly confetti_potion?: null | ConfettiPotionCreateRequest | undefined
 }
 
 export interface CreateForumThreadRequest {
   readonly name: string
-  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly rate_limit_per_user?: number | null
-  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null
+  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly message: BaseCreateMessageCreateRequest
 }
 
 export interface CreateTextThreadWithoutMessageRequest {
   readonly name: string
-  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly rate_limit_per_user?: number | null
-  readonly type?: null | 10 | 11 | 12
-  readonly invitable?: boolean | null
+  readonly auto_archive_duration?: null | ThreadAutoArchiveDuration | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly type?: null | 10 | 11 | 12 | undefined
+  readonly invitable?: boolean | null | undefined
 }
 
 export type CreateThreadRequest =
@@ -2801,42 +3084,42 @@ export type CreateThreadRequest =
 export interface CreatedThreadResponse {
   readonly id: SnowflakeType
   readonly type: 10 | 11 | 12
-  readonly last_message_id?: null | SnowflakeType
+  readonly last_message_id?: null | SnowflakeType | undefined
   readonly flags: number
-  readonly last_pin_timestamp?: string | null
+  readonly last_pin_timestamp?: string | null | undefined
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly parent_id?: null | SnowflakeType
-  readonly rate_limit_per_user?: number | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
-  readonly permissions?: string | null
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
+  readonly permissions?: string | null | undefined
   readonly owner_id: SnowflakeType
-  readonly thread_metadata?: null | ThreadMetadataResponse
+  readonly thread_metadata?: null | ThreadMetadataResponse | undefined
   readonly message_count: number
   readonly member_count: number
   readonly total_message_sent: number
-  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null
-  readonly member?: null | ThreadMemberResponse
+  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly member?: null | ThreadMemberResponse | undefined
 }
 
 export interface ListPrivateArchivedThreadsParams {
-  readonly before?: string
-  readonly limit?: number
+  readonly before?: string | undefined
+  readonly limit?: number | undefined
 }
 
 export interface ThreadsResponse {
   readonly threads: ReadonlyArray<ThreadResponse>
   readonly members: ReadonlyArray<ThreadMemberResponse>
-  readonly has_more?: boolean | null
-  readonly first_messages?: ReadonlyArray<MessageResponse> | null
+  readonly has_more?: boolean | null | undefined
+  readonly first_messages?: ReadonlyArray<MessageResponse> | null | undefined
 }
 
 export interface ListPublicArchivedThreadsParams {
-  readonly before?: string
-  readonly limit?: number
+  readonly before?: string | undefined
+  readonly limit?: number | undefined
 }
 
 export const ThreadSortingMode = {
@@ -2855,32 +3138,32 @@ export const SortingOrder = {
 export type SortingOrder = (typeof SortingOrder)[keyof typeof SortingOrder]
 
 export interface ThreadSearchParams {
-  readonly name?: string
-  readonly slop?: number
-  readonly min_id?: SnowflakeType
-  readonly max_id?: SnowflakeType
-  readonly tag?: string | ReadonlyArray<SnowflakeType>
-  readonly tag_setting?: ThreadSearchTagSetting
-  readonly archived?: boolean
-  readonly sort_by?: ThreadSortingMode
-  readonly sort_order?: SortingOrder
-  readonly limit?: number
-  readonly offset?: number
+  readonly name?: string | undefined
+  readonly slop?: number | undefined
+  readonly min_id?: SnowflakeType | undefined
+  readonly max_id?: SnowflakeType | undefined
+  readonly tag?: string | ReadonlyArray<SnowflakeType> | undefined
+  readonly tag_setting?: ThreadSearchTagSetting | undefined
+  readonly archived?: boolean | undefined
+  readonly sort_by?: ThreadSortingMode | undefined
+  readonly sort_order?: SortingOrder | undefined
+  readonly limit?: number | undefined
+  readonly offset?: number | undefined
 }
 
 export interface ThreadSearchResponse {
   readonly threads: ReadonlyArray<ThreadResponse>
   readonly members: ReadonlyArray<ThreadMemberResponse>
-  readonly has_more?: boolean | null
-  readonly first_messages?: ReadonlyArray<MessageResponse> | null
-  readonly total_results?: number | null
+  readonly has_more?: boolean | null | undefined
+  readonly first_messages?: ReadonlyArray<MessageResponse> | null | undefined
+  readonly total_results?: number | null | undefined
 }
 
 export interface TypingIndicatorResponse {}
 
 export interface ListMyPrivateArchivedThreadsParams {
-  readonly before?: SnowflakeType
-  readonly limit?: number
+  readonly before?: SnowflakeType | undefined
+  readonly limit?: number | undefined
 }
 
 export const WebhookTypes = {
@@ -2894,19 +3177,19 @@ export const WebhookTypes = {
 export type WebhookTypes = (typeof WebhookTypes)[keyof typeof WebhookTypes]
 
 export interface ApplicationIncomingWebhookResponse {
-  readonly application_id?: null | SnowflakeType
-  readonly avatar?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly guild_id?: null | SnowflakeType
+  readonly application_id?: null | SnowflakeType | undefined
+  readonly avatar?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
   readonly id: SnowflakeType
   readonly name: string
   readonly type: 3
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
 }
 
 export interface WebhookSourceGuildResponse {
   readonly id: SnowflakeType
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly name: string
 }
 
@@ -2916,29 +3199,29 @@ export interface WebhookSourceChannelResponse {
 }
 
 export interface ChannelFollowerWebhookResponse {
-  readonly application_id?: null | SnowflakeType
-  readonly avatar?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly guild_id?: null | SnowflakeType
+  readonly application_id?: null | SnowflakeType | undefined
+  readonly avatar?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
   readonly id: SnowflakeType
   readonly name: string
   readonly type: 2
-  readonly user?: null | UserResponse
-  readonly source_guild?: null | WebhookSourceGuildResponse
-  readonly source_channel?: null | WebhookSourceChannelResponse
+  readonly user?: null | UserResponse | undefined
+  readonly source_guild?: null | WebhookSourceGuildResponse | undefined
+  readonly source_channel?: null | WebhookSourceChannelResponse | undefined
 }
 
 export interface GuildIncomingWebhookResponse {
-  readonly application_id?: null | SnowflakeType
-  readonly avatar?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly guild_id?: null | SnowflakeType
+  readonly application_id?: null | SnowflakeType | undefined
+  readonly avatar?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
   readonly id: SnowflakeType
   readonly name: string
   readonly type: 1
-  readonly user?: null | UserResponse
-  readonly token?: string | null
-  readonly url?: string | null
+  readonly user?: null | UserResponse | undefined
+  readonly token?: string | null | undefined
+  readonly url?: string | null | undefined
 }
 
 export type ListChannelWebhooks200 = ReadonlyArray<
@@ -2949,7 +3232,7 @@ export type ListChannelWebhooks200 = ReadonlyArray<
 
 export interface CreateWebhookRequest {
   readonly name: string
-  readonly avatar?: string | null
+  readonly avatar?: string | null | undefined
 }
 
 export interface GatewayResponse {
@@ -3073,83 +3356,104 @@ export type AfkTimeouts = (typeof AfkTimeouts)[keyof typeof AfkTimeouts]
 
 export interface CreateGuildRequestRoleItem {
   readonly id: number
-  readonly name?: string | null
-  readonly permissions?: number | null
-  readonly color?: number | null
-  readonly hoist?: boolean | null
-  readonly mentionable?: boolean | null
-  readonly unicode_emoji?: string | null
+  readonly name?: string | null | undefined
+  readonly permissions?: number | null | undefined
+  readonly color?: number | null | undefined
+  readonly hoist?: boolean | null | undefined
+  readonly mentionable?: boolean | null | undefined
+  readonly unicode_emoji?: string | null | undefined
 }
 
 export interface CreateOrUpdateThreadTagRequest {
   readonly name: string
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
-  readonly moderated?: boolean | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
+  readonly moderated?: boolean | null | undefined
 }
 
 export interface CreateGuildRequestChannelItem {
-  readonly type?: null | 0 | 2 | 4
+  readonly type?: null | 0 | 2 | 4 | undefined
   readonly name: string
-  readonly position?: number | null
-  readonly topic?: string | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly nsfw?: boolean | null
-  readonly rate_limit_per_user?: number | null
-  readonly parent_id?: null | SnowflakeType
-  readonly permission_overwrites?: ReadonlyArray<ChannelPermissionOverwriteRequest> | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
-  readonly default_auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly default_reaction_emoji?: null | UpdateDefaultReactionEmojiRequest
-  readonly default_thread_rate_limit_per_user?: number | null
-  readonly default_sort_order?: null | ThreadSortOrder
-  readonly default_forum_layout?: null | ForumLayout
-  readonly default_tag_setting?: null | ThreadSearchTagSetting
-  readonly id?: null | SnowflakeType
-  readonly available_tags?: ReadonlyArray<CreateOrUpdateThreadTagRequest> | null
+  readonly position?: number | null | undefined
+  readonly topic?: string | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly nsfw?: boolean | null | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly permission_overwrites?:
+    | ReadonlyArray<ChannelPermissionOverwriteRequest>
+    | null
+    | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
+  readonly default_auto_archive_duration?:
+    | null
+    | ThreadAutoArchiveDuration
+    | undefined
+  readonly default_reaction_emoji?:
+    | null
+    | UpdateDefaultReactionEmojiRequest
+    | undefined
+  readonly default_thread_rate_limit_per_user?: number | null | undefined
+  readonly default_sort_order?: null | ThreadSortOrder | undefined
+  readonly default_forum_layout?: null | ForumLayout | undefined
+  readonly default_tag_setting?: null | ThreadSearchTagSetting | undefined
+  readonly id?: null | SnowflakeType | undefined
+  readonly available_tags?:
+    | ReadonlyArray<CreateOrUpdateThreadTagRequest>
+    | null
+    | undefined
 }
 
 export interface GuildCreateRequest {
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly name: string
-  readonly region?: string | null
-  readonly icon?: string | null
-  readonly verification_level?: null | VerificationLevels
-  readonly default_message_notifications?: null | UserNotificationSettings
-  readonly explicit_content_filter?: null | GuildExplicitContentFilterTypes
-  readonly preferred_locale?: null | AvailableLocalesEnum
-  readonly afk_timeout?: null | AfkTimeouts
-  readonly roles?: ReadonlyArray<CreateGuildRequestRoleItem> | null
-  readonly channels?: ReadonlyArray<CreateGuildRequestChannelItem> | null
-  readonly afk_channel_id?: null | SnowflakeType
-  readonly system_channel_id?: null | SnowflakeType
-  readonly system_channel_flags?: number | null
+  readonly region?: string | null | undefined
+  readonly icon?: string | null | undefined
+  readonly verification_level?: null | VerificationLevels | undefined
+  readonly default_message_notifications?:
+    | null
+    | UserNotificationSettings
+    | undefined
+  readonly explicit_content_filter?:
+    | null
+    | GuildExplicitContentFilterTypes
+    | undefined
+  readonly preferred_locale?: null | AvailableLocalesEnum | undefined
+  readonly afk_timeout?: null | AfkTimeouts | undefined
+  readonly roles?: ReadonlyArray<CreateGuildRequestRoleItem> | null | undefined
+  readonly channels?:
+    | ReadonlyArray<CreateGuildRequestChannelItem>
+    | null
+    | undefined
+  readonly afk_channel_id?: null | SnowflakeType | undefined
+  readonly system_channel_id?: null | SnowflakeType | undefined
+  readonly system_channel_flags?: number | null | undefined
 }
 
 export interface GuildRoleTagsResponse {
-  readonly premium_subscriber?: null
-  readonly bot_id?: null | SnowflakeType
-  readonly integration_id?: null | SnowflakeType
-  readonly subscription_listing_id?: null | SnowflakeType
-  readonly available_for_purchase?: null
-  readonly guild_connections?: null
+  readonly premium_subscriber?: null | undefined
+  readonly bot_id?: null | SnowflakeType | undefined
+  readonly integration_id?: null | SnowflakeType | undefined
+  readonly subscription_listing_id?: null | SnowflakeType | undefined
+  readonly available_for_purchase?: null | undefined
+  readonly guild_connections?: null | undefined
 }
 
 export interface GuildRoleResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly permissions: string
   readonly position: number
   readonly color: number
   readonly hoist: boolean
   readonly managed: boolean
   readonly mentionable: boolean
-  readonly icon?: string | null
-  readonly unicode_emoji?: string | null
-  readonly tags?: null | GuildRoleTagsResponse
+  readonly icon?: string | null | undefined
+  readonly unicode_emoji?: string | null | undefined
+  readonly tags?: null | GuildRoleTagsResponse | undefined
 }
 
 export const GuildMFALevel = {
@@ -3176,38 +3480,38 @@ export type PremiumGuildTiers =
 export interface GuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
-  readonly description?: string | null
-  readonly home_header?: string | null
-  readonly splash?: string | null
-  readonly discovery_splash?: string | null
+  readonly icon?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly home_header?: string | null | undefined
+  readonly splash?: string | null | undefined
+  readonly discovery_splash?: string | null | undefined
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly banner?: string | null
+  readonly banner?: string | null | undefined
   readonly owner_id: SnowflakeType
-  readonly application_id?: null | SnowflakeType
+  readonly application_id?: null | SnowflakeType | undefined
   readonly region: string
-  readonly afk_channel_id?: null | SnowflakeType
+  readonly afk_channel_id?: null | SnowflakeType | undefined
   readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: null | SnowflakeType
+  readonly system_channel_id?: null | SnowflakeType | undefined
   readonly system_channel_flags: number
   readonly widget_enabled: boolean
-  readonly widget_channel_id?: null | SnowflakeType
+  readonly widget_channel_id?: null | SnowflakeType | undefined
   readonly verification_level: VerificationLevels
   readonly roles: ReadonlyArray<GuildRoleResponse>
   readonly default_message_notifications: UserNotificationSettings
   readonly mfa_level: GuildMFALevel
   readonly explicit_content_filter: GuildExplicitContentFilterTypes
-  readonly max_presences?: number | null
-  readonly max_members?: number | null
-  readonly max_stage_video_channel_users?: number | null
-  readonly max_video_channel_users?: number | null
-  readonly vanity_url_code?: string | null
+  readonly max_presences?: number | null | undefined
+  readonly max_members?: number | null | undefined
+  readonly max_stage_video_channel_users?: number | null | undefined
+  readonly max_video_channel_users?: number | null | undefined
+  readonly vanity_url_code?: string | null | undefined
   readonly premium_tier: PremiumGuildTiers
   readonly premium_subscription_count: number
   readonly preferred_locale: AvailableLocalesEnum
-  readonly rules_channel_id?: null | SnowflakeType
-  readonly safety_alerts_channel_id?: null | SnowflakeType
-  readonly public_updates_channel_id?: null | SnowflakeType
+  readonly rules_channel_id?: null | SnowflakeType | undefined
+  readonly safety_alerts_channel_id?: null | SnowflakeType | undefined
+  readonly public_updates_channel_id?: null | SnowflakeType | undefined
   readonly premium_progress_bar_enabled: boolean
   readonly nsfw: boolean
   readonly nsfw_level: GuildNSFWContentLevel
@@ -3222,54 +3526,63 @@ export interface GuildTemplateRoleResponse {
   readonly color: number
   readonly hoist: boolean
   readonly mentionable: boolean
-  readonly icon?: string | null
-  readonly unicode_emoji?: string | null
+  readonly icon?: string | null | undefined
+  readonly unicode_emoji?: string | null | undefined
 }
 
 export interface GuildTemplateChannelTags {
   readonly name: string
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
-  readonly moderated?: boolean | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
+  readonly moderated?: boolean | null | undefined
 }
 
 export interface IconEmojiResponse {}
 
 export interface GuildTemplateChannelResponse {
-  readonly id?: number | null
+  readonly id?: number | null | undefined
   readonly type: 0 | 2 | 4
-  readonly name?: string | null
-  readonly position?: number | null
-  readonly topic?: string | null
+  readonly name?: string | null | undefined
+  readonly position?: number | null | undefined
+  readonly topic?: string | null | undefined
   readonly bitrate: number
   readonly user_limit: number
   readonly nsfw: boolean
   readonly rate_limit_per_user: number
-  readonly parent_id?: null | SnowflakeType
-  readonly default_auto_archive_duration?: null | ThreadAutoArchiveDuration
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly default_auto_archive_duration?:
+    | null
+    | ThreadAutoArchiveDuration
+    | undefined
   readonly permission_overwrites: ReadonlyArray<null | ChannelPermissionOverwriteResponse>
-  readonly available_tags?: ReadonlyArray<GuildTemplateChannelTags> | null
+  readonly available_tags?:
+    | ReadonlyArray<GuildTemplateChannelTags>
+    | null
+    | undefined
   readonly template: string
-  readonly default_reaction_emoji?: null | DefaultReactionEmojiResponse
-  readonly default_thread_rate_limit_per_user?: number | null
-  readonly default_sort_order?: null | ThreadSortOrder
-  readonly default_forum_layout?: null | ForumLayout
-  readonly default_tag_setting?: null | ThreadSearchTagSetting
-  readonly icon_emoji?: null | IconEmojiResponse
-  readonly theme_color?: number | null
+  readonly default_reaction_emoji?:
+    | null
+    | DefaultReactionEmojiResponse
+    | undefined
+  readonly default_thread_rate_limit_per_user?: number | null | undefined
+  readonly default_sort_order?: null | ThreadSortOrder | undefined
+  readonly default_forum_layout?: null | ForumLayout | undefined
+  readonly default_tag_setting?: null | ThreadSearchTagSetting | undefined
+  readonly icon_emoji?: null | IconEmojiResponse | undefined
+  readonly theme_color?: number | null | undefined
 }
 
 export interface GuildTemplateSnapshotResponse {
   readonly name: string
-  readonly description?: string | null
-  readonly region?: string | null
+  readonly description?: string | null | undefined
+  readonly region?: string | null | undefined
   readonly verification_level: VerificationLevels
   readonly default_message_notifications: UserNotificationSettings
   readonly explicit_content_filter: GuildExplicitContentFilterTypes
   readonly preferred_locale: AvailableLocalesEnum
-  readonly afk_channel_id?: null | SnowflakeType
+  readonly afk_channel_id?: null | SnowflakeType | undefined
   readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: null | SnowflakeType
+  readonly system_channel_id?: null | SnowflakeType | undefined
   readonly system_channel_flags: number
   readonly roles: ReadonlyArray<GuildTemplateRoleResponse>
   readonly channels: ReadonlyArray<GuildTemplateChannelResponse>
@@ -3278,102 +3591,108 @@ export interface GuildTemplateSnapshotResponse {
 export interface GuildTemplateResponse {
   readonly code: string
   readonly name: string
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly usage_count: number
   readonly creator_id: SnowflakeType
-  readonly creator?: null | UserResponse
+  readonly creator?: null | UserResponse | undefined
   readonly created_at: string
   readonly updated_at: string
   readonly source_guild_id: SnowflakeType
   readonly serialized_source_guild: GuildTemplateSnapshotResponse
-  readonly is_dirty?: boolean | null
+  readonly is_dirty?: boolean | null | undefined
 }
 
 export interface CreateGuildFromTemplateRequest {
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
 }
 
 export interface GetGuildParams {
-  readonly with_counts?: boolean
+  readonly with_counts?: boolean | undefined
 }
 
 export interface GuildWithCountsResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
-  readonly description?: string | null
-  readonly home_header?: string | null
-  readonly splash?: string | null
-  readonly discovery_splash?: string | null
+  readonly icon?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly home_header?: string | null | undefined
+  readonly splash?: string | null | undefined
+  readonly discovery_splash?: string | null | undefined
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly banner?: string | null
+  readonly banner?: string | null | undefined
   readonly owner_id: SnowflakeType
-  readonly application_id?: null | SnowflakeType
+  readonly application_id?: null | SnowflakeType | undefined
   readonly region: string
-  readonly afk_channel_id?: null | SnowflakeType
+  readonly afk_channel_id?: null | SnowflakeType | undefined
   readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: null | SnowflakeType
+  readonly system_channel_id?: null | SnowflakeType | undefined
   readonly system_channel_flags: number
   readonly widget_enabled: boolean
-  readonly widget_channel_id?: null | SnowflakeType
+  readonly widget_channel_id?: null | SnowflakeType | undefined
   readonly verification_level: VerificationLevels
   readonly roles: ReadonlyArray<GuildRoleResponse>
   readonly default_message_notifications: UserNotificationSettings
   readonly mfa_level: GuildMFALevel
   readonly explicit_content_filter: GuildExplicitContentFilterTypes
-  readonly max_presences?: number | null
-  readonly max_members?: number | null
-  readonly max_stage_video_channel_users?: number | null
-  readonly max_video_channel_users?: number | null
-  readonly vanity_url_code?: string | null
+  readonly max_presences?: number | null | undefined
+  readonly max_members?: number | null | undefined
+  readonly max_stage_video_channel_users?: number | null | undefined
+  readonly max_video_channel_users?: number | null | undefined
+  readonly vanity_url_code?: string | null | undefined
   readonly premium_tier: PremiumGuildTiers
   readonly premium_subscription_count: number
   readonly preferred_locale: AvailableLocalesEnum
-  readonly rules_channel_id?: null | SnowflakeType
-  readonly safety_alerts_channel_id?: null | SnowflakeType
-  readonly public_updates_channel_id?: null | SnowflakeType
+  readonly rules_channel_id?: null | SnowflakeType | undefined
+  readonly safety_alerts_channel_id?: null | SnowflakeType | undefined
+  readonly public_updates_channel_id?: null | SnowflakeType | undefined
   readonly premium_progress_bar_enabled: boolean
   readonly nsfw: boolean
   readonly nsfw_level: GuildNSFWContentLevel
   readonly emojis: ReadonlyArray<EmojiResponse>
   readonly stickers: ReadonlyArray<GuildStickerResponse>
-  readonly approximate_member_count?: number | null
-  readonly approximate_presence_count?: number | null
+  readonly approximate_member_count?: number | null | undefined
+  readonly approximate_presence_count?: number | null | undefined
 }
 
 export interface GuildPatchRequestPartial {
-  readonly name?: string
-  readonly description?: string | null
-  readonly region?: string | null
-  readonly icon?: string | null
-  readonly verification_level?: null | VerificationLevels
-  readonly default_message_notifications?: null | UserNotificationSettings
-  readonly explicit_content_filter?: null | GuildExplicitContentFilterTypes
-  readonly preferred_locale?: null | AvailableLocalesEnum
-  readonly afk_timeout?: null | AfkTimeouts
-  readonly afk_channel_id?: null | SnowflakeType
-  readonly system_channel_id?: null | SnowflakeType
-  readonly owner_id?: SnowflakeType
-  readonly splash?: string | null
-  readonly banner?: string | null
-  readonly system_channel_flags?: number | null
-  readonly features?: ReadonlyArray<string> | null
-  readonly discovery_splash?: string | null
-  readonly home_header?: string | null
-  readonly rules_channel_id?: null | SnowflakeType
-  readonly safety_alerts_channel_id?: null | SnowflakeType
-  readonly public_updates_channel_id?: null | SnowflakeType
-  readonly premium_progress_bar_enabled?: boolean | null
+  readonly name?: string | undefined
+  readonly description?: string | null | undefined
+  readonly region?: string | null | undefined
+  readonly icon?: string | null | undefined
+  readonly verification_level?: null | VerificationLevels | undefined
+  readonly default_message_notifications?:
+    | null
+    | UserNotificationSettings
+    | undefined
+  readonly explicit_content_filter?:
+    | null
+    | GuildExplicitContentFilterTypes
+    | undefined
+  readonly preferred_locale?: null | AvailableLocalesEnum | undefined
+  readonly afk_timeout?: null | AfkTimeouts | undefined
+  readonly afk_channel_id?: null | SnowflakeType | undefined
+  readonly system_channel_id?: null | SnowflakeType | undefined
+  readonly owner_id?: SnowflakeType | undefined
+  readonly splash?: string | null | undefined
+  readonly banner?: string | null | undefined
+  readonly system_channel_flags?: number | null | undefined
+  readonly features?: ReadonlyArray<string> | null | undefined
+  readonly discovery_splash?: string | null | undefined
+  readonly home_header?: string | null | undefined
+  readonly rules_channel_id?: null | SnowflakeType | undefined
+  readonly safety_alerts_channel_id?: null | SnowflakeType | undefined
+  readonly public_updates_channel_id?: null | SnowflakeType | undefined
+  readonly premium_progress_bar_enabled?: boolean | null | undefined
 }
 
 export interface ListGuildAuditLogEntriesParams {
-  readonly user_id?: SnowflakeType
-  readonly target_id?: SnowflakeType
-  readonly action_type?: number
-  readonly before?: SnowflakeType
-  readonly after?: SnowflakeType
-  readonly limit?: number
+  readonly user_id?: SnowflakeType | undefined
+  readonly target_id?: SnowflakeType | undefined
+  readonly action_type?: number | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
 }
 
 export const AuditLogActionTypes = {
@@ -3455,17 +3774,20 @@ export type AuditLogActionTypes =
   (typeof AuditLogActionTypes)[keyof typeof AuditLogActionTypes]
 
 export interface AuditLogObjectChangeResponse {
-  readonly key?: string | null
+  readonly key?: string | null | undefined
 }
 
 export interface AuditLogEntryResponse {
   readonly id: SnowflakeType
   readonly action_type: AuditLogActionTypes
-  readonly user_id?: null | SnowflakeType
-  readonly target_id?: null | SnowflakeType
-  readonly changes?: ReadonlyArray<AuditLogObjectChangeResponse> | null
-  readonly options?: Record<string, unknown> | null
-  readonly reason?: string | null
+  readonly user_id?: null | SnowflakeType | undefined
+  readonly target_id?: null | SnowflakeType | undefined
+  readonly changes?:
+    | ReadonlyArray<AuditLogObjectChangeResponse>
+    | null
+    | undefined
+  readonly options?: Record<string, unknown> | null | undefined
+  readonly reason?: string | null | undefined
 }
 
 export const IntegrationTypes = {
@@ -3479,29 +3801,29 @@ export type IntegrationTypes =
 
 export interface AccountResponse {
   readonly id: string
-  readonly name?: string | null
+  readonly name?: string | null | undefined
 }
 
 export interface PartialDiscordIntegrationResponse {
   readonly id: SnowflakeType
   readonly type: "discord"
-  readonly name?: string | null
-  readonly account?: null | AccountResponse
+  readonly name?: string | null | undefined
+  readonly account?: null | AccountResponse | undefined
   readonly application_id: SnowflakeType
 }
 
 export interface PartialExternalConnectionIntegrationResponse {
   readonly id: SnowflakeType
   readonly type: "twitch" | "youtube"
-  readonly name?: string | null
-  readonly account?: null | AccountResponse
+  readonly name?: string | null | undefined
+  readonly account?: null | AccountResponse | undefined
 }
 
 export interface PartialGuildSubscriptionIntegrationResponse {
   readonly id: SnowflakeType
   readonly type: "guild_subscription"
-  readonly name?: string | null
-  readonly account?: null | AccountResponse
+  readonly name?: string | null | undefined
+  readonly account?: null | AccountResponse | undefined
 }
 
 export interface EntityMetadataExternalResponse {
@@ -3512,19 +3834,19 @@ export interface ExternalScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly creator_id?: null | SnowflakeType
-  readonly creator?: null | UserResponse
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly creator_id?: null | SnowflakeType | undefined
+  readonly creator?: null | UserResponse | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: 3
-  readonly entity_id?: null | SnowflakeType
-  readonly user_count?: number | null
+  readonly entity_id?: null | SnowflakeType | undefined
+  readonly user_count?: number | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
-  readonly user_rsvp?: null | ScheduledEventUserResponse
+  readonly user_rsvp?: null | ScheduledEventUserResponse | undefined
   readonly entity_metadata: EntityMetadataExternalResponse
 }
 
@@ -3534,20 +3856,23 @@ export interface StageScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly creator_id?: null | SnowflakeType
-  readonly creator?: null | UserResponse
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly creator_id?: null | SnowflakeType | undefined
+  readonly creator?: null | UserResponse | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: 1
-  readonly entity_id?: null | SnowflakeType
-  readonly user_count?: number | null
+  readonly entity_id?: null | SnowflakeType | undefined
+  readonly user_count?: number | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
-  readonly user_rsvp?: null | ScheduledEventUserResponse
-  readonly entity_metadata?: null | EntityMetadataStageInstanceResponse
+  readonly user_rsvp?: null | ScheduledEventUserResponse | undefined
+  readonly entity_metadata?:
+    | null
+    | EntityMetadataStageInstanceResponse
+    | undefined
 }
 
 export interface EntityMetadataVoiceResponse {}
@@ -3556,20 +3881,20 @@ export interface VoiceScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null
-  readonly channel_id?: null | SnowflakeType
-  readonly creator_id?: null | SnowflakeType
-  readonly creator?: null | UserResponse
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly creator_id?: null | SnowflakeType | undefined
+  readonly creator?: null | UserResponse | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: 2
-  readonly entity_id?: null | SnowflakeType
-  readonly user_count?: number | null
+  readonly entity_id?: null | SnowflakeType | undefined
+  readonly user_count?: number | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
-  readonly user_rsvp?: null | ScheduledEventUserResponse
-  readonly entity_metadata?: null | EntityMetadataVoiceResponse
+  readonly user_rsvp?: null | ScheduledEventUserResponse | undefined
+  readonly entity_metadata?: null | EntityMetadataVoiceResponse | undefined
 }
 
 export const AutomodEventType = {
@@ -3595,7 +3920,7 @@ export type AutomodActionType =
   (typeof AutomodActionType)[keyof typeof AutomodActionType]
 
 export interface BlockMessageActionMetadataResponse {
-  readonly custom_message?: string | null
+  readonly custom_message?: string | null | undefined
 }
 
 export interface BlockMessageActionResponse {
@@ -3672,9 +3997,9 @@ export interface DefaultKeywordRuleResponse {
     | UserCommunicationDisabledActionResponse
   >
   readonly trigger_type: 4
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_metadata: DefaultKeywordListTriggerMetadataResponse
 }
 
@@ -3697,9 +4022,9 @@ export interface KeywordRuleResponse {
     | UserCommunicationDisabledActionResponse
   >
   readonly trigger_type: 1
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_metadata: KeywordTriggerMetadataResponse
 }
 
@@ -3718,15 +4043,15 @@ export interface MLSpamRuleResponse {
     | UserCommunicationDisabledActionResponse
   >
   readonly trigger_type: 3
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_metadata: MLSpamTriggerMetadataResponse
 }
 
 export interface MentionSpamTriggerMetadataResponse {
   readonly mention_total_limit: number
-  readonly mention_raid_protection_enabled?: boolean | null
+  readonly mention_raid_protection_enabled?: boolean | null | undefined
 }
 
 export interface MentionSpamRuleResponse {
@@ -3742,9 +4067,9 @@ export interface MentionSpamRuleResponse {
     | UserCommunicationDisabledActionResponse
   >
   readonly trigger_type: 5
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_metadata: MentionSpamTriggerMetadataResponse
 }
 
@@ -3763,9 +4088,9 @@ export interface SpamLinkRuleResponse {
     | UserCommunicationDisabledActionResponse
   >
   readonly trigger_type: 2
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_metadata: SpamLinkTriggerMetadataResponse
 }
 
@@ -3809,12 +4134,12 @@ export type ListAutoModerationRules200 = ReadonlyArray<
 >
 
 export interface BlockMessageActionMetadata {
-  readonly custom_message?: string | null
+  readonly custom_message?: string | null | undefined
 }
 
 export interface BlockMessageAction {
   readonly type: 1
-  readonly metadata?: null | BlockMessageActionMetadata
+  readonly metadata?: null | BlockMessageActionMetadata | undefined
 }
 
 export interface FlagToChannelActionMetadata {
@@ -3830,11 +4155,11 @@ export interface QuarantineUserActionMetadata {}
 
 export interface QuarantineUserAction {
   readonly type: 4
-  readonly metadata?: null | QuarantineUserActionMetadata
+  readonly metadata?: null | QuarantineUserActionMetadata | undefined
 }
 
 export interface UserCommunicationDisabledActionMetadata {
-  readonly duration_seconds?: number | null
+  readonly duration_seconds?: number | null | undefined
 }
 
 export interface UserCommunicationDisabledAction {
@@ -3843,46 +4168,52 @@ export interface UserCommunicationDisabledAction {
 }
 
 export interface DefaultKeywordListTriggerMetadata {
-  readonly allow_list?: ReadonlyArray<string> | null
-  readonly presets?: ReadonlyArray<AutomodKeywordPresetType> | null
+  readonly allow_list?: ReadonlyArray<string> | null | undefined
+  readonly presets?: ReadonlyArray<AutomodKeywordPresetType> | null | undefined
 }
 
 export interface DefaultKeywordListUpsertRequest {
   readonly name: string
   readonly event_type: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_type: 4
   readonly trigger_metadata: DefaultKeywordListTriggerMetadata
 }
 
 export interface KeywordTriggerMetadata {
-  readonly keyword_filter?: ReadonlyArray<string> | null
-  readonly regex_patterns?: ReadonlyArray<string> | null
-  readonly allow_list?: ReadonlyArray<string> | null
+  readonly keyword_filter?: ReadonlyArray<string> | null | undefined
+  readonly regex_patterns?: ReadonlyArray<string> | null | undefined
+  readonly allow_list?: ReadonlyArray<string> | null | undefined
 }
 
 export interface KeywordUpsertRequest {
   readonly name: string
   readonly event_type: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_type: 1
-  readonly trigger_metadata?: null | KeywordTriggerMetadata
+  readonly trigger_metadata?: null | KeywordTriggerMetadata | undefined
 }
 
 export interface MLSpamTriggerMetadata {}
@@ -3890,38 +4221,44 @@ export interface MLSpamTriggerMetadata {}
 export interface MLSpamUpsertRequest {
   readonly name: string
   readonly event_type: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_type: 3
-  readonly trigger_metadata?: null | MLSpamTriggerMetadata
+  readonly trigger_metadata?: null | MLSpamTriggerMetadata | undefined
 }
 
 export interface MentionSpamTriggerMetadata {
   readonly mention_total_limit: number
-  readonly mention_raid_protection_enabled?: boolean | null
+  readonly mention_raid_protection_enabled?: boolean | null | undefined
 }
 
 export interface MentionSpamUpsertRequest {
   readonly name: string
   readonly event_type: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly trigger_type: 5
-  readonly trigger_metadata?: null | MentionSpamTriggerMetadata
+  readonly trigger_metadata?: null | MentionSpamTriggerMetadata | undefined
 }
 
 export type CreateAutoModerationRuleRequest =
@@ -3945,67 +4282,79 @@ export type GetAutoModerationRule200 =
   | SpamLinkRuleResponse
 
 export interface DefaultKeywordListUpsertRequestPartial {
-  readonly name?: string
-  readonly event_type?: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
-  readonly trigger_type?: 4
-  readonly trigger_metadata?: DefaultKeywordListTriggerMetadata
+  readonly name?: string | undefined
+  readonly event_type?: AutomodEventType | undefined
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly trigger_type?: 4 | undefined
+  readonly trigger_metadata?: DefaultKeywordListTriggerMetadata | undefined
 }
 
 export interface KeywordUpsertRequestPartial {
-  readonly name?: string
-  readonly event_type?: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
-  readonly trigger_type?: 1
-  readonly trigger_metadata?: null | KeywordTriggerMetadata
+  readonly name?: string | undefined
+  readonly event_type?: AutomodEventType | undefined
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly trigger_type?: 1 | undefined
+  readonly trigger_metadata?: null | KeywordTriggerMetadata | undefined
 }
 
 export interface MLSpamUpsertRequestPartial {
-  readonly name?: string
-  readonly event_type?: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
-  readonly trigger_type?: 3
-  readonly trigger_metadata?: null | MLSpamTriggerMetadata
+  readonly name?: string | undefined
+  readonly event_type?: AutomodEventType | undefined
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly trigger_type?: 3 | undefined
+  readonly trigger_metadata?: null | MLSpamTriggerMetadata | undefined
 }
 
 export interface MentionSpamUpsertRequestPartial {
-  readonly name?: string
-  readonly event_type?: AutomodEventType
-  readonly actions?: ReadonlyArray<
-    | BlockMessageAction
-    | FlagToChannelAction
-    | QuarantineUserAction
-    | UserCommunicationDisabledAction
-  > | null
-  readonly enabled?: boolean | null
-  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null
-  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null
-  readonly trigger_type?: 5
-  readonly trigger_metadata?: null | MentionSpamTriggerMetadata
+  readonly name?: string | undefined
+  readonly event_type?: AutomodEventType | undefined
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly trigger_type?: 5 | undefined
+  readonly trigger_metadata?: null | MentionSpamTriggerMetadata | undefined
 }
 
 export type UpdateAutoModerationRuleRequest =
@@ -4022,26 +4371,26 @@ export type UpdateAutoModerationRule200 =
   | SpamLinkRuleResponse
 
 export interface ListGuildBansParams {
-  readonly limit?: number
-  readonly before?: SnowflakeType
-  readonly after?: SnowflakeType
+  readonly limit?: number | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
 }
 
 export interface GuildBanResponse {
   readonly user: UserResponse
-  readonly reason?: string | null
+  readonly reason?: string | null | undefined
 }
 
 export type ListGuildBans200 = ReadonlyArray<GuildBanResponse>
 
 export interface BanUserFromGuildRequest {
-  readonly delete_message_seconds?: number | null
-  readonly delete_message_days?: number | null
+  readonly delete_message_seconds?: number | null | undefined
+  readonly delete_message_days?: number | null | undefined
 }
 
 export interface BulkBanUsersFromGuildRequest {
   readonly user_ids: ReadonlyArray<SnowflakeType>
-  readonly delete_message_seconds?: number | null
+  readonly delete_message_seconds?: number | null | undefined
 }
 
 export interface BulkBanUsersResponse {
@@ -4057,32 +4406,44 @@ export type ListGuildChannels200 = ReadonlyArray<
 >
 
 export interface CreateGuildChannelRequest {
-  readonly type?: null | 0 | 2 | 4 | 5 | 13 | 14 | 15
+  readonly type?: null | 0 | 2 | 4 | 5 | 13 | 14 | 15 | undefined
   readonly name: string
-  readonly position?: number | null
-  readonly topic?: string | null
-  readonly bitrate?: number | null
-  readonly user_limit?: number | null
-  readonly nsfw?: boolean | null
-  readonly rate_limit_per_user?: number | null
-  readonly parent_id?: null | SnowflakeType
-  readonly permission_overwrites?: ReadonlyArray<ChannelPermissionOverwriteRequest> | null
-  readonly rtc_region?: string | null
-  readonly video_quality_mode?: null | VideoQualityModes
-  readonly default_auto_archive_duration?: null | ThreadAutoArchiveDuration
-  readonly default_reaction_emoji?: null | UpdateDefaultReactionEmojiRequest
-  readonly default_thread_rate_limit_per_user?: number | null
-  readonly default_sort_order?: null | ThreadSortOrder
-  readonly default_forum_layout?: null | ForumLayout
-  readonly default_tag_setting?: null | ThreadSearchTagSetting
-  readonly available_tags?: ReadonlyArray<null | CreateOrUpdateThreadTagRequest> | null
+  readonly position?: number | null | undefined
+  readonly topic?: string | null | undefined
+  readonly bitrate?: number | null | undefined
+  readonly user_limit?: number | null | undefined
+  readonly nsfw?: boolean | null | undefined
+  readonly rate_limit_per_user?: number | null | undefined
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly permission_overwrites?:
+    | ReadonlyArray<ChannelPermissionOverwriteRequest>
+    | null
+    | undefined
+  readonly rtc_region?: string | null | undefined
+  readonly video_quality_mode?: null | VideoQualityModes | undefined
+  readonly default_auto_archive_duration?:
+    | null
+    | ThreadAutoArchiveDuration
+    | undefined
+  readonly default_reaction_emoji?:
+    | null
+    | UpdateDefaultReactionEmojiRequest
+    | undefined
+  readonly default_thread_rate_limit_per_user?: number | null | undefined
+  readonly default_sort_order?: null | ThreadSortOrder | undefined
+  readonly default_forum_layout?: null | ForumLayout | undefined
+  readonly default_tag_setting?: null | ThreadSearchTagSetting | undefined
+  readonly available_tags?:
+    | ReadonlyArray<null | CreateOrUpdateThreadTagRequest>
+    | null
+    | undefined
 }
 
 export type BulkUpdateGuildChannelsRequest = ReadonlyArray<{
-  readonly id?: SnowflakeType
-  readonly position?: number | null
-  readonly parent_id?: null | SnowflakeType
-  readonly lock_permissions?: boolean | null
+  readonly id?: SnowflakeType | undefined
+  readonly position?: number | null | undefined
+  readonly parent_id?: null | SnowflakeType | undefined
+  readonly lock_permissions?: boolean | null | undefined
 }>
 
 export type ListGuildEmojis200 = ReadonlyArray<EmojiResponse>
@@ -4090,36 +4451,36 @@ export type ListGuildEmojis200 = ReadonlyArray<EmojiResponse>
 export interface CreateGuildEmojiRequest {
   readonly name: string
   readonly image: string
-  readonly roles?: ReadonlyArray<null | SnowflakeType> | null
+  readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
 }
 
 export interface UpdateGuildEmojiRequest {
-  readonly name?: string
-  readonly roles?: ReadonlyArray<null | SnowflakeType> | null
+  readonly name?: string | undefined
+  readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
 }
 
 export interface IntegrationApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
   readonly description: string
-  readonly type?: null | ApplicationTypes
-  readonly cover_image?: string | null
-  readonly primary_sku_id?: null | SnowflakeType
-  readonly bot?: null | UserResponse
+  readonly type?: null | ApplicationTypes | undefined
+  readonly cover_image?: string | null | undefined
+  readonly primary_sku_id?: null | SnowflakeType | undefined
+  readonly bot?: null | UserResponse | undefined
 }
 
 export interface DiscordIntegrationResponse {
   readonly type: "discord"
-  readonly name?: string | null
-  readonly account?: null | AccountResponse
-  readonly enabled?: boolean | null
+  readonly name?: string | null | undefined
+  readonly account?: null | AccountResponse | undefined
+  readonly enabled?: boolean | null | undefined
   readonly id: SnowflakeType
   readonly application: IntegrationApplicationResponse
   readonly scopes: ReadonlyArray<
     "applications.commands" | "bot" | "webhook.incoming"
   >
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
 }
 
 export const IntegrationExpireBehaviorTypes = {
@@ -4148,26 +4509,29 @@ export type IntegrationExpireGracePeriodTypes =
 
 export interface ExternalConnectionIntegrationResponse {
   readonly type: "twitch" | "youtube"
-  readonly name?: string | null
-  readonly account?: null | AccountResponse
-  readonly enabled?: boolean | null
+  readonly name?: string | null | undefined
+  readonly account?: null | AccountResponse | undefined
+  readonly enabled?: boolean | null | undefined
   readonly id: string
   readonly user: UserResponse
-  readonly revoked?: boolean | null
-  readonly expire_behavior?: null | IntegrationExpireBehaviorTypes
-  readonly expire_grace_period?: null | IntegrationExpireGracePeriodTypes
-  readonly subscriber_count?: number | null
-  readonly synced_at?: string | null
-  readonly role_id?: null | SnowflakeType
-  readonly syncing?: boolean | null
-  readonly enable_emoticons?: boolean | null
+  readonly revoked?: boolean | null | undefined
+  readonly expire_behavior?: null | IntegrationExpireBehaviorTypes | undefined
+  readonly expire_grace_period?:
+    | null
+    | IntegrationExpireGracePeriodTypes
+    | undefined
+  readonly subscriber_count?: number | null | undefined
+  readonly synced_at?: string | null | undefined
+  readonly role_id?: null | SnowflakeType | undefined
+  readonly syncing?: boolean | null | undefined
+  readonly enable_emoticons?: boolean | null | undefined
 }
 
 export interface GuildSubscriptionIntegrationResponse {
   readonly type: "guild_subscription"
-  readonly name?: string | null
-  readonly account?: null | AccountResponse
-  readonly enabled?: boolean | null
+  readonly name?: string | null | undefined
+  readonly account?: null | AccountResponse | undefined
+  readonly enabled?: boolean | null | undefined
   readonly id: SnowflakeType
 }
 
@@ -4182,26 +4546,29 @@ export type ListGuildInvites200 = ReadonlyArray<
 >
 
 export interface ListGuildMembersParams {
-  readonly limit?: number
-  readonly after?: number
+  readonly limit?: number | undefined
+  readonly after?: number | undefined
 }
 
 export type ListGuildMembers200 = ReadonlyArray<GuildMemberResponse>
 
 export interface UpdateMyGuildMemberRequest {
-  readonly nick?: string | null
+  readonly nick?: string | null | undefined
 }
 
 export interface PrivateGuildMemberResponse {
-  readonly avatar?: string | null
-  readonly avatar_decoration_data?: null | UserAvatarDecorationResponse
-  readonly banner?: string | null
-  readonly communication_disabled_until?: string | null
+  readonly avatar?: string | null | undefined
+  readonly avatar_decoration_data?:
+    | null
+    | UserAvatarDecorationResponse
+    | undefined
+  readonly banner?: string | null | undefined
+  readonly communication_disabled_until?: string | null | undefined
   readonly flags: number
   readonly joined_at: string
-  readonly nick?: string | null
+  readonly nick?: string | null | undefined
   readonly pending: boolean
-  readonly premium_since?: string | null
+  readonly premium_since?: string | null | undefined
   readonly roles: ReadonlyArray<SnowflakeType>
   readonly user: UserResponse
   readonly mute: boolean
@@ -4216,22 +4583,22 @@ export interface SearchGuildMembersParams {
 export type SearchGuildMembers200 = ReadonlyArray<GuildMemberResponse>
 
 export interface AddGuildMemberRequest {
-  readonly nick?: string | null
-  readonly roles?: ReadonlyArray<null | SnowflakeType> | null
-  readonly mute?: boolean | null
-  readonly deaf?: boolean | null
+  readonly nick?: string | null | undefined
+  readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
+  readonly mute?: boolean | null | undefined
+  readonly deaf?: boolean | null | undefined
   readonly access_token: string
-  readonly flags?: number | null
+  readonly flags?: number | null | undefined
 }
 
 export interface UpdateGuildMemberRequest {
-  readonly nick?: string | null
-  readonly roles?: ReadonlyArray<null | SnowflakeType> | null
-  readonly mute?: boolean | null
-  readonly deaf?: boolean | null
-  readonly channel_id?: null | SnowflakeType
-  readonly communication_disabled_until?: string | null
-  readonly flags?: number | null
+  readonly nick?: string | null | undefined
+  readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
+  readonly mute?: boolean | null | undefined
+  readonly deaf?: boolean | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly communication_disabled_until?: string | null | undefined
+  readonly flags?: number | null | undefined
 }
 
 export interface SetGuildMfaLevelRequest {
@@ -4255,9 +4622,9 @@ export type NewMemberActionType =
   (typeof NewMemberActionType)[keyof typeof NewMemberActionType]
 
 export interface SettingsEmojiResponse {
-  readonly id?: null | SnowflakeType
-  readonly name?: string | null
-  readonly animated?: boolean | null
+  readonly id?: null | SnowflakeType | undefined
+  readonly name?: string | null | undefined
+  readonly animated?: boolean | null | undefined
 }
 
 export interface NewMemberActionResponse {
@@ -4265,24 +4632,30 @@ export interface NewMemberActionResponse {
   readonly action_type: NewMemberActionType
   readonly title: string
   readonly description: string
-  readonly emoji?: null | SettingsEmojiResponse
-  readonly icon?: string | null
+  readonly emoji?: null | SettingsEmojiResponse | undefined
+  readonly icon?: string | null | undefined
 }
 
 export interface ResourceChannelResponse {
   readonly channel_id: SnowflakeType
   readonly title: string
-  readonly emoji?: null | SettingsEmojiResponse
-  readonly icon?: string | null
+  readonly emoji?: null | SettingsEmojiResponse | undefined
+  readonly icon?: string | null | undefined
   readonly description: string
 }
 
 export interface GuildHomeSettingsResponse {
   readonly guild_id: SnowflakeType
   readonly enabled: boolean
-  readonly welcome_message?: null | WelcomeMessageResponse
-  readonly new_member_actions?: ReadonlyArray<null | NewMemberActionResponse> | null
-  readonly resource_channels?: ReadonlyArray<null | ResourceChannelResponse> | null
+  readonly welcome_message?: null | WelcomeMessageResponse | undefined
+  readonly new_member_actions?:
+    | ReadonlyArray<null | NewMemberActionResponse>
+    | null
+    | undefined
+  readonly resource_channels?:
+    | ReadonlyArray<null | ResourceChannelResponse>
+    | null
+    | undefined
 }
 
 export interface OnboardingPromptOptionResponse {
@@ -4321,23 +4694,23 @@ export interface UserGuildOnboardingResponse {
 }
 
 export interface OnboardingPromptOptionRequest {
-  readonly id?: null | SnowflakeType
+  readonly id?: null | SnowflakeType | undefined
   readonly title: string
-  readonly description?: string | null
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
-  readonly emoji_animated?: boolean | null
-  readonly role_ids?: ReadonlyArray<SnowflakeType> | null
-  readonly channel_ids?: ReadonlyArray<SnowflakeType> | null
+  readonly description?: string | null | undefined
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
+  readonly emoji_animated?: boolean | null | undefined
+  readonly role_ids?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly channel_ids?: ReadonlyArray<SnowflakeType> | null | undefined
 }
 
 export interface UpdateOnboardingPromptRequest {
   readonly title: string
   readonly options: ReadonlyArray<OnboardingPromptOptionRequest>
-  readonly single_select?: boolean | null
-  readonly required?: boolean | null
-  readonly in_onboarding?: boolean | null
-  readonly type?: null | OnboardingPromptType
+  readonly single_select?: boolean | null | undefined
+  readonly required?: boolean | null | undefined
+  readonly in_onboarding?: boolean | null | undefined
+  readonly type?: null | OnboardingPromptType | undefined
   readonly id: SnowflakeType
 }
 
@@ -4351,10 +4724,13 @@ export type GuildOnboardingMode =
   (typeof GuildOnboardingMode)[keyof typeof GuildOnboardingMode]
 
 export interface UpdateGuildOnboardingRequest {
-  readonly prompts?: ReadonlyArray<UpdateOnboardingPromptRequest> | null
-  readonly enabled?: boolean | null
-  readonly default_channel_ids?: ReadonlyArray<SnowflakeType> | null
-  readonly mode?: null | GuildOnboardingMode
+  readonly prompts?:
+    | ReadonlyArray<UpdateOnboardingPromptRequest>
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly default_channel_ids?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly mode?: null | GuildOnboardingMode | undefined
 }
 
 export interface GuildOnboardingResponse {
@@ -4367,11 +4743,11 @@ export interface GuildOnboardingResponse {
 export interface GuildPreviewResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
-  readonly description?: string | null
-  readonly home_header?: string | null
-  readonly splash?: string | null
-  readonly discovery_splash?: string | null
+  readonly icon?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly home_header?: string | null | undefined
+  readonly splash?: string | null | undefined
+  readonly discovery_splash?: string | null | undefined
   readonly features: ReadonlyArray<GuildFeatures>
   readonly approximate_member_count: number
   readonly approximate_presence_count: number
@@ -4380,18 +4756,25 @@ export interface GuildPreviewResponse {
 }
 
 export interface PreviewPruneGuildParams {
-  readonly days?: number
-  readonly include_roles?: string | ReadonlyArray<null | SnowflakeType>
+  readonly days?: number | undefined
+  readonly include_roles?:
+    | string
+    | ReadonlyArray<null | SnowflakeType>
+    | undefined
 }
 
 export interface GuildPruneResponse {
-  readonly pruned?: number | null
+  readonly pruned?: number | null | undefined
 }
 
 export interface PruneGuildRequest {
-  readonly days?: number | null
-  readonly compute_prune_count?: boolean | null
-  readonly include_roles?: string | ReadonlyArray<null | SnowflakeType> | null
+  readonly days?: number | null | undefined
+  readonly compute_prune_count?: boolean | null | undefined
+  readonly include_roles?:
+    | string
+    | ReadonlyArray<null | SnowflakeType>
+    | null
+    | undefined
 }
 
 export interface VoiceRegionResponse {
@@ -4407,34 +4790,34 @@ export type ListGuildVoiceRegions200 = ReadonlyArray<VoiceRegionResponse>
 export type ListGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
 export interface CreateGuildRoleRequest {
-  readonly name?: string | null
-  readonly permissions?: number | null
-  readonly color?: number | null
-  readonly hoist?: boolean | null
-  readonly mentionable?: boolean | null
-  readonly icon?: string | null
-  readonly unicode_emoji?: string | null
+  readonly name?: string | null | undefined
+  readonly permissions?: number | null | undefined
+  readonly color?: number | null | undefined
+  readonly hoist?: boolean | null | undefined
+  readonly mentionable?: boolean | null | undefined
+  readonly icon?: string | null | undefined
+  readonly unicode_emoji?: string | null | undefined
 }
 
 export type BulkUpdateGuildRolesRequest = ReadonlyArray<{
-  readonly id?: null | SnowflakeType
-  readonly position?: number | null
+  readonly id?: null | SnowflakeType | undefined
+  readonly position?: number | null | undefined
 }>
 
 export type BulkUpdateGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
 export interface UpdateGuildRoleRequest {
-  readonly name?: string | null
-  readonly permissions?: number | null
-  readonly color?: number | null
-  readonly hoist?: boolean | null
-  readonly mentionable?: boolean | null
-  readonly icon?: string | null
-  readonly unicode_emoji?: string | null
+  readonly name?: string | null | undefined
+  readonly permissions?: number | null | undefined
+  readonly color?: number | null | undefined
+  readonly hoist?: boolean | null | undefined
+  readonly mentionable?: boolean | null | undefined
+  readonly icon?: string | null | undefined
+  readonly unicode_emoji?: string | null | undefined
 }
 
 export interface ListGuildScheduledEventsParams {
-  readonly with_user_count?: boolean
+  readonly with_user_count?: boolean | undefined
 }
 
 export type ListGuildScheduledEvents200 = ReadonlyArray<
@@ -4449,13 +4832,13 @@ export interface EntityMetadataExternal {
 
 export interface ExternalScheduledEventCreateRequest {
   readonly name: string
-  readonly description?: string | null
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly entity_type: 3
-  readonly channel_id?: null | SnowflakeType
+  readonly channel_id?: null | SnowflakeType | undefined
   readonly entity_metadata: EntityMetadataExternal
 }
 
@@ -4463,28 +4846,28 @@ export interface EntityMetadataStageInstance {}
 
 export interface StageScheduledEventCreateRequest {
   readonly name: string
-  readonly description?: string | null
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly entity_type: 1
-  readonly channel_id?: null | SnowflakeType
-  readonly entity_metadata?: null | EntityMetadataStageInstance
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly entity_metadata?: null | EntityMetadataStageInstance | undefined
 }
 
 export interface EntityMetadataVoice {}
 
 export interface VoiceScheduledEventCreateRequest {
   readonly name: string
-  readonly description?: string | null
-  readonly image?: string | null
+  readonly description?: string | null | undefined
+  readonly image?: string | null | undefined
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null
+  readonly scheduled_end_time?: string | null | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly entity_type: 2
-  readonly channel_id?: null | SnowflakeType
-  readonly entity_metadata?: null | EntityMetadataVoice
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly entity_metadata?: null | EntityMetadataVoice | undefined
 }
 
 export type CreateGuildScheduledEventRequest =
@@ -4498,7 +4881,7 @@ export type CreateGuildScheduledEvent200 =
   | VoiceScheduledEventResponse
 
 export interface GetGuildScheduledEventParams {
-  readonly with_user_count?: boolean
+  readonly with_user_count?: boolean | undefined
 }
 
 export type GetGuildScheduledEvent200 =
@@ -4507,42 +4890,42 @@ export type GetGuildScheduledEvent200 =
   | VoiceScheduledEventResponse
 
 export interface ExternalScheduledEventPatchRequestPartial {
-  readonly status?: null | GuildScheduledEventStatuses
-  readonly name?: string
-  readonly description?: string | null
-  readonly image?: string | null
-  readonly scheduled_start_time?: string
-  readonly scheduled_end_time?: string | null
-  readonly entity_type?: null | 3
-  readonly privacy_level?: GuildScheduledEventPrivacyLevels
-  readonly channel_id?: null | SnowflakeType
-  readonly entity_metadata?: EntityMetadataExternal
+  readonly status?: null | GuildScheduledEventStatuses | undefined
+  readonly name?: string | undefined
+  readonly description?: string | null | undefined
+  readonly image?: string | null | undefined
+  readonly scheduled_start_time?: string | undefined
+  readonly scheduled_end_time?: string | null | undefined
+  readonly entity_type?: null | 3 | undefined
+  readonly privacy_level?: GuildScheduledEventPrivacyLevels | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly entity_metadata?: EntityMetadataExternal | undefined
 }
 
 export interface StageScheduledEventPatchRequestPartial {
-  readonly status?: null | GuildScheduledEventStatuses
-  readonly name?: string
-  readonly description?: string | null
-  readonly image?: string | null
-  readonly scheduled_start_time?: string
-  readonly scheduled_end_time?: string | null
-  readonly entity_type?: null | 1
-  readonly privacy_level?: GuildScheduledEventPrivacyLevels
-  readonly channel_id?: null | SnowflakeType
-  readonly entity_metadata?: null | EntityMetadataStageInstance
+  readonly status?: null | GuildScheduledEventStatuses | undefined
+  readonly name?: string | undefined
+  readonly description?: string | null | undefined
+  readonly image?: string | null | undefined
+  readonly scheduled_start_time?: string | undefined
+  readonly scheduled_end_time?: string | null | undefined
+  readonly entity_type?: null | 1 | undefined
+  readonly privacy_level?: GuildScheduledEventPrivacyLevels | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly entity_metadata?: null | EntityMetadataStageInstance | undefined
 }
 
 export interface VoiceScheduledEventPatchRequestPartial {
-  readonly status?: null | GuildScheduledEventStatuses
-  readonly name?: string
-  readonly description?: string | null
-  readonly image?: string | null
-  readonly scheduled_start_time?: string
-  readonly scheduled_end_time?: string | null
-  readonly entity_type?: null | 2
-  readonly privacy_level?: GuildScheduledEventPrivacyLevels
-  readonly channel_id?: null | SnowflakeType
-  readonly entity_metadata?: null | EntityMetadataVoice
+  readonly status?: null | GuildScheduledEventStatuses | undefined
+  readonly name?: string | undefined
+  readonly description?: string | null | undefined
+  readonly image?: string | null | undefined
+  readonly scheduled_start_time?: string | undefined
+  readonly scheduled_end_time?: string | null | undefined
+  readonly entity_type?: null | 2 | undefined
+  readonly privacy_level?: GuildScheduledEventPrivacyLevels | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly entity_metadata?: null | EntityMetadataVoice | undefined
 }
 
 export type UpdateGuildScheduledEventRequest =
@@ -4556,10 +4939,10 @@ export type UpdateGuildScheduledEvent200 =
   | VoiceScheduledEventResponse
 
 export interface ListGuildScheduledEventUsersParams {
-  readonly with_member?: boolean
-  readonly limit?: number
-  readonly before?: SnowflakeType
-  readonly after?: SnowflakeType
+  readonly with_member?: boolean | undefined
+  readonly limit?: number | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
 }
 
 export type ListGuildScheduledEventUsers200 =
@@ -4569,11 +4952,11 @@ export interface SoundboardSoundResponse {
   readonly name: string
   readonly sound_id: SnowflakeType
   readonly volume: number
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
-  readonly guild_id?: null | SnowflakeType
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
   readonly available: boolean
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
 }
 
 export interface ListGuildSoundboardSoundsResponse {
@@ -4582,37 +4965,37 @@ export interface ListGuildSoundboardSoundsResponse {
 
 export interface SoundboardCreateRequest {
   readonly name: string
-  readonly volume?: number | null
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly volume?: number | null | undefined
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
   readonly sound: string
 }
 
 export interface SoundboardPatchRequestPartial {
-  readonly name?: string
-  readonly volume?: number | null
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly name?: string | undefined
+  readonly volume?: number | null | undefined
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
 }
 
 export type ListGuildStickers200 = ReadonlyArray<GuildStickerResponse>
 
 export interface UpdateGuildStickerRequest {
-  readonly name?: string
-  readonly tags?: string
-  readonly description?: string | null
+  readonly name?: string | undefined
+  readonly tags?: string | undefined
+  readonly description?: string | null | undefined
 }
 
 export type ListGuildTemplates200 = ReadonlyArray<GuildTemplateResponse>
 
 export interface CreateGuildTemplateRequest {
   readonly name: string
-  readonly description?: string | null
+  readonly description?: string | null | undefined
 }
 
 export interface UpdateGuildTemplateRequest {
-  readonly name?: string
-  readonly description?: string | null
+  readonly name?: string | undefined
+  readonly description?: string | null | undefined
 }
 
 export interface VanityURLErrorResponse {
@@ -4621,20 +5004,20 @@ export interface VanityURLErrorResponse {
 }
 
 export interface VanityURLResponse {
-  readonly code?: string | null
+  readonly code?: string | null | undefined
   readonly uses: number
-  readonly error?: null | VanityURLErrorResponse
+  readonly error?: null | VanityURLErrorResponse | undefined
 }
 
 export interface VoiceStateResponse {
-  readonly channel_id?: null | SnowflakeType
+  readonly channel_id?: null | SnowflakeType | undefined
   readonly deaf: boolean
-  readonly guild_id?: null | SnowflakeType
-  readonly member?: null | GuildMemberResponse
+  readonly guild_id?: null | SnowflakeType | undefined
+  readonly member?: null | GuildMemberResponse | undefined
   readonly mute: boolean
-  readonly request_to_speak_timestamp?: string | null
+  readonly request_to_speak_timestamp?: string | null | undefined
   readonly suppress: boolean
-  readonly self_stream?: boolean | null
+  readonly self_stream?: boolean | null | undefined
   readonly self_deaf: boolean
   readonly self_mute: boolean
   readonly self_video: boolean
@@ -4643,14 +5026,14 @@ export interface VoiceStateResponse {
 }
 
 export interface UpdateSelfVoiceStateRequest {
-  readonly request_to_speak_timestamp?: string | null
-  readonly suppress?: boolean | null
-  readonly channel_id?: null | SnowflakeType
+  readonly request_to_speak_timestamp?: string | null | undefined
+  readonly suppress?: boolean | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
 }
 
 export interface UpdateVoiceStateRequest {
-  readonly suppress?: boolean | null
-  readonly channel_id?: null | SnowflakeType
+  readonly suppress?: boolean | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
 }
 
 export type GetGuildWebhooks200 = ReadonlyArray<
@@ -4662,36 +5045,39 @@ export type GetGuildWebhooks200 = ReadonlyArray<
 export interface GuildWelcomeScreenChannelResponse {
   readonly channel_id: SnowflakeType
   readonly description: string
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
 }
 
 export interface GuildWelcomeScreenResponse {
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly welcome_channels: ReadonlyArray<GuildWelcomeScreenChannelResponse>
 }
 
 export interface GuildWelcomeChannel {
   readonly channel_id: SnowflakeType
   readonly description: string
-  readonly emoji_id?: null | SnowflakeType
-  readonly emoji_name?: string | null
+  readonly emoji_id?: null | SnowflakeType | undefined
+  readonly emoji_name?: string | null | undefined
 }
 
 export interface WelcomeScreenPatchRequestPartial {
-  readonly description?: string | null
-  readonly welcome_channels?: ReadonlyArray<GuildWelcomeChannel> | null
-  readonly enabled?: boolean | null
+  readonly description?: string | null | undefined
+  readonly welcome_channels?:
+    | ReadonlyArray<GuildWelcomeChannel>
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
 }
 
 export interface WidgetSettingsResponse {
   readonly enabled: boolean
-  readonly channel_id?: null | SnowflakeType
+  readonly channel_id?: null | SnowflakeType | undefined
 }
 
 export interface UpdateGuildWidgetSettingsRequest {
-  readonly channel_id?: null | SnowflakeType
-  readonly enabled?: boolean | null
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly enabled?: boolean | null | undefined
 }
 
 export interface WidgetChannel {
@@ -4710,22 +5096,22 @@ export interface WidgetMember {
   readonly id: string
   readonly username: string
   readonly discriminator: WidgetUserDiscriminator
-  readonly avatar?: null
+  readonly avatar?: null | undefined
   readonly status: string
   readonly avatar_url: string
-  readonly activity?: null | WidgetActivity
-  readonly deaf?: boolean | null
-  readonly mute?: boolean | null
-  readonly self_deaf?: boolean | null
-  readonly self_mute?: boolean | null
-  readonly suppress?: boolean | null
-  readonly channel_id?: null | SnowflakeType
+  readonly activity?: null | WidgetActivity | undefined
+  readonly deaf?: boolean | null | undefined
+  readonly mute?: boolean | null | undefined
+  readonly self_deaf?: boolean | null | undefined
+  readonly self_mute?: boolean | null | undefined
+  readonly suppress?: boolean | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
 }
 
 export interface WidgetResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly instant_invite?: string | null
+  readonly instant_invite?: string | null | undefined
   readonly channels: ReadonlyArray<WidgetChannel>
   readonly members: ReadonlyArray<WidgetMember>
   readonly presence_count: number
@@ -4747,11 +5133,11 @@ export type WidgetImageStyles =
   (typeof WidgetImageStyles)[keyof typeof WidgetImageStyles]
 
 export interface GetGuildWidgetPngParams {
-  readonly style?: WidgetImageStyles
+  readonly style?: WidgetImageStyles | undefined
 }
 
 export interface CreateInteractionResponseParams {
-  readonly with_response?: boolean
+  readonly with_response?: boolean | undefined
 }
 
 export const InteractionCallbackTypes = {
@@ -4768,15 +5154,24 @@ export type InteractionCallbackTypes =
   (typeof InteractionCallbackTypes)[keyof typeof InteractionCallbackTypes]
 
 export interface InteractionApplicationCommandAutocompleteCallbackIntegerData {
-  readonly choices?: ReadonlyArray<null | ApplicationCommandOptionIntegerChoice> | null
+  readonly choices?:
+    | ReadonlyArray<null | ApplicationCommandOptionIntegerChoice>
+    | null
+    | undefined
 }
 
 export interface InteractionApplicationCommandAutocompleteCallbackNumberData {
-  readonly choices?: ReadonlyArray<null | ApplicationCommandOptionNumberChoice> | null
+  readonly choices?:
+    | ReadonlyArray<null | ApplicationCommandOptionNumberChoice>
+    | null
+    | undefined
 }
 
 export interface InteractionApplicationCommandAutocompleteCallbackStringData {
-  readonly choices?: ReadonlyArray<null | ApplicationCommandOptionStringChoice> | null
+  readonly choices?:
+    | ReadonlyArray<null | ApplicationCommandOptionStringChoice>
+    | null
+    | undefined
 }
 
 export interface ApplicationCommandAutocompleteCallbackRequest {
@@ -4788,27 +5183,33 @@ export interface ApplicationCommandAutocompleteCallbackRequest {
 }
 
 export interface IncomingWebhookInteractionRequest {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly poll?: null | PollCreateRequest
-  readonly tts?: boolean | null
-  readonly flags?: number | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly poll?: null | PollCreateRequest | undefined
+  readonly tts?: boolean | null | undefined
+  readonly flags?: number | null | undefined
 }
 
 export interface CreateMessageInteractionCallbackRequest {
   readonly type: 4 | 5
-  readonly data?: null | IncomingWebhookInteractionRequest
+  readonly data?: null | IncomingWebhookInteractionRequest | undefined
 }
 
 export interface LaunchActivityInteractionCallbackRequest {
@@ -4820,11 +5221,11 @@ export interface TextInputComponentForModalRequest {
   readonly custom_id: string
   readonly style: TextInputStyleTypes
   readonly label: string
-  readonly value?: string | null
-  readonly placeholder?: string | null
-  readonly required?: boolean | null
-  readonly min_length?: number | null
-  readonly max_length?: number | null
+  readonly value?: string | null | undefined
+  readonly placeholder?: string | null | undefined
+  readonly required?: boolean | null | undefined
+  readonly min_length?: number | null | undefined
+  readonly max_length?: number | null | undefined
 }
 
 export interface ActionRowComponentForModalRequest {
@@ -4848,25 +5249,34 @@ export interface PongInteractionCallbackRequest {
 }
 
 export interface IncomingWebhookUpdateForInteractionCallbackRequestPartial {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly flags?: number | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly flags?: number | null | undefined
 }
 
 export interface UpdateMessageInteractionCallbackRequest {
   readonly type: 6 | 7
-  readonly data?: null | IncomingWebhookUpdateForInteractionCallbackRequestPartial
+  readonly data?:
+    | null
+    | IncomingWebhookUpdateForInteractionCallbackRequestPartial
+    | undefined
 }
 
 export type CreateInteractionResponseRequest =
@@ -4880,11 +5290,11 @@ export type CreateInteractionResponseRequest =
 export interface InteractionResponse {
   readonly id: SnowflakeType
   readonly type: InteractionTypes
-  readonly response_message_id?: null | SnowflakeType
-  readonly response_message_loading?: boolean | null
-  readonly response_message_ephemeral?: boolean | null
-  readonly channel_id?: null | SnowflakeType
-  readonly guild_id?: null | SnowflakeType
+  readonly response_message_id?: null | SnowflakeType | undefined
+  readonly response_message_loading?: boolean | null | undefined
+  readonly response_message_ephemeral?: boolean | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
+  readonly guild_id?: null | SnowflakeType | undefined
 }
 
 export interface CreateMessageInteractionCallbackResponse {
@@ -4908,11 +5318,12 @@ export interface InteractionCallbackResponse {
     | LaunchActivityInteractionCallbackResponse
     | UpdateMessageInteractionCallbackResponse
     | null
+    | undefined
 }
 
 export interface InviteResolveParams {
-  readonly with_counts?: boolean
-  readonly guild_scheduled_event_id?: SnowflakeType
+  readonly with_counts?: boolean | undefined
+  readonly guild_scheduled_event_id?: SnowflakeType | undefined
 }
 
 export type InviteResolve200 =
@@ -4926,79 +5337,85 @@ export type InviteRevoke200 =
   | GuildInviteResponse
 
 export interface CreateOrJoinLobbyRequest {
-  readonly idle_timeout_seconds?: number | null
-  readonly lobby_metadata?: Record<string, unknown> | null
-  readonly member_metadata?: Record<string, unknown> | null
+  readonly idle_timeout_seconds?: number | null | undefined
+  readonly lobby_metadata?: Record<string, unknown> | null | undefined
+  readonly member_metadata?: Record<string, unknown> | null | undefined
   readonly secret: string
 }
 
 export interface LobbyMemberResponse {
   readonly id: SnowflakeType
-  readonly metadata?: Record<string, unknown> | null
+  readonly metadata?: Record<string, unknown> | null | undefined
   readonly flags: number
 }
 
 export interface LobbyResponse {
   readonly id: SnowflakeType
   readonly application_id: SnowflakeType
-  readonly metadata?: Record<string, unknown> | null
-  readonly members?: ReadonlyArray<LobbyMemberResponse> | null
-  readonly linked_channel?: null | GuildChannelResponse
+  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly members?: ReadonlyArray<LobbyMemberResponse> | null | undefined
+  readonly linked_channel?: null | GuildChannelResponse | undefined
 }
 
 export type LobbyMemberRequestFlagsEnum = 1
 
 export interface LobbyMemberRequest {
   readonly id: SnowflakeType
-  readonly metadata?: Record<string, unknown> | null
-  readonly flags?: null | LobbyMemberRequestFlagsEnum
+  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly flags?: null | LobbyMemberRequestFlagsEnum | undefined
 }
 
 export interface CreateLobbyRequest {
-  readonly idle_timeout_seconds?: number | null
-  readonly members?: ReadonlyArray<LobbyMemberRequest> | null
-  readonly metadata?: Record<string, unknown> | null
+  readonly idle_timeout_seconds?: number | null | undefined
+  readonly members?: ReadonlyArray<LobbyMemberRequest> | null | undefined
+  readonly metadata?: Record<string, unknown> | null | undefined
 }
 
 export interface EditLobbyRequest {
-  readonly idle_timeout_seconds?: number | null
-  readonly metadata?: Record<string, unknown> | null
-  readonly members?: ReadonlyArray<LobbyMemberRequest> | null
+  readonly idle_timeout_seconds?: number | null | undefined
+  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly members?: ReadonlyArray<LobbyMemberRequest> | null | undefined
 }
 
 export interface EditLobbyChannelLinkRequest {
-  readonly channel_id?: null | SnowflakeType
+  readonly channel_id?: null | SnowflakeType | undefined
 }
 
 export type AddLobbyMemberRequestFlagsEnum = 1
 
 export interface AddLobbyMemberRequest {
-  readonly metadata?: Record<string, unknown> | null
-  readonly flags?: null | AddLobbyMemberRequestFlagsEnum
+  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly flags?: null | AddLobbyMemberRequestFlagsEnum | undefined
 }
 
 export interface SDKMessageRequest {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly flags?: number | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly poll?: null | PollCreateRequest
-  readonly confetti_potion?: null | ConfettiPotionCreateRequest
-  readonly message_reference?: null | MessageReferenceRequest
-  readonly nonce?: number | string | null
-  readonly enforce_nonce?: boolean | null
-  readonly tts?: boolean | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly sticker_ids?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly flags?: number | null | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly poll?: null | PollCreateRequest | undefined
+  readonly confetti_potion?: null | ConfettiPotionCreateRequest | undefined
+  readonly message_reference?: null | MessageReferenceRequest | undefined
+  readonly nonce?: number | string | null | undefined
+  readonly enforce_nonce?: boolean | null | undefined
+  readonly tts?: boolean | null | undefined
 }
 
 export interface LobbyMessageResponse {
@@ -5008,16 +5425,16 @@ export interface LobbyMessageResponse {
   readonly lobby_id: SnowflakeType
   readonly channel_id: SnowflakeType
   readonly author: UserResponse
-  readonly metadata?: Record<string, unknown> | null
+  readonly metadata?: Record<string, unknown> | null | undefined
   readonly flags: number
-  readonly application_id?: null | SnowflakeType
+  readonly application_id?: null | SnowflakeType | undefined
 }
 
 export interface OAuth2GetAuthorizationResponse {
   readonly application: ApplicationResponse
   readonly expires: string
   readonly scopes: ReadonlyArray<OAuth2Scopes>
-  readonly user?: null | UserResponse
+  readonly user?: null | UserResponse | undefined
 }
 
 export interface OAuth2Key {
@@ -5035,12 +5452,12 @@ export interface OAuth2GetKeys {
 
 export interface OAuth2GetOpenIDConnectUserInfoResponse {
   readonly sub: string
-  readonly email?: string | null
-  readonly email_verified?: boolean | null
-  readonly preferred_username?: string | null
-  readonly nickname?: string | null
-  readonly picture?: string | null
-  readonly locale?: string | null
+  readonly email?: string | null | undefined
+  readonly email_verified?: boolean | null | undefined
+  readonly preferred_username?: string | null | undefined
+  readonly nickname?: string | null | undefined
+  readonly picture?: string | null | undefined
+  readonly locale?: string | null | undefined
 }
 
 export const ApplicationIdentityProviderAuthType = {
@@ -5055,14 +5472,14 @@ export type ApplicationIdentityProviderAuthType =
 
 export interface PartnerSdkUnmergeProvisionalAccountRequest {
   readonly client_id: SnowflakeType
-  readonly client_secret?: string | null
+  readonly client_secret?: string | null | undefined
   readonly external_auth_token: string
   readonly external_auth_type: ApplicationIdentityProviderAuthType
 }
 
 export interface PartnerSdkTokenRequest {
   readonly client_id: SnowflakeType
-  readonly client_secret?: string | null
+  readonly client_secret?: string | null | undefined
   readonly external_auth_token: string
   readonly external_auth_type: ApplicationIdentityProviderAuthType
 }
@@ -5073,9 +5490,9 @@ export interface ProvisionalTokenResponse {
   readonly expires_in: number
   readonly scope: string
   readonly id_token: string
-  readonly refresh_token?: string | null
-  readonly scopes?: ReadonlyArray<string> | null
-  readonly expires_at_s?: number | null
+  readonly refresh_token?: string | null | undefined
+  readonly scopes?: ReadonlyArray<string> | null | undefined
+  readonly expires_at_s?: number | null | undefined
 }
 
 export type GetSoundboardDefaultSounds200 =
@@ -5093,9 +5510,9 @@ export type StageInstancesPrivacyLevels =
 export interface CreateStageInstanceRequest {
   readonly topic: string
   readonly channel_id: SnowflakeType
-  readonly privacy_level?: null | StageInstancesPrivacyLevels
-  readonly guild_scheduled_event_id?: null | SnowflakeType
-  readonly send_start_notification?: boolean | null
+  readonly privacy_level?: null | StageInstancesPrivacyLevels | undefined
+  readonly guild_scheduled_event_id?: null | SnowflakeType | undefined
+  readonly send_start_notification?: boolean | null | undefined
 }
 
 export interface StageInstanceResponse {
@@ -5104,23 +5521,23 @@ export interface StageInstanceResponse {
   readonly topic: string
   readonly privacy_level: StageInstancesPrivacyLevels
   readonly id: SnowflakeType
-  readonly discoverable_disabled?: boolean | null
-  readonly guild_scheduled_event_id?: null | SnowflakeType
+  readonly discoverable_disabled?: boolean | null | undefined
+  readonly guild_scheduled_event_id?: null | SnowflakeType | undefined
 }
 
 export interface UpdateStageInstanceRequest {
-  readonly topic?: string
-  readonly privacy_level?: StageInstancesPrivacyLevels
+  readonly topic?: string | undefined
+  readonly privacy_level?: StageInstancesPrivacyLevels | undefined
 }
 
 export interface StickerPackResponse {
   readonly id: SnowflakeType
   readonly sku_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null
+  readonly description?: string | null | undefined
   readonly stickers: ReadonlyArray<StandardStickerResponse>
-  readonly cover_sticker_id?: null | SnowflakeType
-  readonly banner_asset_id?: null | SnowflakeType
+  readonly cover_sticker_id?: null | SnowflakeType | undefined
+  readonly banner_asset_id?: null | SnowflakeType | undefined
 }
 
 export interface StickerPackCollectionResponse {
@@ -5144,47 +5561,50 @@ export type PremiumTypes = (typeof PremiumTypes)[keyof typeof PremiumTypes]
 export interface UserPIIResponse {
   readonly id: SnowflakeType
   readonly username: string
-  readonly avatar?: string | null
+  readonly avatar?: string | null | undefined
   readonly discriminator: string
   readonly public_flags: number
   readonly flags: Int53Type
-  readonly bot?: boolean | null
-  readonly system?: boolean | null
-  readonly banner?: string | null
-  readonly accent_color?: number | null
-  readonly global_name?: string | null
-  readonly avatar_decoration_data?: null | UserAvatarDecorationResponse
-  readonly collectibles?: null | UserCollectiblesResponse
-  readonly clan?: null | UserPrimaryGuildResponse
+  readonly bot?: boolean | null | undefined
+  readonly system?: boolean | null | undefined
+  readonly banner?: string | null | undefined
+  readonly accent_color?: number | null | undefined
+  readonly global_name?: string | null | undefined
+  readonly avatar_decoration_data?:
+    | null
+    | UserAvatarDecorationResponse
+    | undefined
+  readonly collectibles?: null | UserCollectiblesResponse | undefined
+  readonly clan?: null | UserPrimaryGuildResponse | undefined
   readonly mfa_enabled: boolean
   readonly locale: AvailableLocalesEnum
-  readonly premium_type?: null | PremiumTypes
-  readonly email?: string | null
-  readonly verified?: boolean | null
+  readonly premium_type?: null | PremiumTypes | undefined
+  readonly email?: string | null | undefined
+  readonly verified?: boolean | null | undefined
 }
 
 export interface BotAccountPatchRequest {
   readonly username: string
-  readonly avatar?: string | null
-  readonly banner?: string | null
+  readonly avatar?: string | null | undefined
+  readonly banner?: string | null | undefined
 }
 
 export interface ApplicationUserRoleConnectionResponse {
-  readonly platform_name?: string | null
-  readonly platform_username?: string | null
-  readonly metadata?: Record<string, unknown> | null
+  readonly platform_name?: string | null | undefined
+  readonly platform_username?: string | null | undefined
+  readonly metadata?: Record<string, unknown> | null | undefined
 }
 
 export interface UpdateApplicationUserRoleConnectionRequest {
-  readonly platform_name?: string | null
-  readonly platform_username?: string | null
-  readonly metadata?: Record<string, unknown> | null
+  readonly platform_name?: string | null | undefined
+  readonly platform_username?: string | null | undefined
+  readonly metadata?: Record<string, unknown> | null | undefined
 }
 
 export interface CreatePrivateChannelRequest {
-  readonly recipient_id?: null | SnowflakeType
-  readonly access_tokens?: ReadonlyArray<string> | null
-  readonly nicks?: Record<string, unknown> | null
+  readonly recipient_id?: null | SnowflakeType | undefined
+  readonly access_tokens?: ReadonlyArray<string> | null | undefined
+  readonly nicks?: Record<string, unknown> | null | undefined
 }
 
 export type CreateDm200 = PrivateChannelResponse | PrivateGroupChannelResponse
@@ -5221,7 +5641,7 @@ export type ConnectedAccountProviders =
 export interface ConnectedAccountGuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
+  readonly icon?: string | null | undefined
 }
 
 export interface ConnectedAccountIntegrationResponse {
@@ -5240,36 +5660,39 @@ export type ConnectedAccountVisibility =
 
 export interface ConnectedAccountResponse {
   readonly id: string
-  readonly name?: string | null
+  readonly name?: string | null | undefined
   readonly type: ConnectedAccountProviders
   readonly friend_sync: boolean
-  readonly integrations?: ReadonlyArray<ConnectedAccountIntegrationResponse> | null
+  readonly integrations?:
+    | ReadonlyArray<ConnectedAccountIntegrationResponse>
+    | null
+    | undefined
   readonly show_activity: boolean
   readonly two_way_link: boolean
   readonly verified: boolean
   readonly visibility: ConnectedAccountVisibility
-  readonly revoked?: boolean | null
+  readonly revoked?: boolean | null | undefined
 }
 
 export type ListMyConnections200 = ReadonlyArray<ConnectedAccountResponse>
 
 export interface ListMyGuildsParams {
-  readonly before?: SnowflakeType
-  readonly after?: SnowflakeType
-  readonly limit?: number
-  readonly with_counts?: boolean
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
+  readonly with_counts?: boolean | undefined
 }
 
 export interface MyGuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null
-  readonly banner?: string | null
+  readonly icon?: string | null | undefined
+  readonly banner?: string | null | undefined
   readonly owner: boolean
   readonly permissions: string
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly approximate_member_count?: number | null
-  readonly approximate_presence_count?: number | null
+  readonly approximate_member_count?: number | null | undefined
+  readonly approximate_presence_count?: number | null | undefined
 }
 
 export type ListMyGuilds200 = ReadonlyArray<MyGuildResponse>
@@ -5282,9 +5705,9 @@ export type GetWebhook200 =
   | GuildIncomingWebhookResponse
 
 export interface UpdateWebhookRequest {
-  readonly name?: string
-  readonly avatar?: string | null
-  readonly channel_id?: null | SnowflakeType
+  readonly name?: string | undefined
+  readonly avatar?: string | null | undefined
+  readonly channel_id?: null | SnowflakeType | undefined
 }
 
 export type UpdateWebhook200 =
@@ -5298,50 +5721,62 @@ export type GetWebhookByToken200 =
   | GuildIncomingWebhookResponse
 
 export interface ExecuteWebhookParams {
-  readonly wait?: boolean
-  readonly thread_id?: SnowflakeType
-  readonly with_components?: boolean
+  readonly wait?: boolean | undefined
+  readonly thread_id?: SnowflakeType | undefined
+  readonly with_components?: boolean | undefined
 }
 
 export interface IncomingWebhookRequestPartial {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly poll?: null | PollCreateRequest
-  readonly tts?: boolean | null
-  readonly flags?: number | null
-  readonly username?: string | null
-  readonly avatar_url?: string | null
-  readonly thread_name?: string | null
-  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly poll?: null | PollCreateRequest | undefined
+  readonly tts?: boolean | null | undefined
+  readonly flags?: number | null | undefined
+  readonly username?: string | null | undefined
+  readonly avatar_url?: string | null | undefined
+  readonly thread_name?: string | null | undefined
+  readonly applied_tags?: ReadonlyArray<SnowflakeType> | null | undefined
 }
 
 export interface IncomingWebhookUpdateRequestPartial {
-  readonly content?: string | null
-  readonly embeds?: ReadonlyArray<RichEmbed> | null
-  readonly allowed_mentions?: null | MessageAllowedMentionsRequest
-  readonly components?: ReadonlyArray<
-    | ActionRowComponentForMessageRequest
-    | ContainerComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
-  > | null
-  readonly attachments?: ReadonlyArray<MessageAttachmentRequest> | null
-  readonly poll?: null | PollCreateRequest
-  readonly flags?: number | null
+  readonly content?: string | null | undefined
+  readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
+  readonly allowed_mentions?: null | MessageAllowedMentionsRequest | undefined
+  readonly components?:
+    | ReadonlyArray<
+        | ActionRowComponentForMessageRequest
+        | ContainerComponentForMessageRequest
+        | FileComponentForMessageRequest
+        | MediaGalleryComponentForMessageRequest
+        | SectionComponentForMessageRequest
+        | SeparatorComponentForMessageRequest
+        | TextDisplayComponentForMessageRequest
+      >
+    | null
+    | undefined
+  readonly attachments?:
+    | ReadonlyArray<MessageAttachmentRequest>
+    | null
+    | undefined
+  readonly poll?: null | PollCreateRequest | undefined
+  readonly flags?: number | null | undefined
 }
 
 export type ExecuteWebhookRequest =
@@ -5349,8 +5784,8 @@ export type ExecuteWebhookRequest =
   | IncomingWebhookUpdateRequestPartial
 
 export interface UpdateWebhookByTokenRequest {
-  readonly name?: string
-  readonly avatar?: string | null
+  readonly name?: string | undefined
+  readonly avatar?: string | null | undefined
 }
 
 export type UpdateWebhookByToken200 =
@@ -5359,8 +5794,8 @@ export type UpdateWebhookByToken200 =
   | GuildIncomingWebhookResponse
 
 export interface ExecuteGithubCompatibleWebhookParams {
-  readonly wait?: boolean
-  readonly thread_id?: SnowflakeType
+  readonly wait?: boolean | undefined
+  readonly thread_id?: SnowflakeType | undefined
 }
 
 export interface GithubUser {
@@ -5374,7 +5809,7 @@ export interface GithubComment {
   readonly id: number
   readonly html_url: string
   readonly user: GithubUser
-  readonly commit_id?: string | null
+  readonly commit_id?: string | null | undefined
   readonly body: string
 }
 
@@ -5384,7 +5819,7 @@ export interface GithubIssue {
   readonly html_url: string
   readonly user: GithubUser
   readonly title: string
-  readonly body?: string | null
+  readonly body?: string | null | undefined
 }
 
 export interface GithubRepository {
@@ -5402,7 +5837,7 @@ export interface GithubRelease {
 }
 
 export interface GithubAuthor {
-  readonly username?: string | null
+  readonly username?: string | null | undefined
   readonly name: string
 }
 
@@ -5415,7 +5850,7 @@ export interface GithubCommit {
 
 export interface GithubReview {
   readonly user: GithubUser
-  readonly body?: string | null
+  readonly body?: string | null | undefined
   readonly html_url: string
   readonly state: string
 }
@@ -5429,119 +5864,125 @@ export interface GithubCheckApp {
 }
 
 export interface GithubCheckSuite {
-  readonly conclusion?: string | null
-  readonly head_branch?: string | null
+  readonly conclusion?: string | null | undefined
+  readonly head_branch?: string | null | undefined
   readonly head_sha: string
-  readonly pull_requests?: ReadonlyArray<GithubCheckPullRequest> | null
+  readonly pull_requests?:
+    | ReadonlyArray<GithubCheckPullRequest>
+    | null
+    | undefined
   readonly app: GithubCheckApp
 }
 
 export interface GithubCheckRunOutput {
-  readonly title?: string | null
-  readonly summary?: string | null
+  readonly title?: string | null | undefined
+  readonly summary?: string | null | undefined
 }
 
 export interface GithubCheckRun {
-  readonly conclusion?: string | null
+  readonly conclusion?: string | null | undefined
   readonly name: string
   readonly html_url: string
   readonly check_suite: GithubCheckSuite
-  readonly details_url?: string | null
-  readonly output?: null | GithubCheckRunOutput
-  readonly pull_requests?: ReadonlyArray<GithubCheckPullRequest> | null
+  readonly details_url?: string | null | undefined
+  readonly output?: null | GithubCheckRunOutput | undefined
+  readonly pull_requests?:
+    | ReadonlyArray<GithubCheckPullRequest>
+    | null
+    | undefined
 }
 
 export interface GithubDiscussion {
   readonly title: string
   readonly number: number
   readonly html_url: string
-  readonly answer_html_url?: string | null
-  readonly body?: string | null
+  readonly answer_html_url?: string | null | undefined
+  readonly body?: string | null | undefined
   readonly user: GithubUser
 }
 
 export interface GithubWebhook {
-  readonly action?: string | null
-  readonly ref?: string | null
-  readonly ref_type?: string | null
-  readonly comment?: null | GithubComment
-  readonly issue?: null | GithubIssue
-  readonly pull_request?: null | GithubIssue
-  readonly repository?: null | GithubRepository
-  readonly forkee?: null | GithubRepository
+  readonly action?: string | null | undefined
+  readonly ref?: string | null | undefined
+  readonly ref_type?: string | null | undefined
+  readonly comment?: null | GithubComment | undefined
+  readonly issue?: null | GithubIssue | undefined
+  readonly pull_request?: null | GithubIssue | undefined
+  readonly repository?: null | GithubRepository | undefined
+  readonly forkee?: null | GithubRepository | undefined
   readonly sender: GithubUser
-  readonly member?: null | GithubUser
-  readonly release?: null | GithubRelease
-  readonly head_commit?: null | GithubCommit
-  readonly commits?: ReadonlyArray<GithubCommit> | null
-  readonly forced?: boolean | null
-  readonly compare?: string | null
-  readonly review?: null | GithubReview
-  readonly check_run?: null | GithubCheckRun
-  readonly check_suite?: null | GithubCheckSuite
-  readonly discussion?: null | GithubDiscussion
-  readonly answer?: null | GithubComment
+  readonly member?: null | GithubUser | undefined
+  readonly release?: null | GithubRelease | undefined
+  readonly head_commit?: null | GithubCommit | undefined
+  readonly commits?: ReadonlyArray<GithubCommit> | null | undefined
+  readonly forced?: boolean | null | undefined
+  readonly compare?: string | null | undefined
+  readonly review?: null | GithubReview | undefined
+  readonly check_run?: null | GithubCheckRun | undefined
+  readonly check_suite?: null | GithubCheckSuite | undefined
+  readonly discussion?: null | GithubDiscussion | undefined
+  readonly answer?: null | GithubComment | undefined
 }
 
 export interface GetOriginalWebhookMessageParams {
-  readonly thread_id?: SnowflakeType
+  readonly thread_id?: SnowflakeType | undefined
 }
 
 export interface DeleteOriginalWebhookMessageParams {
-  readonly thread_id?: SnowflakeType
+  readonly thread_id?: SnowflakeType | undefined
 }
 
 export interface UpdateOriginalWebhookMessageParams {
-  readonly thread_id?: SnowflakeType
-  readonly with_components?: boolean
+  readonly thread_id?: SnowflakeType | undefined
+  readonly with_components?: boolean | undefined
 }
 
 export interface GetWebhookMessageParams {
-  readonly thread_id?: SnowflakeType
+  readonly thread_id?: SnowflakeType | undefined
 }
 
 export interface DeleteWebhookMessageParams {
-  readonly thread_id?: SnowflakeType
+  readonly thread_id?: SnowflakeType | undefined
 }
 
 export interface UpdateWebhookMessageParams {
-  readonly thread_id?: SnowflakeType
-  readonly with_components?: boolean
+  readonly thread_id?: SnowflakeType | undefined
+  readonly with_components?: boolean | undefined
 }
 
 export interface ExecuteSlackCompatibleWebhookParams {
-  readonly wait?: boolean
-  readonly thread_id?: SnowflakeType
+  readonly wait?: boolean | undefined
+  readonly thread_id?: SnowflakeType | undefined
 }
 
 export interface WebhookSlackEmbedField {
-  readonly name?: string | null
-  readonly value?: string | null
-  readonly inline?: boolean | null
+  readonly name?: string | null | undefined
+  readonly value?: string | null | undefined
+  readonly inline?: boolean | null | undefined
 }
 
 export interface WebhookSlackEmbed {
-  readonly title?: string | null
-  readonly title_link?: string | null
-  readonly text?: string | null
-  readonly color?: string | null
-  readonly ts?: number | null
-  readonly pretext?: string | null
-  readonly footer?: string | null
-  readonly footer_icon?: string | null
-  readonly author_name?: string | null
-  readonly author_link?: string | null
-  readonly author_icon?: string | null
-  readonly image_url?: string | null
-  readonly thumb_url?: string | null
-  readonly fields?: ReadonlyArray<WebhookSlackEmbedField> | null
+  readonly title?: string | null | undefined
+  readonly title_link?: string | null | undefined
+  readonly text?: string | null | undefined
+  readonly color?: string | null | undefined
+  readonly ts?: number | null | undefined
+  readonly pretext?: string | null | undefined
+  readonly footer?: string | null | undefined
+  readonly footer_icon?: string | null | undefined
+  readonly author_name?: string | null | undefined
+  readonly author_link?: string | null | undefined
+  readonly author_icon?: string | null | undefined
+  readonly image_url?: string | null | undefined
+  readonly thumb_url?: string | null | undefined
+  readonly fields?: ReadonlyArray<WebhookSlackEmbedField> | null | undefined
 }
 
 export interface SlackWebhook {
-  readonly text?: string | null
-  readonly username?: string | null
-  readonly icon_url?: string | null
-  readonly attachments?: ReadonlyArray<WebhookSlackEmbed> | null
+  readonly text?: string | null | undefined
+  readonly username?: string | null | undefined
+  readonly icon_url?: string | null | undefined
+  readonly attachments?: ReadonlyArray<WebhookSlackEmbed> | null | undefined
 }
 
 export type ExecuteSlackCompatibleWebhook200 = string
@@ -5654,7 +6095,7 @@ export const make = (
         `/applications/${applicationId}/commands`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_localizations: options[
+          with_localizations: options?.[
             "with_localizations"
           ] as UrlParams.Coercible,
         }),
@@ -5721,15 +6162,15 @@ export const make = (
         `/applications/${applicationId}/entitlements`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          user_id: options["user_id"] as UrlParams.Coercible,
-          sku_ids: options["sku_ids"] as UrlParams.Coercible,
-          guild_id: options["guild_id"] as UrlParams.Coercible,
-          before: options["before"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
-          exclude_ended: options["exclude_ended"] as UrlParams.Coercible,
-          exclude_deleted: options["exclude_deleted"] as UrlParams.Coercible,
-          only_active: options["only_active"] as UrlParams.Coercible,
+          user_id: options?.["user_id"] as UrlParams.Coercible,
+          sku_ids: options?.["sku_ids"] as UrlParams.Coercible,
+          guild_id: options?.["guild_id"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          exclude_ended: options?.["exclude_ended"] as UrlParams.Coercible,
+          exclude_deleted: options?.["exclude_deleted"] as UrlParams.Coercible,
+          only_active: options?.["only_active"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -5758,7 +6199,7 @@ export const make = (
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_localizations: options[
+          with_localizations: options?.[
             "with_localizations"
           ] as UrlParams.Coercible,
         }),
@@ -5867,10 +6308,10 @@ export const make = (
     listMessages: (channelId, options) =>
       HttpClientRequest.make("GET")(`/channels/${channelId}/messages`).pipe(
         HttpClientRequest.setUrlParams({
-          around: options["around"] as UrlParams.Coercible,
-          before: options["before"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
+          around: options?.["around"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -5915,9 +6356,9 @@ export const make = (
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          after: options["after"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
-          type: options["type"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          type: options?.["type"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -5974,8 +6415,8 @@ export const make = (
         `/channels/${channelId}/polls/${messageId}/answers/${answerId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          after: options["after"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6007,9 +6448,9 @@ export const make = (
         `/channels/${channelId}/thread-members`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_member: options["with_member"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
+          with_member: options?.["with_member"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6027,7 +6468,7 @@ export const make = (
         `/channels/${channelId}/thread-members/${userId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_member: options["with_member"] as UrlParams.Coercible,
+          with_member: options?.["with_member"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6050,8 +6491,8 @@ export const make = (
         `/channels/${channelId}/threads/archived/private`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          before: options["before"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6061,8 +6502,8 @@ export const make = (
         `/channels/${channelId}/threads/archived/public`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          before: options["before"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6072,17 +6513,17 @@ export const make = (
         `/channels/${channelId}/threads/search`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          name: options["name"] as UrlParams.Coercible,
-          slop: options["slop"] as UrlParams.Coercible,
-          min_id: options["min_id"] as UrlParams.Coercible,
-          max_id: options["max_id"] as UrlParams.Coercible,
-          tag: options["tag"] as UrlParams.Coercible,
-          tag_setting: options["tag_setting"] as UrlParams.Coercible,
-          archived: options["archived"] as UrlParams.Coercible,
-          sort_by: options["sort_by"] as UrlParams.Coercible,
-          sort_order: options["sort_order"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
-          offset: options["offset"] as UrlParams.Coercible,
+          name: options?.["name"] as UrlParams.Coercible,
+          slop: options?.["slop"] as UrlParams.Coercible,
+          min_id: options?.["min_id"] as UrlParams.Coercible,
+          max_id: options?.["max_id"] as UrlParams.Coercible,
+          tag: options?.["tag"] as UrlParams.Coercible,
+          tag_setting: options?.["tag_setting"] as UrlParams.Coercible,
+          archived: options?.["archived"] as UrlParams.Coercible,
+          sort_by: options?.["sort_by"] as UrlParams.Coercible,
+          sort_order: options?.["sort_order"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          offset: options?.["offset"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6097,8 +6538,8 @@ export const make = (
         `/channels/${channelId}/users/@me/threads/archived/private`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          before: options["before"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6141,7 +6582,7 @@ export const make = (
     getGuild: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}`).pipe(
         HttpClientRequest.setUrlParams({
-          with_counts: options["with_counts"] as UrlParams.Coercible,
+          with_counts: options?.["with_counts"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6159,12 +6600,12 @@ export const make = (
     listGuildAuditLogEntries: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/audit-logs`).pipe(
         HttpClientRequest.setUrlParams({
-          user_id: options["user_id"] as UrlParams.Coercible,
-          target_id: options["target_id"] as UrlParams.Coercible,
-          action_type: options["action_type"] as UrlParams.Coercible,
-          before: options["before"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
+          user_id: options?.["user_id"] as UrlParams.Coercible,
+          target_id: options?.["target_id"] as UrlParams.Coercible,
+          action_type: options?.["action_type"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6198,9 +6639,9 @@ export const make = (
     listGuildBans: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/bans`).pipe(
         HttpClientRequest.setUrlParams({
-          limit: options["limit"] as UrlParams.Coercible,
-          before: options["before"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6281,8 +6722,8 @@ export const make = (
     listGuildMembers: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/members`).pipe(
         HttpClientRequest.setUrlParams({
-          limit: options["limit"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6295,8 +6736,8 @@ export const make = (
     searchGuildMembers: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/members/search`).pipe(
         HttpClientRequest.setUrlParams({
-          limit: options["limit"] as UrlParams.Coercible,
-          query: options["query"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          query: options?.["query"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6358,8 +6799,8 @@ export const make = (
     previewPruneGuild: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/prune`).pipe(
         HttpClientRequest.setUrlParams({
-          days: options["days"] as UrlParams.Coercible,
-          include_roles: options["include_roles"] as UrlParams.Coercible,
+          days: options?.["days"] as UrlParams.Coercible,
+          include_roles: options?.["include_roles"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6408,7 +6849,7 @@ export const make = (
     listGuildScheduledEvents: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/scheduled-events`).pipe(
         HttpClientRequest.setUrlParams({
-          with_user_count: options["with_user_count"] as UrlParams.Coercible,
+          with_user_count: options?.["with_user_count"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6425,7 +6866,7 @@ export const make = (
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_user_count: options["with_user_count"] as UrlParams.Coercible,
+          with_user_count: options?.["with_user_count"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6446,10 +6887,10 @@ export const make = (
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_member: options["with_member"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
-          before: options["before"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
+          with_member: options?.["with_member"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6597,7 +7038,7 @@ export const make = (
     getGuildWidgetPng: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/widget.png`).pipe(
         HttpClientRequest.setUrlParams({
-          style: options["style"] as UrlParams.Coercible,
+          style: options?.["style"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest([], {})),
@@ -6607,7 +7048,9 @@ export const make = (
         `/interactions/${interactionId}/${interactionToken}/callback`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          with_response: options.params["with_response"] as UrlParams.Coercible,
+          with_response: options.params?.[
+            "with_response"
+          ] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6615,8 +7058,8 @@ export const make = (
     inviteResolve: (code, options) =>
       HttpClientRequest.make("GET")(`/invites/${code}`).pipe(
         HttpClientRequest.setUrlParams({
-          with_counts: options["with_counts"] as UrlParams.Coercible,
-          guild_scheduled_event_id: options[
+          with_counts: options?.["with_counts"] as UrlParams.Coercible,
+          guild_scheduled_event_id: options?.[
             "guild_scheduled_event_id"
           ] as UrlParams.Coercible,
         }),
@@ -6786,10 +7229,10 @@ export const make = (
     listMyGuilds: options =>
       HttpClientRequest.make("GET")(`/users/@me/guilds`).pipe(
         HttpClientRequest.setUrlParams({
-          before: options["before"] as UrlParams.Coercible,
-          after: options["after"] as UrlParams.Coercible,
-          limit: options["limit"] as UrlParams.Coercible,
-          with_counts: options["with_counts"] as UrlParams.Coercible,
+          before: options?.["before"] as UrlParams.Coercible,
+          after: options?.["after"] as UrlParams.Coercible,
+          limit: options?.["limit"] as UrlParams.Coercible,
+          with_counts: options?.["with_counts"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6838,9 +7281,9 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          wait: options.params["wait"] as UrlParams.Coercible,
-          thread_id: options.params["thread_id"] as UrlParams.Coercible,
-          with_components: options.params[
+          wait: options.params?.["wait"] as UrlParams.Coercible,
+          thread_id: options.params?.["thread_id"] as UrlParams.Coercible,
+          with_components: options.params?.[
             "with_components"
           ] as UrlParams.Coercible,
         }),
@@ -6863,8 +7306,8 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/github`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          wait: options.params["wait"] as UrlParams.Coercible,
-          thread_id: options.params["thread_id"] as UrlParams.Coercible,
+          wait: options.params?.["wait"] as UrlParams.Coercible,
+          thread_id: options.params?.["thread_id"] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
         Effect.flatMap(onRequest([], {})),
@@ -6874,7 +7317,7 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          thread_id: options["thread_id"] as UrlParams.Coercible,
+          thread_id: options?.["thread_id"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6884,7 +7327,7 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          thread_id: options["thread_id"] as UrlParams.Coercible,
+          thread_id: options?.["thread_id"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest([], {})),
@@ -6894,8 +7337,8 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          thread_id: options.params["thread_id"] as UrlParams.Coercible,
-          with_components: options.params[
+          thread_id: options.params?.["thread_id"] as UrlParams.Coercible,
+          with_components: options.params?.[
             "with_components"
           ] as UrlParams.Coercible,
         }),
@@ -6907,7 +7350,7 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          thread_id: options["thread_id"] as UrlParams.Coercible,
+          thread_id: options?.["thread_id"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6917,7 +7360,7 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          thread_id: options["thread_id"] as UrlParams.Coercible,
+          thread_id: options?.["thread_id"] as UrlParams.Coercible,
         }),
         Effect.succeed,
         Effect.flatMap(onRequest([], {})),
@@ -6927,8 +7370,8 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          thread_id: options.params["thread_id"] as UrlParams.Coercible,
-          with_components: options.params[
+          thread_id: options.params?.["thread_id"] as UrlParams.Coercible,
+          with_components: options.params?.[
             "with_components"
           ] as UrlParams.Coercible,
         }),
@@ -6940,8 +7383,8 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}/slack`,
       ).pipe(
         HttpClientRequest.setUrlParams({
-          wait: options.params["wait"] as UrlParams.Coercible,
-          thread_id: options.params["thread_id"] as UrlParams.Coercible,
+          wait: options.params?.["wait"] as UrlParams.Coercible,
+          thread_id: options.params?.["thread_id"] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
         Effect.flatMap(onRequest(["2xx"], {})),
@@ -6987,7 +7430,7 @@ export interface DiscordRest {
   >
   readonly listApplicationCommands: (
     applicationId: string,
-    options: ListApplicationCommandsParams,
+    options?: ListApplicationCommandsParams | undefined,
   ) => Effect.Effect<
     ListApplicationCommands200,
     HttpClientError.HttpClientError
@@ -7071,7 +7514,7 @@ export interface DiscordRest {
   readonly listGuildApplicationCommands: (
     applicationId: string,
     guildId: string,
-    options: ListGuildApplicationCommandsParams,
+    options?: ListGuildApplicationCommandsParams | undefined,
   ) => Effect.Effect<
     ListGuildApplicationCommands200,
     HttpClientError.HttpClientError
@@ -7174,7 +7617,7 @@ export interface DiscordRest {
   ) => Effect.Effect<CreateChannelInvite200, HttpClientError.HttpClientError>
   readonly listMessages: (
     channelId: string,
-    options: ListMessagesParams,
+    options?: ListMessagesParams | undefined,
   ) => Effect.Effect<ListMessages200, HttpClientError.HttpClientError>
   readonly createMessage: (
     channelId: string,
@@ -7209,7 +7652,7 @@ export interface DiscordRest {
     channelId: string,
     messageId: string,
     emojiName: string,
-    options: ListMessageReactionsByEmojiParams,
+    options?: ListMessageReactionsByEmojiParams | undefined,
   ) => Effect.Effect<
     ListMessageReactionsByEmoji200,
     HttpClientError.HttpClientError
@@ -7264,7 +7707,7 @@ export interface DiscordRest {
     channelId: string,
     messageId: string,
     answerId: string,
-    options: GetAnswerVotersParams,
+    options?: GetAnswerVotersParams | undefined,
   ) => Effect.Effect<PollAnswerDetailsResponse, HttpClientError.HttpClientError>
   readonly pollExpire: (
     channelId: string,
@@ -7285,7 +7728,7 @@ export interface DiscordRest {
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
   readonly listThreadMembers: (
     channelId: string,
-    options: ListThreadMembersParams,
+    options?: ListThreadMembersParams | undefined,
   ) => Effect.Effect<ListThreadMembers200, HttpClientError.HttpClientError>
   readonly joinThread: (
     channelId: string,
@@ -7296,7 +7739,7 @@ export interface DiscordRest {
   readonly getThreadMember: (
     channelId: string,
     userId: string,
-    options: GetThreadMemberParams,
+    options?: GetThreadMemberParams | undefined,
   ) => Effect.Effect<ThreadMemberResponse, HttpClientError.HttpClientError>
   readonly addThreadMember: (
     channelId: string,
@@ -7312,22 +7755,22 @@ export interface DiscordRest {
   ) => Effect.Effect<CreatedThreadResponse, HttpClientError.HttpClientError>
   readonly listPrivateArchivedThreads: (
     channelId: string,
-    options: ListPrivateArchivedThreadsParams,
+    options?: ListPrivateArchivedThreadsParams | undefined,
   ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
   readonly listPublicArchivedThreads: (
     channelId: string,
-    options: ListPublicArchivedThreadsParams,
+    options?: ListPublicArchivedThreadsParams | undefined,
   ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
   readonly threadSearch: (
     channelId: string,
-    options: ThreadSearchParams,
+    options?: ThreadSearchParams | undefined,
   ) => Effect.Effect<ThreadSearchResponse, HttpClientError.HttpClientError>
   readonly triggerTypingIndicator: (
     channelId: string,
   ) => Effect.Effect<TypingIndicatorResponse, HttpClientError.HttpClientError>
   readonly listMyPrivateArchivedThreads: (
     channelId: string,
-    options: ListMyPrivateArchivedThreadsParams,
+    options?: ListMyPrivateArchivedThreadsParams | undefined,
   ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
   readonly listChannelWebhooks: (
     channelId: string,
@@ -7359,7 +7802,7 @@ export interface DiscordRest {
   ) => Effect.Effect<GuildResponse, HttpClientError.HttpClientError>
   readonly getGuild: (
     guildId: string,
-    options: GetGuildParams,
+    options?: GetGuildParams | undefined,
   ) => Effect.Effect<GuildWithCountsResponse, HttpClientError.HttpClientError>
   readonly deleteGuild: (
     guildId: string,
@@ -7370,7 +7813,7 @@ export interface DiscordRest {
   ) => Effect.Effect<GuildResponse, HttpClientError.HttpClientError>
   readonly listGuildAuditLogEntries: (
     guildId: string,
-    options: ListGuildAuditLogEntriesParams,
+    options?: ListGuildAuditLogEntriesParams | undefined,
   ) => Effect.Effect<GuildAuditLogResponse, HttpClientError.HttpClientError>
   readonly listAutoModerationRules: (
     guildId: string,
@@ -7403,7 +7846,7 @@ export interface DiscordRest {
   >
   readonly listGuildBans: (
     guildId: string,
-    options: ListGuildBansParams,
+    options?: ListGuildBansParams | undefined,
   ) => Effect.Effect<ListGuildBans200, HttpClientError.HttpClientError>
   readonly getGuildBan: (
     guildId: string,
@@ -7465,7 +7908,7 @@ export interface DiscordRest {
   ) => Effect.Effect<ListGuildInvites200, HttpClientError.HttpClientError>
   readonly listGuildMembers: (
     guildId: string,
-    options: ListGuildMembersParams,
+    options?: ListGuildMembersParams | undefined,
   ) => Effect.Effect<ListGuildMembers200, HttpClientError.HttpClientError>
   readonly updateMyGuildMember: (
     guildId: string,
@@ -7528,7 +7971,7 @@ export interface DiscordRest {
   ) => Effect.Effect<GuildPreviewResponse, HttpClientError.HttpClientError>
   readonly previewPruneGuild: (
     guildId: string,
-    options: PreviewPruneGuildParams,
+    options?: PreviewPruneGuildParams | undefined,
   ) => Effect.Effect<GuildPruneResponse, HttpClientError.HttpClientError>
   readonly pruneGuild: (
     guildId: string,
@@ -7563,7 +8006,7 @@ export interface DiscordRest {
   ) => Effect.Effect<GuildRoleResponse, HttpClientError.HttpClientError>
   readonly listGuildScheduledEvents: (
     guildId: string,
-    options: ListGuildScheduledEventsParams,
+    options?: ListGuildScheduledEventsParams | undefined,
   ) => Effect.Effect<
     ListGuildScheduledEvents200,
     HttpClientError.HttpClientError
@@ -7578,7 +8021,7 @@ export interface DiscordRest {
   readonly getGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
-    options: GetGuildScheduledEventParams,
+    options?: GetGuildScheduledEventParams | undefined,
   ) => Effect.Effect<GetGuildScheduledEvent200, HttpClientError.HttpClientError>
   readonly deleteGuildScheduledEvent: (
     guildId: string,
@@ -7595,7 +8038,7 @@ export interface DiscordRest {
   readonly listGuildScheduledEventUsers: (
     guildId: string,
     guildScheduledEventId: string,
-    options: ListGuildScheduledEventUsersParams,
+    options?: ListGuildScheduledEventUsersParams | undefined,
   ) => Effect.Effect<
     ListGuildScheduledEventUsers200,
     HttpClientError.HttpClientError
@@ -7713,13 +8156,13 @@ export interface DiscordRest {
   ) => Effect.Effect<WidgetResponse, HttpClientError.HttpClientError>
   readonly getGuildWidgetPng: (
     guildId: string,
-    options: GetGuildWidgetPngParams,
+    options?: GetGuildWidgetPngParams | undefined,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
   readonly createInteractionResponse: (
     interactionId: string,
     interactionToken: string,
     options: {
-      readonly params: CreateInteractionResponseParams
+      readonly params?: CreateInteractionResponseParams | undefined
       readonly payload: CreateInteractionResponseRequest
     },
   ) => Effect.Effect<
@@ -7728,7 +8171,7 @@ export interface DiscordRest {
   >
   readonly inviteResolve: (
     code: string,
-    options: InviteResolveParams,
+    options?: InviteResolveParams | undefined,
   ) => Effect.Effect<InviteResolve200, HttpClientError.HttpClientError>
   readonly inviteRevoke: (
     code: string,
@@ -7846,7 +8289,7 @@ export interface DiscordRest {
     HttpClientError.HttpClientError
   >
   readonly listMyGuilds: (
-    options: ListMyGuildsParams,
+    options?: ListMyGuildsParams | undefined,
   ) => Effect.Effect<ListMyGuilds200, HttpClientError.HttpClientError>
   readonly leaveGuild: (
     guildId: string,
@@ -7882,7 +8325,7 @@ export interface DiscordRest {
     webhookId: string,
     webhookToken: string,
     options: {
-      readonly params: ExecuteWebhookParams
+      readonly params?: ExecuteWebhookParams | undefined
       readonly payload: ExecuteWebhookRequest
     },
   ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
@@ -7899,25 +8342,25 @@ export interface DiscordRest {
     webhookId: string,
     webhookToken: string,
     options: {
-      readonly params: ExecuteGithubCompatibleWebhookParams
+      readonly params?: ExecuteGithubCompatibleWebhookParams | undefined
       readonly payload: GithubWebhook
     },
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
   readonly getOriginalWebhookMessage: (
     webhookId: string,
     webhookToken: string,
-    options: GetOriginalWebhookMessageParams,
+    options?: GetOriginalWebhookMessageParams | undefined,
   ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
   readonly deleteOriginalWebhookMessage: (
     webhookId: string,
     webhookToken: string,
-    options: DeleteOriginalWebhookMessageParams,
+    options?: DeleteOriginalWebhookMessageParams | undefined,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
   readonly updateOriginalWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     options: {
-      readonly params: UpdateOriginalWebhookMessageParams
+      readonly params?: UpdateOriginalWebhookMessageParams | undefined
       readonly payload: IncomingWebhookUpdateRequestPartial
     },
   ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
@@ -7925,20 +8368,20 @@ export interface DiscordRest {
     webhookId: string,
     webhookToken: string,
     messageId: string,
-    options: GetWebhookMessageParams,
+    options?: GetWebhookMessageParams | undefined,
   ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
   readonly deleteWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     messageId: string,
-    options: DeleteWebhookMessageParams,
+    options?: DeleteWebhookMessageParams | undefined,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
   readonly updateWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     messageId: string,
     options: {
-      readonly params: UpdateWebhookMessageParams
+      readonly params?: UpdateWebhookMessageParams | undefined
       readonly payload: IncomingWebhookUpdateRequestPartial
     },
   ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
@@ -7946,7 +8389,7 @@ export interface DiscordRest {
     webhookId: string,
     webhookToken: string,
     options: {
-      readonly params: ExecuteSlackCompatibleWebhookParams
+      readonly params?: ExecuteSlackCompatibleWebhookParams | undefined
       readonly payload: SlackWebhook
     },
   ) => Effect.Effect<
