@@ -1,5 +1,3 @@
-import type * as Discord from "dfx/types"
-
 export { response } from "dfx/Helpers/interactions"
 export * from "dfx/Interactions/builder"
 export * from "dfx/Interactions/context"
@@ -23,22 +21,10 @@ export const idRegex = (query: RegExp) => (customId: string) =>
 
 export const option =
   (command: string, optionName: string) =>
-  (
-    data: Pick<Discord.ApplicationCommandDatum, "name">,
-    focusedOption: Pick<
-      Discord.ApplicationCommandInteractionDataOption,
-      "name"
-    >,
-  ) =>
+  (data: { readonly name: string }, focusedOption: { readonly name: string }) =>
     data.name === command && focusedOption.name === optionName
 
 export const optionOnly =
   (optionName: string) =>
-  (
-    _: unknown,
-    focusedOption: Pick<
-      Discord.ApplicationCommandInteractionDataOption,
-      "name"
-    >,
-  ) =>
+  (_: unknown, focusedOption: { readonly name: string }) =>
     focusedOption.name === optionName

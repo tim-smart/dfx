@@ -12,16 +12,17 @@ import * as Types from "effect/Types"
 export interface DiscordInteraction {
   readonly _: unique symbol
 }
-export const Interaction = GenericTag<DiscordInteraction, Discord.Interaction>(
-  "dfx/Interactions/Interaction",
-)
+export const Interaction = GenericTag<
+  DiscordInteraction,
+  Discord.APIInteraction
+>("dfx/Interactions/Interaction")
 
 export interface DiscordApplicationCommand {
   readonly _: unique symbol
 }
 export const ApplicationCommand = GenericTag<
   DiscordApplicationCommand,
-  Discord.ApplicationCommandDatum
+  Discord.APIApplicationCommandInteraction["data"]
 >("dfx/Interactions/ApplicationCommand")
 
 export interface DiscordMessageComponent {
@@ -29,7 +30,7 @@ export interface DiscordMessageComponent {
 }
 export const MessageComponentData = GenericTag<
   DiscordMessageComponent,
-  Discord.MessageComponentDatum
+  Discord.APIMessageComponentInteractionData
 >("dfx/Interactions/MessageComponentData")
 
 export interface DiscordModalSubmit {
@@ -37,7 +38,7 @@ export interface DiscordModalSubmit {
 }
 export const ModalSubmitData = GenericTag<
   DiscordModalSubmit,
-  Discord.ModalSubmitDatum
+  Discord.APIModalSubmission
 >("dfx/Interactions/ModalSubmitData")
 
 export interface DiscordFocusedOption {
@@ -45,14 +46,14 @@ export interface DiscordFocusedOption {
 }
 export const FocusedOptionContext = GenericTag<
   DiscordFocusedOption,
-  Discord.ApplicationCommandInteractionDataOption
+  Discord.APIApplicationCommandInteractionDataOption
 >("dfx/Interactions/FocusedOptionContext")
 
 export interface DiscordSubCommand {
   readonly _: unique symbol
 }
 export interface SubCommandContext {
-  readonly command: Discord.ApplicationCommandInteractionDataOption
+  readonly command: Discord.APIApplicationCommandInteractionDataSubcommandOption
 }
 export const SubCommandContext = GenericTag<
   DiscordSubCommand,
@@ -60,7 +61,10 @@ export const SubCommandContext = GenericTag<
 >("dfx/Interactions/SubCommandContext")
 
 export const resolvedValues = <A>(
-  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
+  f: (
+    id: Discord.Snowflake,
+    data: Discord.InteractionDataResolved,
+  ) => A | undefined,
 ): Effect.Effect<
   ReadonlyArray<A>,
   NoSuchElementException,
@@ -69,24 +73,26 @@ export const resolvedValues = <A>(
 
 export const resolved = <A>(
   name: string,
-  f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => A | undefined,
+  f: (
+    id: Discord.Snowflake,
+    data: Discord.InteractionDataResolved,
+  ) => A | undefined,
 ): Effect.Effect<A, NoSuchElementException, DiscordInteraction> =>
   Effect.flatMap(Interaction, ix => IxHelpers.resolveOptionValue(name, f)(ix))
 
-export const focusedOptionValue = Effect.map(
-  FocusedOptionContext,
-  _ => _.value ?? "",
+export const focusedOptionValue = Effect.map(FocusedOptionContext, _ =>
+  "value" in _ ? _.value : "",
 )
 
 export class SubCommandNotFound extends TypeIdError(
   InteractionsErrorTypeId,
   "SubCommandNotFound",
 )<{
-  data: Discord.ApplicationCommandDatum
+  data: Discord.APIApplicationCommandInteraction["data"]
 }> {}
 
 export const currentSubCommand: Effect.Effect<
-  Discord.ApplicationCommandInteractionDataOption,
+  Discord.APIApplicationCommandInteractionDataSubcommandOption,
   never,
   DiscordSubCommand
 > = Effect.map(SubCommandContext, _ => _.command)
@@ -95,8 +101,8 @@ export class RequiredOptionNotFound {
   readonly _tag = "RequiredOptionNotFound"
   constructor(
     readonly data:
-      | Discord.ApplicationCommandDatum
-      | Discord.ApplicationCommandInteractionDataOption,
+      | Discord.APIApplicationCommandInteraction["data"]
+      | Discord.APIApplicationCommandSubcommandOption,
     readonly name: string,
   ) {}
 }

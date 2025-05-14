@@ -21,15 +21,15 @@ const payloadOrReconnect = (
 ) =>
   Effect.flatMap(
     Ref.get(ref),
-    (acked): Effect.Effect<DiscordWS.Message> =>
+    (acked): Effect.Effect<DiscordWS.MessageSend> =>
       acked ? payload(state) : Effect.succeed(DiscordWS.Reconnect),
   )
 
 export const send = (
-  hellos: Mailbox.ReadonlyMailbox<Discord.GatewayPayload>,
-  acks: Mailbox.ReadonlyMailbox<Discord.GatewayPayload>,
+  hellos: Mailbox.ReadonlyMailbox<Discord.GatewayHelloData>,
+  acks: Mailbox.ReadonlyMailbox<void>,
   state: Effect.Effect<Option.Option<ShardState>>,
-  send: (p: DiscordWS.Message) => Effect.Effect<void>,
+  send: (p: DiscordWS.MessageSend) => Effect.Effect<void>,
 ) =>
   Effect.flatMap(Ref.make(true), ackedRef => {
     const sendPayload = payloadOrReconnect(ackedRef, state).pipe(
@@ -44,9 +44,9 @@ export const send = (
           sendPayload,
           Schedule.andThen(
             Schedule.duration(
-              Duration.millis(p.d!.heartbeat_interval * Math.random()),
+              Duration.millis(p.heartbeat_interval * Math.random()),
             ),
-            Schedule.spaced(Duration.millis(p.d!.heartbeat_interval)),
+            Schedule.spaced(Duration.millis(p.heartbeat_interval)),
           ),
         ),
     )

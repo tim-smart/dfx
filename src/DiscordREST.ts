@@ -1,10 +1,7 @@
-import { TypeIdError } from "@effect/platform/Error"
 import * as HttpClient from "@effect/platform/HttpClient"
 import * as HttpRequest from "@effect/platform/HttpClientRequest"
 import type * as HttpResponse from "@effect/platform/HttpClientResponse"
-import type * as HttpError from "@effect/platform/HttpClientError"
 import { DiscordConfig } from "dfx/DiscordConfig"
-import type { ResponseWithData, RestResponse } from "dfx/DiscordREST/types"
 import {
   rateLimitFromHeaders,
   retryAfter,
@@ -17,38 +14,17 @@ import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { millis } from "effect/Duration"
 import * as Effect from "effect/Effect"
-import * as Effectable from "effect/Effectable"
-import { pipe } from "effect/Function"
 import * as HashSet from "effect/HashSet"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
 import * as Redacted from "effect/Redacted"
 import type * as Fiber from "effect/Fiber"
-
-export const DiscordRESTErrorTypeId = Symbol.for(
-  "dfx/DiscordREST/DiscordRESTError",
-)
-
-export class DiscordRESTError extends TypeIdError(
-  DiscordRESTErrorTypeId,
-  "DiscordRESTError",
-)<{
-  cause: HttpError.HttpClientError
-  body?: unknown
-}> {
-  get message() {
-    const httpMessage = this.cause.message
-    return this.body !== undefined
-      ? `${httpMessage}: ${JSON.stringify(this.body)}`
-      : httpMessage
-  }
-}
+import { flow } from "effect/Function"
 
 const make = Effect.gen(function* () {
   const { rest, token } = yield* DiscordConfig
 
-  const http = yield* HttpClient.HttpClient
   const store = yield* RateLimitStore
   const { maybeWait } = yield* RateLimiter
 
@@ -139,163 +115,88 @@ const make = Effect.gen(function* () {
     for (const fiber of fibers) yield* fiber.await
   })
 
-  const httpClient = pipe(
-    HttpClient.filterStatusOk(http),
-    HttpClient.mapRequest(req =>
-      pipe(
-        HttpRequest.prependUrl(req, rest.baseUrl),
+  const httpClient: HttpClient.HttpClient = (yield* HttpClient.HttpClient).pipe(
+    HttpClient.mapRequestEffect(req => {
+      const request = req.pipe(
+        HttpRequest.prependUrl(rest.baseUrl),
         HttpRequest.setHeaders({
           Authorization: `Bot ${Redacted.value(token)}`,
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
-      ),
-    ),
-    HttpClient.catchAll(cause =>
-      cause.reason === "StatusCode"
-        ? cause.response.json.pipe(
-            Effect.mapError(_ => new DiscordRESTError({ cause })),
-            Effect.flatMap(body =>
-              Effect.fail(new DiscordRESTError({ cause, body })),
-            ),
-          )
-        : Effect.fail(new DiscordRESTError({ cause })),
-    ),
-  )
+      )
+      return requestRateLimit(request.url, request).pipe(
+        Effect.zipLeft(globalRateLimit),
+        Effect.as(request),
+      )
+    }),
+    HttpClient.transformResponse(
+      flow(
+        Effect.tap(response => updateBuckets(response.request, response)),
+        Effect.catchTag("ResponseError", e => {
+          if (e.reason !== "StatusCode") {
+            return Effect.fail(e)
+          }
 
-  const executor = <A = unknown>(
-    request: HttpRequest.HttpClientRequest,
-  ): Effect.Effect<ResponseWithData<A>, DiscordRESTError> =>
-    requestRateLimit(request.url, request).pipe(
-      Effect.zipLeft(globalRateLimit),
-      Effect.zipRight(
-        httpClient.execute(request) as Effect.Effect<
-          ResponseWithData<A>,
-          DiscordRESTError
-        >,
-      ),
-      Effect.tap(response => updateBuckets(request, response)),
-      Effect.catchTag("DiscordRESTError", e => {
-        if (e.cause.reason !== "StatusCode") {
-          return Effect.fail(e)
-        }
+          const request = e.request
+          const response = e.response
 
-        const response = e.cause.response
+          switch (response.status) {
+            case 403:
+              return Effect.zipRight(
+                Effect.all(
+                  [
+                    Effect.annotateLogs(
+                      Effect.logDebug("403"),
+                      "url",
+                      request.url,
+                    ),
+                    addBadRoute(routeFromConfig(request.url, request.method)),
+                    updateBuckets(request, response),
+                  ],
+                  { concurrency: "unbounded", discard: true },
+                ),
+                Effect.fail(e),
+              )
 
-        switch (response.status) {
-          case 403:
-            return Effect.zipRight(
-              Effect.all(
-                [
-                  Effect.annotateLogs(
-                    Effect.logDebug("403"),
-                    "url",
-                    request.url,
-                  ),
+            case 429:
+              return Effect.annotateLogs(
+                Effect.logDebug("429"),
+                "url",
+                request.url,
+              ).pipe(
+                Effect.zipRight(
                   addBadRoute(routeFromConfig(request.url, request.method)),
-                  updateBuckets(request, response),
-                ],
-                { concurrency: "unbounded", discard: true },
-              ),
-              Effect.fail(e),
-            )
-
-          case 429:
-            return Effect.annotateLogs(
-              Effect.logDebug("429"),
-              "url",
-              request.url,
-            ).pipe(
-              Effect.zipRight(
-                addBadRoute(routeFromConfig(request.url, request.method)),
-              ),
-              Effect.zipRight(updateBuckets(request, response)),
-              Effect.zipRight(
-                Effect.sleep(
-                  Option.getOrElse(retryAfter(response.headers), () =>
-                    Duration.seconds(5),
+                ),
+                Effect.zipRight(updateBuckets(request, response)),
+                Effect.zipRight(
+                  Effect.sleep(
+                    Option.getOrElse(retryAfter(response.headers), () =>
+                      Duration.seconds(5),
+                    ),
                   ),
                 ),
-              ),
-              Effect.zipRight(executor<A>(request)),
-            )
-        }
+                Effect.zipRight(httpClient.execute(request)),
+              )
+          }
 
-        return Effect.fail(e)
-      }),
-      Effect.annotateLogs({
-        package: "dfx",
-        module: "DiscordREST",
-      }),
-    )
-
-  const routes = Discord.createRoutes<Partial<HttpRequest.Options.NoUrl>>(
-    <R, P>({
-      method,
-      options = {},
-      params,
-      url,
-    }: Discord.Route<
-      P,
-      Partial<HttpRequest.Options.NoUrl>
-    >): RestResponse<R> => {
-      const hasBody = method !== "GET" && method !== "DELETE"
-      let request = HttpRequest.make(method as any)(url, options)
-
-      if (!hasBody) {
-        if (params) {
-          request = HttpRequest.appendUrlParams(request, params as any)
-        }
-      } else if (params && request.body._tag === "FormData") {
-        request.body.formData.append("payload_json", JSON.stringify(params))
-      } else if (params) {
-        request = HttpRequest.bodyUnsafeJson(request, params)
-      }
-
-      return new RestResponseImpl(executor(request))
-    },
+          return Effect.fail(e)
+        }),
+        Effect.annotateLogs({
+          package: "dfx",
+          module: "DiscordREST",
+        }),
+      ),
+    ),
   )
 
-  return {
-    ...routes,
-    executor,
-  }
+  return Discord.make(httpClient)
 })
-
-class RestResponseImpl<T>
-  extends Effectable.Class<ResponseWithData<T>, DiscordRESTError>
-  implements RestResponse<T>
-{
-  constructor(
-    readonly effect: Effect.Effect<ResponseWithData<T>, DiscordRESTError>,
-  ) {
-    super()
-  }
-
-  commit(): Effect.Effect<ResponseWithData<T>, DiscordRESTError> {
-    return this.effect
-  }
-
-  get json() {
-    return Effect.flatMap(this.effect, _ => _.json)
-  }
-
-  get response() {
-    return this.effect
-  }
-}
 
 export interface DiscordREST {
   readonly _: unique symbol
 }
 
-export interface DiscordRESTService
-  extends Discord.Endpoints<Partial<HttpRequest.Options.NoUrl>> {
-  readonly executor: <A = unknown>(
-    request: HttpRequest.HttpClientRequest,
-  ) => Effect.Effect<ResponseWithData<A>, DiscordRESTError>
-}
-
-export const DiscordREST = GenericTag<DiscordREST, DiscordRESTService>(
+export const DiscordREST = GenericTag<DiscordREST, Discord.DiscordRest>(
   "dfx/DiscordREST",
 )
 export const DiscordRESTLive: Layer.Layer<

@@ -9,7 +9,7 @@ export interface Options {
   readonly token: string
   readonly intents: number
   readonly shard: [number, number]
-  readonly presence?: Discord.UpdatePresence
+  readonly presence?: Discord.GatewayPresenceUpdateData
 }
 
 const identify = ({ intents, presence, shard, token }: Options) =>
@@ -35,10 +35,7 @@ const resume = (token: string, session_id: string, seq: number | null) =>
 export const identifyOrResume = (
   opts: Options,
   state: Effect.Effect<Option.Option<ShardState>>,
-): Effect.Effect<
-  | Discord.GatewayPayload<Discord.Identify>
-  | Discord.GatewayPayload<Discord.Resume>
-> =>
+): Effect.Effect<Discord.GatewayIdentify | Discord.GatewayResume> =>
   Effect.map(
     state,
     Option.match({

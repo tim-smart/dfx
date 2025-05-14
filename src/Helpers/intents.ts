@@ -4,15 +4,15 @@ import * as Discord from "dfx/types"
 /**
  * All the intents
  */
-export const ALL = Flags.all(Discord.GatewayIntents)
+export const ALL = Flags.all(Discord.GatewayIntentBits)
 
 /**
  * Privileged intents
  */
 export const PRIVILEGED =
-  Discord.GatewayIntents.GUILD_PRESENCES |
-  Discord.GatewayIntents.GUILD_MEMBERS |
-  Discord.GatewayIntents.MESSAGE_CONTENT
+  Discord.GatewayIntentBits.GuildPresences |
+  Discord.GatewayIntentBits.GuildMembers |
+  Discord.GatewayIntentBits.MessageContent
 
 /**
  * Un-privileged intents
@@ -22,12 +22,12 @@ export const UNPRIVILEGED = ALL ^ PRIVILEGED
 /**
  * Function that converts a intents bitfield value to a list of intent names.
  */
-export const toList = Flags.toList(Discord.GatewayIntents)
+export const toList = Flags.toList(Discord.GatewayIntentBits)
 
 /**
  * Function that converts a list of intent names to a bitfield value.
  */
-export const fromList = Flags.fromList(Discord.GatewayIntents)
+export const fromList = Flags.fromList(Discord.GatewayIntentBits)
 
 /**
  * Check if an intent flag exists in the permissions.

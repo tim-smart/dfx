@@ -101,7 +101,7 @@ const fromHeadersAndBody = (headers: Headers, body: string) =>
   ).pipe(
     Effect.flatMap(() =>
       Effect.try({
-        try: () => JSON.parse(body) as Discord.Interaction,
+        try: () => JSON.parse(body) as Discord.APIInteraction,
         catch: cause => new WebhookParseError({ cause }),
       }),
     ),
@@ -112,21 +112,21 @@ const run = <R, E>(
     readonly [
       handler: D.InteractionDefinition<R, E>,
       transform: (
-        self: Effect.Effect<Discord.InteractionResponse, E, R>,
-      ) => Effect.Effect<Discord.InteractionResponse, E, R>,
+        self: Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
+      ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
     ]
   >,
   handleResponse: (
-    ix: Discord.Interaction,
-    _: Discord.InteractionResponse,
-  ) => Effect.Effect<Discord.InteractionResponse, E, R>,
+    ix: Discord.APIInteraction,
+    _: Discord.CreateInteractionResponseRequest,
+  ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
 ) => {
   const handler = handlers(definitions, handleResponse)
   return (
     headers: Headers,
     body: string,
   ): Effect.Effect<
-    Discord.InteractionResponse,
+    Discord.CreateInteractionResponseRequest,
     BadWebhookSignature | WebhookParseError | E | DefinitionNotFound,
     WebhookConfig | Exclude<R, DiscordInteraction>
   > =>
@@ -149,7 +149,7 @@ const run = <R, E>(
 export interface HandleWebhookOpts<E> {
   headers: Headers
   body: string
-  success: (a: Discord.InteractionResponse) => Effect.Effect<void>
+  success: (a: Discord.CreateInteractionResponseRequest) => Effect.Effect<void>
   error: (e: Cause.Cause<E>) => Effect.Effect<void>
 }
 
@@ -197,7 +197,7 @@ export const makeSimpleHandler = <R, E, TE>(
   headers: Headers
   body: string
 }) => Effect.Effect<
-  Discord.InteractionResponse,
+  Discord.CreateInteractionResponseRequest,
   BadWebhookSignature | WebhookParseError | DefinitionNotFound,
   WebhookConfig
 >) => {

@@ -28,10 +28,9 @@ const make = Effect.gen(function* () {
   const shard = yield* Shard
   const currentShards = yield* Ref.make(HashSet.empty<RunningShard>())
 
-  const gateway = yield* rest.getGatewayBot().pipe(
-    Effect.flatMap(r => r.json),
+  const gateway = yield* rest.getBotGateway().pipe(
     Effect.catchAll(() =>
-      Effect.succeed<Discord.GetGatewayBotResponse>({
+      Effect.succeed<Discord.GatewayBotResponse>({
         url: "wss://gateway.discord.gg/",
         shards: 1,
         session_start_limit: {

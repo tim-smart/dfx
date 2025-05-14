@@ -8,22 +8,26 @@ import type * as Discord from "dfx/types"
 import * as EffectUtils from "dfx/utils/Effect"
 
 const fromDispatchFactory =
-  <R, E>(
-    source: Stream.Stream<Discord.GatewayPayload<Discord.ReceiveEvent>, E, R>,
-  ) =>
-  <K extends keyof Discord.ReceiveEvents>(
+  <R, E>(source: Stream.Stream<Discord.GatewayReceivePayload, E, R>) =>
+  <K extends `${Discord.GatewayDispatchEvents}`>(
     event: K,
-  ): Stream.Stream<Discord.ReceiveEvents[K], E, R> =>
+  ): Stream.Stream<
+    Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"],
+    E,
+    R
+  > =>
     Stream.map(
       Stream.filter(source, p => p.t === event),
-      p => p.d! as any,
-    )
+      p => p.d,
+    ) as any
 
 const handleDispatchFactory =
-  (hub: PubSub.PubSub<Discord.GatewayPayload<Discord.ReceiveEvent>>) =>
-  <K extends keyof Discord.ReceiveEvents, R, E, A>(
+  (hub: PubSub.PubSub<Discord.GatewayReceivePayload>) =>
+  <K extends `${Discord.GatewayDispatchEvents}`, R, E, A>(
     event: K,
-    handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<A, E, R>,
+    handle: (
+      event: Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"],
+    ) => Effect.Effect<A, E, R>,
   ): Effect.Effect<never, E, R> =>
     EffectUtils.subscribeForEachPar(hub, _ => {
       if (_.t === event) {
@@ -34,15 +38,15 @@ const handleDispatchFactory =
 
 export const make = Effect.gen(function* () {
   const hub = yield* Effect.acquireRelease(
-    PubSub.unbounded<Discord.GatewayPayload<Discord.ReceiveEvent>>(),
+    PubSub.unbounded<Discord.GatewayReceivePayload>(),
     PubSub.shutdown,
   )
 
   const sendMailbox = yield* Effect.acquireRelease(
-    Mailbox.make<Discord.GatewayPayload<Discord.SendEvent>>(),
+    Mailbox.make<Discord.GatewaySendPayload>(),
     _ => _.shutdown,
   )
-  const send = (payload: Discord.GatewayPayload<Discord.SendEvent>) =>
+  const send = (payload: Discord.GatewaySendPayload) =>
     sendMailbox.offer(payload)
 
   const dispatch = Stream.fromPubSub(hub)

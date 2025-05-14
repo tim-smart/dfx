@@ -7,7 +7,7 @@ import * as Discord from "dfx/types"
 /**
  * A constant of all the permissions
  */
-export const ALL = Flags.all(Discord.PermissionFlag)
+export const ALL = Flags.all(Discord.Permissions)
 
 /**
  * Check if a flag exists in the permissions.
@@ -17,17 +17,17 @@ export const has = Flags.hasBigInt
 /**
  * Convert a permissions bitfield to a list of flag names.
  */
-export const toList = Flags.toList(Discord.PermissionFlag)
+export const toList = Flags.toList(Discord.Permissions)
 
 /**
  * Convert a list of flag names to a bitfield.
  */
-export const fromList = Flags.fromListBigint(Discord.PermissionFlag)
+export const fromList = Flags.fromListBigint(Discord.Permissions)
 
 /**
  * Reduce a list of roles to a bitfield of all the permissions added together.
  */
-export const forRoles = (roles: Array<Discord.Role>) =>
+export const forRoles = (roles: Array<Discord.GuildRoleResponse>) =>
   roles.reduce(
     (permissions, role) => permissions | BigInt(role.permissions),
     BigInt(0),
@@ -37,13 +37,14 @@ export const forRoles = (roles: Array<Discord.Role>) =>
  * From a list of roles, calculate the permissions bitfield for the member.
  */
 export const forMember =
-  (roles: Array<Discord.Role>) => (member: Discord.GuildMember) =>
+  (roles: Array<Discord.GuildRoleResponse>) =>
+  (member: Discord.GuildMemberResponse) =>
     pipe(Members.roles(roles)(member), forRoles)
 
 const overwriteIsForMember =
   (guildId?: string) =>
-  (member: Discord.GuildMember) =>
-  (overwrite: Discord.Overwrite) => {
+  (member: Discord.GuildMemberResponse) =>
+  (overwrite: Discord.ChannelPermissionOverwriteResponse) => {
     if (overwrite.type === 0) {
       return overwrite.id === guildId || member.roles.includes(overwrite.id)
     }
@@ -52,8 +53,8 @@ const overwriteIsForMember =
 
 const overwriteIsForRole =
   (guildId?: string) =>
-  (role: Discord.Role) =>
-  (overwrite: Discord.Overwrite) => {
+  (role: Discord.GuildRoleResponse) =>
+  (overwrite: Discord.ChannelPermissionOverwriteResponse) => {
     if (overwrite.type === 0) {
       return overwrite.id === guildId || overwrite.id === role.id
     }
@@ -66,15 +67,17 @@ const overwriteIsForRole =
  * the guild member or role for that channel.
  */
 export const forChannel =
-  (roles: Array<Discord.Role>) =>
-  ({ guild_id, permission_overwrites: overwrites = [] }: Discord.Channel) =>
-  (memberOrRole: Discord.GuildMember | Discord.Role) => {
-    const hasAdmin = has(Discord.PermissionFlag.ADMINISTRATOR)
+  (roles: Array<Discord.GuildRoleResponse>) =>
+  ({ guild_id, permission_overwrites }: Discord.GuildChannelResponse) =>
+  (memberOrRole: Discord.GuildMemberResponse | Discord.GuildRoleResponse) => {
+    const overwrites = permission_overwrites || []
+    const hasAdmin = has(Discord.Permissions.Administrator)
     let basePermissions: bigint
-    let filteredOverwrites: Array<Discord.Overwrite>
+    let filteredOverwrites: Array<Discord.ChannelPermissionOverwriteResponse>
 
     if (Members.is(memberOrRole)) {
-      if (memberOrRole.permissions) return BigInt(memberOrRole.permissions)
+      if ((memberOrRole as any).permissions)
+        return BigInt((memberOrRole as any).permissions)
 
       const memberRoles = Members.roles(roles)(memberOrRole)
       basePermissions = forRoles(memberRoles)
@@ -102,7 +105,8 @@ export const forChannel =
  * Apply permission overwrites to a bitfield.
  */
 export const applyOverwrites =
-  (permissions: bigint) => (overwrites: Array<Discord.Overwrite>) =>
+  (permissions: bigint) =>
+  (overwrites: ReadonlyArray<Discord.ChannelPermissionOverwriteResponse>) =>
     overwrites.reduce(
       (permissions, overwrite) =>
         (permissions & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow),
@@ -112,14 +116,14 @@ export const applyOverwrites =
 interface RolesCache<E> {
   getForParent: (
     parentId: string,
-  ) => Effect.Effect<ReadonlyMap<string, Discord.Role>, E>
+  ) => Effect.Effect<ReadonlyMap<string, Discord.GuildRoleResponse>, E>
 }
 
 export const hasInChannel =
   <E>(rolesCache: RolesCache<E>, permission: bigint) =>
   (
-    channel: Discord.Channel,
-    memberOrRole: Discord.GuildMember | Discord.Role,
+    channel: Discord.GuildChannelResponse,
+    memberOrRole: Discord.GuildMemberResponse | Discord.GuildRoleResponse,
   ) =>
     Effect.map(rolesCache.getForParent(channel.guild_id!), roles => {
       const channelPerms = forChannel([...roles.values()])(channel)(
@@ -130,7 +134,7 @@ export const hasInChannel =
 
 export const hasInGuild =
   <E>(rolesCache: RolesCache<E>, permission: bigint) =>
-  (guildId: Discord.Snowflake, member: Discord.GuildMember) =>
+  (guildId: Discord.Snowflake, member: Discord.GuildMemberResponse) =>
     Effect.map(rolesCache.getForParent(guildId), roles => {
       const hasPerm = has(permission)
 

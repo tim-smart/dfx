@@ -12,39 +12,45 @@ import * as Arr from "effect/Array"
 import type { HashMap } from "effect/HashMap"
 
 export class CommandHelper<A> {
-  constructor(readonly interaction: Discord.Interaction) {
+  constructor(readonly interaction: Discord.APIInteraction) {
     this.target = Helpers.target(interaction.data as any) as any
     this.data = interaction.data as any
   }
-  readonly data: Discord.ApplicationCommandDatum
+  readonly data: Discord.APIApplicationCommandInteraction["data"]
   readonly target: CommandTypeMap<
     A,
     {
       [Discord.ApplicationCommandType
-        .CHAT_INPUT]: Discord.ApplicationCommandDatum
-      [Discord.ApplicationCommandType.MESSAGE]: Discord.Message
-      [Discord.ApplicationCommandType.USER]: Discord.User
+        .CHAT]: Discord.APIChatInputApplicationCommandGuildInteraction["data"]
+      [Discord.ApplicationCommandType.MESSAGE]: Discord.MessageResponse
+      [Discord.ApplicationCommandType.USER]: Discord.UserResponse
       [Discord.ApplicationCommandType.PRIMARY_ENTRY_POINT]: undefined
     }
   >
 
   resolve<T>(
     name: AllResolvables<A>["name"],
-    f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
+    f: (
+      id: Discord.Snowflake,
+      data: Discord.InteractionDataResolved,
+    ) => T | undefined,
   ): Option.Option<T> {
     return Helpers.resolveOptionValue(name, f)(this.interaction)
   }
 
   resolvedValues<T>(
-    f: (id: Discord.Snowflake, data: Discord.ResolvedDatum) => T | undefined,
+    f: (
+      id: Discord.Snowflake,
+      data: Discord.InteractionDataResolved,
+    ) => T | undefined,
   ): Option.Option<ReadonlyArray<T>> {
     return Helpers.resolveValues(f)(this.interaction)
   }
 
   option(
     name: AllCommandOptions<A>["name"],
-  ): Option.Option<Discord.ApplicationCommandInteractionDataOption> {
-    return Helpers.getOption(name)(this.data)
+  ): Option.Option<Discord.APIApplicationCommandInteractionDataOption> {
+    return Helpers.getOption(name)(this.data as any)
   }
 
   optionValue<N extends AllRequiredCommandOptions<A>["name"]>(
@@ -56,7 +62,7 @@ export class CommandHelper<A> {
   optionValueOptional<N extends AllCommandOptions<A>["name"]>(
     name: N,
   ): Option.Option<CommandValue<A, N>> {
-    return Option.map(this.option(name), _ => _.value) as any
+    return Option.map(this.option(name), _ => (_ as any).value) as any
   }
 
   optionValueOrElse<N extends AllCommandOptions<A>["name"], const OrElse>(
@@ -71,12 +77,12 @@ export class CommandHelper<A> {
       ? never
       : Record<
           SubCommandNames<A>,
-          Effect.Effect<Discord.InteractionResponse, any, any>
+          Effect.Effect<Discord.CreateInteractionResponseRequest, any, any>
         >,
   >(
     commands: NER,
   ): Effect.Effect<
-    Discord.InteractionResponse,
+    Discord.CreateInteractionResponseRequest,
     [NER[keyof NER]] extends [
       { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
     ]
@@ -110,13 +116,13 @@ export class CommandHelper<A> {
   }
 
   get optionsMap(): HashMap<string, string | undefined> {
-    return Helpers.optionsMap(this.data)
+    return Helpers.optionsMap(this.data as any)
   }
 }
 
 export type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
-) => Effect.Effect<Discord.InteractionResponse, E, R>
+) => Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>
 
 interface CommandOption {
   readonly type: any
@@ -131,11 +137,11 @@ type CommandTypeMap<
   ? T extends keyof Options
     ? Options[T]
     : never
-  : Options[Discord.ApplicationCommandType.CHAT_INPUT]
+  : Options[typeof Discord.ApplicationCommandType.CHAT]
 
 // == Sub commands
 type SubCommands<A> = A extends {
-  readonly type: Discord.ApplicationCommandOptionType.SUB_COMMAND
+  readonly type: typeof Discord.ApplicationCommandOptionType.SUB_COMMAND
   readonly options?: ReadonlyArray<CommandOption>
 }
   ? A
@@ -148,8 +154,8 @@ type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 // == Command options
 type CommandOptionType = Exclude<
   Discord.ApplicationCommandOptionType,
-  | Discord.ApplicationCommandOptionType.SUB_COMMAND
-  | Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
+  | typeof Discord.ApplicationCommandOptionType.SUB_COMMAND
+  | typeof Discord.ApplicationCommandOptionType.SUB_COMMAND_GROUP
 >
 
 type CommandOptions<A> = OptionsWithLiteral<
@@ -202,10 +208,10 @@ type AllRequiredCommandOptions<A> =
 
 // == Resolveables
 type ResolvableType =
-  | Discord.ApplicationCommandOptionType.ROLE
-  | Discord.ApplicationCommandOptionType.USER
-  | Discord.ApplicationCommandOptionType.MENTIONABLE
-  | Discord.ApplicationCommandOptionType.CHANNEL
+  | typeof Discord.ApplicationCommandOptionType.ROLE
+  | typeof Discord.ApplicationCommandOptionType.USER
+  | typeof Discord.ApplicationCommandOptionType.MENTIONABLE
+  | typeof Discord.ApplicationCommandOptionType.CHANNEL
 
 type Resolvables<A> = OptionsWithLiteral<A, { readonly type: ResolvableType }>
 type SubCommandResolvables<A> = Extract<

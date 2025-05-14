@@ -3,10 +3,10 @@ import { identity } from "effect/Function"
 import type * as Cause from "effect/Cause"
 import * as Effect from "effect/Effect"
 import { catchTag } from "effect/Effect"
-import * as HttpBody from "@effect/platform/HttpBody"
-import { DiscordREST, type DiscordRESTError } from "dfx/DiscordREST"
+import { DiscordREST } from "dfx/DiscordREST"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
+import type { HttpClientError } from "@effect/platform/HttpClientError"
 
 type ExtractTag<A> = A extends { _tag: infer Tag }
   ? Tag extends string
@@ -14,9 +14,6 @@ type ExtractTag<A> = A extends { _tag: infer Tag }
     : never
   : never
 
-/**
- * @tsplus type dfx/InteractionBuilder
- */
 export class InteractionBuilder<R, E, TE> {
   constructor(
     readonly definitions: Chunk.Chunk<
@@ -57,8 +54,8 @@ export class InteractionBuilder<R, E, TE> {
 
   private transformHandlers<R1, E1>(
     f: (
-      self: Effect.Effect<Discord.InteractionResponse, E, R>,
-    ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
+      self: Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
+    ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E1, R1>,
   ) {
     return new InteractionBuilder<
       R1,
@@ -87,7 +84,7 @@ export class InteractionBuilder<R, E, TE> {
   catchAllCauseRespond<R1, E1>(
     f: (
       cause: Cause.Cause<E>,
-    ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
+    ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E1, R1>,
   ) {
     return this.transformHandlers<R | R1, E1>(Effect.catchAllCause(f))
   }
@@ -97,7 +94,9 @@ export class InteractionBuilder<R, E, TE> {
   }
 
   catchAllRespond<R1, E1>(
-    f: (error: E) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
+    f: (
+      error: E,
+    ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E1, R1>,
   ) {
     return this.transformHandlers<R | R1, E1>(Effect.catchAll(f))
   }
@@ -115,7 +114,7 @@ export class InteractionBuilder<R, E, TE> {
     tag: T,
     f: (
       error: Extract<E, { _tag: T }>,
-    ) => Effect.Effect<Discord.InteractionResponse, E1, R1>,
+    ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E1, R1>,
   ) {
     return this.transformHandlers<R | R1, Exclude<E, { _tag: T }> | E1>(
       _ => catchTag(_ as any, tag, f as any) as any,
@@ -133,14 +132,16 @@ export class InteractionBuilder<R, E, TE> {
     )
 
     return Effect.flatMap(DiscordREST, rest =>
-      rest.getCurrentBotApplicationInformation().pipe(
-        Effect.flatMap(r => r.json),
-        Effect.flatMap(app =>
-          rest.bulkOverwriteGlobalApplicationCommands(app.id, {
-            body: HttpBody.unsafeJson(Chunk.toReadonlyArray(commands)),
-          }),
+      rest
+        .getMyApplication()
+        .pipe(
+          Effect.flatMap(app =>
+            rest.bulkSetApplicationCommands(
+              app.id,
+              Chunk.toReadonlyArray(commands),
+            ),
+          ),
         ),
-      ),
     )
   }
 
@@ -155,16 +156,16 @@ export class InteractionBuilder<R, E, TE> {
     )
 
     return Effect.flatMap(DiscordREST, rest =>
-      rest.bulkOverwriteGuildApplicationCommands(
+      rest.bulkSetGuildApplicationCommands(
         appId,
         guildId,
-        Chunk.toReadonlyArray(commands) as any,
+        Chunk.toReadonlyArray(commands),
       ),
     )
   }
 }
 
-export const builder = new InteractionBuilder<never, never, DiscordRESTError>(
+export const builder = new InteractionBuilder<never, never, HttpClientError>(
   Chunk.empty(),
   identity as any,
 )

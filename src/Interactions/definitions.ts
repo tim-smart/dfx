@@ -20,7 +20,7 @@ export type InteractionDefinition<R, E> =
 export class GlobalApplicationCommand<R, E> {
   readonly _tag = "GlobalApplicationCommand"
   constructor(
-    readonly command: Discord.CreateGlobalApplicationCommandParams,
+    readonly command: Discord.ApplicationCommandCreateRequest,
     readonly handle: CommandHandler<R, E>,
   ) {}
 }
@@ -28,7 +28,7 @@ export class GlobalApplicationCommand<R, E> {
 export const global = <
   R,
   E,
-  const A extends Discord.CreateGlobalApplicationCommandParams,
+  const A extends Discord.ApplicationCommandCreateRequest,
 >(
   command: A,
   handle: CommandHandler<R, E, A>,
@@ -41,7 +41,7 @@ export const global = <
 export class GuildApplicationCommand<R, E> {
   readonly _tag = "GuildApplicationCommand"
   constructor(
-    readonly command: Discord.CreateGuildApplicationCommandParams,
+    readonly command: Discord.ApplicationCommandCreateRequest,
     readonly handle: CommandHandler<R, E>,
   ) {}
 }
@@ -49,7 +49,7 @@ export class GuildApplicationCommand<R, E> {
 export const guild = <
   R,
   E,
-  const A extends Discord.CreateGuildApplicationCommandParams,
+  const A extends Discord.ApplicationCommandCreateRequest,
 >(
   command: A,
   handle: CommandHandler<R, E, A>,
@@ -63,13 +63,17 @@ export class MessageComponent<R, E> {
   readonly _tag = "MessageComponent"
   constructor(
     readonly predicate: (customId: string) => boolean,
-    readonly handle: Effect.Effect<Discord.InteractionResponse, E, R>,
+    readonly handle: Effect.Effect<
+      Discord.CreateInteractionResponseRequest,
+      E,
+      R
+    >,
   ) {}
 }
 
 export const messageComponent = <R, E>(
   pred: (customId: string) => boolean,
-  handle: CommandHandler<R, E, Discord.InteractionResponse>,
+  handle: CommandHandler<R, E, Discord.CreateInteractionResponseRequest>,
 ) =>
   new MessageComponent<
     Exclude<R, DiscordInteraction | DiscordMessageComponent | Scope>,
@@ -80,13 +84,17 @@ export class ModalSubmit<R, E> {
   readonly _tag = "ModalSubmit"
   constructor(
     readonly predicate: (customId: string) => boolean,
-    readonly handle: Effect.Effect<Discord.InteractionResponse, E, R>,
+    readonly handle: Effect.Effect<
+      Discord.CreateInteractionResponseRequest,
+      E,
+      R
+    >,
   ) {}
 }
 
 export const modalSubmit = <R, E>(
   pred: (customId: string) => boolean,
-  handle: Effect.Effect<Discord.InteractionResponse, E, R>,
+  handle: Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
 ) =>
   new ModalSubmit<
     Exclude<R, DiscordInteraction | DiscordModalSubmit | Scope>,
@@ -97,19 +105,23 @@ export class Autocomplete<R, E> {
   readonly _tag = "Autocomplete"
   constructor(
     readonly predicate: (
-      data: Discord.ApplicationCommandDatum,
-      focusedOption: Discord.ApplicationCommandInteractionDataOption,
+      data: Discord.APIApplicationCommandInteraction["data"],
+      focusedOption: Discord.APIApplicationCommandInteractionDataOption,
     ) => boolean,
-    readonly handle: Effect.Effect<Discord.InteractionResponse, E, R>,
+    readonly handle: Effect.Effect<
+      Discord.CreateInteractionResponseRequest,
+      E,
+      R
+    >,
   ) {}
 }
 
 export const autocomplete = <R, E>(
   pred: (
-    data: Discord.ApplicationCommandDatum,
-    focusedOption: Discord.ApplicationCommandInteractionDataOption,
+    data: Discord.APIApplicationCommandInteraction["data"],
+    focusedOption: Discord.APIApplicationCommandInteractionDataOption,
   ) => boolean,
-  handle: Effect.Effect<Discord.InteractionResponse, E, R>,
+  handle: Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
 ) =>
   new Autocomplete<
     Exclude<
@@ -124,9 +136,9 @@ export const autocomplete = <R, E>(
 
 // ==== Command handler helpers
 export type CommandHandler<R, E, A = any> =
-  | Effect.Effect<Discord.InteractionResponse, E, R>
+  | Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>
   | CommandHandlerFn<R, E, A>
 
 export type CommandHandlerFn<R, E, A> = (
   i: CommandHelper<A>,
-) => Effect.Effect<Discord.InteractionResponse, E, R>
+) => Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>

@@ -76,7 +76,7 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   onMiss: (parentId: string, id: string) => Effect.Effect<A, EMiss>
   onParentMiss: (
     parentId: string,
-  ) => Effect.Effect<Array<[id: string, resource: A]>, EPMiss>
+  ) => Effect.Effect<Array<readonly [id: string, resource: A]>, EPMiss>
 }): Effect.Effect<ParentCache<EDriver, EMiss, EPMiss, A>, never, Scope.Scope> =>
   Effect.gen(function* () {
     yield* Stream.runDrain(

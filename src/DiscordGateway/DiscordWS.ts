@@ -10,7 +10,8 @@ import * as Cause from "effect/Cause"
 import * as Option from "effect/Option"
 import * as LogLevel from "effect/LogLevel"
 
-export type Message = Discord.GatewayPayload | Reconnect
+export type Message = Discord.GatewayReceivePayload
+export type MessageSend = Discord.GatewaySendPayload | Reconnect
 
 export const Reconnect = Symbol.for("dfx/DiscordGateway/WS/Reconnect")
 export type Reconnect = typeof Reconnect
@@ -24,8 +25,8 @@ export interface OpenOpts {
 
 export interface DiscordWSCodecService {
   type: "json" | "etf"
-  encode: (p: Discord.GatewayPayload) => Uint8Array | string
-  decode: (p: Uint8Array | string) => Discord.GatewayPayload
+  encode: (p: Discord.GatewaySendPayload) => Uint8Array | string
+  decode: (p: Uint8Array | string) => Discord.GatewayReceivePayload
 }
 export interface DiscordWSCodec {
   readonly _: unique symbol
@@ -57,7 +58,7 @@ const make = Effect.gen(function* () {
       )
       const setUrl = (url: string) =>
         Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
-      const messages = yield* Mailbox.make<Discord.GatewayPayload>()
+      const messages = yield* Mailbox.make<Message>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
         closeCodeIsError: _ => true,
         openTimeout: 5000,
@@ -68,9 +69,7 @@ const make = Effect.gen(function* () {
           module: "DiscordGateway/DiscordWS",
           channel: "outbound",
         })
-      const write = (
-        message: Discord.GatewayPayload | Reconnect,
-      ): Effect.Effect<void> => {
+      const write = (message: MessageSend): Effect.Effect<void> => {
         if (message === Reconnect) {
           return Effect.catchAllCause(
             writeRaw(new Socket.CloseEvent(3000, "reconnecting")),

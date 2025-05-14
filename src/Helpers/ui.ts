@@ -1,25 +1,36 @@
 import type {
-  ActionRow,
-  Button,
-  Component,
-  PollAnswer,
+  ActionRowComponentForModalRequest,
+  ButtonComponentForMessageRequest,
+  ChannelSelectComponentForMessageRequest,
+  ContainerComponentForMessageRequest,
+  FileComponentForMessageRequest,
+  MediaGalleryComponentForMessageRequest,
+  MentionableSelectComponentForMessageRequest,
+  PollAnswerCreateRequest,
   PollCreateRequest,
-  PollMedia,
-  SelectMenu,
-  SelectOption,
-  TextInput,
+  PollMediaCreateRequest,
+  RoleSelectComponentForMessageRequest,
+  SectionComponentForMessageRequest,
+  SeparatorComponentForMessageRequest,
+  StringSelectComponentForMessageRequest,
+  TextInputComponentForModalRequest,
+  UserSelectComponentForMessageRequest,
 } from "dfx/types"
-import { ButtonStyle, ComponentType, TextInputStyle } from "dfx/types"
-
-export type UIComponent = Exclude<Component, ActionRow>
+import {
+  TextInputStyleTypes,
+  ButtonStyleTypes,
+  MessageComponentTypes,
+} from "dfx/types"
 
 /**
  * Helper to create an Action Row grid.
  */
-export const grid = (items: Array<Array<UIComponent>>): Array<ActionRow> =>
+export const grid = (
+  items: ReadonlyArray<ReadonlyArray<TextInputComponentForModalRequest>>,
+): Array<ActionRowComponentForModalRequest> =>
   items.map(
-    (components): ActionRow => ({
-      type: ComponentType.ACTION_ROW,
+    (components): ActionRowComponentForModalRequest => ({
+      type: MessageComponentTypes.ACTION_ROW,
       components,
     }),
   )
@@ -27,79 +38,90 @@ export const grid = (items: Array<Array<UIComponent>>): Array<ActionRow> =>
 /**
  * Helper to create a single column of components
  */
-export const singleColumn = (items: Array<UIComponent>): Array<ActionRow> =>
+export const singleColumn = (
+  items: Array<TextInputComponentForModalRequest>,
+): Array<ActionRowComponentForModalRequest> =>
   items.map(c => ({
-    type: ComponentType.ACTION_ROW,
+    type: MessageComponentTypes.ACTION_ROW,
     components: [c],
   }))
 
 /**
  * Helper to create a button component.
  */
-export const button = (button: Partial<Button>): Button => ({
-  type: ComponentType.BUTTON,
-  style: ButtonStyle.PRIMARY,
+export const button = (
+  button: Partial<ButtonComponentForMessageRequest>,
+): ButtonComponentForMessageRequest => ({
+  type: MessageComponentTypes.BUTTON,
+  style: ButtonStyleTypes.PRIMARY,
   ...button,
 })
 
-type BasicSelect = Omit<SelectMenu, "type" | "channel_types" | "options">
-
-type StringSelect = BasicSelect & {
-  options: Array<SelectOption>
-}
-
-type ChannelSelect = Omit<SelectMenu, "type" | "options">
-
 /**
  * Helper to create a select component.
  */
-export const select = (select: StringSelect): SelectMenu => ({
-  type: ComponentType.STRING_SELECT,
+export const select = (
+  select: Omit<StringSelectComponentForMessageRequest, "type">,
+): StringSelectComponentForMessageRequest => ({
+  type: MessageComponentTypes.STRING_SELECT,
   ...select,
 })
 
 /**
  * Helper to create a select component.
  */
-export const userSelect = (select: BasicSelect): SelectMenu => ({
-  type: ComponentType.USER_SELECT,
+export const userSelect = (
+  select: Omit<UserSelectComponentForMessageRequest, "type">,
+): UserSelectComponentForMessageRequest => ({
+  type: MessageComponentTypes.USER_SELECT,
   ...select,
 })
 
 /**
  * Helper to create a select component.
  */
-export const roleSelect = (select: BasicSelect): SelectMenu => ({
-  type: ComponentType.ROLE_SELECT,
+export const roleSelect = (
+  select: Omit<RoleSelectComponentForMessageRequest, "type">,
+): RoleSelectComponentForMessageRequest => ({
+  type: MessageComponentTypes.ROLE_SELECT,
   ...select,
 })
 
 /**
  * Helper to create a select component.
  */
-export const mentionableSelect = (select: BasicSelect): SelectMenu => ({
-  type: ComponentType.MENTIONABLE_SELECT,
+export const mentionableSelect = (
+  select: Omit<MentionableSelectComponentForMessageRequest, "type">,
+): MentionableSelectComponentForMessageRequest => ({
+  type: MessageComponentTypes.MENTIONABLE_SELECT,
   ...select,
 })
 
 /**
  * Helper to create a select component.
  */
-export const channelSelect = (select: ChannelSelect): SelectMenu => ({
-  type: ComponentType.CHANNEL_SELECT,
+export const channelSelect = (
+  select: Omit<ChannelSelectComponentForMessageRequest, "type">,
+): ChannelSelectComponentForMessageRequest => ({
+  type: MessageComponentTypes.CHANNEL_SELECT,
   ...select,
 })
 
-type TextInputOpts = Omit<TextInput, "type" | "style"> & {
-  style?: TextInputStyle
+type TextInputOpts = Omit<
+  TextInputComponentForModalRequest,
+  "type" | "style"
+> & {
+  style?: TextInputStyleTypes
 }
 
 /**
  * Helper to create a text input
  */
-export const textInput = (input: TextInputOpts): TextInput => ({
-  type: ComponentType.TEXT_INPUT,
-  style: TextInputStyle.SHORT,
+export const textInput = (
+  input: TextInputOpts,
+): TextInputComponentForModalRequest => ({
+  type: MessageComponentTypes.TEXT_INPUT,
+  style: TextInputStyleTypes.SHORT,
   ...input,
 })
 
@@ -108,9 +130,61 @@ export const textInput = (input: TextInputOpts): TextInput => ({
  */
 export const poll = (
   input: Omit<PollCreateRequest, "answers"> & {
-    readonly answers: ReadonlyArray<PollMedia>
+    readonly answers: ReadonlyArray<PollMediaCreateRequest>
   },
 ): PollCreateRequest => ({
   ...input,
-  answers: input.answers.map(poll_media => ({ poll_media }) as PollAnswer),
+  answers: input.answers.map(
+    poll_media => ({ poll_media }) as PollAnswerCreateRequest,
+  ),
+})
+
+/**
+ * Helper to create a media gallery
+ */
+export const mediaGallery = (
+  options: Omit<MediaGalleryComponentForMessageRequest, "type">,
+): MediaGalleryComponentForMessageRequest => ({
+  type: MessageComponentTypes.MEDIA_GALLERY,
+  ...options,
+})
+
+/**
+ * Helper to create a file component
+ */
+export const file = (
+  options: Omit<FileComponentForMessageRequest, "type">,
+): FileComponentForMessageRequest => ({
+  type: MessageComponentTypes.FILE,
+  ...options,
+})
+
+/**
+ * Helper to create a container component
+ */
+export const container = (
+  options: Omit<ContainerComponentForMessageRequest, "type">,
+): ContainerComponentForMessageRequest => ({
+  type: MessageComponentTypes.CONTAINER,
+  ...options,
+})
+
+/**
+ * Helper to create a section component
+ */
+export const section = (
+  options: Omit<SectionComponentForMessageRequest, "type">,
+): SectionComponentForMessageRequest => ({
+  type: MessageComponentTypes.SECTION,
+  ...options,
+})
+
+/**
+ * Helper to create a separator component
+ */
+export const seperator = (
+  options: Omit<SeparatorComponentForMessageRequest, "type">,
+): SeparatorComponentForMessageRequest => ({
+  type: MessageComponentTypes.SEPARATOR,
+  ...options,
 })

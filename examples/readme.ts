@@ -13,8 +13,8 @@ const DiscordConfigLive = DiscordConfig.layerConfig({
 
 // Create hello service
 const HelloLive = Layer.effectDiscard(
-  Effect.gen(function* (_) {
-    const registry = yield* _(InteractionsRegistry)
+  Effect.gen(function* () {
+    const registry = yield* InteractionsRegistry
 
     // Create hello command that responds with "Hello!"
     const hello = Ix.global(
@@ -31,8 +31,8 @@ const HelloLive = Layer.effectDiscard(
     )
 
     // register the command(s) and handle errors
-    yield* _(
-      registry.register(Ix.builder.add(hello).catchAllCause(Effect.logError)),
+    yield* registry.register(
+      Ix.builder.add(hello).catchAllCause(Effect.logError),
     )
   }),
 ).pipe(

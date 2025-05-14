@@ -22,17 +22,24 @@ export type TypeId = typeof TypeId
 export interface DiscordGateway {
   readonly [TypeId]: TypeId
 
-  readonly dispatch: Stream.Stream<Discord.GatewayPayload<Discord.ReceiveEvent>>
-  readonly fromDispatch: <K extends keyof Discord.ReceiveEvents>(
+  readonly dispatch: Stream.Stream<Discord.GatewayReceivePayload>
+  readonly fromDispatch: <K extends `${Discord.GatewayDispatchEvents}`>(
     event: K,
-  ) => Stream.Stream<Discord.ReceiveEvents[K]>
-  readonly handleDispatch: <K extends keyof Discord.ReceiveEvents, R, E, A>(
+  ) => Stream.Stream<
+    Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"]
+  >
+  readonly handleDispatch: <
+    K extends `${Discord.GatewayDispatchEvents}`,
+    R,
+    E,
+    A,
+  >(
     event: K,
-    handle: (event: Discord.ReceiveEvents[K]) => Effect.Effect<A, E, R>,
+    handle: (
+      event: Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"],
+    ) => Effect.Effect<A, E, R>,
   ) => Effect.Effect<never, E, R>
-  readonly send: (
-    payload: Discord.GatewayPayload<Discord.SendEvent>,
-  ) => Effect.Effect<boolean>
+  readonly send: (payload: Discord.GatewaySendPayload) => Effect.Effect<boolean>
   readonly shards: Effect.Effect<HashSet.HashSet<RunningShard>>
 }
 
@@ -46,8 +53,8 @@ export const make: Effect.Effect<DiscordGateway, never, Messsaging | Sharder> =
     return DiscordGateway.of({
       [TypeId]: TypeId,
       dispatch: messaging.dispatch,
-      fromDispatch: messaging.fromDispatch,
-      handleDispatch: messaging.handleDispatch,
+      fromDispatch: messaging.fromDispatch as any,
+      handleDispatch: messaging.handleDispatch as any,
       send: messaging.send,
       shards: sharder.shards,
     })

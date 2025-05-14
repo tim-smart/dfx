@@ -26,7 +26,7 @@ const makeGreetService = Effect.gen(function* () {
     ix =>
       Effect.succeed(
         Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: `Hello ${ix.optionValue("name")}!`,
           },

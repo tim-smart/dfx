@@ -1,5 +1,5 @@
 import { DiscordConfig } from "dfx/DiscordConfig"
-import type { Message } from "dfx/DiscordGateway/DiscordWS"
+import type { MessageSend } from "dfx/DiscordGateway/DiscordWS"
 import {
   DiscordWS,
   DiscordWSLive,
@@ -59,7 +59,7 @@ export const make = Effect.gen(function* () {
           )
         })
 
-      const heartbeatSend = (p: Message) =>
+      const heartbeatSend = (p: MessageSend) =>
         Effect.suspend(() => {
           if (phase === Phase.Connecting) return Effect.void
           return write(p)
@@ -73,18 +73,18 @@ export const make = Effect.gen(function* () {
       const onConnecting = setPhase(Phase.Connecting)
 
       const socket = yield* dws.connect({ onConnecting })
-      const write = (p: Message) =>
+      const write = (p: MessageSend) =>
         Effect.zipRight(
           limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
           socket.write(p),
         )
 
       const hellos = yield* Effect.acquireRelease(
-        Mailbox.make<Discord.GatewayPayload>(),
+        Mailbox.make<Discord.GatewayHelloData>(),
         _ => _.shutdown,
       )
       const acks = yield* Effect.acquireRelease(
-        Mailbox.make<Discord.GatewayPayload>(),
+        Mailbox.make<void>(),
         _ => _.shutdown,
       )
 
@@ -108,12 +108,12 @@ export const make = Effect.gen(function* () {
       // delayed reconnect
       const delayedReconnect = Effect.delay(socket.write(Reconnect), 30_000)
 
-      function* onPayload(p: Discord.GatewayPayload) {
+      function* onPayload(p: Discord.GatewayReceivePayload) {
         if (typeof p.s === "number") {
           resumeState.sequence = p.s
         }
-        if (p.op === Discord.GatewayOpcode.DISPATCH && p.t === "READY") {
-          const payload = p.d as Discord.ReadyEvent
+        if (p.op === Discord.GatewayOpcodes.Dispatch && p.t === "READY") {
+          const payload = p.d
           resumeState.sessionId = payload.session_id
           resumeState.resumeUrl = payload.resume_gateway_url
           yield* stateStore.set(resumeState)
@@ -126,18 +126,18 @@ export const make = Effect.gen(function* () {
         }
 
         switch (p.op) {
-          case Discord.GatewayOpcode.HELLO: {
+          case Discord.GatewayOpcodes.Hello: {
             yield* write(yield* identify)
             yield* setPhase(Phase.Handshake)
-            hellos.unsafeOffer(p)
+            hellos.unsafeOffer(p.d)
             yield* FiberHandle.run(reconnectHandle, delayedReconnect)
             return
           }
-          case Discord.GatewayOpcode.HEARTBEAT_ACK: {
-            acks.unsafeOffer(p)
+          case Discord.GatewayOpcodes.HeartbeatAck: {
+            acks.unsafeOffer(void 0)
             return
           }
-          case Discord.GatewayOpcode.INVALID_SESSION: {
+          case Discord.GatewayOpcodes.InvalidSession: {
             if (!p.d) {
               resumeState.sessionId = ""
               yield* stateStore.clear
@@ -145,14 +145,14 @@ export const make = Effect.gen(function* () {
             yield* socket.write(Reconnect)
             return
           }
-          case Discord.GatewayOpcode.DISPATCH: {
+          case Discord.GatewayOpcodes.Dispatch: {
             if (p.t === "READY" || p.t === "RESUMED") {
               yield* resume
             }
             hub.unsafeOffer(p)
             return
           }
-          case Discord.GatewayOpcode.RECONNECT: {
+          case Discord.GatewayOpcodes.Reconnect: {
             yield* socket.write(Reconnect)
             return
           }

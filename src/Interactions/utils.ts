@@ -9,7 +9,7 @@ export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
     ? {
         [K in keyof D]: K extends "handle"
-          ? (_: Discord.Interaction) => Effect.Effect<A, TE, R>
+          ? (_: Discord.APIInteraction) => Effect.Effect<A, TE, R>
           : D[K]
       }
     : never
@@ -27,30 +27,30 @@ export const flattenDefinitions = <R, E, TE, A, B>(
     ]
   >,
   handleResponse: (
-    ix: Discord.Interaction,
-    _: Discord.InteractionResponse,
+    ix: Discord.APIInteraction,
+    _: Discord.CreateInteractionResponseRequest,
   ) => Effect.Effect<A, E, R>,
 ) =>
   Array.map(Chunk.toReadonlyArray(definitions), ([definition, transform]) => ({
     ...definition,
     handle: Effect.isEffect(definition.handle)
-      ? (i: Discord.Interaction) =>
+      ? (i: Discord.APIInteraction) =>
           Effect.scoped(
             transform(
               Effect.flatMap(
-                definition.handle as Effect.Effect<Discord.InteractionResponse>,
+                definition.handle as Effect.Effect<Discord.CreateInteractionResponseRequest>,
                 _ => handleResponse(i, _),
               ),
             ),
           )
-      : (i: Discord.Interaction) =>
+      : (i: Discord.APIInteraction) =>
           Effect.scoped(
             transform(
               Effect.flatMap(
                 (
                   definition.handle as (
                     _: any,
-                  ) => Effect.Effect<Discord.InteractionResponse>
+                  ) => Effect.Effect<Discord.CreateInteractionResponseRequest>
                 )(new CommandHelper(i)),
                 _ => handleResponse(i, _),
               ),

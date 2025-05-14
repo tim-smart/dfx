@@ -2,10 +2,12 @@ import type * as Discord from "dfx/types"
 import * as Stream from "effect/Stream"
 
 export const opCode =
-  <R, E>(source: Stream.Stream<Discord.GatewayPayload, E, R>) =>
-  <T = any>(
-    code: Discord.GatewayOpcode,
-  ): Stream.Stream<Discord.GatewayPayload<T>, E, R> =>
-    source.pipe(
-      Stream.filter((p): p is Discord.GatewayPayload<T> => p.op === code),
-    )
+  <R, E>(source: Stream.Stream<Discord.GatewayReceivePayload, E, R>) =>
+  <const Code extends Discord.GatewayOpcodes>(
+    code: Code,
+  ): Stream.Stream<
+    Extract<Discord.GatewayReceivePayload, { readonly op: Code }>,
+    E,
+    R
+  > =>
+    Stream.filter(source, p => p.op === code) as any

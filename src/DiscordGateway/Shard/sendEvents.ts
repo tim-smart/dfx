@@ -1,43 +1,43 @@
 import * as Discord from "dfx/types"
 
 export const heartbeat = (
-  d: Discord.Heartbeat,
-): Discord.GatewayPayload<Discord.Heartbeat> => ({
-  op: Discord.GatewayOpcode.HEARTBEAT,
+  d: Discord.GatewayHeartbeatData,
+): Discord.GatewayHeartbeat => ({
+  op: Discord.GatewayOpcodes.Heartbeat,
   d,
 })
 
 export const identify = (
-  d: Discord.Identify,
-): Discord.GatewayPayload<Discord.Identify> => ({
-  op: Discord.GatewayOpcode.IDENTIFY,
+  d: Discord.GatewayIdentifyData,
+): Discord.GatewayIdentify => ({
+  op: Discord.GatewayOpcodes.Identify,
   d,
 })
 
 export const resume = (
-  d: Discord.Resume,
-): Discord.GatewayPayload<Discord.Resume> => ({
-  op: Discord.GatewayOpcode.RESUME,
+  d: Discord.GatewayResumeData,
+): Discord.GatewayResume => ({
+  op: Discord.GatewayOpcodes.Resume,
   d,
 })
 
 export const requestGuildMembers = (
-  d: Discord.RequestGuildMember,
-): Discord.GatewayPayload<Discord.RequestGuildMember> => ({
-  op: Discord.GatewayOpcode.REQUEST_GUILD_MEMBERS,
+  d: Discord.GatewayRequestGuildMembersData,
+): Discord.GatewayRequestGuildMembers => ({
+  op: Discord.GatewayOpcodes.RequestGuildMembers,
   d,
 })
 
 export const voiceStateUpdate = (
-  d: Discord.UpdateVoiceState,
-): Discord.GatewayPayload<Discord.UpdateVoiceState> => ({
-  op: Discord.GatewayOpcode.VOICE_STATE_UPDATE,
+  d: Discord.GatewayVoiceStateUpdateData,
+): Discord.GatewayVoiceStateUpdate => ({
+  op: Discord.GatewayOpcodes.VoiceStateUpdate,
   d,
 })
 
 export const presenceUpdate = (
-  d: Discord.UpdatePresence,
-): Discord.GatewayPayload<Discord.UpdatePresence> => ({
-  op: Discord.GatewayOpcode.PRESENCE_UPDATE,
+  d: Discord.GatewayPresenceUpdateData,
+): Discord.GatewayUpdatePresence => ({
+  op: Discord.GatewayOpcodes.PresenceUpdate,
   d,
 })

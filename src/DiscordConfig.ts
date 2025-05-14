@@ -24,7 +24,7 @@ export interface DiscordConfigService {
   }
   readonly gateway: {
     readonly intents: number
-    readonly presence?: Discord.UpdatePresence
+    readonly presence?: Discord.GatewayPresenceUpdateData
     readonly shardCount?: number
 
     readonly identifyRateLimit: readonly [window: number, limit: number]
@@ -56,7 +56,7 @@ export const make = ({
     },
   },
   gateway: {
-    intents: Discord.GatewayIntents.GUILDS,
+    intents: Discord.GatewayIntentBits.Guilds,
     identifyRateLimit: [5000, 1],
     ...(gateway ?? {}),
   },

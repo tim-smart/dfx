@@ -7,10 +7,8 @@ import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
-import * as HttpBody from "@effect/platform/HttpBody"
 import type * as HttpClientError from "@effect/platform/HttpClientError"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
 import type {
   GlobalApplicationCommand,
@@ -41,7 +39,7 @@ export const run =
     postHandler: (
       effect: Effect.Effect<
         void,
-        TE | DiscordRESTError | DefinitionNotFound,
+        TE | HttpClientError.HttpClientError | DefinitionNotFound,
         R | DiscordREST | DiscordInteraction
       >,
     ) => Effect.Effect<void, E2, R2>,
@@ -50,7 +48,7 @@ export const run =
     ix: InteractionBuilder<R, E, TE>,
   ): Effect.Effect<
     never,
-    E2 | DiscordRESTError | HttpClientError.ResponseError,
+    E2 | HttpClientError.HttpClientError | HttpClientError.ResponseError,
     DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>
   > =>
     Effect.gen(function* () {
@@ -74,30 +72,28 @@ export const run =
       const gateway = yield* DiscordGateway
       const rest = yield* DiscordREST
 
-      const application = yield* rest.getCurrentBotApplicationInformation().json
+      const application = yield* rest.getMyApplication()
 
-      const globalSync = rest.bulkOverwriteGlobalApplicationCommands(
+      const globalSync = rest.bulkSetApplicationCommands(
         application.id,
-        {
-          body: HttpBody.unsafeJson(
-            GlobalApplicationCommand.map(_ => _.command),
-          ),
-        },
+        GlobalApplicationCommand.map(_ => _.command),
       )
 
       const guildSync = GuildApplicationCommand.length
         ? gateway.handleDispatch("GUILD_CREATE", a =>
-            rest.bulkOverwriteGuildApplicationCommands(
+            rest.bulkSetGuildApplicationCommands(
               application.id,
               a.id,
-              GuildApplicationCommand.map(_ => _.command) as any,
+              GuildApplicationCommand.map(_ => _.command),
             ),
           )
         : Effect.never
 
-      const handle = handlers(
-        ix.definitions,
-        (i, r) => rest.createInteractionResponse(i.id, i.token, r).effect,
+      const handle = handlers(ix.definitions, (i, r) =>
+        rest.createInteractionResponse(i.id, i.token, {
+          params: {},
+          payload: r,
+        }),
       )
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>

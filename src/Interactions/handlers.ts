@@ -9,7 +9,7 @@ import type { Scope } from "effect/Scope"
 
 export class DefinitionNotFound {
   readonly _tag = "DefinitionNotFound"
-  constructor(readonly interaction: Discord.Interaction) {}
+  constructor(readonly interaction: Discord.APIInteraction) {}
 }
 
 type Handler<R, E, A> = Effect.Effect<
@@ -26,12 +26,12 @@ export const handlers = <R, E, TE, A, B>(
     ]
   >,
   handleResponse: (
-    ix: Discord.Interaction,
-    _: Discord.InteractionResponse,
+    ix: Discord.APIInteraction,
+    _: Discord.CreateInteractionResponseRequest,
   ) => Effect.Effect<A, E, R>,
 ): Record<
-  Discord.InteractionType,
-  (i: Discord.Interaction) => Handler<Exclude<R, Scope>, E, B>
+  Discord.InteractionTypes,
+  (i: Discord.APIInteraction) => Handler<Exclude<R, Scope>, E, B>
 > => {
   const flattened = flattenDefinitions(definitions, handleResponse)
 
@@ -39,13 +39,14 @@ export const handlers = <R, E, TE, A, B>(
     splitDefinitions(flattened)
 
   return {
-    [Discord.InteractionType.PING]: _ =>
+    [Discord.InteractionTypes.PING]: _ =>
       Effect.succeed({
-        type: Discord.InteractionCallbackType.PONG,
+        type: Discord.InteractionCallbackTypes.PONG,
       } as any),
 
-    [Discord.InteractionType.APPLICATION_COMMAND]: i => {
-      const data = i.data as Discord.ApplicationCommandDatum
+    [Discord.InteractionTypes.APPLICATION_COMMAND]: i => {
+      const data =
+        i.data as Discord.APIChatInputApplicationCommandInteractionData
       const command = Commands[data.name]
       if (command === undefined) {
         return Effect.fail(new DefinitionNotFound(i))
@@ -57,8 +58,8 @@ export const handlers = <R, E, TE, A, B>(
       ) as Handler<Exclude<R, Scope>, E, B>
     },
 
-    [Discord.InteractionType.MODAL_SUBMIT]: i => {
-      const data = i.data as Discord.ModalSubmitDatum
+    [Discord.InteractionTypes.MODAL_SUBMIT]: i => {
+      const data = i.data as Discord.APIModalSubmission
       const match = ModalSubmit.find(_ => _.predicate(data.custom_id))
       if (match === undefined) {
         return Effect.fail(new DefinitionNotFound(i))
@@ -70,8 +71,8 @@ export const handlers = <R, E, TE, A, B>(
       ) as Handler<Exclude<R, Scope>, E, B>
     },
 
-    [Discord.InteractionType.MESSAGE_COMPONENT]: i => {
-      const data = i.data as Discord.MessageComponentDatum
+    [Discord.InteractionTypes.MESSAGE_COMPONENT]: i => {
+      const data = i.data as Discord.APIMessageComponentInteractionData
       const match = MessageComponent.find(_ => _.predicate(data.custom_id))
       if (match === undefined) {
         return Effect.fail(new DefinitionNotFound(i))
@@ -83,9 +84,9 @@ export const handlers = <R, E, TE, A, B>(
       ) as Handler<Exclude<R, Scope>, E, B>
     },
 
-    [Discord.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE]: i => {
-      const data = i.data as Discord.ApplicationCommandDatum
-      const option = IxHelpers.focusedOption(data)
+    [Discord.InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE]: i => {
+      const data = i.data as Discord.APIApplicationCommandInteraction["data"]
+      const option = IxHelpers.focusedOption(data as any)
       if (option._tag === "None") {
         return Effect.fail(new DefinitionNotFound(i))
       }
