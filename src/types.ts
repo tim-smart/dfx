@@ -22,6 +22,7 @@ export {
   APIModalSubmission,
   APIPingInteraction,
   PermissionFlagsBits as Permissions,
+  EmbedType,
   MessageFlags,
 } from "discord-api-types/v10"
 
