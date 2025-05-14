@@ -1,5 +1,6 @@
 import type {
   ActionRowComponentForMessageRequest,
+  ActionRowComponentForModalRequest,
   ButtonComponentForMessageRequest,
   ChannelSelectComponentForMessageRequest,
   ContainerComponentForMessageRequest,
@@ -44,6 +45,30 @@ export const grid = (
 export const singleColumn = (
   items: Array<ActionRowComponentForMessageRequest["components"][number]>,
 ): Array<ActionRowComponentForMessageRequest> =>
+  items.map(c => ({
+    type: MessageComponentTypes.ACTION_ROW,
+    components: [c],
+  }))
+
+/**
+ * Helper to create an Action Row grid.
+ */
+export const gridModal = (
+  items: ReadonlyArray<ReadonlyArray<TextInputComponentForModalRequest>>,
+): Array<ActionRowComponentForModalRequest> =>
+  items.map(
+    (components): ActionRowComponentForModalRequest => ({
+      type: MessageComponentTypes.ACTION_ROW,
+      components,
+    }),
+  )
+
+/**
+ * Helper to create a single column of components
+ */
+export const singleColumnModal = (
+  items: ReadonlyArray<TextInputComponentForModalRequest>,
+): Array<ActionRowComponentForModalRequest> =>
   items.map(c => ({
     type: MessageComponentTypes.ACTION_ROW,
     components: [c],
