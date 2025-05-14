@@ -7,6 +7,7 @@ import type {
   FileComponentForMessageRequest,
   MediaGalleryComponentForMessageRequest,
   MentionableSelectComponentForMessageRequest,
+  MessageCreateRequest,
   PollAnswerCreateRequest,
   PollCreateRequest,
   PollMediaCreateRequest,
@@ -16,63 +17,53 @@ import type {
   StringSelectComponentForMessageRequest,
   TextDisplayComponentForMessageRequest,
   TextInputComponentForModalRequest,
+  ThumbnailComponentForMessageRequest,
   UserSelectComponentForMessageRequest,
 } from "dfx/types"
 import {
   TextInputStyleTypes,
   ButtonStyleTypes,
   MessageComponentTypes,
+  MessageFlags,
 } from "dfx/types"
 
-/**
- * Helper to create an Action Row grid.
- */
-export const grid = (
-  items: ReadonlyArray<
-    ReadonlyArray<ActionRowComponentForMessageRequest["components"][number]>
-  >,
-): Array<ActionRowComponentForMessageRequest> =>
-  items.map(
-    (components): ActionRowComponentForMessageRequest => ({
-      type: MessageComponentTypes.ACTION_ROW,
-      components,
-    }),
-  )
+type ActionRowComponents = ReadonlyArray<
+  | ActionRowComponentForMessageRequest["components"][number]
+  | ActionRowComponentForModalRequest["components"][number]
+>
 
 /**
- * Helper to create a single column of components
+ * Helper to create an Action Row.
  */
-export const singleColumn = (
-  items: Array<ActionRowComponentForMessageRequest["components"][number]>,
-): Array<ActionRowComponentForMessageRequest> =>
-  items.map(c => ({
-    type: MessageComponentTypes.ACTION_ROW,
-    components: [c],
-  }))
+export const row = <const C extends ActionRowComponents>(
+  components: C,
+): {
+  readonly type: typeof MessageComponentTypes.ACTION_ROW
+  readonly components: C
+} => ({
+  type: MessageComponentTypes.ACTION_ROW,
+  components,
+})
 
 /**
  * Helper to create an Action Row grid.
  */
-export const gridModal = (
-  items: ReadonlyArray<ReadonlyArray<TextInputComponentForModalRequest>>,
-): Array<ActionRowComponentForModalRequest> =>
-  items.map(
-    (components): ActionRowComponentForModalRequest => ({
-      type: MessageComponentTypes.ACTION_ROW,
-      components,
-    }),
-  )
+export const grid = <C extends ActionRowComponents>(
+  items: ReadonlyArray<C>,
+): ReadonlyArray<{
+  readonly type: typeof MessageComponentTypes.ACTION_ROW
+  readonly components: C
+}> => items.map(row)
 
 /**
  * Helper to create a single column of components
  */
-export const singleColumnModal = (
-  items: ReadonlyArray<TextInputComponentForModalRequest>,
-): Array<ActionRowComponentForModalRequest> =>
-  items.map(c => ({
-    type: MessageComponentTypes.ACTION_ROW,
-    components: [c],
-  }))
+export const singleColumn = <C extends ActionRowComponents>(
+  items: C,
+): ReadonlyArray<{
+  readonly type: typeof MessageComponentTypes.ACTION_ROW
+  readonly components: C
+}> => items.map(c => row([c as any])) as any
 
 /**
  * Helper to create a button component.
@@ -208,10 +199,24 @@ export const section = (
 })
 
 /**
+ * Helper to create a thumbnail component
+ */
+export const thumbnail = (options: {
+  readonly url: string
+  readonly description?: string | undefined
+  readonly spoiler?: boolean | undefined
+}): ThumbnailComponentForMessageRequest => ({
+  type: MessageComponentTypes.THUMBNAIL,
+  description: options.description,
+  spoiler: options.spoiler,
+  media: { url: options.url },
+})
+
+/**
  * Helper to create a separator component
  */
 export const seperator = (
-  options: Omit<SeparatorComponentForMessageRequest, "type">,
+  options?: Omit<SeparatorComponentForMessageRequest, "type">,
 ): SeparatorComponentForMessageRequest => ({
   type: MessageComponentTypes.SEPARATOR,
   ...options,
@@ -225,4 +230,24 @@ export const textDisplay = (
 ): TextDisplayComponentForMessageRequest => ({
   type: MessageComponentTypes.TEXT_DISPLAY,
   content,
+})
+
+type MessageComponents = NonNullable<MessageCreateRequest["components"]>[number]
+
+/**
+ * Create a components v2 message
+ */
+export const components = <const C extends ReadonlyArray<MessageComponents>>(
+  components: C,
+  options?: {
+    readonly ephemeral?: boolean | undefined
+  },
+): {
+  readonly flags: MessageFlags
+  readonly components: C
+} => ({
+  flags: options?.ephemeral
+    ? MessageFlags.Ephemeral | MessageFlags.IsComponentsV2
+    : MessageFlags.IsComponentsV2,
+  components,
 })

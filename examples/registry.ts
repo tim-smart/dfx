@@ -1,5 +1,5 @@
 import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
-import { Discord, DiscordConfig, Ix } from "dfx"
+import { Discord, DiscordConfig, Ix, UI } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
@@ -27,9 +27,13 @@ const makeGreetService = Effect.gen(function* () {
       Effect.succeed(
         Ix.response({
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: `Hello ${ix.optionValue("name")}!`,
-          },
+          data: UI.components([
+            UI.textDisplay(`Hello ${ix.optionValue("name")}!`),
+            UI.row([
+              UI.button({ custom_id: "one", label: "Click me!" }),
+              UI.button({ custom_id: "two", label: "Click me 2!" }),
+            ]),
+          ]),
         }),
       ),
   )
