@@ -5620,34 +5620,34 @@ export const make = (
     getMyApplication: () =>
       HttpClientRequest.make("GET")(`/applications/@me`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateMyApplication: options =>
       HttpClientRequest.make("PATCH")(`/applications/@me`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getApplication: applicationId =>
       HttpClientRequest.make("GET")(`/applications/${applicationId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateApplication: (applicationId, options) =>
       HttpClientRequest.make("PATCH")(`/applications/${applicationId}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     applicationsGetActivityInstance: (applicationId, instanceId) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/activity-instances/${instanceId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     uploadApplicationAttachment: (applicationId, options) =>
       HttpClientRequest.make("POST")(
         `/applications/${applicationId}/attachment`,
       ).pipe(
         HttpClientRequest.bodyFormData(options),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listApplicationCommands: (applicationId, options) =>
       HttpClientRequest.make("GET")(
@@ -5659,14 +5659,14 @@ export const make = (
           ] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     bulkSetApplicationCommands: (applicationId, options) =>
       HttpClientRequest.make("PUT")(
         `/applications/${applicationId}/commands`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createApplicationCommand: (applicationId, options) =>
       HttpClientRequest.make("POST")(
@@ -5678,7 +5678,7 @@ export const make = (
     getApplicationCommand: (applicationId, commandId) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/commands/${commandId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteApplicationCommand: (applicationId, commandId) =>
       HttpClientRequest.make("DELETE")(
         `/applications/${applicationId}/commands/${commandId}`,
@@ -5688,23 +5688,23 @@ export const make = (
         `/applications/${applicationId}/commands/${commandId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listApplicationEmojis: applicationId =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/emojis`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     createApplicationEmoji: (applicationId, options) =>
       HttpClientRequest.make("POST")(
         `/applications/${applicationId}/emojis`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getApplicationEmoji: (applicationId, emojiId) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/emojis/${emojiId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteApplicationEmoji: (applicationId, emojiId) =>
       HttpClientRequest.make("DELETE")(
         `/applications/${applicationId}/emojis/${emojiId}`,
@@ -5714,7 +5714,7 @@ export const make = (
         `/applications/${applicationId}/emojis/${emojiId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getEntitlements: (applicationId, options) =>
       HttpClientRequest.make("GET")(
@@ -5732,19 +5732,19 @@ export const make = (
           only_active: options["only_active"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createEntitlement: (applicationId, options) =>
       HttpClientRequest.make("POST")(
         `/applications/${applicationId}/entitlements`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getEntitlement: (applicationId, entitlementId) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteEntitlement: (applicationId, entitlementId) =>
       HttpClientRequest.make("DELETE")(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
@@ -5763,14 +5763,14 @@ export const make = (
           ] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     bulkSetGuildApplicationCommands: (applicationId, guildId, options) =>
       HttpClientRequest.make("PUT")(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildApplicationCommand: (applicationId, guildId, options) =>
       HttpClientRequest.make("POST")(
@@ -5782,11 +5782,11 @@ export const make = (
     listGuildApplicationCommandPermissions: (applicationId, guildId) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     getGuildApplicationCommand: (applicationId, guildId, commandId) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteGuildApplicationCommand: (applicationId, guildId, commandId) =>
       HttpClientRequest.make("DELETE")(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
@@ -5801,7 +5801,7 @@ export const make = (
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildApplicationCommandPermissions: (
       applicationId,
@@ -5810,7 +5810,7 @@ export const make = (
     ) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     setGuildApplicationCommandPermissions: (
       applicationId,
       guildId,
@@ -5821,48 +5821,48 @@ export const make = (
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getApplicationRoleConnectionsMetadata: applicationId =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/role-connections/metadata`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     updateApplicationRoleConnectionsMetadata: (applicationId, options) =>
       HttpClientRequest.make("PUT")(
         `/applications/${applicationId}/role-connections/metadata`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getChannel: channelId =>
       HttpClientRequest.make("GET")(`/channels/${channelId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteChannel: channelId =>
       HttpClientRequest.make("DELETE")(`/channels/${channelId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateChannel: (channelId, options) =>
       HttpClientRequest.make("PATCH")(`/channels/${channelId}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     followChannel: (channelId, options) =>
       HttpClientRequest.make("POST")(`/channels/${channelId}/followers`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listChannelInvites: channelId =>
       HttpClientRequest.make("GET")(`/channels/${channelId}/invites`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createChannelInvite: (channelId, options) =>
       HttpClientRequest.make("POST")(`/channels/${channelId}/invites`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listMessages: (channelId, options) =>
       HttpClientRequest.make("GET")(`/channels/${channelId}/messages`).pipe(
@@ -5873,12 +5873,12 @@ export const make = (
           limit: options["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createMessage: (channelId, options) =>
       HttpClientRequest.make("POST")(`/channels/${channelId}/messages`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     bulkDeleteMessages: (channelId, options) =>
       HttpClientRequest.make("POST")(
@@ -5890,7 +5890,7 @@ export const make = (
     getMessage: (channelId, messageId) =>
       HttpClientRequest.make("GET")(
         `/channels/${channelId}/messages/${messageId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteMessage: (channelId, messageId) =>
       HttpClientRequest.make("DELETE")(
         `/channels/${channelId}/messages/${messageId}`,
@@ -5900,12 +5900,12 @@ export const make = (
         `/channels/${channelId}/messages/${messageId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     crosspostMessage: (channelId, messageId) =>
       HttpClientRequest.make("POST")(
         `/channels/${channelId}/messages/${messageId}/crosspost`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteAllMessageReactions: (channelId, messageId) =>
       HttpClientRequest.make("DELETE")(
         `/channels/${channelId}/messages/${messageId}/reactions`,
@@ -5920,7 +5920,7 @@ export const make = (
           type: options["type"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteAllMessageReactionsByEmoji: (channelId, messageId, emojiName) =>
       HttpClientRequest.make("DELETE")(
@@ -5943,7 +5943,7 @@ export const make = (
         `/channels/${channelId}/messages/${messageId}/threads`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     setChannelPermissionOverwrite: (channelId, overwriteId, options) =>
       HttpClientRequest.make("PUT")(
@@ -5959,7 +5959,7 @@ export const make = (
     listPinnedMessages: channelId =>
       HttpClientRequest.make("GET")(`/channels/${channelId}/pins`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     pinMessage: (channelId, messageId) =>
       HttpClientRequest.make("PUT")(
@@ -5978,18 +5978,18 @@ export const make = (
           limit: options["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     pollExpire: (channelId, messageId) =>
       HttpClientRequest.make("POST")(
         `/channels/${channelId}/polls/${messageId}/expire`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     addGroupDmUser: (channelId, userId, options) =>
       HttpClientRequest.make("PUT")(
         `/channels/${channelId}/recipients/${userId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteGroupDmUser: (channelId, userId) =>
       HttpClientRequest.make("DELETE")(
@@ -6012,7 +6012,7 @@ export const make = (
           after: options["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     joinThread: channelId =>
       HttpClientRequest.make("PUT")(
@@ -6030,7 +6030,7 @@ export const make = (
           with_member: options["with_member"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     addThreadMember: (channelId, userId) =>
       HttpClientRequest.make("PUT")(
@@ -6043,7 +6043,7 @@ export const make = (
     createThread: (channelId, options) =>
       HttpClientRequest.make("POST")(`/channels/${channelId}/threads`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listPrivateArchivedThreads: (channelId, options) =>
       HttpClientRequest.make("GET")(
@@ -6054,7 +6054,7 @@ export const make = (
           limit: options["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listPublicArchivedThreads: (channelId, options) =>
       HttpClientRequest.make("GET")(
@@ -6065,7 +6065,7 @@ export const make = (
           limit: options["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     threadSearch: (channelId, options) =>
       HttpClientRequest.make("GET")(
@@ -6085,12 +6085,12 @@ export const make = (
           offset: options["offset"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     triggerTypingIndicator: channelId =>
       HttpClientRequest.make("POST")(`/channels/${channelId}/typing`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listMyPrivateArchivedThreads: (channelId, options) =>
       HttpClientRequest.make("GET")(
@@ -6101,42 +6101,42 @@ export const make = (
           limit: options["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listChannelWebhooks: channelId =>
       HttpClientRequest.make("GET")(`/channels/${channelId}/webhooks`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createWebhook: (channelId, options) =>
       HttpClientRequest.make("POST")(`/channels/${channelId}/webhooks`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGateway: () =>
       HttpClientRequest.make("GET")(`/gateway`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getBotGateway: () =>
       HttpClientRequest.make("GET")(`/gateway/bot`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuild: options =>
       HttpClientRequest.make("POST")(`/guilds`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildTemplate: code =>
       HttpClientRequest.make("GET")(`/guilds/templates/${code}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildFromTemplate: (code, options) =>
       HttpClientRequest.make("POST")(`/guilds/templates/${code}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuild: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}`).pipe(
@@ -6144,7 +6144,7 @@ export const make = (
           with_counts: options["with_counts"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteGuild: guildId =>
       HttpClientRequest.make("DELETE")(`/guilds/${guildId}`).pipe(
@@ -6154,7 +6154,7 @@ export const make = (
     updateGuild: (guildId, options) =>
       HttpClientRequest.make("PATCH")(`/guilds/${guildId}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildAuditLogEntries: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/audit-logs`).pipe(
@@ -6167,23 +6167,23 @@ export const make = (
           limit: options["limit"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listAutoModerationRules: guildId =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/auto-moderation/rules`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     createAutoModerationRule: (guildId, options) =>
       HttpClientRequest.make("POST")(
         `/guilds/${guildId}/auto-moderation/rules`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getAutoModerationRule: (guildId, ruleId) =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteAutoModerationRule: (guildId, ruleId) =>
       HttpClientRequest.make("DELETE")(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
@@ -6193,7 +6193,7 @@ export const make = (
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildBans: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/bans`).pipe(
@@ -6203,12 +6203,12 @@ export const make = (
           after: options["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildBan: (guildId, userId) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/bans/${userId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     banUserFromGuild: (guildId, userId, options) =>
       HttpClientRequest.make("PUT")(`/guilds/${guildId}/bans/${userId}`).pipe(
@@ -6222,17 +6222,17 @@ export const make = (
     bulkBanUsersFromGuild: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/bulk-ban`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildChannels: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/channels`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildChannel: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/channels`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     bulkUpdateGuildChannels: (guildId, options) =>
       HttpClientRequest.make("PATCH")(`/guilds/${guildId}/channels`).pipe(
@@ -6242,17 +6242,17 @@ export const make = (
     listGuildEmojis: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/emojis`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildEmoji: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/emojis`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildEmoji: (guildId, emojiId) =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/emojis/${emojiId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteGuildEmoji: (guildId, emojiId) =>
       HttpClientRequest.make("DELETE")(
         `/guilds/${guildId}/emojis/${emojiId}`,
@@ -6262,12 +6262,12 @@ export const make = (
         `/guilds/${guildId}/emojis/${emojiId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildIntegrations: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/integrations`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteGuildIntegration: (guildId, integrationId) =>
       HttpClientRequest.make("DELETE")(
@@ -6276,7 +6276,7 @@ export const make = (
     listGuildInvites: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/invites`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildMembers: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/members`).pipe(
@@ -6285,12 +6285,12 @@ export const make = (
           after: options["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateMyGuildMember: (guildId, options) =>
       HttpClientRequest.make("PATCH")(`/guilds/${guildId}/members/@me`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     searchGuildMembers: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/members/search`).pipe(
@@ -6299,18 +6299,18 @@ export const make = (
           query: options["query"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildMember: (guildId, userId) =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/members/${userId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     addGuildMember: (guildId, userId, options) =>
       HttpClientRequest.make("PUT")(
         `/guilds/${guildId}/members/${userId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteGuildMember: (guildId, userId) =>
       HttpClientRequest.make("DELETE")(
@@ -6321,7 +6321,7 @@ export const make = (
         `/guilds/${guildId}/members/${userId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     addGuildMemberRole: (guildId, userId, roleId) =>
       HttpClientRequest.make("PUT")(
@@ -6334,26 +6334,26 @@ export const make = (
     setGuildMfaLevel: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/mfa`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildNewMemberWelcome: guildId =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/new-member-welcome`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     getGuildsOnboarding: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/onboarding`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     putGuildsOnboarding: (guildId, options) =>
       HttpClientRequest.make("PUT")(`/guilds/${guildId}/onboarding`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildPreview: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/preview`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     previewPruneGuild: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/prune`).pipe(
@@ -6362,37 +6362,37 @@ export const make = (
           include_roles: options["include_roles"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     pruneGuild: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/prune`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildVoiceRegions: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/regions`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildRoles: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/roles`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildRole: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/roles`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     bulkUpdateGuildRoles: (guildId, options) =>
       HttpClientRequest.make("PATCH")(`/guilds/${guildId}/roles`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildRole: (guildId, roleId) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/roles/${roleId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteGuildRole: (guildId, roleId) =>
       HttpClientRequest.make("DELETE")(
@@ -6403,7 +6403,7 @@ export const make = (
         `/guilds/${guildId}/roles/${roleId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildScheduledEvents: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/scheduled-events`).pipe(
@@ -6411,14 +6411,14 @@ export const make = (
           with_user_count: options["with_user_count"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildScheduledEvent: (guildId, options) =>
       HttpClientRequest.make("POST")(
         `/guilds/${guildId}/scheduled-events`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildScheduledEvent: (guildId, guildScheduledEventId, options) =>
       HttpClientRequest.make("GET")(
@@ -6428,7 +6428,7 @@ export const make = (
           with_user_count: options["with_user_count"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteGuildScheduledEvent: (guildId, guildScheduledEventId) =>
       HttpClientRequest.make("DELETE")(
@@ -6439,7 +6439,7 @@ export const make = (
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildScheduledEventUsers: (guildId, guildScheduledEventId, options) =>
       HttpClientRequest.make("GET")(
@@ -6452,23 +6452,23 @@ export const make = (
           after: options["after"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildSoundboardSounds: guildId =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/soundboard-sounds`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     createGuildSoundboardSound: (guildId, options) =>
       HttpClientRequest.make("POST")(
         `/guilds/${guildId}/soundboard-sounds`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildSoundboardSound: (guildId, soundId) =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteGuildSoundboardSound: (guildId, soundId) =>
       HttpClientRequest.make("DELETE")(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
@@ -6478,23 +6478,23 @@ export const make = (
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildStickers: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/stickers`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildSticker: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/stickers`).pipe(
         HttpClientRequest.bodyFormData(options),
         Effect.succeed,
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildSticker: (guildId, stickerId) =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/stickers/${stickerId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteGuildSticker: (guildId, stickerId) =>
       HttpClientRequest.make("DELETE")(
         `/guilds/${guildId}/stickers/${stickerId}`,
@@ -6504,47 +6504,47 @@ export const make = (
         `/guilds/${guildId}/stickers/${stickerId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listGuildTemplates: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/templates`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createGuildTemplate: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/templates`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     syncGuildTemplate: (guildId, code) =>
       HttpClientRequest.make("PUT")(
         `/guilds/${guildId}/templates/${code}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     deleteGuildTemplate: (guildId, code) =>
       HttpClientRequest.make("DELETE")(
         `/guilds/${guildId}/templates/${code}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     updateGuildTemplate: (guildId, code, options) =>
       HttpClientRequest.make("PATCH")(
         `/guilds/${guildId}/templates/${code}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getActiveGuildThreads: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/threads/active`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildVanityUrl: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/vanity-url`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getSelfVoiceState: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/voice-states/@me`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateSelfVoiceState: (guildId, options) =>
       HttpClientRequest.make("PATCH")(
@@ -6556,7 +6556,7 @@ export const make = (
     getVoiceState: (guildId, userId) =>
       HttpClientRequest.make("GET")(
         `/guilds/${guildId}/voice-states/${userId}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     updateVoiceState: (guildId, userId, options) =>
       HttpClientRequest.make("PATCH")(
         `/guilds/${guildId}/voice-states/${userId}`,
@@ -6567,32 +6567,32 @@ export const make = (
     getGuildWebhooks: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/webhooks`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildWelcomeScreen: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/welcome-screen`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateGuildWelcomeScreen: (guildId, options) =>
       HttpClientRequest.make("PATCH")(`/guilds/${guildId}/welcome-screen`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildWidgetSettings: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/widget`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateGuildWidgetSettings: (guildId, options) =>
       HttpClientRequest.make("PATCH")(`/guilds/${guildId}/widget`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildWidget: guildId =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/widget.json`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getGuildWidgetPng: (guildId, options) =>
       HttpClientRequest.make("GET")(`/guilds/${guildId}/widget.png`).pipe(
@@ -6610,7 +6610,7 @@ export const make = (
           with_response: options.params["with_response"] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     inviteResolve: (code, options) =>
       HttpClientRequest.make("GET")(`/invites/${code}`).pipe(
@@ -6621,39 +6621,39 @@ export const make = (
           ] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     inviteRevoke: code =>
       HttpClientRequest.make("DELETE")(`/invites/${code}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createOrJoinLobby: options =>
       HttpClientRequest.make("PUT")(`/lobbies`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createLobby: options =>
       HttpClientRequest.make("POST")(`/lobbies`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getLobby: lobbyId =>
       HttpClientRequest.make("GET")(`/lobbies/${lobbyId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     editLobby: (lobbyId, options) =>
       HttpClientRequest.make("PATCH")(`/lobbies/${lobbyId}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     editLobbyChannelLink: (lobbyId, options) =>
       HttpClientRequest.make("PATCH")(
         `/lobbies/${lobbyId}/channel-linking`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     leaveLobby: lobbyId =>
       HttpClientRequest.make("DELETE")(`/lobbies/${lobbyId}/members/@me`).pipe(
@@ -6665,7 +6665,7 @@ export const make = (
         `/lobbies/${lobbyId}/members/${userId}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteLobbyMember: (lobbyId, userId) =>
       HttpClientRequest.make("DELETE")(
@@ -6674,27 +6674,27 @@ export const make = (
     createLobbyMessage: (lobbyId, options) =>
       HttpClientRequest.make("POST")(`/lobbies/${lobbyId}/messages`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["201"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getMyOauth2Authorization: () =>
       HttpClientRequest.make("GET")(`/oauth2/@me`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getMyOauth2Application: () =>
       HttpClientRequest.make("GET")(`/oauth2/applications/@me`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getPublicKeys: () =>
       HttpClientRequest.make("GET")(`/oauth2/keys`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getOpenidConnectUserinfo: () =>
       HttpClientRequest.make("GET")(`/oauth2/userinfo`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     partnerSdkUnmergeProvisionalAccount: options =>
       HttpClientRequest.make("POST")(
@@ -6706,22 +6706,22 @@ export const make = (
     partnerSdkToken: options =>
       HttpClientRequest.make("POST")(`/partner-sdk/token`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getSoundboardDefaultSounds: () =>
       HttpClientRequest.make("GET")(`/soundboard-default-sounds`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     createStageInstance: options =>
       HttpClientRequest.make("POST")(`/stage-instances`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getStageInstance: channelId =>
       HttpClientRequest.make("GET")(`/stage-instances/${channelId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteStageInstance: channelId =>
       HttpClientRequest.make("DELETE")(`/stage-instances/${channelId}`).pipe(
@@ -6731,43 +6731,43 @@ export const make = (
     updateStageInstance: (channelId, options) =>
       HttpClientRequest.make("PATCH")(`/stage-instances/${channelId}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listStickerPacks: () =>
       HttpClientRequest.make("GET")(`/sticker-packs`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getStickerPack: packId =>
       HttpClientRequest.make("GET")(`/sticker-packs/${packId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getSticker: stickerId =>
       HttpClientRequest.make("GET")(`/stickers/${stickerId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getMyUser: () =>
       HttpClientRequest.make("GET")(`/users/@me`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     updateMyUser: options =>
       HttpClientRequest.make("PATCH")(`/users/@me`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getApplicationUserRoleConnection: applicationId =>
       HttpClientRequest.make("GET")(
         `/users/@me/applications/${applicationId}/role-connection`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     updateApplicationUserRoleConnection: (applicationId, options) =>
       HttpClientRequest.make("PUT")(
         `/users/@me/applications/${applicationId}/role-connection`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteApplicationUserRoleConnection: applicationId =>
       HttpClientRequest.make("DELETE")(
@@ -6776,12 +6776,12 @@ export const make = (
     createDm: options =>
       HttpClientRequest.make("POST")(`/users/@me/channels`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listMyConnections: () =>
       HttpClientRequest.make("GET")(`/users/@me/connections`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listMyGuilds: options =>
       HttpClientRequest.make("GET")(`/users/@me/guilds`).pipe(
@@ -6792,7 +6792,7 @@ export const make = (
           with_counts: options["with_counts"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     leaveGuild: guildId =>
       HttpClientRequest.make("DELETE")(`/users/@me/guilds/${guildId}`).pipe(
@@ -6802,22 +6802,22 @@ export const make = (
     getMyGuildMember: guildId =>
       HttpClientRequest.make("GET")(`/users/@me/guilds/${guildId}/member`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getUser: userId =>
       HttpClientRequest.make("GET")(`/users/${userId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     listVoiceRegions: () =>
       HttpClientRequest.make("GET")(`/voice/regions`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getWebhook: webhookId =>
       HttpClientRequest.make("GET")(`/webhooks/${webhookId}`).pipe(
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteWebhook: webhookId =>
       HttpClientRequest.make("DELETE")(`/webhooks/${webhookId}`).pipe(
@@ -6827,12 +6827,12 @@ export const make = (
     updateWebhook: (webhookId, options) =>
       HttpClientRequest.make("PATCH")(`/webhooks/${webhookId}`).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getWebhookByToken: (webhookId, webhookToken) =>
       HttpClientRequest.make("GET")(
         `/webhooks/${webhookId}/${webhookToken}`,
-      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["200"], {}))),
+      ).pipe(Effect.succeed, Effect.flatMap(onRequest(["2xx"], {}))),
     executeWebhook: (webhookId, webhookToken, options) =>
       HttpClientRequest.make("POST")(
         `/webhooks/${webhookId}/${webhookToken}`,
@@ -6845,7 +6845,7 @@ export const make = (
           ] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteWebhookByToken: (webhookId, webhookToken) =>
       HttpClientRequest.make("DELETE")(
@@ -6856,7 +6856,7 @@ export const make = (
         `/webhooks/${webhookId}/${webhookToken}`,
       ).pipe(
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     executeGithubCompatibleWebhook: (webhookId, webhookToken, options) =>
       HttpClientRequest.make("POST")(
@@ -6877,7 +6877,7 @@ export const make = (
           thread_id: options["thread_id"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteOriginalWebhookMessage: (webhookId, webhookToken, options) =>
       HttpClientRequest.make("DELETE")(
@@ -6900,7 +6900,7 @@ export const make = (
           ] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     getWebhookMessage: (webhookId, webhookToken, messageId, options) =>
       HttpClientRequest.make("GET")(
@@ -6910,7 +6910,7 @@ export const make = (
           thread_id: options["thread_id"] as UrlParams.Coercible,
         }),
         Effect.succeed,
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     deleteWebhookMessage: (webhookId, webhookToken, messageId, options) =>
       HttpClientRequest.make("DELETE")(
@@ -6933,7 +6933,7 @@ export const make = (
           ] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
     executeSlackCompatibleWebhook: (webhookId, webhookToken, options) =>
       HttpClientRequest.make("POST")(
@@ -6944,7 +6944,7 @@ export const make = (
           thread_id: options.params["thread_id"] as UrlParams.Coercible,
         }),
         req => Effect.orDie(HttpClientRequest.bodyJson(req, options.payload)),
-        Effect.flatMap(onRequest(["200"], {})),
+        Effect.flatMap(onRequest(["2xx"], {})),
       ),
   }
 }
