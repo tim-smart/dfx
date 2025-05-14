@@ -1,7 +1,7 @@
-import type * as Rest from "./DiscordREST/Generated"
+import type * as Rest from "dfx/DiscordREST/Generated"
 import type { APIInteraction } from "discord-api-types/v10"
 
-export * from "./DiscordREST/Generated"
+export * from "dfx/DiscordREST/Generated"
 export {
   APIInteraction,
   APIBaseApplicationCommandInteractionData,
