@@ -132,17 +132,12 @@ const make = Effect.gen(function* () {
     HttpClient.transformResponse(
       flow(
         Effect.tap(response => updateBuckets(response.request, response)),
-        Effect.catchTag("ResponseError", e => {
-          if (e.reason !== "StatusCode") {
-            return Effect.fail(e)
-          }
-
-          const request = e.request
-          const response = e.response
+        Effect.tap(response => {
+          const request = response.request
 
           switch (response.status) {
             case 403:
-              return Effect.zipRight(
+              return Effect.as(
                 Effect.all(
                   [
                     Effect.annotateLogs(
@@ -155,7 +150,7 @@ const make = Effect.gen(function* () {
                   ],
                   { concurrency: "unbounded", discard: true },
                 ),
-                Effect.fail(e),
+                response,
               )
 
             case 429:
@@ -179,7 +174,7 @@ const make = Effect.gen(function* () {
               )
           }
 
-          return Effect.fail(e)
+          return Effect.succeed(response)
         }),
         Effect.annotateLogs({
           package: "dfx",
