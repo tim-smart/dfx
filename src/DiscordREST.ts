@@ -132,7 +132,7 @@ const make = Effect.gen(function* () {
     HttpClient.transformResponse(
       flow(
         Effect.tap(response => updateBuckets(response.request, response)),
-        Effect.tap(response => {
+        Effect.flatMap(response => {
           const request = response.request
 
           switch (response.status) {
