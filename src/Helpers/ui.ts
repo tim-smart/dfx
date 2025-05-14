@@ -13,6 +13,7 @@ import type {
   SectionComponentForMessageRequest,
   SeparatorComponentForMessageRequest,
   StringSelectComponentForMessageRequest,
+  TextDisplayComponentForMessageRequest,
   TextInputComponentForModalRequest,
   UserSelectComponentForMessageRequest,
 } from "dfx/types"
@@ -187,4 +188,14 @@ export const seperator = (
 ): SeparatorComponentForMessageRequest => ({
   type: MessageComponentTypes.SEPARATOR,
   ...options,
+})
+
+/**
+ * Helper to create a text display component
+ */
+export const textDisplay = (
+  content: string,
+): TextDisplayComponentForMessageRequest => ({
+  type: MessageComponentTypes.TEXT_DISPLAY,
+  content,
 })

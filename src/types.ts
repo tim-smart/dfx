@@ -22,6 +22,7 @@ export {
   APIModalSubmission,
   APIPingInteraction,
   PermissionFlagsBits as Permissions,
+  MessageFlags,
 } from "discord-api-types/v10"
 
 export type Snowflake = Rest.SnowflakeType
