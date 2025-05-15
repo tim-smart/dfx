@@ -141,8 +141,6 @@ const make = Effect.gen(function* () {
           request,
           HttpBody.formData(formData.value),
         )
-        delete (request.headers as any)["content-type"]
-        delete (request.headers as any)["content-length"]
       }
       return requestRateLimit(request.url, request).pipe(
         Effect.zipLeft(globalRateLimit),
