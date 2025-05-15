@@ -119,34 +119,12 @@ const make = Effect.gen(function* () {
   })
 
   const httpClient: HttpClient.HttpClient = (yield* HttpClient.HttpClient).pipe(
-    HttpClient.mapRequestEffect(req => {
-      const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
-      let request = req.pipe(
-        HttpRequest.prependUrl(rest.baseUrl),
-        HttpRequest.setHeaders({
-          Authorization: `Bot ${Redacted.value(token)}`,
-          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
-        }),
-      )
-      const formData = Context.getOption(fiber.currentContext, DiscordFormData)
-      if (Option.isSome(formData)) {
-        if (request.body._tag === "Uint8Array") {
-          formData.value.set(
-            "payload_json",
-            new Blob([request.body.body], { type: "application/json" }),
-            "",
-          )
-        }
-        request = HttpClientRequest.setBody(
-          request,
-          HttpBody.formData(formData.value),
-        )
-      }
-      return requestRateLimit(request.url, request).pipe(
+    HttpClient.mapRequestEffect(request =>
+      requestRateLimit(request.url, request).pipe(
         Effect.zipLeft(globalRateLimit),
         Effect.as(request),
-      )
-    }),
+      ),
+    ),
     HttpClient.transformResponse(
       flow(
         Effect.tap(response => updateBuckets(response.request, response)),
@@ -201,9 +179,34 @@ const make = Effect.gen(function* () {
       ),
     ),
   )
+  const httpClientTransformed = HttpClient.mapRequestInput(httpClient, req => {
+    const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
+    let request = req.pipe(
+      HttpRequest.prependUrl(rest.baseUrl),
+      HttpRequest.setHeaders({
+        Authorization: `Bot ${Redacted.value(token)}`,
+        "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
+      }),
+    )
+    const formData = Context.getOption(fiber.currentContext, DiscordFormData)
+    if (Option.isSome(formData)) {
+      if (request.body._tag === "Uint8Array") {
+        formData.value.set(
+          "payload_json",
+          new Blob([request.body.body], { type: "application/json" }),
+          "",
+        )
+      }
+      request = HttpClientRequest.setBody(
+        request,
+        HttpBody.formData(formData.value),
+      )
+    }
+    return request
+  })
 
   return DiscordREST.of({
-    ...Discord.make(httpClient),
+    ...Discord.make(httpClientTransformed),
     withFormData(formData) {
       return Effect.provideService(DiscordFormData, formData)
     },
