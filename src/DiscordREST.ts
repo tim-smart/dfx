@@ -119,11 +119,8 @@ const make = Effect.gen(function* () {
   })
 
   const httpClient: HttpClient.HttpClient = (yield* HttpClient.HttpClient).pipe(
-    HttpClient.mapRequestEffect(request =>
-      requestRateLimit(request.url, request).pipe(
-        Effect.zipLeft(globalRateLimit),
-        Effect.as(request),
-      ),
+    HttpClient.tapRequest(request =>
+      Effect.zipRight(requestRateLimit(request.url, request), globalRateLimit),
     ),
     HttpClient.transformResponse(
       flow(
@@ -179,7 +176,7 @@ const make = Effect.gen(function* () {
       ),
     ),
   )
-  const httpClientTransformed = HttpClient.mapRequestInput(httpClient, req => {
+  const httpClientInitial = HttpClient.mapRequestInput(httpClient, req => {
     const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
     let request = req.pipe(
       HttpRequest.prependUrl(rest.baseUrl),
@@ -206,7 +203,7 @@ const make = Effect.gen(function* () {
   })
 
   return DiscordREST.of({
-    ...Discord.make(httpClientTransformed),
+    ...Discord.make(httpClientInitial),
     withFormData(formData) {
       return Effect.provideService(DiscordFormData, formData)
     },
