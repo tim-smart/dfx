@@ -285,10 +285,12 @@ export type InteractionResponse =
   | {
       type: typeof Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE
       data: Discord.IncomingWebhookInteractionRequest
+      files?: ReadonlyArray<File>
     }
   | {
       type: typeof Discord.InteractionCallbackTypes.UPDATE_MESSAGE
       data: Discord.IncomingWebhookUpdateForInteractionCallbackRequestPartial
+      files?: ReadonlyArray<File>
     }
   | {
       type: typeof Discord.InteractionCallbackTypes.MODAL

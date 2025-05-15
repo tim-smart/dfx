@@ -89,12 +89,14 @@ export const run =
           )
         : Effect.never
 
-      const handle = handlers(ix.definitions, (i, r) =>
-        rest.createInteractionResponse(i.id, i.token, {
-          params: {},
-          payload: r,
-        }),
-      )
+      const handle = handlers(ix.definitions, (i, r) => {
+        const hasFiles = "files" in r
+        const payload = hasFiles ? { ...r, files: undefined } : r
+        const effect = rest.createInteractionResponse(i.id, i.token, {
+          payload,
+        })
+        return hasFiles ? rest.withFiles(r.files as any)(effect) : effect
+      })
 
       const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
         Effect.withSpan(

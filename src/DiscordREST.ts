@@ -1,3 +1,4 @@
+import * as HttpBody from "@effect/platform/HttpBody"
 import * as HttpClient from "@effect/platform/HttpClient"
 import * as HttpRequest from "@effect/platform/HttpClientRequest"
 import type * as HttpResponse from "@effect/platform/HttpClientResponse"
@@ -19,8 +20,10 @@ import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
 import * as Redacted from "effect/Redacted"
-import type * as Fiber from "effect/Fiber"
 import { flow } from "effect/Function"
+import * as Context from "effect/Context"
+import * as Fiber from "effect/Fiber"
+import { HttpClientRequest } from "@effect/platform/index"
 
 const make = Effect.gen(function* () {
   const { rest, token } = yield* DiscordConfig
@@ -117,13 +120,30 @@ const make = Effect.gen(function* () {
 
   const httpClient: HttpClient.HttpClient = (yield* HttpClient.HttpClient).pipe(
     HttpClient.mapRequestEffect(req => {
-      const request = req.pipe(
+      const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
+      let request = req.pipe(
         HttpRequest.prependUrl(rest.baseUrl),
         HttpRequest.setHeaders({
           Authorization: `Bot ${Redacted.value(token)}`,
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       )
+      const formData = Context.getOption(fiber.currentContext, DiscordFormData)
+      if (Option.isSome(formData)) {
+        if (request.body._tag === "Uint8Array") {
+          formData.value.set(
+            "payload_json",
+            new Blob([request.body.body], { type: "application/json" }),
+            "",
+          )
+        }
+        request = HttpClientRequest.setBody(
+          request,
+          HttpBody.formData(formData.value),
+        )
+        delete (request.headers as any)["content-type"]
+        delete (request.headers as any)["content-length"]
+      }
       return requestRateLimit(request.url, request).pipe(
         Effect.zipLeft(globalRateLimit),
         Effect.as(request),
@@ -184,14 +204,45 @@ const make = Effect.gen(function* () {
     ),
   )
 
-  return Discord.make(httpClient)
+  return DiscordREST.of({
+    ...Discord.make(httpClient),
+    withFormData(formData) {
+      return Effect.provideService(DiscordFormData, formData)
+    },
+    withFiles(files) {
+      return <A, E, R>(
+        effect: Effect.Effect<A, E, R>,
+      ): Effect.Effect<A, E, R> =>
+        Effect.suspend(() => {
+          const formData = new FormData()
+          for (let i = 0; i < files.length; i++) {
+            formData.append(`files[${i}]`, files[i])
+          }
+          return Effect.provideService(effect, DiscordFormData, formData)
+        })
+    },
+  })
 })
+
+export class DiscordFormData extends Context.Tag("DiscordFormData")<
+  DiscordFormData,
+  FormData
+>() {}
 
 export interface DiscordREST {
   readonly _: unique symbol
 }
 
-export const DiscordREST = GenericTag<DiscordREST, Discord.DiscordRest>(
+export interface DiscordRestService extends Discord.DiscordRest {
+  withFormData(
+    formData: FormData,
+  ): <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
+  withFiles(
+    files: ReadonlyArray<File>,
+  ): <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
+}
+
+export const DiscordREST = GenericTag<DiscordREST, DiscordRestService>(
   "dfx/DiscordREST",
 )
 export const DiscordRESTLive: Layer.Layer<
