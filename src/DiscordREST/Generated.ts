@@ -266,6 +266,10 @@ export interface EmbeddedActivityInstance {
   readonly users: ReadonlyArray<SnowflakeType>
 }
 
+export interface UploadApplicationAttachmentRequest {
+  readonly file: Blob
+}
+
 export interface ApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
@@ -4979,6 +4983,13 @@ export interface SoundboardPatchRequestPartial {
 
 export type ListGuildStickers200 = ReadonlyArray<GuildStickerResponse>
 
+export interface CreateGuildStickerRequest {
+  readonly name: string
+  readonly tags: string
+  readonly description?: string | null | undefined
+  readonly file: Blob
+}
+
 export interface UpdateGuildStickerRequest {
   readonly name?: string | undefined
   readonly tags?: string | undefined
@@ -5998,14 +6009,17 @@ export const make = (
 ): DiscordRest => {
   const unexpectedStatus = (response: HttpClientResponse.HttpClientResponse) =>
     Effect.flatMap(
-      Effect.orElseSucceed(response.text, () => "Unexpected status code"),
+      Effect.orElseSucceed(response.json, () => "Unexpected status code"),
       description =>
         Effect.fail(
           new HttpClientError.ResponseError({
             request: response.request,
             response,
             reason: "StatusCode",
-            description,
+            description:
+              typeof description === "string"
+                ? description
+                : JSON.stringify(description),
           }),
         ),
     )
@@ -6083,7 +6097,10 @@ export const make = (
     uploadApplicationAttachment: (applicationId, options) =>
       HttpClientRequest.make("POST")(
         `/applications/${applicationId}/attachment`,
-      ).pipe(HttpClientRequest.bodyFormData(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyFormDataRecord(options as any),
+        onRequest(["2xx"]),
+      ),
     listApplicationCommands: (applicationId, options) =>
       HttpClientRequest.make("GET")(
         `/applications/${applicationId}/commands`,
@@ -6797,7 +6814,7 @@ export const make = (
       ),
     createGuildSticker: (guildId, options) =>
       HttpClientRequest.make("POST")(`/guilds/${guildId}/stickers`).pipe(
-        HttpClientRequest.bodyFormData(options),
+        HttpClientRequest.bodyFormDataRecord(options as any),
         onRequest(["2xx"]),
       ),
     getGuildSticker: (guildId, stickerId) =>
@@ -7208,7 +7225,7 @@ export interface DiscordRest {
   ) => Effect.Effect<EmbeddedActivityInstance, HttpClientError.HttpClientError>
   readonly uploadApplicationAttachment: (
     applicationId: string,
-    options: globalThis.FormData,
+    options: UploadApplicationAttachmentRequest,
   ) => Effect.Effect<
     ActivitiesAttachmentResponse,
     HttpClientError.HttpClientError
@@ -7856,7 +7873,7 @@ export interface DiscordRest {
   ) => Effect.Effect<ListGuildStickers200, HttpClientError.HttpClientError>
   readonly createGuildSticker: (
     guildId: string,
-    options: globalThis.FormData,
+    options: CreateGuildStickerRequest,
   ) => Effect.Effect<GuildStickerResponse, HttpClientError.HttpClientError>
   readonly getGuildSticker: (
     guildId: string,
