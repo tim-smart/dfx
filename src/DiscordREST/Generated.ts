@@ -6050,7 +6050,7 @@ export const make = (
     > =>
       Effect.flatMap(
         response.json as Effect.Effect<E, HttpClientError.ResponseError>,
-        cause => Effect.fail(DiscordRestError(tag, cause)),
+        cause => Effect.fail(DiscordRestError(tag, cause, response)),
       )
   const onRequest = (
     successCodes: ReadonlyArray<string>,
@@ -6073,90 +6073,82 @@ export const make = (
   return {
     httpClient,
     getMyApplication: () =>
-      HttpClientRequest.make("GET")(`/applications/@me`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/applications/@me`).pipe(onRequest(["2xx"])),
     updateMyApplication: options =>
-      HttpClientRequest.make("PATCH")(`/applications/@me`).pipe(
+      HttpClientRequest.patch(`/applications/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getApplication: applicationId =>
-      HttpClientRequest.make("GET")(`/applications/${applicationId}`).pipe(
+      HttpClientRequest.get(`/applications/${applicationId}`).pipe(
         onRequest(["2xx"]),
       ),
     updateApplication: (applicationId, options) =>
-      HttpClientRequest.make("PATCH")(`/applications/${applicationId}`).pipe(
+      HttpClientRequest.patch(`/applications/${applicationId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     applicationsGetActivityInstance: (applicationId, instanceId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/activity-instances/${instanceId}`,
       ).pipe(onRequest(["2xx"])),
     uploadApplicationAttachment: (applicationId, options) =>
-      HttpClientRequest.make("POST")(
-        `/applications/${applicationId}/attachment`,
-      ).pipe(
+      HttpClientRequest.post(`/applications/${applicationId}/attachment`).pipe(
         HttpClientRequest.bodyFormDataRecord(options as any),
         onRequest(["2xx"]),
       ),
     listApplicationCommands: (applicationId, options) =>
-      HttpClientRequest.make("GET")(
-        `/applications/${applicationId}/commands`,
-      ).pipe(
+      HttpClientRequest.get(`/applications/${applicationId}/commands`).pipe(
         HttpClientRequest.setUrlParams({
           with_localizations: options?.["with_localizations"] as any,
         }),
         onRequest(["2xx"]),
       ),
     bulkSetApplicationCommands: (applicationId, options) =>
-      HttpClientRequest.make("PUT")(
-        `/applications/${applicationId}/commands`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.put(`/applications/${applicationId}/commands`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     createApplicationCommand: (applicationId, options) =>
-      HttpClientRequest.make("POST")(
-        `/applications/${applicationId}/commands`,
-      ).pipe(
+      HttpClientRequest.post(`/applications/${applicationId}/commands`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["200", "201"]),
       ),
     getApplicationCommand: (applicationId, commandId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/commands/${commandId}`,
       ).pipe(onRequest(["2xx"])),
     deleteApplicationCommand: (applicationId, commandId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/applications/${applicationId}/commands/${commandId}`,
       ).pipe(onRequest([])),
     updateApplicationCommand: (applicationId, commandId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/applications/${applicationId}/commands/${commandId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     listApplicationEmojis: applicationId =>
-      HttpClientRequest.make("GET")(
-        `/applications/${applicationId}/emojis`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/applications/${applicationId}/emojis`).pipe(
+        onRequest(["2xx"]),
+      ),
     createApplicationEmoji: (applicationId, options) =>
-      HttpClientRequest.make("POST")(
-        `/applications/${applicationId}/emojis`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.post(`/applications/${applicationId}/emojis`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     getApplicationEmoji: (applicationId, emojiId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/emojis/${emojiId}`,
       ).pipe(onRequest(["2xx"])),
     deleteApplicationEmoji: (applicationId, emojiId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/applications/${applicationId}/emojis/${emojiId}`,
       ).pipe(onRequest([])),
     updateApplicationEmoji: (applicationId, emojiId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/applications/${applicationId}/emojis/${emojiId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     getEntitlements: (applicationId, options) =>
-      HttpClientRequest.make("GET")(
-        `/applications/${applicationId}/entitlements`,
-      ).pipe(
+      HttpClientRequest.get(`/applications/${applicationId}/entitlements`).pipe(
         HttpClientRequest.setUrlParams({
           user_id: options?.["user_id"] as any,
           sku_ids: options?.["sku_ids"] as any,
@@ -6171,23 +6163,23 @@ export const make = (
         onRequest(["2xx"]),
       ),
     createEntitlement: (applicationId, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/applications/${applicationId}/entitlements`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     getEntitlement: (applicationId, entitlementId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
       ).pipe(onRequest(["2xx"])),
     deleteEntitlement: (applicationId, entitlementId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
       ).pipe(onRequest([])),
     consumeEntitlement: (applicationId, entitlementId) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/applications/${applicationId}/entitlements/${entitlementId}/consume`,
       ).pipe(onRequest([])),
     listGuildApplicationCommands: (applicationId, guildId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6196,26 +6188,26 @@ export const make = (
         onRequest(["2xx"]),
       ),
     bulkSetGuildApplicationCommands: (applicationId, guildId, options) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     createGuildApplicationCommand: (applicationId, guildId, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["200", "201"]),
       ),
     listGuildApplicationCommandPermissions: (applicationId, guildId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
       ).pipe(onRequest(["2xx"])),
     getGuildApplicationCommand: (applicationId, guildId, commandId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
       ).pipe(onRequest(["2xx"])),
     deleteGuildApplicationCommand: (applicationId, guildId, commandId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
       ).pipe(onRequest([])),
     updateGuildApplicationCommand: (
@@ -6224,7 +6216,7 @@ export const make = (
       commandId,
       options,
     ) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     getGuildApplicationCommandPermissions: (
@@ -6232,7 +6224,7 @@ export const make = (
       guildId,
       commandId,
     ) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
       ).pipe(onRequest(["2xx"])),
     setGuildApplicationCommandPermissions: (
@@ -6241,46 +6233,42 @@ export const make = (
       commandId,
       options,
     ) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     getApplicationRoleConnectionsMetadata: applicationId =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/applications/${applicationId}/role-connections/metadata`,
       ).pipe(onRequest(["2xx"])),
     updateApplicationRoleConnectionsMetadata: (applicationId, options) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/applications/${applicationId}/role-connections/metadata`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     getChannel: channelId =>
-      HttpClientRequest.make("GET")(`/channels/${channelId}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/channels/${channelId}`).pipe(onRequest(["2xx"])),
     deleteChannel: channelId =>
-      HttpClientRequest.make("DELETE")(`/channels/${channelId}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.del(`/channels/${channelId}`).pipe(onRequest(["2xx"])),
     updateChannel: (channelId, options) =>
-      HttpClientRequest.make("PATCH")(`/channels/${channelId}`).pipe(
+      HttpClientRequest.patch(`/channels/${channelId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     followChannel: (channelId, options) =>
-      HttpClientRequest.make("POST")(`/channels/${channelId}/followers`).pipe(
+      HttpClientRequest.post(`/channels/${channelId}/followers`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listChannelInvites: channelId =>
-      HttpClientRequest.make("GET")(`/channels/${channelId}/invites`).pipe(
+      HttpClientRequest.get(`/channels/${channelId}/invites`).pipe(
         onRequest(["2xx"]),
       ),
     createChannelInvite: (channelId, options) =>
-      HttpClientRequest.make("POST")(`/channels/${channelId}/invites`).pipe(
+      HttpClientRequest.post(`/channels/${channelId}/invites`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listMessages: (channelId, options) =>
-      HttpClientRequest.make("GET")(`/channels/${channelId}/messages`).pipe(
+      HttpClientRequest.get(`/channels/${channelId}/messages`).pipe(
         HttpClientRequest.setUrlParams({
           around: options?.["around"] as any,
           before: options?.["before"] as any,
@@ -6290,36 +6278,36 @@ export const make = (
         onRequest(["2xx"]),
       ),
     createMessage: (channelId, options) =>
-      HttpClientRequest.make("POST")(`/channels/${channelId}/messages`).pipe(
+      HttpClientRequest.post(`/channels/${channelId}/messages`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     bulkDeleteMessages: (channelId, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/channels/${channelId}/messages/bulk-delete`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
     getMessage: (channelId, messageId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/messages/${messageId}`,
       ).pipe(onRequest(["2xx"])),
     deleteMessage: (channelId, messageId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}`,
       ).pipe(onRequest([])),
     updateMessage: (channelId, messageId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/channels/${channelId}/messages/${messageId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     crosspostMessage: (channelId, messageId) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/channels/${channelId}/messages/${messageId}/crosspost`,
       ).pipe(onRequest(["2xx"])),
     deleteAllMessageReactions: (channelId, messageId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions`,
       ).pipe(onRequest([])),
     listMessageReactionsByEmoji: (channelId, messageId, emojiName, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6330,47 +6318,47 @@ export const make = (
         onRequest(["2xx"]),
       ),
     deleteAllMessageReactionsByEmoji: (channelId, messageId, emojiName) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}`,
       ).pipe(onRequest([])),
     addMyMessageReaction: (channelId, messageId, emojiName) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/@me`,
       ).pipe(onRequest([])),
     deleteMyMessageReaction: (channelId, messageId, emojiName) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/@me`,
       ).pipe(onRequest([])),
     deleteUserMessageReaction: (channelId, messageId, emojiName, userId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/${userId}`,
       ).pipe(onRequest([])),
     createThreadFromMessage: (channelId, messageId, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/channels/${channelId}/messages/${messageId}/threads`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     setChannelPermissionOverwrite: (channelId, overwriteId, options) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/channels/${channelId}/permissions/${overwriteId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
     deleteChannelPermissionOverwrite: (channelId, overwriteId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/permissions/${overwriteId}`,
       ).pipe(onRequest([])),
     listPinnedMessages: channelId =>
-      HttpClientRequest.make("GET")(`/channels/${channelId}/pins`).pipe(
+      HttpClientRequest.get(`/channels/${channelId}/pins`).pipe(
         onRequest(["2xx"]),
       ),
     pinMessage: (channelId, messageId) =>
-      HttpClientRequest.make("PUT")(
-        `/channels/${channelId}/pins/${messageId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.put(`/channels/${channelId}/pins/${messageId}`).pipe(
+        onRequest([]),
+      ),
     unpinMessage: (channelId, messageId) =>
-      HttpClientRequest.make("DELETE")(
-        `/channels/${channelId}/pins/${messageId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/channels/${channelId}/pins/${messageId}`).pipe(
+        onRequest([]),
+      ),
     getAnswerVoters: (channelId, messageId, answerId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/polls/${messageId}/answers/${answerId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6380,25 +6368,24 @@ export const make = (
         onRequest(["2xx"]),
       ),
     pollExpire: (channelId, messageId) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/channels/${channelId}/polls/${messageId}/expire`,
       ).pipe(onRequest(["2xx"])),
     addGroupDmUser: (channelId, userId, options) =>
-      HttpClientRequest.make("PUT")(
-        `/channels/${channelId}/recipients/${userId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.put(`/channels/${channelId}/recipients/${userId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     deleteGroupDmUser: (channelId, userId) =>
-      HttpClientRequest.make("DELETE")(
-        `/channels/${channelId}/recipients/${userId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/channels/${channelId}/recipients/${userId}`).pipe(
+        onRequest([]),
+      ),
     sendSoundboardSound: (channelId, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/channels/${channelId}/send-soundboard-sound`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
     listThreadMembers: (channelId, options) =>
-      HttpClientRequest.make("GET")(
-        `/channels/${channelId}/thread-members`,
-      ).pipe(
+      HttpClientRequest.get(`/channels/${channelId}/thread-members`).pipe(
         HttpClientRequest.setUrlParams({
           with_member: options?.["with_member"] as any,
           limit: options?.["limit"] as any,
@@ -6407,15 +6394,15 @@ export const make = (
         onRequest(["2xx"]),
       ),
     joinThread: channelId =>
-      HttpClientRequest.make("PUT")(
-        `/channels/${channelId}/thread-members/@me`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.put(`/channels/${channelId}/thread-members/@me`).pipe(
+        onRequest([]),
+      ),
     leaveThread: channelId =>
-      HttpClientRequest.make("DELETE")(
-        `/channels/${channelId}/thread-members/@me`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/channels/${channelId}/thread-members/@me`).pipe(
+        onRequest([]),
+      ),
     getThreadMember: (channelId, userId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/thread-members/${userId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6424,20 +6411,20 @@ export const make = (
         onRequest(["2xx"]),
       ),
     addThreadMember: (channelId, userId) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/channels/${channelId}/thread-members/${userId}`,
       ).pipe(onRequest([])),
     deleteThreadMember: (channelId, userId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/channels/${channelId}/thread-members/${userId}`,
       ).pipe(onRequest([])),
     createThread: (channelId, options) =>
-      HttpClientRequest.make("POST")(`/channels/${channelId}/threads`).pipe(
+      HttpClientRequest.post(`/channels/${channelId}/threads`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listPrivateArchivedThreads: (channelId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/threads/archived/private`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6447,7 +6434,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     listPublicArchivedThreads: (channelId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/threads/archived/public`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6457,9 +6444,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     threadSearch: (channelId, options) =>
-      HttpClientRequest.make("GET")(
-        `/channels/${channelId}/threads/search`,
-      ).pipe(
+      HttpClientRequest.get(`/channels/${channelId}/threads/search`).pipe(
         HttpClientRequest.setUrlParams({
           name: options?.["name"] as any,
           slop: options?.["slop"] as any,
@@ -6476,11 +6461,11 @@ export const make = (
         onRequest(["2xx"]),
       ),
     triggerTypingIndicator: channelId =>
-      HttpClientRequest.make("POST")(`/channels/${channelId}/typing`).pipe(
+      HttpClientRequest.post(`/channels/${channelId}/typing`).pipe(
         onRequest(["2xx"]),
       ),
     listMyPrivateArchivedThreads: (channelId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/channels/${channelId}/users/@me/threads/archived/private`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6490,50 +6475,48 @@ export const make = (
         onRequest(["2xx"]),
       ),
     listChannelWebhooks: channelId =>
-      HttpClientRequest.make("GET")(`/channels/${channelId}/webhooks`).pipe(
+      HttpClientRequest.get(`/channels/${channelId}/webhooks`).pipe(
         onRequest(["2xx"]),
       ),
     createWebhook: (channelId, options) =>
-      HttpClientRequest.make("POST")(`/channels/${channelId}/webhooks`).pipe(
+      HttpClientRequest.post(`/channels/${channelId}/webhooks`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGateway: () =>
-      HttpClientRequest.make("GET")(`/gateway`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/gateway`).pipe(onRequest(["2xx"])),
     getBotGateway: () =>
-      HttpClientRequest.make("GET")(`/gateway/bot`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/gateway/bot`).pipe(onRequest(["2xx"])),
     createGuild: options =>
-      HttpClientRequest.make("POST")(`/guilds`).pipe(
+      HttpClientRequest.post(`/guilds`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildTemplate: code =>
-      HttpClientRequest.make("GET")(`/guilds/templates/${code}`).pipe(
+      HttpClientRequest.get(`/guilds/templates/${code}`).pipe(
         onRequest(["2xx"]),
       ),
     createGuildFromTemplate: (code, options) =>
-      HttpClientRequest.make("POST")(`/guilds/templates/${code}`).pipe(
+      HttpClientRequest.post(`/guilds/templates/${code}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuild: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}`).pipe(
         HttpClientRequest.setUrlParams({
           with_counts: options?.["with_counts"] as any,
         }),
         onRequest(["2xx"]),
       ),
     deleteGuild: guildId =>
-      HttpClientRequest.make("DELETE")(`/guilds/${guildId}`).pipe(
-        onRequest([]),
-      ),
+      HttpClientRequest.del(`/guilds/${guildId}`).pipe(onRequest([])),
     updateGuild: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(`/guilds/${guildId}`).pipe(
+      HttpClientRequest.patch(`/guilds/${guildId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listGuildAuditLogEntries: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/audit-logs`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/audit-logs`).pipe(
         HttpClientRequest.setUrlParams({
           user_id: options?.["user_id"] as any,
           target_id: options?.["target_id"] as any,
@@ -6545,27 +6528,28 @@ export const make = (
         onRequest(["2xx"]),
       ),
     listAutoModerationRules: guildId =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/auto-moderation/rules`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/auto-moderation/rules`).pipe(
+        onRequest(["2xx"]),
+      ),
     createAutoModerationRule: (guildId, options) =>
-      HttpClientRequest.make("POST")(
-        `/guilds/${guildId}/auto-moderation/rules`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.post(`/guilds/${guildId}/auto-moderation/rules`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     getAutoModerationRule: (guildId, ruleId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
       ).pipe(onRequest(["2xx"])),
     deleteAutoModerationRule: (guildId, ruleId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
       ).pipe(onRequest([])),
     updateAutoModerationRule: (guildId, ruleId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     listGuildBans: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/bans`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/bans`).pipe(
         HttpClientRequest.setUrlParams({
           limit: options?.["limit"] as any,
           before: options?.["before"] as any,
@@ -6574,72 +6558,73 @@ export const make = (
         onRequest(["2xx"]),
       ),
     getGuildBan: (guildId, userId) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/bans/${userId}`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/bans/${userId}`).pipe(
         onRequest(["2xx"]),
       ),
     banUserFromGuild: (guildId, userId, options) =>
-      HttpClientRequest.make("PUT")(`/guilds/${guildId}/bans/${userId}`).pipe(
+      HttpClientRequest.put(`/guilds/${guildId}/bans/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest([]),
       ),
     unbanUserFromGuild: (guildId, userId) =>
-      HttpClientRequest.make("DELETE")(
-        `/guilds/${guildId}/bans/${userId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/guilds/${guildId}/bans/${userId}`).pipe(
+        onRequest([]),
+      ),
     bulkBanUsersFromGuild: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/bulk-ban`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/bulk-ban`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listGuildChannels: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/channels`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/channels`).pipe(
         onRequest(["2xx"]),
       ),
     createGuildChannel: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/channels`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/channels`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     bulkUpdateGuildChannels: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(`/guilds/${guildId}/channels`).pipe(
+      HttpClientRequest.patch(`/guilds/${guildId}/channels`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest([]),
       ),
     listGuildEmojis: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/emojis`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/emojis`).pipe(
         onRequest(["2xx"]),
       ),
     createGuildEmoji: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/emojis`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/emojis`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildEmoji: (guildId, emojiId) =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/emojis/${emojiId}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
+        onRequest(["2xx"]),
+      ),
     deleteGuildEmoji: (guildId, emojiId) =>
-      HttpClientRequest.make("DELETE")(
-        `/guilds/${guildId}/emojis/${emojiId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
+        onRequest([]),
+      ),
     updateGuildEmoji: (guildId, emojiId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/emojis/${emojiId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     listGuildIntegrations: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/integrations`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/integrations`).pipe(
         onRequest(["2xx"]),
       ),
     deleteGuildIntegration: (guildId, integrationId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/guilds/${guildId}/integrations/${integrationId}`,
       ).pipe(onRequest([])),
     listGuildInvites: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/invites`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/invites`).pipe(
         onRequest(["2xx"]),
       ),
     listGuildMembers: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/members`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/members`).pipe(
         HttpClientRequest.setUrlParams({
           limit: options?.["limit"] as any,
           after: options?.["after"] as any,
@@ -6647,12 +6632,12 @@ export const make = (
         onRequest(["2xx"]),
       ),
     updateMyGuildMember: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(`/guilds/${guildId}/members/@me`).pipe(
+      HttpClientRequest.patch(`/guilds/${guildId}/members/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     searchGuildMembers: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/members/search`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/members/search`).pipe(
         HttpClientRequest.setUrlParams({
           limit: options?.["limit"] as any,
           query: options?.["query"] as any,
@@ -6660,53 +6645,55 @@ export const make = (
         onRequest(["2xx"]),
       ),
     getGuildMember: (guildId, userId) =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/members/${userId}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/members/${userId}`).pipe(
+        onRequest(["2xx"]),
+      ),
     addGuildMember: (guildId, userId, options) =>
-      HttpClientRequest.make("PUT")(
-        `/guilds/${guildId}/members/${userId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.put(`/guilds/${guildId}/members/${userId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     deleteGuildMember: (guildId, userId) =>
-      HttpClientRequest.make("DELETE")(
-        `/guilds/${guildId}/members/${userId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/guilds/${guildId}/members/${userId}`).pipe(
+        onRequest([]),
+      ),
     updateGuildMember: (guildId, userId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/members/${userId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/guilds/${guildId}/members/${userId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     addGuildMemberRole: (guildId, userId, roleId) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       ).pipe(onRequest([])),
     deleteGuildMemberRole: (guildId, userId, roleId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       ).pipe(onRequest([])),
     setGuildMfaLevel: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/mfa`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/mfa`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildNewMemberWelcome: guildId =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/new-member-welcome`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/new-member-welcome`).pipe(
+        onRequest(["2xx"]),
+      ),
     getGuildsOnboarding: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/onboarding`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/onboarding`).pipe(
         onRequest(["2xx"]),
       ),
     putGuildsOnboarding: (guildId, options) =>
-      HttpClientRequest.make("PUT")(`/guilds/${guildId}/onboarding`).pipe(
+      HttpClientRequest.put(`/guilds/${guildId}/onboarding`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildPreview: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/preview`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/preview`).pipe(
         onRequest(["2xx"]),
       ),
     previewPruneGuild: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/prune`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/prune`).pipe(
         HttpClientRequest.setUrlParams({
           days: options?.["days"] as any,
           include_roles: options?.["include_roles"] as any,
@@ -6714,53 +6701,55 @@ export const make = (
         onRequest(["2xx"]),
       ),
     pruneGuild: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/prune`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/prune`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listGuildVoiceRegions: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/regions`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/regions`).pipe(
         onRequest(["2xx"]),
       ),
     listGuildRoles: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/roles`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/roles`).pipe(
         onRequest(["2xx"]),
       ),
     createGuildRole: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/roles`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/roles`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     bulkUpdateGuildRoles: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(`/guilds/${guildId}/roles`).pipe(
+      HttpClientRequest.patch(`/guilds/${guildId}/roles`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildRole: (guildId, roleId) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/roles/${roleId}`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/roles/${roleId}`).pipe(
         onRequest(["2xx"]),
       ),
     deleteGuildRole: (guildId, roleId) =>
-      HttpClientRequest.make("DELETE")(
-        `/guilds/${guildId}/roles/${roleId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/guilds/${guildId}/roles/${roleId}`).pipe(
+        onRequest([]),
+      ),
     updateGuildRole: (guildId, roleId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/roles/${roleId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/guilds/${guildId}/roles/${roleId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     listGuildScheduledEvents: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/scheduled-events`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/scheduled-events`).pipe(
         HttpClientRequest.setUrlParams({
           with_user_count: options?.["with_user_count"] as any,
         }),
         onRequest(["2xx"]),
       ),
     createGuildScheduledEvent: (guildId, options) =>
-      HttpClientRequest.make("POST")(
-        `/guilds/${guildId}/scheduled-events`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.post(`/guilds/${guildId}/scheduled-events`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     getGuildScheduledEvent: (guildId, guildScheduledEventId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6769,15 +6758,15 @@ export const make = (
         onRequest(["2xx"]),
       ),
     deleteGuildScheduledEvent: (guildId, guildScheduledEventId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(onRequest([])),
     updateGuildScheduledEvent: (guildId, guildScheduledEventId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     listGuildScheduledEventUsers: (guildId, guildScheduledEventId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6789,124 +6778,129 @@ export const make = (
         onRequest(["2xx"]),
       ),
     listGuildSoundboardSounds: guildId =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/soundboard-sounds`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/soundboard-sounds`).pipe(
+        onRequest(["2xx"]),
+      ),
     createGuildSoundboardSound: (guildId, options) =>
-      HttpClientRequest.make("POST")(
-        `/guilds/${guildId}/soundboard-sounds`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.post(`/guilds/${guildId}/soundboard-sounds`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     getGuildSoundboardSound: (guildId, soundId) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
       ).pipe(onRequest(["2xx"])),
     deleteGuildSoundboardSound: (guildId, soundId) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
       ).pipe(onRequest([])),
     updateGuildSoundboardSound: (guildId, soundId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     listGuildStickers: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/stickers`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/stickers`).pipe(
         onRequest(["2xx"]),
       ),
     createGuildSticker: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/stickers`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/stickers`).pipe(
         HttpClientRequest.bodyFormDataRecord(options as any),
         onRequest(["2xx"]),
       ),
     getGuildSticker: (guildId, stickerId) =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/stickers/${stickerId}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
+        onRequest(["2xx"]),
+      ),
     deleteGuildSticker: (guildId, stickerId) =>
-      HttpClientRequest.make("DELETE")(
-        `/guilds/${guildId}/stickers/${stickerId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
+        onRequest([]),
+      ),
     updateGuildSticker: (guildId, stickerId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/stickers/${stickerId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     listGuildTemplates: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/templates`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/templates`).pipe(
         onRequest(["2xx"]),
       ),
     createGuildTemplate: (guildId, options) =>
-      HttpClientRequest.make("POST")(`/guilds/${guildId}/templates`).pipe(
+      HttpClientRequest.post(`/guilds/${guildId}/templates`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     syncGuildTemplate: (guildId, code) =>
-      HttpClientRequest.make("PUT")(
-        `/guilds/${guildId}/templates/${code}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.put(`/guilds/${guildId}/templates/${code}`).pipe(
+        onRequest(["2xx"]),
+      ),
     deleteGuildTemplate: (guildId, code) =>
-      HttpClientRequest.make("DELETE")(
-        `/guilds/${guildId}/templates/${code}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.del(`/guilds/${guildId}/templates/${code}`).pipe(
+        onRequest(["2xx"]),
+      ),
     updateGuildTemplate: (guildId, code, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/templates/${code}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/guilds/${guildId}/templates/${code}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     getActiveGuildThreads: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/threads/active`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/threads/active`).pipe(
         onRequest(["2xx"]),
       ),
     getGuildVanityUrl: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/vanity-url`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/vanity-url`).pipe(
         onRequest(["2xx"]),
       ),
     getSelfVoiceState: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/voice-states/@me`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/voice-states/@me`).pipe(
         onRequest(["2xx"]),
       ),
     updateSelfVoiceState: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/voice-states/@me`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
+      HttpClientRequest.patch(`/guilds/${guildId}/voice-states/@me`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([]),
+      ),
     getVoiceState: (guildId, userId) =>
-      HttpClientRequest.make("GET")(
-        `/guilds/${guildId}/voice-states/${userId}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/guilds/${guildId}/voice-states/${userId}`).pipe(
+        onRequest(["2xx"]),
+      ),
     updateVoiceState: (guildId, userId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/guilds/${guildId}/voice-states/${userId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
+      HttpClientRequest.patch(`/guilds/${guildId}/voice-states/${userId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([]),
+      ),
     getGuildWebhooks: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/webhooks`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/webhooks`).pipe(
         onRequest(["2xx"]),
       ),
     getGuildWelcomeScreen: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/welcome-screen`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/welcome-screen`).pipe(
         onRequest(["2xx"]),
       ),
     updateGuildWelcomeScreen: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(`/guilds/${guildId}/welcome-screen`).pipe(
+      HttpClientRequest.patch(`/guilds/${guildId}/welcome-screen`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildWidgetSettings: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/widget`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/widget`).pipe(
         onRequest(["2xx"]),
       ),
     updateGuildWidgetSettings: (guildId, options) =>
-      HttpClientRequest.make("PATCH")(`/guilds/${guildId}/widget`).pipe(
+      HttpClientRequest.patch(`/guilds/${guildId}/widget`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getGuildWidget: guildId =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/widget.json`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/widget.json`).pipe(
         onRequest(["2xx"]),
       ),
     getGuildWidgetPng: (guildId, options) =>
-      HttpClientRequest.make("GET")(`/guilds/${guildId}/widget.png`).pipe(
+      HttpClientRequest.get(`/guilds/${guildId}/widget.png`).pipe(
         HttpClientRequest.setUrlParams({ style: options?.["style"] as any }),
         onRequest([]),
       ),
     createInteractionResponse: (interactionId, interactionToken, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/interactions/${interactionId}/${interactionToken}/callback`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -6916,7 +6910,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     inviteResolve: (code, options) =>
-      HttpClientRequest.make("GET")(`/invites/${code}`).pipe(
+      HttpClientRequest.get(`/invites/${code}`).pipe(
         HttpClientRequest.setUrlParams({
           with_counts: options?.["with_counts"] as any,
           guild_scheduled_event_id: options?.[
@@ -6926,132 +6920,125 @@ export const make = (
         onRequest(["2xx"]),
       ),
     inviteRevoke: code =>
-      HttpClientRequest.make("DELETE")(`/invites/${code}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.del(`/invites/${code}`).pipe(onRequest(["2xx"])),
     createOrJoinLobby: options =>
-      HttpClientRequest.make("PUT")(`/lobbies`).pipe(
+      HttpClientRequest.put(`/lobbies`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     createLobby: options =>
-      HttpClientRequest.make("POST")(`/lobbies`).pipe(
+      HttpClientRequest.post(`/lobbies`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getLobby: lobbyId =>
-      HttpClientRequest.make("GET")(`/lobbies/${lobbyId}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/lobbies/${lobbyId}`).pipe(onRequest(["2xx"])),
     editLobby: (lobbyId, options) =>
-      HttpClientRequest.make("PATCH")(`/lobbies/${lobbyId}`).pipe(
+      HttpClientRequest.patch(`/lobbies/${lobbyId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     editLobbyChannelLink: (lobbyId, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/lobbies/${lobbyId}/channel-linking`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/lobbies/${lobbyId}/channel-linking`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     leaveLobby: lobbyId =>
-      HttpClientRequest.make("DELETE")(`/lobbies/${lobbyId}/members/@me`).pipe(
+      HttpClientRequest.del(`/lobbies/${lobbyId}/members/@me`).pipe(
         onRequest([]),
       ),
     addLobbyMember: (lobbyId, userId, options) =>
-      HttpClientRequest.make("PUT")(
-        `/lobbies/${lobbyId}/members/${userId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.put(`/lobbies/${lobbyId}/members/${userId}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     deleteLobbyMember: (lobbyId, userId) =>
-      HttpClientRequest.make("DELETE")(
-        `/lobbies/${lobbyId}/members/${userId}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/lobbies/${lobbyId}/members/${userId}`).pipe(
+        onRequest([]),
+      ),
     createLobbyMessage: (lobbyId, options) =>
-      HttpClientRequest.make("POST")(`/lobbies/${lobbyId}/messages`).pipe(
+      HttpClientRequest.post(`/lobbies/${lobbyId}/messages`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getMyOauth2Authorization: () =>
-      HttpClientRequest.make("GET")(`/oauth2/@me`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/oauth2/@me`).pipe(onRequest(["2xx"])),
     getMyOauth2Application: () =>
-      HttpClientRequest.make("GET")(`/oauth2/applications/@me`).pipe(
+      HttpClientRequest.get(`/oauth2/applications/@me`).pipe(
         onRequest(["2xx"]),
       ),
     getPublicKeys: () =>
-      HttpClientRequest.make("GET")(`/oauth2/keys`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/oauth2/keys`).pipe(onRequest(["2xx"])),
     getOpenidConnectUserinfo: () =>
-      HttpClientRequest.make("GET")(`/oauth2/userinfo`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/oauth2/userinfo`).pipe(onRequest(["2xx"])),
     partnerSdkUnmergeProvisionalAccount: options =>
-      HttpClientRequest.make("POST")(
-        `/partner-sdk/provisional-accounts/unmerge`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
+      HttpClientRequest.post(`/partner-sdk/provisional-accounts/unmerge`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([]),
+      ),
     partnerSdkToken: options =>
-      HttpClientRequest.make("POST")(`/partner-sdk/token`).pipe(
+      HttpClientRequest.post(`/partner-sdk/token`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getSoundboardDefaultSounds: () =>
-      HttpClientRequest.make("GET")(`/soundboard-default-sounds`).pipe(
+      HttpClientRequest.get(`/soundboard-default-sounds`).pipe(
         onRequest(["2xx"]),
       ),
     createStageInstance: options =>
-      HttpClientRequest.make("POST")(`/stage-instances`).pipe(
+      HttpClientRequest.post(`/stage-instances`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getStageInstance: channelId =>
-      HttpClientRequest.make("GET")(`/stage-instances/${channelId}`).pipe(
+      HttpClientRequest.get(`/stage-instances/${channelId}`).pipe(
         onRequest(["2xx"]),
       ),
     deleteStageInstance: channelId =>
-      HttpClientRequest.make("DELETE")(`/stage-instances/${channelId}`).pipe(
+      HttpClientRequest.del(`/stage-instances/${channelId}`).pipe(
         onRequest([]),
       ),
     updateStageInstance: (channelId, options) =>
-      HttpClientRequest.make("PATCH")(`/stage-instances/${channelId}`).pipe(
+      HttpClientRequest.patch(`/stage-instances/${channelId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listStickerPacks: () =>
-      HttpClientRequest.make("GET")(`/sticker-packs`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/sticker-packs`).pipe(onRequest(["2xx"])),
     getStickerPack: packId =>
-      HttpClientRequest.make("GET")(`/sticker-packs/${packId}`).pipe(
+      HttpClientRequest.get(`/sticker-packs/${packId}`).pipe(
         onRequest(["2xx"]),
       ),
     getSticker: stickerId =>
-      HttpClientRequest.make("GET")(`/stickers/${stickerId}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/stickers/${stickerId}`).pipe(onRequest(["2xx"])),
     getMyUser: () =>
-      HttpClientRequest.make("GET")(`/users/@me`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/users/@me`).pipe(onRequest(["2xx"])),
     updateMyUser: options =>
-      HttpClientRequest.make("PATCH")(`/users/@me`).pipe(
+      HttpClientRequest.patch(`/users/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getApplicationUserRoleConnection: applicationId =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/users/@me/applications/${applicationId}/role-connection`,
       ).pipe(onRequest(["2xx"])),
     updateApplicationUserRoleConnection: (applicationId, options) =>
-      HttpClientRequest.make("PUT")(
+      HttpClientRequest.put(
         `/users/@me/applications/${applicationId}/role-connection`,
       ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
     deleteApplicationUserRoleConnection: applicationId =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/users/@me/applications/${applicationId}/role-connection`,
       ).pipe(onRequest([])),
     createDm: options =>
-      HttpClientRequest.make("POST")(`/users/@me/channels`).pipe(
+      HttpClientRequest.post(`/users/@me/channels`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     listMyConnections: () =>
-      HttpClientRequest.make("GET")(`/users/@me/connections`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/users/@me/connections`).pipe(onRequest(["2xx"])),
     listMyGuilds: options =>
-      HttpClientRequest.make("GET")(`/users/@me/guilds`).pipe(
+      HttpClientRequest.get(`/users/@me/guilds`).pipe(
         HttpClientRequest.setUrlParams({
           before: options?.["before"] as any,
           after: options?.["after"] as any,
@@ -7061,40 +7048,30 @@ export const make = (
         onRequest(["2xx"]),
       ),
     leaveGuild: guildId =>
-      HttpClientRequest.make("DELETE")(`/users/@me/guilds/${guildId}`).pipe(
-        onRequest([]),
-      ),
+      HttpClientRequest.del(`/users/@me/guilds/${guildId}`).pipe(onRequest([])),
     getMyGuildMember: guildId =>
-      HttpClientRequest.make("GET")(`/users/@me/guilds/${guildId}/member`).pipe(
+      HttpClientRequest.get(`/users/@me/guilds/${guildId}/member`).pipe(
         onRequest(["2xx"]),
       ),
     getUser: userId =>
-      HttpClientRequest.make("GET")(`/users/${userId}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/users/${userId}`).pipe(onRequest(["2xx"])),
     listVoiceRegions: () =>
-      HttpClientRequest.make("GET")(`/voice/regions`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/voice/regions`).pipe(onRequest(["2xx"])),
     getWebhook: webhookId =>
-      HttpClientRequest.make("GET")(`/webhooks/${webhookId}`).pipe(
-        onRequest(["2xx"]),
-      ),
+      HttpClientRequest.get(`/webhooks/${webhookId}`).pipe(onRequest(["2xx"])),
     deleteWebhook: webhookId =>
-      HttpClientRequest.make("DELETE")(`/webhooks/${webhookId}`).pipe(
-        onRequest([]),
-      ),
+      HttpClientRequest.del(`/webhooks/${webhookId}`).pipe(onRequest([])),
     updateWebhook: (webhookId, options) =>
-      HttpClientRequest.make("PATCH")(`/webhooks/${webhookId}`).pipe(
+      HttpClientRequest.patch(`/webhooks/${webhookId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"]),
       ),
     getWebhookByToken: (webhookId, webhookToken) =>
-      HttpClientRequest.make("GET")(
-        `/webhooks/${webhookId}/${webhookToken}`,
-      ).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/webhooks/${webhookId}/${webhookToken}`).pipe(
+        onRequest(["2xx"]),
+      ),
     executeWebhook: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("POST")(
-        `/webhooks/${webhookId}/${webhookToken}`,
-      ).pipe(
+      HttpClientRequest.post(`/webhooks/${webhookId}/${webhookToken}`).pipe(
         HttpClientRequest.setUrlParams({
           wait: options.params?.["wait"] as any,
           thread_id: options.params?.["thread_id"] as any,
@@ -7104,15 +7081,16 @@ export const make = (
         onRequest(["2xx"]),
       ),
     deleteWebhookByToken: (webhookId, webhookToken) =>
-      HttpClientRequest.make("DELETE")(
-        `/webhooks/${webhookId}/${webhookToken}`,
-      ).pipe(onRequest([])),
+      HttpClientRequest.del(`/webhooks/${webhookId}/${webhookToken}`).pipe(
+        onRequest([]),
+      ),
     updateWebhookByToken: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("PATCH")(
-        `/webhooks/${webhookId}/${webhookToken}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      HttpClientRequest.patch(`/webhooks/${webhookId}/${webhookToken}`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     executeGithubCompatibleWebhook: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/webhooks/${webhookId}/${webhookToken}/github`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7123,7 +7101,7 @@ export const make = (
         onRequest([]),
       ),
     getOriginalWebhookMessage: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7132,7 +7110,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     deleteOriginalWebhookMessage: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7141,7 +7119,7 @@ export const make = (
         onRequest([]),
       ),
     updateOriginalWebhookMessage: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7152,7 +7130,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     getWebhookMessage: (webhookId, webhookToken, messageId, options) =>
-      HttpClientRequest.make("GET")(
+      HttpClientRequest.get(
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7161,7 +7139,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     deleteWebhookMessage: (webhookId, webhookToken, messageId, options) =>
-      HttpClientRequest.make("DELETE")(
+      HttpClientRequest.del(
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7170,7 +7148,7 @@ export const make = (
         onRequest([]),
       ),
     updateWebhookMessage: (webhookId, webhookToken, messageId, options) =>
-      HttpClientRequest.make("PATCH")(
+      HttpClientRequest.patch(
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -7181,7 +7159,7 @@ export const make = (
         onRequest(["2xx"]),
       ),
     executeSlackCompatibleWebhook: (webhookId, webhookToken, options) =>
-      HttpClientRequest.make("POST")(
+      HttpClientRequest.post(
         `/webhooks/${webhookId}/${webhookToken}/slack`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -8202,13 +8180,26 @@ export interface DiscordRest {
 
 export interface DiscordRestError<Tag extends string, E> {
   readonly _tag: Tag
+  readonly request: HttpClientRequest.HttpClientRequest
+  readonly response: HttpClientResponse.HttpClientResponse
   readonly cause: E
 }
 
-class DiscordRestErrorImpl extends Data.Error<{ _tag: string; cause: any }> {}
+class DiscordRestErrorImpl extends Data.Error<{
+  _tag: string
+  cause: any
+  request: HttpClientRequest.HttpClientRequest
+  response: HttpClientResponse.HttpClientResponse
+}> {}
 
 export const DiscordRestError = <Tag extends string, E>(
   tag: Tag,
   cause: E,
+  response: HttpClientResponse.HttpClientResponse,
 ): DiscordRestError<Tag, E> =>
-  new DiscordRestErrorImpl({ _tag: tag, cause }) as any
+  new DiscordRestErrorImpl({
+    _tag: tag,
+    cause,
+    response,
+    request: response.request,
+  }) as any
