@@ -6,13 +6,19 @@ import { Config, Effect, Layer } from "effect"
 
 Dotenv.config()
 
-// Create a config layer
-const DiscordConfigLive = DiscordConfig.layerConfig({
-  token: Config.redacted("DISCORD_BOT_TOKEN"),
-})
+// Create a layer for the discord services
+const DiscordLayer = DiscordIxLive.pipe(
+  Layer.provide([
+    DiscordConfig.layerConfig({
+      token: Config.redacted("DISCORD_BOT_TOKEN"),
+    }),
+    NodeHttpClient.layerUndici,
+    NodeSocket.layerWebSocketConstructor,
+  ]),
+)
 
 // Create hello service
-const HelloLive = Layer.effectDiscard(
+const HelloLayer = Layer.effectDiscard(
   Effect.gen(function* () {
     const registry = yield* InteractionsRegistry
 
@@ -36,15 +42,14 @@ const HelloLive = Layer.effectDiscard(
     )
   }),
 ).pipe(
-  // provide discord ix layer
-  Layer.provide(DiscordIxLive),
+  // provide discord layer
+  Layer.provide(DiscordLayer),
 )
 
 // Construct the main layer
-const MainLive = HelloLive.pipe(
-  Layer.provide(NodeHttpClient.layerUndici),
-  Layer.provide(NodeSocket.layerWebSocketConstructor),
-  Layer.provide(DiscordConfigLive),
+const MainLive = Layer.mergeAll(
+  // add your other services here
+  HelloLayer,
 )
 
 // run it
