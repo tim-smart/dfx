@@ -15,10 +15,8 @@ import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { millis } from "effect/Duration"
 import * as Effect from "effect/Effect"
-import * as HashSet from "effect/HashSet"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
-import * as Ref from "effect/Ref"
 import * as Redacted from "effect/Redacted"
 import { flow } from "effect/Function"
 import * as Context from "effect/Context"
@@ -38,29 +36,25 @@ const make = Effect.gen(function* () {
   )
 
   // Invalid route handling (40x)
-  const badRoutesRef = yield* Ref.make(HashSet.empty<string>())
-  const tenMinutes = Duration.toMillis(Duration.minutes(10))
+  const badRoutes = new Set<string>()
+  const tenMinutes = Duration.minutes(10)
+  const tenMinutesMillis = Duration.toMillis(tenMinutes)
   const addBadRoute = (route: string) =>
-    Effect.logDebug("bad route").pipe(
-      Effect.zipRight(Ref.update(badRoutesRef, HashSet.add(route))),
+    Effect.suspend(() => {
+      badRoutes.add(route)
+      return Effect.log("bad route")
+    }).pipe(
       Effect.zipRight(
-        store.incrementCounter("dfx.rest.invalid", tenMinutes, 10000),
+        store.incrementCounter("dfx.rest.invalid", tenMinutesMillis, 10000),
       ),
       Effect.annotateLogs("route", route),
     )
-  const isBadRoute = (route: string) =>
-    Effect.map(Ref.get(badRoutesRef), HashSet.has(route))
-  const removeBadRoute = (route: string) =>
-    Ref.update(badRoutesRef, HashSet.remove(route))
 
   const invalidRateLimit = (route: string) =>
-    isBadRoute(route).pipe(
-      Effect.tap(invalid =>
-        invalid
-          ? maybeWait("dfx.rest.invalid", Duration.minutes(10), 10000)
-          : Effect.void,
-      ),
-      Effect.asVoid,
+    Effect.suspend(() =>
+      badRoutes.has(route)
+        ? maybeWait("dfx.rest.invalid", tenMinutes, 10000)
+        : Effect.void,
     )
 
   // Request rate limiting
@@ -92,7 +86,7 @@ const make = Effect.gen(function* () {
     const hasBucket = yield* store.hasBucket(rateLimit.bucket)
     const fibers: Array<Fiber.RuntimeFiber<unknown, unknown>> = []
 
-    fibers.push(yield* Effect.fork(removeBadRoute(route)))
+    badRoutes.delete(route)
     fibers.push(
       yield* Effect.fork(store.putBucketRoute(route, rateLimit.bucket)),
     )
@@ -115,10 +109,15 @@ const make = Effect.gen(function* () {
       )
     }
 
-    for (const fiber of fibers) yield* fiber.await
+    for (const fiber of fibers) {
+      if (!fiber.unsafePoll()) {
+        yield* fiber.await
+      }
+    }
   })
 
-  const httpClient: HttpClient.HttpClient = (yield* HttpClient.HttpClient).pipe(
+  const defaultClient = yield* HttpClient.HttpClient
+  const rateLimitedClient: HttpClient.HttpClient = defaultClient.pipe(
     HttpClient.tapRequest(request =>
       Effect.zipRight(requestRateLimit(request.url, request), globalRateLimit),
     ),
@@ -163,7 +162,7 @@ const make = Effect.gen(function* () {
                     ),
                   ),
                 ),
-                Effect.zipRight(httpClient.execute(request)),
+                Effect.zipRight(rateLimitedClient.execute(request)),
               )
           }
 
@@ -176,7 +175,8 @@ const make = Effect.gen(function* () {
       ),
     ),
   )
-  const httpClientInitial = HttpClient.mapRequestInput(httpClient, req => {
+
+  const httpClient = HttpClient.mapRequestInput(rateLimitedClient, req => {
     const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
     let request = req.pipe(
       HttpRequest.prependUrl(rest.baseUrl),
@@ -203,7 +203,7 @@ const make = Effect.gen(function* () {
   })
 
   return DiscordREST.of({
-    ...Discord.make(httpClientInitial),
+    ...Discord.make(httpClient),
     withFormData(formData) {
       return Effect.provideService(DiscordFormData, formData)
     },
