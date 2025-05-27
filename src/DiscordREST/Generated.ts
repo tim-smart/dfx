@@ -3278,7 +3278,7 @@ export interface SetChannelPermissionOverwriteRequest {
   readonly deny?: number | null | undefined
 }
 
-export type ListPinnedMessages200 = ReadonlyArray<MessageResponse>
+export type DeprecatedListPins200 = ReadonlyArray<MessageResponse>
 
 export interface GetAnswerVotersParams {
   readonly after?: SnowflakeType | undefined
@@ -6790,15 +6790,15 @@ export const make = (
       HttpClientRequest.del(
         `/channels/${channelId}/permissions/${overwriteId}`,
       ).pipe(onRequest([])),
-    listPinnedMessages: channelId =>
+    deprecatedListPins: channelId =>
       HttpClientRequest.get(`/channels/${channelId}/pins`).pipe(
         onRequest(["2xx"]),
       ),
-    pinMessage: (channelId, messageId) =>
+    deprecatedCreatePin: (channelId, messageId) =>
       HttpClientRequest.put(`/channels/${channelId}/pins/${messageId}`).pipe(
         onRequest([]),
       ),
-    unpinMessage: (channelId, messageId) =>
+    deprecatedDeletePin: (channelId, messageId) =>
       HttpClientRequest.del(`/channels/${channelId}/pins/${messageId}`).pipe(
         onRequest([]),
       ),
@@ -7917,14 +7917,14 @@ export interface DiscordRest {
     channelId: string,
     overwriteId: string,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
-  readonly listPinnedMessages: (
+  readonly deprecatedListPins: (
     channelId: string,
-  ) => Effect.Effect<ListPinnedMessages200, HttpClientError.HttpClientError>
-  readonly pinMessage: (
+  ) => Effect.Effect<DeprecatedListPins200, HttpClientError.HttpClientError>
+  readonly deprecatedCreatePin: (
     channelId: string,
     messageId: string,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
-  readonly unpinMessage: (
+  readonly deprecatedDeletePin: (
     channelId: string,
     messageId: string,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
