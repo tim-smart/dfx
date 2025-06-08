@@ -25,6 +25,8 @@ import * as EffectUtils from "dfx/utils/Effect"
 import * as Schedule from "effect/Schedule"
 import { globalValue } from "effect/GlobalValue"
 import * as FiberRef from "effect/FiberRef"
+import type { ListMyGuilds200, MyGuildResponse } from "dfx/types"
+import * as Arr from "effect/Array"
 
 export const interactionsSync: FiberRef.FiberRef<boolean> = globalValue(
   "dfx/Interactions/sync",
@@ -79,14 +81,39 @@ export const run =
         GlobalApplicationCommand.map(_ => _.command),
       )
 
-      const guildSync = GuildApplicationCommand.length
-        ? gateway.handleDispatch("GUILD_CREATE", a =>
-            rest.bulkSetGuildApplicationCommands(
-              application.id,
-              a.id,
-              GuildApplicationCommand.map(_ => _.command),
-            ),
+      const runGuildSync = Effect.gen(function* () {
+        const commands = GuildApplicationCommand.map(_ => _.command)
+        let results: Arr.NonEmptyReadonlyArray<MyGuildResponse> | undefined =
+          undefined
+        while (true) {
+          const next: ListMyGuilds200 = yield* rest.listMyGuilds({
+            after: results && Arr.lastNonEmpty(results).id,
+          })
+          if (!Arr.isNonEmptyReadonlyArray(next)) break
+          results = next
+          yield* Effect.forEach(
+            results!,
+            guild =>
+              rest.bulkSetGuildApplicationCommands(
+                application.id,
+                guild.id,
+                commands,
+              ),
+            { concurrency: "unbounded", discard: true },
           )
+        }
+
+        yield* gateway.handleDispatch("GUILD_CREATE", a =>
+          rest.bulkSetGuildApplicationCommands(
+            application.id,
+            a.id,
+            GuildApplicationCommand.map(_ => _.command),
+          ),
+        )
+      })
+
+      const guildSync = GuildApplicationCommand.length
+        ? runGuildSync
         : Effect.never
 
       const handle = handlers(ix.definitions, (i, r) => {
@@ -134,7 +161,7 @@ const makeRegistry = Effect.gen(function* () {
     pipe(
       ix,
       run(Effect.catchAllCause(_ => Effect.logError("unhandled error", _))),
-      Effect.delay(Duration.seconds(0.1)),
+      Effect.delay(Duration.seconds(5)),
     ),
   ).pipe(
     Effect.tapErrorCause(_ => Effect.logError("registry error", _)),
