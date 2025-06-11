@@ -12,7 +12,7 @@ const fromDispatchFactory =
   <K extends `${Discord.GatewayDispatchEvents}`>(
     event: K,
   ): Stream.Stream<
-    Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"],
+    Extract<Discord.DistributedGatewayDispatchPayload, { readonly t: K }>["d"],
     E,
     R
   > =>
