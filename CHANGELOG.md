@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.120.2](https://github.com/tim-smart/dfx/compare/dfx@0.120.1...dfx@0.120.2) (2025-06-11)
+
+### Bug Fixes
+
+- use distributed version of gateway payload type for event type extraction ([f7145e7](https://github.com/tim-smart/dfx/commit/f7145e7ac1ea6f41f8523915186126d05dc95b15))
+
 ## [0.120.1](https://github.com/tim-smart/dfx/compare/dfx@0.120.0...dfx@0.120.1) (2025-06-08)
 
 **Note:** Version bump only for package dfx
