@@ -26,7 +26,7 @@ export interface DiscordGateway {
   readonly fromDispatch: <K extends `${Discord.GatewayDispatchEvents}`>(
     event: K,
   ) => Stream.Stream<
-    Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"]
+    Extract<Discord.DistributedGatewayDispatchPayload, { readonly t: K }>["d"]
   >
   readonly handleDispatch: <
     K extends `${Discord.GatewayDispatchEvents}`,
@@ -36,7 +36,10 @@ export interface DiscordGateway {
   >(
     event: K,
     handle: (
-      event: Extract<Discord.GatewayDispatchPayload, { readonly t: K }>["d"],
+      event: Extract<
+        Discord.DistributedGatewayDispatchPayload,
+        { readonly t: K }
+      >["d"],
     ) => Effect.Effect<A, E, R>,
   ) => Effect.Effect<never, E, R>
   readonly send: (payload: Discord.GatewaySendPayload) => Effect.Effect<boolean>

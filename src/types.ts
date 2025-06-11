@@ -148,6 +148,15 @@ export type AllComponents =
   | MessageComponent
   | (Rest.ActionRowComponentResponse["components"] & {})[number]
 
+export type DistributedGatewayDispatchPayload =
+  GatewayDispatchPayload extends infer Payload
+    ? Payload extends _DataPayload<infer Event, infer D>
+      ? Event extends Event
+        ? _DataPayload<Event, D>
+        : never
+      : Payload
+    : never
+
 // =============================================================================
 
 /**
