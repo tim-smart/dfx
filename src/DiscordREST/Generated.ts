@@ -270,6 +270,7 @@ export interface PrivateApplicationResponse {
   readonly owner: UserResponse
   readonly approximate_guild_count?: number | null | undefined
   readonly approximate_user_install_count: number
+  readonly approximate_user_authorization_count: number
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team?: TeamResponse | null | undefined
 }
@@ -2093,6 +2094,7 @@ export interface MessageEmbedImageResponse {
   readonly proxy_url?: string | null | undefined
   readonly width?: UInt32Type | null | undefined
   readonly height?: UInt32Type | null | undefined
+  readonly content_type?: string | null | undefined
   readonly placeholder?: string | null | undefined
   readonly placeholder_version?: UInt32Type | null | undefined
   readonly description?: string | null | undefined
@@ -2104,6 +2106,7 @@ export interface MessageEmbedVideoResponse {
   readonly proxy_url?: string | null | undefined
   readonly width?: UInt32Type | null | undefined
   readonly height?: UInt32Type | null | undefined
+  readonly content_type?: string | null | undefined
   readonly placeholder?: string | null | undefined
   readonly placeholder_version?: UInt32Type | null | undefined
   readonly description?: string | null | undefined
@@ -2377,6 +2380,7 @@ export interface UnfurledMediaResponse {
   readonly width?: number | null | undefined
   readonly height?: number | null | undefined
   readonly content_type?: string | null | undefined
+  readonly attachment_id?: SnowflakeType | null | undefined
 }
 
 export interface FileComponentResponse {
@@ -5824,12 +5828,44 @@ export interface EditLobbyChannelLinkRequest {
   readonly channel_id?: SnowflakeType | null | undefined
 }
 
+export type BulkLobbyMemberRequestFlagsEnum = 1
+
+export interface BulkLobbyMemberRequest {
+  readonly id: SnowflakeType
+  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly flags?: BulkLobbyMemberRequestFlagsEnum | null | undefined
+  readonly remove_member?: boolean | null | undefined
+}
+
+export type BulkUpdateLobbyMembersRequest =
+  ReadonlyArray<BulkLobbyMemberRequest>
+
+export type BulkUpdateLobbyMembers200 = ReadonlyArray<LobbyMemberResponse>
+
 export type AddLobbyMemberRequestFlagsEnum = 1
 
 export interface AddLobbyMemberRequest {
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly flags?: AddLobbyMemberRequestFlagsEnum | null | undefined
 }
+
+export interface GetLobbyMessagesParams {
+  readonly limit?: number | undefined
+}
+
+export interface LobbyMessageResponse {
+  readonly id: SnowflakeType
+  readonly type: MessageType
+  readonly content: string
+  readonly lobby_id: SnowflakeType
+  readonly channel_id: SnowflakeType
+  readonly author: UserResponse
+  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly flags: number
+  readonly application_id?: SnowflakeType | null | undefined
+}
+
+export type GetLobbyMessages200 = ReadonlyArray<LobbyMessageResponse>
 
 export interface SDKMessageRequest {
   readonly content?: string | null | undefined
@@ -5859,18 +5895,6 @@ export interface SDKMessageRequest {
   readonly nonce?: number | string | null | undefined
   readonly enforce_nonce?: boolean | null | undefined
   readonly tts?: boolean | null | undefined
-}
-
-export interface LobbyMessageResponse {
-  readonly id: SnowflakeType
-  readonly type: MessageType
-  readonly content: string
-  readonly lobby_id: SnowflakeType
-  readonly channel_id: SnowflakeType
-  readonly author: UserResponse
-  readonly metadata?: Record<string, unknown> | null | undefined
-  readonly flags: number
-  readonly application_id?: SnowflakeType | null | undefined
 }
 
 export interface OAuth2GetAuthorizationResponse {
@@ -7392,6 +7416,11 @@ export const make = (
       HttpClientRequest.del(`/lobbies/${lobbyId}/members/@me`).pipe(
         onRequest([]),
       ),
+    bulkUpdateLobbyMembers: (lobbyId, options) =>
+      HttpClientRequest.post(`/lobbies/${lobbyId}/members/bulk`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"]),
+      ),
     addLobbyMember: (lobbyId, userId, options) =>
       HttpClientRequest.put(`/lobbies/${lobbyId}/members/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
@@ -7400,6 +7429,11 @@ export const make = (
     deleteLobbyMember: (lobbyId, userId) =>
       HttpClientRequest.del(`/lobbies/${lobbyId}/members/${userId}`).pipe(
         onRequest([]),
+      ),
+    getLobbyMessages: (lobbyId, options) =>
+      HttpClientRequest.get(`/lobbies/${lobbyId}/messages`).pipe(
+        HttpClientRequest.setUrlParams({ limit: options?.["limit"] as any }),
+        onRequest(["2xx"]),
       ),
     createLobbyMessage: (lobbyId, options) =>
       HttpClientRequest.post(`/lobbies/${lobbyId}/messages`).pipe(
@@ -8421,6 +8455,10 @@ export interface DiscordRest {
   readonly leaveLobby: (
     lobbyId: string,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  readonly bulkUpdateLobbyMembers: (
+    lobbyId: string,
+    options: BulkUpdateLobbyMembersRequest,
+  ) => Effect.Effect<BulkUpdateLobbyMembers200, HttpClientError.HttpClientError>
   readonly addLobbyMember: (
     lobbyId: string,
     userId: string,
@@ -8430,6 +8468,10 @@ export interface DiscordRest {
     lobbyId: string,
     userId: string,
   ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  readonly getLobbyMessages: (
+    lobbyId: string,
+    options?: GetLobbyMessagesParams | undefined,
+  ) => Effect.Effect<GetLobbyMessages200, HttpClientError.HttpClientError>
   readonly createLobbyMessage: (
     lobbyId: string,
     options: SDKMessageRequest,
