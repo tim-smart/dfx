@@ -34,7 +34,7 @@
     "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "@effect/platform": "^0.86",
+    "@effect/platform": "^0.87",
     "effect": "^3.16"
   },
   "optionalDependencies": {
@@ -87,7 +87,7 @@
     "vite": "^6.3.5",
     "vitest": "3.2.4"
   },
-  "gitHead": "781225ad6e1931ec1484fb889065f4580d8ae2f1",
+  "gitHead": "ab41b7441b00a20ea5b4c896af3e23cd128e713c",
   "dependencies": {
     "discord-api-types": "^0.38.13"
   }
