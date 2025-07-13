@@ -71,9 +71,9 @@ export class MessageComponent<R, E> {
   ) {}
 }
 
-export const messageComponent = <R, E>(
+export const messageComponent = <E, R>(
   pred: (customId: string) => boolean,
-  handle: CommandHandler<R, E, Discord.CreateInteractionResponseRequest>,
+  handle: Effect.Effect<Discord.CreateInteractionResponseRequest, E, R>,
 ) =>
   new MessageComponent<
     Exclude<R, DiscordInteraction | DiscordMessageComponent | Scope>,

@@ -30,7 +30,12 @@ export interface UserCollectiblesResponse {
   readonly nameplate?: UserNameplateResponse | null | undefined
 }
 
-export interface UserPrimaryGuildResponse {}
+export interface UserPrimaryGuildResponse {
+  readonly identity_guild_id?: SnowflakeType | null | undefined
+  readonly identity_enabled?: boolean | null | undefined
+  readonly tag?: string | null | undefined
+  readonly badge?: string | null | undefined
+}
 
 export interface UserResponse {
   readonly id: SnowflakeType
@@ -49,7 +54,7 @@ export interface UserResponse {
     | null
     | undefined
   readonly collectibles?: UserCollectiblesResponse | null | undefined
-  readonly clan?: UserPrimaryGuildResponse | null | undefined
+  readonly primary_guild?: UserPrimaryGuildResponse | null | undefined
 }
 
 export const OAuth2Scopes = {
@@ -273,6 +278,66 @@ export interface PrivateApplicationResponse {
   readonly approximate_user_authorization_count: number
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team?: TeamResponse | null | undefined
+}
+
+/**
+ * A single error, either for an API response or a specific field.
+ */
+export interface RatelimitedResponse {
+  /**
+   * The number of seconds to wait before retrying your request
+   */
+  readonly retry_after: number
+  /**
+   * Whether you are being ratelimited by the global ratelimit or a per-endpoint ratelimit
+   */
+  readonly global: boolean
+  /**
+   * Discord internal error code. See error code reference
+   */
+  readonly code: number
+  /**
+   * Human-readable error message
+   */
+  readonly message: string
+}
+
+/**
+ * A single error, either for an API response or a specific field.
+ */
+export interface Error {
+  /**
+   * Discord internal error code. See error code reference
+   */
+  readonly code: number
+  /**
+   * Human-readable error message
+   */
+  readonly message: string
+}
+
+export interface InnerErrors {
+  /**
+   * The list of errors for this field
+   */
+  readonly _errors: ReadonlyArray<Error>
+}
+
+export type ErrorDetails = Record<string, unknown> | InnerErrors
+
+/**
+ * A single error, either for an API response or a specific field.
+ */
+export interface ErrorResponse {
+  readonly errors?: ErrorDetails | undefined
+  /**
+   * Discord internal error code. See error code reference
+   */
+  readonly code: number
+  /**
+   * Human-readable error message
+   */
+  readonly message: string
 }
 
 export interface ApplicationOAuth2InstallParams {
@@ -3226,6 +3291,21 @@ export interface BulkDeleteMessagesRequest {
   readonly messages: ReadonlyArray<SnowflakeType>
 }
 
+export interface ListPinsParams {
+  readonly before?: string | undefined
+  readonly limit?: number | undefined
+}
+
+export interface PinnedMessageResponse {
+  readonly pinned_at: string
+  readonly message: MessageResponse
+}
+
+export interface PinnedMessagesResponse {
+  readonly items?: ReadonlyArray<PinnedMessageResponse> | null | undefined
+  readonly has_more: boolean
+}
+
 export interface MessageEditRequestPartial {
   readonly content?: string | null | undefined
   readonly embeds?: ReadonlyArray<RichEmbed> | null | undefined
@@ -3800,6 +3880,12 @@ export interface GuildCreateRequest {
   readonly system_channel_flags?: number | null | undefined
 }
 
+export interface GuildRoleColorsResponse {
+  readonly primary_color?: number | null | undefined
+  readonly secondary_color?: number | null | undefined
+  readonly tertiary_color?: number | null | undefined
+}
+
 export interface GuildRoleTagsResponse {
   readonly premium_subscriber?: null | undefined
   readonly bot_id?: SnowflakeType | null | undefined
@@ -3816,12 +3902,14 @@ export interface GuildRoleResponse {
   readonly permissions: string
   readonly position: number
   readonly color: number
+  readonly colors?: GuildRoleColorsResponse | null | undefined
   readonly hoist: boolean
   readonly managed: boolean
   readonly mentionable: boolean
   readonly icon?: string | null | undefined
   readonly unicode_emoji?: string | null | undefined
   readonly tags?: GuildRoleTagsResponse | null | undefined
+  readonly flags: number
 }
 
 export const GuildMFALevel = {
@@ -5004,9 +5092,9 @@ export interface SearchGuildMembersParams {
 
 export type SearchGuildMembers200 = ReadonlyArray<GuildMemberResponse>
 
-export interface AddGuildMemberRequest {
+export interface BotAddGuildMemberRequest {
   readonly nick?: string | null | undefined
-  readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
+  readonly roles?: ReadonlyArray<SnowflakeType> | null | undefined
   readonly mute?: boolean | null | undefined
   readonly deaf?: boolean | null | undefined
   readonly access_token: string
@@ -6054,7 +6142,7 @@ export interface UserPIIResponse {
     | null
     | undefined
   readonly collectibles?: UserCollectiblesResponse | null | undefined
-  readonly clan?: UserPrimaryGuildResponse | null | undefined
+  readonly primary_guild?: UserPrimaryGuildResponse | null | undefined
   readonly mfa_enabled: boolean
   readonly locale: AvailableLocalesEnum
   readonly premium_type?: PremiumTypes | null | undefined
@@ -6542,80 +6630,143 @@ export const make = (
   return {
     httpClient,
     getMyApplication: () =>
-      HttpClientRequest.get(`/applications/@me`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/applications/@me`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     updateMyApplication: options =>
       HttpClientRequest.patch(`/applications/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getApplication: applicationId =>
       HttpClientRequest.get(`/applications/${applicationId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateApplication: (applicationId, options) =>
       HttpClientRequest.patch(`/applications/${applicationId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     applicationsGetActivityInstance: (applicationId, instanceId) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/activity-instances/${instanceId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     uploadApplicationAttachment: (applicationId, options) =>
       HttpClientRequest.post(`/applications/${applicationId}/attachment`).pipe(
         HttpClientRequest.bodyFormDataRecord(options as any),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listApplicationCommands: (applicationId, options) =>
       HttpClientRequest.get(`/applications/${applicationId}/commands`).pipe(
         HttpClientRequest.setUrlParams({
           with_localizations: options?.["with_localizations"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     bulkSetApplicationCommands: (applicationId, options) =>
       HttpClientRequest.put(`/applications/${applicationId}/commands`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createApplicationCommand: (applicationId, options) =>
       HttpClientRequest.post(`/applications/${applicationId}/commands`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["200", "201"]),
+        onRequest(["200", "201"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getApplicationCommand: (applicationId, commandId) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/commands/${commandId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteApplicationCommand: (applicationId, commandId) =>
       HttpClientRequest.del(
         `/applications/${applicationId}/commands/${commandId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateApplicationCommand: (applicationId, commandId, options) =>
       HttpClientRequest.patch(
         `/applications/${applicationId}/commands/${commandId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listApplicationEmojis: applicationId =>
       HttpClientRequest.get(`/applications/${applicationId}/emojis`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createApplicationEmoji: (applicationId, options) =>
       HttpClientRequest.post(`/applications/${applicationId}/emojis`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getApplicationEmoji: (applicationId, emojiId) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/emojis/${emojiId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteApplicationEmoji: (applicationId, emojiId) =>
       HttpClientRequest.del(
         `/applications/${applicationId}/emojis/${emojiId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateApplicationEmoji: (applicationId, emojiId, options) =>
       HttpClientRequest.patch(
         `/applications/${applicationId}/emojis/${emojiId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getEntitlements: (applicationId, options) =>
       HttpClientRequest.get(`/applications/${applicationId}/entitlements`).pipe(
         HttpClientRequest.setUrlParams({
@@ -6629,24 +6780,42 @@ export const make = (
           exclude_deleted: options?.["exclude_deleted"] as any,
           only_active: options?.["only_active"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createEntitlement: (applicationId, options) =>
       HttpClientRequest.post(
         `/applications/${applicationId}/entitlements`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getEntitlement: (applicationId, entitlementId) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteEntitlement: (applicationId, entitlementId) =>
       HttpClientRequest.del(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     consumeEntitlement: (applicationId, entitlementId) =>
       HttpClientRequest.post(
         `/applications/${applicationId}/entitlements/${entitlementId}/consume`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     listGuildApplicationCommands: (applicationId, guildId, options) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
@@ -6654,31 +6823,55 @@ export const make = (
         HttpClientRequest.setUrlParams({
           with_localizations: options?.["with_localizations"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     bulkSetGuildApplicationCommands: (applicationId, guildId, options) =>
       HttpClientRequest.put(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     createGuildApplicationCommand: (applicationId, guildId, options) =>
       HttpClientRequest.post(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["200", "201"]),
+        onRequest(["200", "201"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildApplicationCommandPermissions: (applicationId, guildId) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands/permissions`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getGuildApplicationCommand: (applicationId, guildId, commandId) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteGuildApplicationCommand: (applicationId, guildId, commandId) =>
       HttpClientRequest.del(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateGuildApplicationCommand: (
       applicationId,
       guildId,
@@ -6687,7 +6880,13 @@ export const make = (
     ) =>
       HttpClientRequest.patch(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getGuildApplicationCommandPermissions: (
       applicationId,
       guildId,
@@ -6695,7 +6894,12 @@ export const make = (
     ) =>
       HttpClientRequest.get(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     setGuildApplicationCommandPermissions: (
       applicationId,
       guildId,
@@ -6704,37 +6908,76 @@ export const make = (
     ) =>
       HttpClientRequest.put(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getApplicationRoleConnectionsMetadata: applicationId =>
       HttpClientRequest.get(
         `/applications/${applicationId}/role-connections/metadata`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     updateApplicationRoleConnectionsMetadata: (applicationId, options) =>
       HttpClientRequest.put(
         `/applications/${applicationId}/role-connections/metadata`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getChannel: channelId =>
-      HttpClientRequest.get(`/channels/${channelId}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/channels/${channelId}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteChannel: channelId =>
-      HttpClientRequest.del(`/channels/${channelId}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.del(`/channels/${channelId}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     updateChannel: (channelId, options) =>
       HttpClientRequest.patch(`/channels/${channelId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     followChannel: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/followers`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listChannelInvites: channelId =>
       HttpClientRequest.get(`/channels/${channelId}/invites`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createChannelInvite: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/invites`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listMessages: (channelId, options) =>
       HttpClientRequest.get(`/channels/${channelId}/messages`).pipe(
@@ -6744,37 +6987,89 @@ export const make = (
           after: options?.["after"] as any,
           limit: options?.["limit"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createMessage: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/messages`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     bulkDeleteMessages: (channelId, options) =>
       HttpClientRequest.post(
         `/channels/${channelId}/messages/bulk-delete`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    listPins: (channelId, options) =>
+      HttpClientRequest.get(`/channels/${channelId}/messages/pins`).pipe(
+        HttpClientRequest.setUrlParams({
+          before: options?.["before"] as any,
+          limit: options?.["limit"] as any,
+        }),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    createPin: (channelId, messageId) =>
+      HttpClientRequest.put(
+        `/channels/${channelId}/messages/pins/${messageId}`,
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    deletePin: (channelId, messageId) =>
+      HttpClientRequest.del(
+        `/channels/${channelId}/messages/pins/${messageId}`,
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     getMessage: (channelId, messageId) =>
       HttpClientRequest.get(
         `/channels/${channelId}/messages/${messageId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteMessage: (channelId, messageId) =>
       HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateMessage: (channelId, messageId, options) =>
       HttpClientRequest.patch(
         `/channels/${channelId}/messages/${messageId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     crosspostMessage: (channelId, messageId) =>
       HttpClientRequest.post(
         `/channels/${channelId}/messages/${messageId}/crosspost`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteAllMessageReactions: (channelId, messageId) =>
       HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     listMessageReactionsByEmoji: (channelId, messageId, emojiName, options) =>
       HttpClientRequest.get(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}`,
@@ -6784,47 +7079,72 @@ export const make = (
           limit: options?.["limit"] as any,
           type: options?.["type"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteAllMessageReactionsByEmoji: (channelId, messageId, emojiName) =>
       HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     addMyMessageReaction: (channelId, messageId, emojiName) =>
       HttpClientRequest.put(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/@me`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     deleteMyMessageReaction: (channelId, messageId, emojiName) =>
       HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/@me`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     deleteUserMessageReaction: (channelId, messageId, emojiName, userId) =>
       HttpClientRequest.del(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/${userId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     createThreadFromMessage: (channelId, messageId, options) =>
       HttpClientRequest.post(
         `/channels/${channelId}/messages/${messageId}/threads`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     setChannelPermissionOverwrite: (channelId, overwriteId, options) =>
       HttpClientRequest.put(
         `/channels/${channelId}/permissions/${overwriteId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     deleteChannelPermissionOverwrite: (channelId, overwriteId) =>
       HttpClientRequest.del(
         `/channels/${channelId}/permissions/${overwriteId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     deprecatedListPins: channelId =>
       HttpClientRequest.get(`/channels/${channelId}/pins`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deprecatedCreatePin: (channelId, messageId) =>
       HttpClientRequest.put(`/channels/${channelId}/pins/${messageId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deprecatedDeletePin: (channelId, messageId) =>
       HttpClientRequest.del(`/channels/${channelId}/pins/${messageId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getAnswerVoters: (channelId, messageId, answerId, options) =>
       HttpClientRequest.get(
@@ -6834,25 +7154,39 @@ export const make = (
           after: options?.["after"] as any,
           limit: options?.["limit"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     pollExpire: (channelId, messageId) =>
       HttpClientRequest.post(
         `/channels/${channelId}/polls/${messageId}/expire`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     addGroupDmUser: (channelId, userId, options) =>
       HttpClientRequest.put(`/channels/${channelId}/recipients/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGroupDmUser: (channelId, userId) =>
       HttpClientRequest.del(`/channels/${channelId}/recipients/${userId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     sendSoundboardSound: (channelId, options) =>
       HttpClientRequest.post(
         `/channels/${channelId}/send-soundboard-sound`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest([])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     listThreadMembers: (channelId, options) =>
       HttpClientRequest.get(`/channels/${channelId}/thread-members`).pipe(
         HttpClientRequest.setUrlParams({
@@ -6860,15 +7194,18 @@ export const make = (
           limit: options?.["limit"] as any,
           after: options?.["after"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     joinThread: channelId =>
       HttpClientRequest.put(`/channels/${channelId}/thread-members/@me`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     leaveThread: channelId =>
       HttpClientRequest.del(`/channels/${channelId}/thread-members/@me`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getThreadMember: (channelId, userId, options) =>
       HttpClientRequest.get(
@@ -6877,20 +7214,30 @@ export const make = (
         HttpClientRequest.setUrlParams({
           with_member: options?.["with_member"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     addThreadMember: (channelId, userId) =>
       HttpClientRequest.put(
         `/channels/${channelId}/thread-members/${userId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     deleteThreadMember: (channelId, userId) =>
       HttpClientRequest.del(
         `/channels/${channelId}/thread-members/${userId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     createThread: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/threads`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listPrivateArchivedThreads: (channelId, options) =>
       HttpClientRequest.get(
@@ -6900,7 +7247,10 @@ export const make = (
           before: options?.["before"] as any,
           limit: options?.["limit"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listPublicArchivedThreads: (channelId, options) =>
       HttpClientRequest.get(
@@ -6910,7 +7260,10 @@ export const make = (
           before: options?.["before"] as any,
           limit: options?.["limit"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     threadSearch: (channelId, options) =>
       HttpClientRequest.get(`/channels/${channelId}/threads/search`).pipe(
@@ -6927,11 +7280,17 @@ export const make = (
           limit: options?.["limit"] as any,
           offset: options?.["offset"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     triggerTypingIndicator: channelId =>
       HttpClientRequest.post(`/channels/${channelId}/typing`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listMyPrivateArchivedThreads: (channelId, options) =>
       HttpClientRequest.get(
@@ -6941,48 +7300,84 @@ export const make = (
           before: options?.["before"] as any,
           limit: options?.["limit"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listChannelWebhooks: channelId =>
       HttpClientRequest.get(`/channels/${channelId}/webhooks`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createWebhook: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/webhooks`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGateway: () =>
-      HttpClientRequest.get(`/gateway`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/gateway`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getBotGateway: () =>
-      HttpClientRequest.get(`/gateway/bot`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/gateway/bot`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     createGuild: options =>
       HttpClientRequest.post(`/guilds`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildTemplate: code =>
       HttpClientRequest.get(`/guilds/templates/${code}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildFromTemplate: (code, options) =>
       HttpClientRequest.post(`/guilds/templates/${code}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuild: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}`).pipe(
         HttpClientRequest.setUrlParams({
           with_counts: options?.["with_counts"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuild: guildId =>
-      HttpClientRequest.del(`/guilds/${guildId}`).pipe(onRequest([])),
+      HttpClientRequest.del(`/guilds/${guildId}`).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateGuild: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildAuditLogEntries: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/audit-logs`).pipe(
@@ -6994,29 +7389,51 @@ export const make = (
           after: options?.["after"] as any,
           limit: options?.["limit"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listAutoModerationRules: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/auto-moderation/rules`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createAutoModerationRule: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/auto-moderation/rules`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getAutoModerationRule: (guildId, ruleId) =>
       HttpClientRequest.get(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteAutoModerationRule: (guildId, ruleId) =>
       HttpClientRequest.del(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateAutoModerationRule: (guildId, ruleId, options) =>
       HttpClientRequest.patch(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listGuildBans: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/bans`).pipe(
         HttpClientRequest.setUrlParams({
@@ -7024,73 +7441,108 @@ export const make = (
           before: options?.["before"] as any,
           after: options?.["after"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildBan: (guildId, userId) =>
       HttpClientRequest.get(`/guilds/${guildId}/bans/${userId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     banUserFromGuild: (guildId, userId, options) =>
       HttpClientRequest.put(`/guilds/${guildId}/bans/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     unbanUserFromGuild: (guildId, userId) =>
       HttpClientRequest.del(`/guilds/${guildId}/bans/${userId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     bulkBanUsersFromGuild: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/bulk-ban`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildChannels: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/channels`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildChannel: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/channels`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     bulkUpdateGuildChannels: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/channels`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     listGuildEmojis: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/emojis`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildEmoji: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/emojis`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildEmoji: (guildId, emojiId) =>
       HttpClientRequest.get(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildEmoji: (guildId, emojiId) =>
       HttpClientRequest.del(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildEmoji: (guildId, emojiId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildIntegrations: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/integrations`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildIntegration: (guildId, integrationId) =>
       HttpClientRequest.del(
         `/guilds/${guildId}/integrations/${integrationId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     listGuildInvites: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/invites`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildMembers: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/members`).pipe(
@@ -7098,12 +7550,18 @@ export const make = (
           limit: options?.["limit"] as any,
           after: options?.["after"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateMyGuildMember: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/members/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     searchGuildMembers: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/members/search`).pipe(
@@ -7111,55 +7569,86 @@ export const make = (
           limit: options?.["limit"] as any,
           query: options?.["query"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildMember: (guildId, userId) =>
       HttpClientRequest.get(`/guilds/${guildId}/members/${userId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     addGuildMember: (guildId, userId, options) =>
       HttpClientRequest.put(`/guilds/${guildId}/members/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildMember: (guildId, userId) =>
       HttpClientRequest.del(`/guilds/${guildId}/members/${userId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildMember: (guildId, userId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/members/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     addGuildMemberRole: (guildId, userId, roleId) =>
       HttpClientRequest.put(
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     deleteGuildMemberRole: (guildId, userId, roleId) =>
       HttpClientRequest.del(
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     setGuildMfaLevel: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/mfa`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildNewMemberWelcome: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/new-member-welcome`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildsOnboarding: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/onboarding`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     putGuildsOnboarding: (guildId, options) =>
       HttpClientRequest.put(`/guilds/${guildId}/onboarding`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildPreview: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/preview`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     previewPruneGuild: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/prune`).pipe(
@@ -7167,55 +7656,85 @@ export const make = (
           days: options?.["days"] as any,
           include_roles: options?.["include_roles"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     pruneGuild: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/prune`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildVoiceRegions: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/regions`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildRoles: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/roles`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildRole: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/roles`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     bulkUpdateGuildRoles: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/roles`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildRole: (guildId, roleId) =>
       HttpClientRequest.get(`/guilds/${guildId}/roles/${roleId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildRole: (guildId, roleId) =>
       HttpClientRequest.del(`/guilds/${guildId}/roles/${roleId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildRole: (guildId, roleId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/roles/${roleId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildScheduledEvents: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/scheduled-events`).pipe(
         HttpClientRequest.setUrlParams({
           with_user_count: options?.["with_user_count"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildScheduledEvent: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/scheduled-events`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildScheduledEvent: (guildId, guildScheduledEventId, options) =>
       HttpClientRequest.get(
@@ -7224,16 +7743,27 @@ export const make = (
         HttpClientRequest.setUrlParams({
           with_user_count: options?.["with_user_count"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildScheduledEvent: (guildId, guildScheduledEventId) =>
       HttpClientRequest.del(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateGuildScheduledEvent: (guildId, guildScheduledEventId, options) =>
       HttpClientRequest.patch(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listGuildScheduledEventUsers: (guildId, guildScheduledEventId, options) =>
       HttpClientRequest.get(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
@@ -7244,129 +7774,208 @@ export const make = (
           before: options?.["before"] as any,
           after: options?.["after"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildSoundboardSounds: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/soundboard-sounds`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildSoundboardSound: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/soundboard-sounds`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildSoundboardSound: (guildId, soundId) =>
       HttpClientRequest.get(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteGuildSoundboardSound: (guildId, soundId) =>
       HttpClientRequest.del(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateGuildSoundboardSound: (guildId, soundId, options) =>
       HttpClientRequest.patch(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listGuildStickers: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/stickers`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildSticker: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/stickers`).pipe(
         HttpClientRequest.bodyFormDataRecord(options as any),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildSticker: (guildId, stickerId) =>
       HttpClientRequest.get(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildSticker: (guildId, stickerId) =>
       HttpClientRequest.del(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildSticker: (guildId, stickerId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listGuildTemplates: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/templates`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createGuildTemplate: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/templates`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     syncGuildTemplate: (guildId, code) =>
       HttpClientRequest.put(`/guilds/${guildId}/templates/${code}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteGuildTemplate: (guildId, code) =>
       HttpClientRequest.del(`/guilds/${guildId}/templates/${code}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateGuildTemplate: (guildId, code, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/templates/${code}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getActiveGuildThreads: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/threads/active`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildVanityUrl: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/vanity-url`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getSelfVoiceState: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/voice-states/@me`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateSelfVoiceState: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/voice-states/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getVoiceState: (guildId, userId) =>
       HttpClientRequest.get(`/guilds/${guildId}/voice-states/${userId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateVoiceState: (guildId, userId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/voice-states/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getGuildWebhooks: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/webhooks`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildWelcomeScreen: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/welcome-screen`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateGuildWelcomeScreen: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/welcome-screen`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildWidgetSettings: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/widget`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     updateGuildWidgetSettings: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/widget`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildWidget: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/widget.json`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildWidgetPng: (guildId, options) =>
       HttpClientRequest.get(`/guilds/${guildId}/widget.png`).pipe(
         HttpClientRequest.setUrlParams({ style: options?.["style"] as any }),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     createInteractionResponse: (interactionId, interactionToken, options) =>
       HttpClientRequest.post(
@@ -7376,7 +7985,10 @@ export const make = (
           with_response: options.params?.["with_response"] as any,
         }),
         HttpClientRequest.bodyUnsafeJson(options.payload),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     inviteResolve: (code, options) =>
       HttpClientRequest.get(`/invites/${code}`).pipe(
@@ -7386,136 +7998,248 @@ export const make = (
             "guild_scheduled_event_id"
           ] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     inviteRevoke: code =>
-      HttpClientRequest.del(`/invites/${code}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.del(`/invites/${code}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     createOrJoinLobby: options =>
       HttpClientRequest.put(`/lobbies`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createLobby: options =>
       HttpClientRequest.post(`/lobbies`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getLobby: lobbyId =>
-      HttpClientRequest.get(`/lobbies/${lobbyId}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/lobbies/${lobbyId}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     editLobby: (lobbyId, options) =>
       HttpClientRequest.patch(`/lobbies/${lobbyId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     editLobbyChannelLink: (lobbyId, options) =>
       HttpClientRequest.patch(`/lobbies/${lobbyId}/channel-linking`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     leaveLobby: lobbyId =>
       HttpClientRequest.del(`/lobbies/${lobbyId}/members/@me`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     bulkUpdateLobbyMembers: (lobbyId, options) =>
       HttpClientRequest.post(`/lobbies/${lobbyId}/members/bulk`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     addLobbyMember: (lobbyId, userId, options) =>
       HttpClientRequest.put(`/lobbies/${lobbyId}/members/${userId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteLobbyMember: (lobbyId, userId) =>
       HttpClientRequest.del(`/lobbies/${lobbyId}/members/${userId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getLobbyMessages: (lobbyId, options) =>
       HttpClientRequest.get(`/lobbies/${lobbyId}/messages`).pipe(
         HttpClientRequest.setUrlParams({ limit: options?.["limit"] as any }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createLobbyMessage: (lobbyId, options) =>
       HttpClientRequest.post(`/lobbies/${lobbyId}/messages`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getMyOauth2Authorization: () =>
-      HttpClientRequest.get(`/oauth2/@me`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/oauth2/@me`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getMyOauth2Application: () =>
       HttpClientRequest.get(`/oauth2/applications/@me`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getPublicKeys: () =>
-      HttpClientRequest.get(`/oauth2/keys`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/oauth2/keys`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getOpenidConnectUserinfo: () =>
-      HttpClientRequest.get(`/oauth2/userinfo`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/oauth2/userinfo`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     partnerSdkUnmergeProvisionalAccount: options =>
       HttpClientRequest.post(`/partner-sdk/provisional-accounts/unmerge`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     partnerSdkToken: options =>
       HttpClientRequest.post(`/partner-sdk/token`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getSoundboardDefaultSounds: () =>
       HttpClientRequest.get(`/soundboard-default-sounds`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     createStageInstance: options =>
       HttpClientRequest.post(`/stage-instances`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getStageInstance: channelId =>
       HttpClientRequest.get(`/stage-instances/${channelId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteStageInstance: channelId =>
       HttpClientRequest.del(`/stage-instances/${channelId}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateStageInstance: (channelId, options) =>
       HttpClientRequest.patch(`/stage-instances/${channelId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listStickerPacks: () =>
-      HttpClientRequest.get(`/sticker-packs`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/sticker-packs`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getStickerPack: packId =>
       HttpClientRequest.get(`/sticker-packs/${packId}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getSticker: stickerId =>
-      HttpClientRequest.get(`/stickers/${stickerId}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/stickers/${stickerId}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getMyUser: () =>
-      HttpClientRequest.get(`/users/@me`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/users/@me`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     updateMyUser: options =>
       HttpClientRequest.patch(`/users/@me`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getApplicationUserRoleConnection: applicationId =>
       HttpClientRequest.get(
         `/users/@me/applications/${applicationId}/role-connection`,
-      ).pipe(onRequest(["2xx"])),
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     updateApplicationUserRoleConnection: (applicationId, options) =>
       HttpClientRequest.put(
         `/users/@me/applications/${applicationId}/role-connection`,
-      ).pipe(HttpClientRequest.bodyUnsafeJson(options), onRequest(["2xx"])),
+      ).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteApplicationUserRoleConnection: applicationId =>
       HttpClientRequest.del(
         `/users/@me/applications/${applicationId}/role-connection`,
-      ).pipe(onRequest([])),
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     createDm: options =>
       HttpClientRequest.post(`/users/@me/channels`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     listMyConnections: () =>
-      HttpClientRequest.get(`/users/@me/connections`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/users/@me/connections`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listMyGuilds: options =>
       HttpClientRequest.get(`/users/@me/guilds`).pipe(
         HttpClientRequest.setUrlParams({
@@ -7524,30 +8248,61 @@ export const make = (
           limit: options?.["limit"] as any,
           with_counts: options?.["with_counts"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     leaveGuild: guildId =>
-      HttpClientRequest.del(`/users/@me/guilds/${guildId}`).pipe(onRequest([])),
+      HttpClientRequest.del(`/users/@me/guilds/${guildId}`).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     getMyGuildMember: guildId =>
       HttpClientRequest.get(`/users/@me/guilds/${guildId}/member`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getUser: userId =>
-      HttpClientRequest.get(`/users/${userId}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/users/${userId}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listVoiceRegions: () =>
-      HttpClientRequest.get(`/voice/regions`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/voice/regions`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     getWebhook: webhookId =>
-      HttpClientRequest.get(`/webhooks/${webhookId}`).pipe(onRequest(["2xx"])),
+      HttpClientRequest.get(`/webhooks/${webhookId}`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     deleteWebhook: webhookId =>
-      HttpClientRequest.del(`/webhooks/${webhookId}`).pipe(onRequest([])),
+      HttpClientRequest.del(`/webhooks/${webhookId}`).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     updateWebhook: (webhookId, options) =>
       HttpClientRequest.patch(`/webhooks/${webhookId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getWebhookByToken: (webhookId, webhookToken) =>
       HttpClientRequest.get(`/webhooks/${webhookId}/${webhookToken}`).pipe(
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     executeWebhook: (webhookId, webhookToken, options) =>
       HttpClientRequest.post(`/webhooks/${webhookId}/${webhookToken}`).pipe(
@@ -7557,16 +8312,22 @@ export const make = (
           with_components: options.params?.["with_components"] as any,
         }),
         HttpClientRequest.bodyUnsafeJson(options.payload),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteWebhookByToken: (webhookId, webhookToken) =>
       HttpClientRequest.del(`/webhooks/${webhookId}/${webhookToken}`).pipe(
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateWebhookByToken: (webhookId, webhookToken, options) =>
       HttpClientRequest.patch(`/webhooks/${webhookId}/${webhookToken}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     executeGithubCompatibleWebhook: (webhookId, webhookToken, options) =>
       HttpClientRequest.post(
@@ -7577,7 +8338,7 @@ export const make = (
           thread_id: options.params?.["thread_id"] as any,
         }),
         HttpClientRequest.bodyUnsafeJson(options.payload),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getOriginalWebhookMessage: (webhookId, webhookToken, options) =>
       HttpClientRequest.get(
@@ -7586,7 +8347,10 @@ export const make = (
         HttpClientRequest.setUrlParams({
           thread_id: options?.["thread_id"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteOriginalWebhookMessage: (webhookId, webhookToken, options) =>
       HttpClientRequest.del(
@@ -7595,7 +8359,7 @@ export const make = (
         HttpClientRequest.setUrlParams({
           thread_id: options?.["thread_id"] as any,
         }),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateOriginalWebhookMessage: (webhookId, webhookToken, options) =>
       HttpClientRequest.patch(
@@ -7606,7 +8370,10 @@ export const make = (
           with_components: options.params?.["with_components"] as any,
         }),
         HttpClientRequest.bodyUnsafeJson(options.payload),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getWebhookMessage: (webhookId, webhookToken, messageId, options) =>
       HttpClientRequest.get(
@@ -7615,7 +8382,10 @@ export const make = (
         HttpClientRequest.setUrlParams({
           thread_id: options?.["thread_id"] as any,
         }),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     deleteWebhookMessage: (webhookId, webhookToken, messageId, options) =>
       HttpClientRequest.del(
@@ -7624,7 +8394,7 @@ export const make = (
         HttpClientRequest.setUrlParams({
           thread_id: options?.["thread_id"] as any,
         }),
-        onRequest([]),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateWebhookMessage: (webhookId, webhookToken, messageId, options) =>
       HttpClientRequest.patch(
@@ -7635,7 +8405,10 @@ export const make = (
           with_components: options.params?.["with_components"] as any,
         }),
         HttpClientRequest.bodyUnsafeJson(options.payload),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     executeSlackCompatibleWebhook: (webhookId, webhookToken, options) =>
       HttpClientRequest.post(
@@ -7646,7 +8419,10 @@ export const make = (
           thread_id: options.params?.["thread_id"] as any,
         }),
         HttpClientRequest.bodyUnsafeJson(options.payload),
-        onRequest(["2xx"]),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
   }
 }
@@ -7655,128 +8431,207 @@ export interface DiscordRest {
   readonly httpClient: HttpClient.HttpClient
   readonly getMyApplication: () => Effect.Effect<
     PrivateApplicationResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly updateMyApplication: (
     options: ApplicationFormPartial,
   ) => Effect.Effect<
     PrivateApplicationResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getApplication: (
     applicationId: string,
   ) => Effect.Effect<
     PrivateApplicationResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly updateApplication: (
     applicationId: string,
     options: ApplicationFormPartial,
   ) => Effect.Effect<
     PrivateApplicationResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly applicationsGetActivityInstance: (
     applicationId: string,
     instanceId: string,
-  ) => Effect.Effect<EmbeddedActivityInstance, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmbeddedActivityInstance,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly uploadApplicationAttachment: (
     applicationId: string,
     options: UploadApplicationAttachmentRequest,
   ) => Effect.Effect<
     ActivitiesAttachmentResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listApplicationCommands: (
     applicationId: string,
     options?: ListApplicationCommandsParams | undefined,
   ) => Effect.Effect<
     ListApplicationCommands200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly bulkSetApplicationCommands: (
     applicationId: string,
     options: BulkSetApplicationCommandsRequest,
   ) => Effect.Effect<
     BulkSetApplicationCommands200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createApplicationCommand: (
     applicationId: string,
     options: ApplicationCommandCreateRequest,
   ) => Effect.Effect<
     ApplicationCommandResponse | ApplicationCommandResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getApplicationCommand: (
     applicationId: string,
     commandId: string,
   ) => Effect.Effect<
     ApplicationCommandResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly deleteApplicationCommand: (
     applicationId: string,
     commandId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateApplicationCommand: (
     applicationId: string,
     commandId: string,
     options: ApplicationCommandPatchRequestPartial,
   ) => Effect.Effect<
     ApplicationCommandResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listApplicationEmojis: (
     applicationId: string,
   ) => Effect.Effect<
     ListApplicationEmojisResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createApplicationEmoji: (
     applicationId: string,
     options: CreateApplicationEmojiRequest,
-  ) => Effect.Effect<EmojiResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmojiResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getApplicationEmoji: (
     applicationId: string,
     emojiId: string,
-  ) => Effect.Effect<EmojiResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmojiResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteApplicationEmoji: (
     applicationId: string,
     emojiId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateApplicationEmoji: (
     applicationId: string,
     emojiId: string,
     options: UpdateApplicationEmojiRequest,
-  ) => Effect.Effect<EmojiResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmojiResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getEntitlements: (
     applicationId: string,
     options: GetEntitlementsParams,
-  ) => Effect.Effect<GetEntitlements200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetEntitlements200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createEntitlement: (
     applicationId: string,
     options: CreateEntitlementRequestData,
-  ) => Effect.Effect<EntitlementResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EntitlementResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getEntitlement: (
     applicationId: string,
     entitlementId: string,
-  ) => Effect.Effect<EntitlementResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EntitlementResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteEntitlement: (
     applicationId: string,
     entitlementId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly consumeEntitlement: (
     applicationId: string,
     entitlementId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildApplicationCommands: (
     applicationId: string,
     guildId: string,
     options?: ListGuildApplicationCommandsParams | undefined,
   ) => Effect.Effect<
     ListGuildApplicationCommands200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly bulkSetGuildApplicationCommands: (
     applicationId: string,
@@ -7784,7 +8639,9 @@ export interface DiscordRest {
     options: BulkSetGuildApplicationCommandsRequest,
   ) => Effect.Effect<
     BulkSetGuildApplicationCommands200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createGuildApplicationCommand: (
     applicationId: string,
@@ -7792,14 +8649,18 @@ export interface DiscordRest {
     options: ApplicationCommandCreateRequest,
   ) => Effect.Effect<
     ApplicationCommandResponse | ApplicationCommandResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listGuildApplicationCommandPermissions: (
     applicationId: string,
     guildId: string,
   ) => Effect.Effect<
     ListGuildApplicationCommandPermissions200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getGuildApplicationCommand: (
     applicationId: string,
@@ -7807,13 +8668,20 @@ export interface DiscordRest {
     commandId: string,
   ) => Effect.Effect<
     ApplicationCommandResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly deleteGuildApplicationCommand: (
     applicationId: string,
     guildId: string,
     commandId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildApplicationCommand: (
     applicationId: string,
     guildId: string,
@@ -7821,7 +8689,9 @@ export interface DiscordRest {
     options: ApplicationCommandPatchRequestPartial,
   ) => Effect.Effect<
     ApplicationCommandResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getGuildApplicationCommandPermissions: (
     applicationId: string,
@@ -7829,7 +8699,9 @@ export interface DiscordRest {
     commandId: string,
   ) => Effect.Effect<
     CommandPermissionsResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly setGuildApplicationCommandPermissions: (
     applicationId: string,
@@ -7838,75 +8710,178 @@ export interface DiscordRest {
     options: SetGuildApplicationCommandPermissionsRequest,
   ) => Effect.Effect<
     CommandPermissionsResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getApplicationRoleConnectionsMetadata: (
     applicationId: string,
   ) => Effect.Effect<
     GetApplicationRoleConnectionsMetadata200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly updateApplicationRoleConnectionsMetadata: (
     applicationId: string,
     options: UpdateApplicationRoleConnectionsMetadataRequest,
   ) => Effect.Effect<
     UpdateApplicationRoleConnectionsMetadata200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getChannel: (
     channelId: string,
-  ) => Effect.Effect<GetChannel200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetChannel200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteChannel: (
     channelId: string,
-  ) => Effect.Effect<DeleteChannel200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    DeleteChannel200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateChannel: (
     channelId: string,
     options: UpdateChannelRequest,
-  ) => Effect.Effect<UpdateChannel200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    UpdateChannel200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly followChannel: (
     channelId: string,
     options: FollowChannelRequest,
-  ) => Effect.Effect<ChannelFollowerResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ChannelFollowerResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listChannelInvites: (
     channelId: string,
-  ) => Effect.Effect<ListChannelInvites200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListChannelInvites200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createChannelInvite: (
     channelId: string,
     options: CreateChannelInviteRequest,
-  ) => Effect.Effect<CreateChannelInvite200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    CreateChannelInvite200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listMessages: (
     channelId: string,
     options?: ListMessagesParams | undefined,
-  ) => Effect.Effect<ListMessages200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListMessages200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createMessage: (
     channelId: string,
     options: MessageCreateRequest,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly bulkDeleteMessages: (
     channelId: string,
     options: BulkDeleteMessagesRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly listPins: (
+    channelId: string,
+    options?: ListPinsParams | undefined,
+  ) => Effect.Effect<
+    PinnedMessagesResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly createPin: (
+    channelId: string,
+    messageId: string,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly deletePin: (
+    channelId: string,
+    messageId: string,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getMessage: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteMessage: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateMessage: (
     channelId: string,
     messageId: string,
     options: MessageEditRequestPartial,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly crosspostMessage: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteAllMessageReactions: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listMessageReactionsByEmoji: (
     channelId: string,
     messageId: string,
@@ -7914,385 +8889,789 @@ export interface DiscordRest {
     options?: ListMessageReactionsByEmojiParams | undefined,
   ) => Effect.Effect<
     ListMessageReactionsByEmoji200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly deleteAllMessageReactionsByEmoji: (
     channelId: string,
     messageId: string,
     emojiName: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly addMyMessageReaction: (
     channelId: string,
     messageId: string,
     emojiName: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteMyMessageReaction: (
     channelId: string,
     messageId: string,
     emojiName: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteUserMessageReaction: (
     channelId: string,
     messageId: string,
     emojiName: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createThreadFromMessage: (
     channelId: string,
     messageId: string,
     options: CreateTextThreadWithMessageRequest,
-  ) => Effect.Effect<ThreadResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly setChannelPermissionOverwrite: (
     channelId: string,
     overwriteId: string,
     options: SetChannelPermissionOverwriteRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteChannelPermissionOverwrite: (
     channelId: string,
     overwriteId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deprecatedListPins: (
     channelId: string,
-  ) => Effect.Effect<DeprecatedListPins200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    DeprecatedListPins200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deprecatedCreatePin: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deprecatedDeletePin: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getAnswerVoters: (
     channelId: string,
     messageId: string,
     answerId: string,
     options?: GetAnswerVotersParams | undefined,
-  ) => Effect.Effect<PollAnswerDetailsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    PollAnswerDetailsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly pollExpire: (
     channelId: string,
     messageId: string,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly addGroupDmUser: (
     channelId: string,
     userId: string,
     options: AddGroupDmUserRequest,
-  ) => Effect.Effect<AddGroupDmUser201, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    AddGroupDmUser201,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGroupDmUser: (
     channelId: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly sendSoundboardSound: (
     channelId: string,
     options: SoundboardSoundSendRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listThreadMembers: (
     channelId: string,
     options?: ListThreadMembersParams | undefined,
-  ) => Effect.Effect<ListThreadMembers200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListThreadMembers200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly joinThread: (
     channelId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly leaveThread: (
     channelId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getThreadMember: (
     channelId: string,
     userId: string,
     options?: GetThreadMemberParams | undefined,
-  ) => Effect.Effect<ThreadMemberResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadMemberResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly addThreadMember: (
     channelId: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteThreadMember: (
     channelId: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createThread: (
     channelId: string,
     options: CreateThreadRequest,
-  ) => Effect.Effect<CreatedThreadResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    CreatedThreadResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listPrivateArchivedThreads: (
     channelId: string,
     options?: ListPrivateArchivedThreadsParams | undefined,
-  ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listPublicArchivedThreads: (
     channelId: string,
     options?: ListPublicArchivedThreadsParams | undefined,
-  ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly threadSearch: (
     channelId: string,
     options?: ThreadSearchParams | undefined,
-  ) => Effect.Effect<ThreadSearchResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadSearchResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly triggerTypingIndicator: (
     channelId: string,
-  ) => Effect.Effect<TypingIndicatorResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    TypingIndicatorResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listMyPrivateArchivedThreads: (
     channelId: string,
     options?: ListMyPrivateArchivedThreadsParams | undefined,
-  ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listChannelWebhooks: (
     channelId: string,
-  ) => Effect.Effect<ListChannelWebhooks200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListChannelWebhooks200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createWebhook: (
     channelId: string,
     options: CreateWebhookRequest,
   ) => Effect.Effect<
     GuildIncomingWebhookResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getGateway: () => Effect.Effect<
     GatewayResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getBotGateway: () => Effect.Effect<
     GatewayBotResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createGuild: (
     options: GuildCreateRequest,
-  ) => Effect.Effect<GuildResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildTemplate: (
     code: string,
-  ) => Effect.Effect<GuildTemplateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildTemplateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createGuildFromTemplate: (
     code: string,
     options: CreateGuildFromTemplateRequest,
-  ) => Effect.Effect<GuildResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuild: (
     guildId: string,
     options?: GetGuildParams | undefined,
-  ) => Effect.Effect<GuildWithCountsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildWithCountsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuild: (
     guildId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuild: (
     guildId: string,
     options: GuildPatchRequestPartial,
-  ) => Effect.Effect<GuildResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildAuditLogEntries: (
     guildId: string,
     options?: ListGuildAuditLogEntriesParams | undefined,
-  ) => Effect.Effect<GuildAuditLogResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildAuditLogResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listAutoModerationRules: (
     guildId: string,
   ) => Effect.Effect<
     ListAutoModerationRules200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createAutoModerationRule: (
     guildId: string,
     options: CreateAutoModerationRuleRequest,
   ) => Effect.Effect<
     CreateAutoModerationRule200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getAutoModerationRule: (
     guildId: string,
     ruleId: string,
-  ) => Effect.Effect<GetAutoModerationRule200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetAutoModerationRule200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteAutoModerationRule: (
     guildId: string,
     ruleId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateAutoModerationRule: (
     guildId: string,
     ruleId: string,
     options: UpdateAutoModerationRuleRequest,
   ) => Effect.Effect<
     UpdateAutoModerationRule200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listGuildBans: (
     guildId: string,
     options?: ListGuildBansParams | undefined,
-  ) => Effect.Effect<ListGuildBans200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildBans200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildBan: (
     guildId: string,
     userId: string,
-  ) => Effect.Effect<GuildBanResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildBanResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly banUserFromGuild: (
     guildId: string,
     userId: string,
     options: BanUserFromGuildRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly unbanUserFromGuild: (
     guildId: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly bulkBanUsersFromGuild: (
     guildId: string,
     options: BulkBanUsersFromGuildRequest,
-  ) => Effect.Effect<BulkBanUsersResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    BulkBanUsersResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildChannels: (
     guildId: string,
-  ) => Effect.Effect<ListGuildChannels200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildChannels200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createGuildChannel: (
     guildId: string,
     options: CreateGuildChannelRequest,
-  ) => Effect.Effect<GuildChannelResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildChannelResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly bulkUpdateGuildChannels: (
     guildId: string,
     options: BulkUpdateGuildChannelsRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildEmojis: (
     guildId: string,
-  ) => Effect.Effect<ListGuildEmojis200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildEmojis200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createGuildEmoji: (
     guildId: string,
     options: CreateGuildEmojiRequest,
-  ) => Effect.Effect<EmojiResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmojiResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildEmoji: (
     guildId: string,
     emojiId: string,
-  ) => Effect.Effect<EmojiResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmojiResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildEmoji: (
     guildId: string,
     emojiId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildEmoji: (
     guildId: string,
     emojiId: string,
     options: UpdateGuildEmojiRequest,
-  ) => Effect.Effect<EmojiResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    EmojiResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildIntegrations: (
     guildId: string,
-  ) => Effect.Effect<ListGuildIntegrations200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildIntegrations200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildIntegration: (
     guildId: string,
     integrationId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildInvites: (
     guildId: string,
-  ) => Effect.Effect<ListGuildInvites200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildInvites200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildMembers: (
     guildId: string,
     options?: ListGuildMembersParams | undefined,
-  ) => Effect.Effect<ListGuildMembers200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildMembers200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateMyGuildMember: (
     guildId: string,
     options: UpdateMyGuildMemberRequest,
   ) => Effect.Effect<
     PrivateGuildMemberResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly searchGuildMembers: (
     guildId: string,
     options: SearchGuildMembersParams,
-  ) => Effect.Effect<SearchGuildMembers200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    SearchGuildMembers200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildMember: (
     guildId: string,
     userId: string,
-  ) => Effect.Effect<GuildMemberResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildMemberResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly addGuildMember: (
     guildId: string,
     userId: string,
-    options: AddGuildMemberRequest,
-  ) => Effect.Effect<GuildMemberResponse, HttpClientError.HttpClientError>
+    options: BotAddGuildMemberRequest,
+  ) => Effect.Effect<
+    GuildMemberResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildMember: (
     guildId: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildMember: (
     guildId: string,
     userId: string,
     options: UpdateGuildMemberRequest,
-  ) => Effect.Effect<GuildMemberResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildMemberResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly addGuildMemberRole: (
     guildId: string,
     userId: string,
     roleId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildMemberRole: (
     guildId: string,
     userId: string,
     roleId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly setGuildMfaLevel: (
     guildId: string,
     options: SetGuildMfaLevelRequest,
-  ) => Effect.Effect<GuildMFALevelResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildMFALevelResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildNewMemberWelcome: (
     guildId: string,
-  ) => Effect.Effect<GuildHomeSettingsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildHomeSettingsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildsOnboarding: (
     guildId: string,
   ) => Effect.Effect<
     UserGuildOnboardingResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly putGuildsOnboarding: (
     guildId: string,
     options: UpdateGuildOnboardingRequest,
-  ) => Effect.Effect<GuildOnboardingResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildOnboardingResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildPreview: (
     guildId: string,
-  ) => Effect.Effect<GuildPreviewResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildPreviewResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly previewPruneGuild: (
     guildId: string,
     options?: PreviewPruneGuildParams | undefined,
-  ) => Effect.Effect<GuildPruneResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildPruneResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly pruneGuild: (
     guildId: string,
     options: PruneGuildRequest,
-  ) => Effect.Effect<GuildPruneResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildPruneResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildVoiceRegions: (
     guildId: string,
-  ) => Effect.Effect<ListGuildVoiceRegions200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildVoiceRegions200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildRoles: (
     guildId: string,
-  ) => Effect.Effect<ListGuildRoles200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildRoles200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createGuildRole: (
     guildId: string,
     options: CreateGuildRoleRequest,
-  ) => Effect.Effect<GuildRoleResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildRoleResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly bulkUpdateGuildRoles: (
     guildId: string,
     options: BulkUpdateGuildRolesRequest,
-  ) => Effect.Effect<BulkUpdateGuildRoles200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    BulkUpdateGuildRoles200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildRole: (
     guildId: string,
     roleId: string,
-  ) => Effect.Effect<GuildRoleResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildRoleResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildRole: (
     guildId: string,
     roleId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildRole: (
     guildId: string,
     roleId: string,
     options: UpdateGuildRoleRequest,
-  ) => Effect.Effect<GuildRoleResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildRoleResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildScheduledEvents: (
     guildId: string,
     options?: ListGuildScheduledEventsParams | undefined,
   ) => Effect.Effect<
     ListGuildScheduledEvents200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createGuildScheduledEvent: (
     guildId: string,
     options: CreateGuildScheduledEventRequest,
   ) => Effect.Effect<
     CreateGuildScheduledEvent200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
     options?: GetGuildScheduledEventParams | undefined,
-  ) => Effect.Effect<GetGuildScheduledEvent200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetGuildScheduledEvent200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildScheduledEvent: (
     guildId: string,
     guildScheduledEventId: string,
     options: UpdateGuildScheduledEventRequest,
   ) => Effect.Effect<
     UpdateGuildScheduledEvent200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listGuildScheduledEventUsers: (
     guildId: string,
@@ -8300,123 +9679,256 @@ export interface DiscordRest {
     options?: ListGuildScheduledEventUsersParams | undefined,
   ) => Effect.Effect<
     ListGuildScheduledEventUsers200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listGuildSoundboardSounds: (
     guildId: string,
   ) => Effect.Effect<
     ListGuildSoundboardSoundsResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createGuildSoundboardSound: (
     guildId: string,
     options: SoundboardCreateRequest,
-  ) => Effect.Effect<SoundboardSoundResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    SoundboardSoundResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildSoundboardSound: (
     guildId: string,
     soundId: string,
-  ) => Effect.Effect<SoundboardSoundResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    SoundboardSoundResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildSoundboardSound: (
     guildId: string,
     soundId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildSoundboardSound: (
     guildId: string,
     soundId: string,
     options: SoundboardPatchRequestPartial,
-  ) => Effect.Effect<SoundboardSoundResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    SoundboardSoundResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildStickers: (
     guildId: string,
-  ) => Effect.Effect<ListGuildStickers200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildStickers200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createGuildSticker: (
     guildId: string,
     options: CreateGuildStickerRequest,
-  ) => Effect.Effect<GuildStickerResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildStickerResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildSticker: (
     guildId: string,
     stickerId: string,
-  ) => Effect.Effect<GuildStickerResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildStickerResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildSticker: (
     guildId: string,
     stickerId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildSticker: (
     guildId: string,
     stickerId: string,
     options: UpdateGuildStickerRequest,
-  ) => Effect.Effect<GuildStickerResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildStickerResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildTemplates: (
     guildId: string,
-  ) => Effect.Effect<ListGuildTemplates200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListGuildTemplates200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createGuildTemplate: (
     guildId: string,
     options: CreateGuildTemplateRequest,
-  ) => Effect.Effect<GuildTemplateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildTemplateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly syncGuildTemplate: (
     guildId: string,
     code: string,
-  ) => Effect.Effect<GuildTemplateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildTemplateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteGuildTemplate: (
     guildId: string,
     code: string,
-  ) => Effect.Effect<GuildTemplateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildTemplateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildTemplate: (
     guildId: string,
     code: string,
     options: UpdateGuildTemplateRequest,
-  ) => Effect.Effect<GuildTemplateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GuildTemplateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getActiveGuildThreads: (
     guildId: string,
-  ) => Effect.Effect<ThreadsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ThreadsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildVanityUrl: (
     guildId: string,
-  ) => Effect.Effect<VanityURLResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    VanityURLResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getSelfVoiceState: (
     guildId: string,
-  ) => Effect.Effect<VoiceStateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    VoiceStateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateSelfVoiceState: (
     guildId: string,
     options: UpdateSelfVoiceStateRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getVoiceState: (
     guildId: string,
     userId: string,
-  ) => Effect.Effect<VoiceStateResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    VoiceStateResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateVoiceState: (
     guildId: string,
     userId: string,
     options: UpdateVoiceStateRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildWebhooks: (
     guildId: string,
-  ) => Effect.Effect<GetGuildWebhooks200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetGuildWebhooks200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildWelcomeScreen: (
     guildId: string,
   ) => Effect.Effect<
     GuildWelcomeScreenResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly updateGuildWelcomeScreen: (
     guildId: string,
     options: WelcomeScreenPatchRequestPartial,
   ) => Effect.Effect<
     GuildWelcomeScreenResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getGuildWidgetSettings: (
     guildId: string,
-  ) => Effect.Effect<WidgetSettingsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    WidgetSettingsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateGuildWidgetSettings: (
     guildId: string,
     options: UpdateGuildWidgetSettingsRequest,
-  ) => Effect.Effect<WidgetSettingsResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    WidgetSettingsResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildWidget: (
     guildId: string,
-  ) => Effect.Effect<WidgetResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    WidgetResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildWidgetPng: (
     guildId: string,
     options?: GetGuildWidgetPngParams | undefined,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createInteractionResponse: (
     interactionId: string,
     interactionToken: string,
@@ -8426,168 +9938,349 @@ export interface DiscordRest {
     },
   ) => Effect.Effect<
     InteractionCallbackResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly inviteResolve: (
     code: string,
     options?: InviteResolveParams | undefined,
-  ) => Effect.Effect<InviteResolve200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    InviteResolve200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly inviteRevoke: (
     code: string,
-  ) => Effect.Effect<InviteRevoke200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    InviteRevoke200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createOrJoinLobby: (
     options: CreateOrJoinLobbyRequest,
-  ) => Effect.Effect<LobbyResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createLobby: (
     options: CreateLobbyRequest,
-  ) => Effect.Effect<LobbyResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getLobby: (
     lobbyId: string,
-  ) => Effect.Effect<LobbyResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly editLobby: (
     lobbyId: string,
     options: EditLobbyRequest,
-  ) => Effect.Effect<LobbyResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly editLobbyChannelLink: (
     lobbyId: string,
     options: EditLobbyChannelLinkRequest,
-  ) => Effect.Effect<LobbyResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly leaveLobby: (
     lobbyId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly bulkUpdateLobbyMembers: (
     lobbyId: string,
     options: BulkUpdateLobbyMembersRequest,
-  ) => Effect.Effect<BulkUpdateLobbyMembers200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    BulkUpdateLobbyMembers200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly addLobbyMember: (
     lobbyId: string,
     userId: string,
     options: AddLobbyMemberRequest,
-  ) => Effect.Effect<LobbyMemberResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyMemberResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteLobbyMember: (
     lobbyId: string,
     userId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getLobbyMessages: (
     lobbyId: string,
     options?: GetLobbyMessagesParams | undefined,
-  ) => Effect.Effect<GetLobbyMessages200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetLobbyMessages200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createLobbyMessage: (
     lobbyId: string,
     options: SDKMessageRequest,
-  ) => Effect.Effect<LobbyMessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    LobbyMessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getMyOauth2Authorization: () => Effect.Effect<
     OAuth2GetAuthorizationResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getMyOauth2Application: () => Effect.Effect<
     PrivateApplicationResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getPublicKeys: () => Effect.Effect<
     OAuth2GetKeys,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getOpenidConnectUserinfo: () => Effect.Effect<
     OAuth2GetOpenIDConnectUserInfoResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly partnerSdkUnmergeProvisionalAccount: (
     options: PartnerSdkUnmergeProvisionalAccountRequest,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly partnerSdkToken: (
     options: PartnerSdkTokenRequest,
-  ) => Effect.Effect<ProvisionalTokenResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ProvisionalTokenResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getSoundboardDefaultSounds: () => Effect.Effect<
     GetSoundboardDefaultSounds200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly createStageInstance: (
     options: CreateStageInstanceRequest,
-  ) => Effect.Effect<StageInstanceResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    StageInstanceResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getStageInstance: (
     channelId: string,
-  ) => Effect.Effect<StageInstanceResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    StageInstanceResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteStageInstance: (
     channelId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateStageInstance: (
     channelId: string,
     options: UpdateStageInstanceRequest,
-  ) => Effect.Effect<StageInstanceResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    StageInstanceResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listStickerPacks: () => Effect.Effect<
     StickerPackCollectionResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getStickerPack: (
     packId: string,
-  ) => Effect.Effect<StickerPackResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    StickerPackResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getSticker: (
     stickerId: string,
-  ) => Effect.Effect<GetSticker200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetSticker200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getMyUser: () => Effect.Effect<
     UserPIIResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly updateMyUser: (
     options: BotAccountPatchRequest,
-  ) => Effect.Effect<UserPIIResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    UserPIIResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getApplicationUserRoleConnection: (
     applicationId: string,
   ) => Effect.Effect<
     ApplicationUserRoleConnectionResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly updateApplicationUserRoleConnection: (
     applicationId: string,
     options: UpdateApplicationUserRoleConnectionRequest,
   ) => Effect.Effect<
     ApplicationUserRoleConnectionResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly deleteApplicationUserRoleConnection: (
     applicationId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createDm: (
     options: CreatePrivateChannelRequest,
-  ) => Effect.Effect<CreateDm200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    CreateDm200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listMyConnections: () => Effect.Effect<
     ListMyConnections200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly listMyGuilds: (
     options?: ListMyGuildsParams | undefined,
-  ) => Effect.Effect<ListMyGuilds200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    ListMyGuilds200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly leaveGuild: (
     guildId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getMyGuildMember: (
     guildId: string,
   ) => Effect.Effect<
     PrivateGuildMemberResponse,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getUser: (
     userId: string,
-  ) => Effect.Effect<UserResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    UserResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listVoiceRegions: () => Effect.Effect<
     ListVoiceRegions200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
   readonly getWebhook: (
     webhookId: string,
-  ) => Effect.Effect<GetWebhook200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetWebhook200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteWebhook: (
     webhookId: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateWebhook: (
     webhookId: string,
     options: UpdateWebhookRequest,
-  ) => Effect.Effect<UpdateWebhook200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    UpdateWebhook200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getWebhookByToken: (
     webhookId: string,
     webhookToken: string,
-  ) => Effect.Effect<GetWebhookByToken200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    GetWebhookByToken200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly executeWebhook: (
     webhookId: string,
     webhookToken: string,
@@ -8595,16 +10288,31 @@ export interface DiscordRest {
       readonly params?: ExecuteWebhookParams | undefined
       readonly payload: ExecuteWebhookRequest
     },
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteWebhookByToken: (
     webhookId: string,
     webhookToken: string,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateWebhookByToken: (
     webhookId: string,
     webhookToken: string,
     options: UpdateWebhookByTokenRequest,
-  ) => Effect.Effect<UpdateWebhookByToken200, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    UpdateWebhookByToken200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly executeGithubCompatibleWebhook: (
     webhookId: string,
     webhookToken: string,
@@ -8612,17 +10320,32 @@ export interface DiscordRest {
       readonly params?: ExecuteGithubCompatibleWebhookParams | undefined
       readonly payload: GithubWebhook
     },
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getOriginalWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     options?: GetOriginalWebhookMessageParams | undefined,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteOriginalWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     options?: DeleteOriginalWebhookMessageParams | undefined,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateOriginalWebhookMessage: (
     webhookId: string,
     webhookToken: string,
@@ -8630,19 +10353,34 @@ export interface DiscordRest {
       readonly params?: UpdateOriginalWebhookMessageParams | undefined
       readonly payload: IncomingWebhookUpdateRequestPartial
     },
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     messageId: string,
     options?: GetWebhookMessageParams | undefined,
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly deleteWebhookMessage: (
     webhookId: string,
     webhookToken: string,
     messageId: string,
     options?: DeleteWebhookMessageParams | undefined,
-  ) => Effect.Effect<void, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly updateWebhookMessage: (
     webhookId: string,
     webhookToken: string,
@@ -8651,7 +10389,12 @@ export interface DiscordRest {
       readonly params?: UpdateWebhookMessageParams | undefined
       readonly payload: IncomingWebhookUpdateRequestPartial
     },
-  ) => Effect.Effect<MessageResponse, HttpClientError.HttpClientError>
+  ) => Effect.Effect<
+    MessageResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly executeSlackCompatibleWebhook: (
     webhookId: string,
     webhookToken: string,
@@ -8661,7 +10404,9 @@ export interface DiscordRest {
     },
   ) => Effect.Effect<
     ExecuteSlackCompatibleWebhook200,
-    HttpClientError.HttpClientError
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
 }
 
