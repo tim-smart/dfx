@@ -1,5 +1,6 @@
 import * as HttpBody from "@effect/platform/HttpBody"
 import * as HttpClient from "@effect/platform/HttpClient"
+import type { HttpClientError } from "@effect/platform/HttpClientError"
 import * as HttpRequest from "@effect/platform/HttpClientRequest"
 import type * as HttpResponse from "@effect/platform/HttpClientResponse"
 import { DiscordConfig } from "dfx/DiscordConfig"
@@ -11,17 +12,16 @@ import {
 import { RateLimitStore, RateLimiter, RateLimiterLive } from "dfx/RateLimit"
 import * as Discord from "dfx/types"
 import { LIB_VERSION } from "dfx/version"
+import * as Context from "effect/Context"
 import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import { millis } from "effect/Duration"
 import * as Effect from "effect/Effect"
+import * as Fiber from "effect/Fiber"
+import { flow } from "effect/Function"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Redacted from "effect/Redacted"
-import { flow } from "effect/Function"
-import * as Context from "effect/Context"
-import * as Fiber from "effect/Fiber"
-import { HttpClientRequest } from "@effect/platform/index"
 
 const make = Effect.gen(function* () {
   const { rest, token } = yield* DiscordConfig
@@ -194,10 +194,7 @@ const make = Effect.gen(function* () {
           "",
         )
       }
-      request = HttpClientRequest.setBody(
-        request,
-        HttpBody.formData(formData.value),
-      )
+      request = HttpRequest.setBody(request, HttpBody.formData(formData.value))
     }
     return request
   })
@@ -221,6 +218,11 @@ const make = Effect.gen(function* () {
     },
   })
 })
+
+export type DiscordRESTError =
+  | HttpClientError
+  | Discord.DiscordRestError<"RatelimitedResponse", Discord.RatelimitedResponse>
+  | Discord.DiscordRestError<"ErrorResponse", Discord.ErrorResponse>
 
 export class DiscordFormData extends Context.Tag("DiscordFormData")<
   DiscordFormData,

@@ -7,8 +7,8 @@ import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
-import type * as HttpClientError from "@effect/platform/HttpClientError"
 import { DiscordGateway } from "dfx/DiscordGateway"
+import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
 import type {
   GlobalApplicationCommand,
@@ -41,7 +41,7 @@ export const run =
     postHandler: (
       effect: Effect.Effect<
         void,
-        TE | HttpClientError.HttpClientError | DefinitionNotFound,
+        TE | DiscordRESTError | DefinitionNotFound,
         R | DiscordREST | DiscordInteraction
       >,
     ) => Effect.Effect<void, E2, R2>,
@@ -50,7 +50,7 @@ export const run =
     ix: InteractionBuilder<R, E, TE>,
   ): Effect.Effect<
     never,
-    E2 | HttpClientError.HttpClientError | HttpClientError.ResponseError,
+    E2 | DiscordRESTError,
     DiscordREST | DiscordGateway | Exclude<R2, DiscordInteraction>
   > =>
     Effect.gen(function* () {
@@ -103,7 +103,7 @@ export const run =
           )
         }
 
-        yield* gateway.handleDispatch("GUILD_CREATE", a =>
+        return yield* gateway.handleDispatch("GUILD_CREATE", a =>
           rest.bulkSetGuildApplicationCommands(
             application.id,
             a.id,

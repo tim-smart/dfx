@@ -3,10 +3,10 @@ import { identity } from "effect/Function"
 import type * as Cause from "effect/Cause"
 import * as Effect from "effect/Effect"
 import { catchTag } from "effect/Effect"
+import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
 import type * as D from "dfx/Interactions/definitions"
 import type * as Discord from "dfx/types"
-import type { HttpClientError } from "@effect/platform/HttpClientError"
 
 type ExtractTag<A> = A extends { _tag: infer Tag }
   ? Tag extends string
@@ -165,7 +165,7 @@ export class InteractionBuilder<R, E, TE> {
   }
 }
 
-export const builder = new InteractionBuilder<never, never, HttpClientError>(
+export const builder = new InteractionBuilder<never, never, DiscordRESTError>(
   Chunk.empty(),
   identity as any,
 )

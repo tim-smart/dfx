@@ -1,11 +1,8 @@
 import * as Effect from "effect/Effect"
 import type * as Scope from "effect/Scope"
 import * as Stream from "effect/Stream"
+import type { DiscordRESTError } from "dfx/DiscordREST"
 import { DiscordREST } from "dfx/DiscordREST"
-import type {
-  HttpClientError,
-  ResponseError,
-} from "@effect/platform/HttpClientError"
 import type {
   CacheDriver,
   CacheOp,
@@ -140,7 +137,7 @@ export const ops = <E, T>({
 export const guilds = <RM, EM, E>(
   makeDriver: Effect.Effect<CacheDriver<E, Discord.GuildResponse>, EM, RM>,
 ): Effect.Effect<
-  Cache<E, ResponseError | HttpClientError, Discord.GuildResponse>,
+  Cache<E, DiscordRESTError, Discord.GuildResponse>,
   EM,
   RM | DiscordGateway | DiscordREST | Scope.Scope
 > =>
@@ -175,12 +172,7 @@ export const channels = <RM, EM, E>(
     RM
   >,
 ): Effect.Effect<
-  ParentCache<
-    E,
-    ResponseError | HttpClientError,
-    ResponseError | HttpClientError,
-    Discord.GetChannel200
-  >,
+  ParentCache<E, DiscordRESTError, DiscordRESTError, Discord.GetChannel200>,
   EM,
   DiscordGateway | DiscordREST | RM | Scope.Scope
 > =>
@@ -231,12 +223,7 @@ export const roles = <RM, EM, E>(
     RM
   >,
 ): Effect.Effect<
-  ParentCache<
-    E,
-    CacheMissError,
-    ResponseError | HttpClientError,
-    Discord.GuildRoleResponse
-  >,
+  ParentCache<E, CacheMissError, DiscordRESTError, Discord.GuildRoleResponse>,
   EM,
   DiscordGateway | DiscordREST | RM | Scope.Scope
 > =>
