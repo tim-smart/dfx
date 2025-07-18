@@ -5916,6 +5916,10 @@ export interface EditLobbyChannelLinkRequest {
   readonly channel_id?: SnowflakeType | null | undefined
 }
 
+export interface LobbyGuildInviteResponse {
+  readonly code: string
+}
+
 export type BulkLobbyMemberRequestFlagsEnum = 1
 
 export interface BulkLobbyMemberRequest {
@@ -6048,6 +6052,11 @@ export interface ProvisionalTokenResponse {
   readonly refresh_token?: string | null | undefined
   readonly scopes?: ReadonlyArray<string> | null | undefined
   readonly expires_at_s?: number | null | undefined
+}
+
+export interface BotPartnerSdkTokenRequest {
+  readonly external_user_id: string
+  readonly preferred_global_name?: string | null | undefined
 }
 
 export type GetSoundboardDefaultSounds200 =
@@ -8053,6 +8062,13 @@ export const make = (
       HttpClientRequest.del(`/lobbies/${lobbyId}/members/@me`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
+    createLinkedLobbyGuildInviteForSelf: lobbyId =>
+      HttpClientRequest.post(`/lobbies/${lobbyId}/members/@me/invites`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     bulkUpdateLobbyMembers: (lobbyId, options) =>
       HttpClientRequest.post(`/lobbies/${lobbyId}/members/bulk`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
@@ -8072,6 +8088,15 @@ export const make = (
     deleteLobbyMember: (lobbyId, userId) =>
       HttpClientRequest.del(`/lobbies/${lobbyId}/members/${userId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    createLinkedLobbyGuildInviteForUser: (lobbyId, userId) =>
+      HttpClientRequest.post(
+        `/lobbies/${lobbyId}/members/${userId}/invites`,
+      ).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getLobbyMessages: (lobbyId, options) =>
       HttpClientRequest.get(`/lobbies/${lobbyId}/messages`).pipe(
@@ -8124,6 +8149,14 @@ export const make = (
       ),
     partnerSdkToken: options =>
       HttpClientRequest.post(`/partner-sdk/token`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    botPartnerSdkToken: options =>
+      HttpClientRequest.post(`/partner-sdk/token/bot`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
@@ -10009,6 +10042,14 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  readonly createLinkedLobbyGuildInviteForSelf: (
+    lobbyId: string,
+  ) => Effect.Effect<
+    LobbyGuildInviteResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly bulkUpdateLobbyMembers: (
     lobbyId: string,
     options: BulkUpdateLobbyMembersRequest,
@@ -10033,6 +10074,15 @@ export interface DiscordRest {
     userId: string,
   ) => Effect.Effect<
     void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly createLinkedLobbyGuildInviteForUser: (
+    lobbyId: string,
+    userId: string,
+  ) => Effect.Effect<
+    LobbyGuildInviteResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
@@ -10089,6 +10139,14 @@ export interface DiscordRest {
   >
   readonly partnerSdkToken: (
     options: PartnerSdkTokenRequest,
+  ) => Effect.Effect<
+    ProvisionalTokenResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly botPartnerSdkToken: (
+    options: BotPartnerSdkTokenRequest,
   ) => Effect.Effect<
     ProvisionalTokenResponse,
     | HttpClientError.HttpClientError
