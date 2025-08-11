@@ -1488,7 +1488,18 @@ export const ForumLayout = {
 } as const
 export type ForumLayout = (typeof ForumLayout)[keyof typeof ForumLayout]
 
-export type ThreadSearchTagSetting = string
+export const ThreadSearchTagSetting = {
+  /**
+   * The thread tags must contain all tags in the search query
+   */
+  MATCH_ALL: "match_all",
+  /**
+   * The thread tags must contain at least one of tags in the search query
+   */
+  MATCH_SOME: "match_some",
+} as const
+export type ThreadSearchTagSetting =
+  (typeof ThreadSearchTagSetting)[keyof typeof ThreadSearchTagSetting]
 
 export interface GuildChannelResponse {
   readonly id: SnowflakeType
@@ -1575,6 +1586,7 @@ export interface GuildMemberResponse {
   readonly pending: boolean
   readonly premium_since?: string | null | undefined
   readonly roles: ReadonlyArray<SnowflakeType>
+  readonly collectibles?: UserCollectiblesResponse | null | undefined
   readonly user: UserResponse
   readonly mute: boolean
   readonly deaf: boolean
@@ -3024,7 +3036,7 @@ export interface MessageAllowedMentionsRequest {
   readonly replied_user?: boolean | null | undefined
 }
 
-export interface ComponentEmojiForMessageRequest {
+export interface ComponentEmojiForRequest {
   readonly id?: SnowflakeType | null | undefined
   readonly name: string
 }
@@ -3037,7 +3049,7 @@ export interface ButtonComponentForMessageRequest {
   readonly disabled?: boolean | null | undefined
   readonly url?: string | null | undefined
   readonly sku_id?: SnowflakeType | null | undefined
-  readonly emoji?: ComponentEmojiForMessageRequest | null | undefined
+  readonly emoji?: ComponentEmojiForRequest | null | undefined
 }
 
 export interface ChannelSelectDefaultValue {
@@ -3095,12 +3107,12 @@ export interface RoleSelectComponentForMessageRequest {
     | undefined
 }
 
-export interface StringSelectOptionForMessageRequest {
+export interface StringSelectOptionForRequest {
   readonly label: string
   readonly value: string
   readonly description?: string | null | undefined
   readonly default?: boolean | null | undefined
-  readonly emoji?: ComponentEmojiForMessageRequest | null | undefined
+  readonly emoji?: ComponentEmojiForRequest | null | undefined
 }
 
 export interface StringSelectComponentForMessageRequest {
@@ -3110,7 +3122,7 @@ export interface StringSelectComponentForMessageRequest {
   readonly min_values?: number | null | undefined
   readonly max_values?: number | null | undefined
   readonly disabled?: boolean | null | undefined
-  readonly options: ReadonlyArray<StringSelectOptionForMessageRequest>
+  readonly options: ReadonlyArray<StringSelectOptionForRequest>
 }
 
 export interface UserSelectComponentForMessageRequest {
@@ -3802,82 +3814,91 @@ export const AfkTimeouts = {
 } as const
 export type AfkTimeouts = (typeof AfkTimeouts)[keyof typeof AfkTimeouts]
 
-export interface CreateGuildRequestRoleItem {
+export interface GuildTemplateRoleResponse {
   readonly id: number
-  readonly name?: string | null | undefined
-  readonly permissions?: number | null | undefined
-  readonly color?: number | null | undefined
-  readonly hoist?: boolean | null | undefined
-  readonly mentionable?: boolean | null | undefined
+  readonly name: string
+  readonly permissions: string
+  readonly color: number
+  readonly hoist: boolean
+  readonly mentionable: boolean
+  readonly icon?: string | null | undefined
   readonly unicode_emoji?: string | null | undefined
 }
 
-export interface CreateOrUpdateThreadTagRequest {
+export interface GuildTemplateChannelTags {
   readonly name: string
   readonly emoji_id?: SnowflakeType | null | undefined
   readonly emoji_name?: string | null | undefined
   readonly moderated?: boolean | null | undefined
 }
 
-export interface CreateGuildRequestChannelItem {
-  readonly type?: 0 | 2 | 4 | null | undefined
-  readonly name: string
+export interface IconEmojiResponse {}
+
+export interface GuildTemplateChannelResponse {
+  readonly id?: number | null | undefined
+  readonly type: 0 | 2 | 4 | 15
+  readonly name?: string | null | undefined
   readonly position?: number | null | undefined
   readonly topic?: string | null | undefined
-  readonly bitrate?: number | null | undefined
-  readonly user_limit?: number | null | undefined
-  readonly nsfw?: boolean | null | undefined
-  readonly rate_limit_per_user?: number | null | undefined
+  readonly bitrate: number
+  readonly user_limit: number
+  readonly nsfw: boolean
+  readonly rate_limit_per_user: number
   readonly parent_id?: SnowflakeType | null | undefined
-  readonly permission_overwrites?:
-    | ReadonlyArray<ChannelPermissionOverwriteRequest>
-    | null
-    | undefined
-  readonly rtc_region?: string | null | undefined
-  readonly video_quality_mode?: VideoQualityModes | null | undefined
   readonly default_auto_archive_duration?:
     | ThreadAutoArchiveDuration
     | null
     | undefined
+  readonly permission_overwrites: ReadonlyArray<null | ChannelPermissionOverwriteResponse>
+  readonly available_tags?:
+    | ReadonlyArray<GuildTemplateChannelTags>
+    | null
+    | undefined
+  readonly template: string
   readonly default_reaction_emoji?:
-    | UpdateDefaultReactionEmojiRequest
+    | DefaultReactionEmojiResponse
     | null
     | undefined
   readonly default_thread_rate_limit_per_user?: number | null | undefined
   readonly default_sort_order?: ThreadSortOrder | null | undefined
   readonly default_forum_layout?: ForumLayout | null | undefined
   readonly default_tag_setting?: ThreadSearchTagSetting | null | undefined
-  readonly id?: SnowflakeType | null | undefined
-  readonly available_tags?:
-    | ReadonlyArray<CreateOrUpdateThreadTagRequest>
-    | null
-    | undefined
+  readonly icon_emoji?: IconEmojiResponse | null | undefined
+  readonly theme_color?: number | null | undefined
 }
 
-export interface GuildCreateRequest {
-  readonly description?: string | null | undefined
+export interface GuildTemplateSnapshotResponse {
   readonly name: string
+  readonly description?: string | null | undefined
   readonly region?: string | null | undefined
-  readonly icon?: string | null | undefined
-  readonly verification_level?: VerificationLevels | null | undefined
-  readonly default_message_notifications?:
-    | UserNotificationSettings
-    | null
-    | undefined
-  readonly explicit_content_filter?:
-    | GuildExplicitContentFilterTypes
-    | null
-    | undefined
-  readonly preferred_locale?: AvailableLocalesEnum | null | undefined
-  readonly afk_timeout?: AfkTimeouts | null | undefined
-  readonly roles?: ReadonlyArray<CreateGuildRequestRoleItem> | null | undefined
-  readonly channels?:
-    | ReadonlyArray<CreateGuildRequestChannelItem>
-    | null
-    | undefined
+  readonly verification_level: VerificationLevels
+  readonly default_message_notifications: UserNotificationSettings
+  readonly explicit_content_filter: GuildExplicitContentFilterTypes
+  readonly preferred_locale: AvailableLocalesEnum
   readonly afk_channel_id?: SnowflakeType | null | undefined
+  readonly afk_timeout: AfkTimeouts
   readonly system_channel_id?: SnowflakeType | null | undefined
-  readonly system_channel_flags?: number | null | undefined
+  readonly system_channel_flags: number
+  readonly roles: ReadonlyArray<GuildTemplateRoleResponse>
+  readonly channels: ReadonlyArray<GuildTemplateChannelResponse>
+}
+
+export interface GuildTemplateResponse {
+  readonly code: string
+  readonly name: string
+  readonly description?: string | null | undefined
+  readonly usage_count: number
+  readonly creator_id: SnowflakeType
+  readonly creator?: UserResponse | null | undefined
+  readonly created_at: string
+  readonly updated_at: string
+  readonly source_guild_id: SnowflakeType
+  readonly serialized_source_guild: GuildTemplateSnapshotResponse
+  readonly is_dirty?: boolean | null | undefined
+}
+
+export interface GetGuildParams {
+  readonly with_counts?: boolean | undefined
 }
 
 export interface GuildRoleColorsResponse {
@@ -3944,140 +3965,6 @@ export const PremiumGuildTiers = {
 } as const
 export type PremiumGuildTiers =
   (typeof PremiumGuildTiers)[keyof typeof PremiumGuildTiers]
-
-export interface GuildResponse {
-  readonly id: SnowflakeType
-  readonly name: string
-  readonly icon?: string | null | undefined
-  readonly description?: string | null | undefined
-  readonly home_header?: string | null | undefined
-  readonly splash?: string | null | undefined
-  readonly discovery_splash?: string | null | undefined
-  readonly features: ReadonlyArray<GuildFeatures>
-  readonly banner?: string | null | undefined
-  readonly owner_id: SnowflakeType
-  readonly application_id?: SnowflakeType | null | undefined
-  readonly region: string
-  readonly afk_channel_id?: SnowflakeType | null | undefined
-  readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: SnowflakeType | null | undefined
-  readonly system_channel_flags: number
-  readonly widget_enabled: boolean
-  readonly widget_channel_id?: SnowflakeType | null | undefined
-  readonly verification_level: VerificationLevels
-  readonly roles: ReadonlyArray<GuildRoleResponse>
-  readonly default_message_notifications: UserNotificationSettings
-  readonly mfa_level: GuildMFALevel
-  readonly explicit_content_filter: GuildExplicitContentFilterTypes
-  readonly max_presences?: number | null | undefined
-  readonly max_members?: number | null | undefined
-  readonly max_stage_video_channel_users?: number | null | undefined
-  readonly max_video_channel_users?: number | null | undefined
-  readonly vanity_url_code?: string | null | undefined
-  readonly premium_tier: PremiumGuildTiers
-  readonly premium_subscription_count: number
-  readonly preferred_locale: AvailableLocalesEnum
-  readonly rules_channel_id?: SnowflakeType | null | undefined
-  readonly safety_alerts_channel_id?: SnowflakeType | null | undefined
-  readonly public_updates_channel_id?: SnowflakeType | null | undefined
-  readonly premium_progress_bar_enabled: boolean
-  readonly nsfw: boolean
-  readonly nsfw_level: GuildNSFWContentLevel
-  readonly emojis: ReadonlyArray<EmojiResponse>
-  readonly stickers: ReadonlyArray<GuildStickerResponse>
-}
-
-export interface GuildTemplateRoleResponse {
-  readonly id: number
-  readonly name: string
-  readonly permissions: string
-  readonly color: number
-  readonly hoist: boolean
-  readonly mentionable: boolean
-  readonly icon?: string | null | undefined
-  readonly unicode_emoji?: string | null | undefined
-}
-
-export interface GuildTemplateChannelTags {
-  readonly name: string
-  readonly emoji_id?: SnowflakeType | null | undefined
-  readonly emoji_name?: string | null | undefined
-  readonly moderated?: boolean | null | undefined
-}
-
-export interface IconEmojiResponse {}
-
-export interface GuildTemplateChannelResponse {
-  readonly id?: number | null | undefined
-  readonly type: 0 | 2 | 4
-  readonly name?: string | null | undefined
-  readonly position?: number | null | undefined
-  readonly topic?: string | null | undefined
-  readonly bitrate: number
-  readonly user_limit: number
-  readonly nsfw: boolean
-  readonly rate_limit_per_user: number
-  readonly parent_id?: SnowflakeType | null | undefined
-  readonly default_auto_archive_duration?:
-    | ThreadAutoArchiveDuration
-    | null
-    | undefined
-  readonly permission_overwrites: ReadonlyArray<null | ChannelPermissionOverwriteResponse>
-  readonly available_tags?:
-    | ReadonlyArray<GuildTemplateChannelTags>
-    | null
-    | undefined
-  readonly template: string
-  readonly default_reaction_emoji?:
-    | DefaultReactionEmojiResponse
-    | null
-    | undefined
-  readonly default_thread_rate_limit_per_user?: number | null | undefined
-  readonly default_sort_order?: ThreadSortOrder | null | undefined
-  readonly default_forum_layout?: ForumLayout | null | undefined
-  readonly default_tag_setting?: ThreadSearchTagSetting | null | undefined
-  readonly icon_emoji?: IconEmojiResponse | null | undefined
-  readonly theme_color?: number | null | undefined
-}
-
-export interface GuildTemplateSnapshotResponse {
-  readonly name: string
-  readonly description?: string | null | undefined
-  readonly region?: string | null | undefined
-  readonly verification_level: VerificationLevels
-  readonly default_message_notifications: UserNotificationSettings
-  readonly explicit_content_filter: GuildExplicitContentFilterTypes
-  readonly preferred_locale: AvailableLocalesEnum
-  readonly afk_channel_id?: SnowflakeType | null | undefined
-  readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: SnowflakeType | null | undefined
-  readonly system_channel_flags: number
-  readonly roles: ReadonlyArray<GuildTemplateRoleResponse>
-  readonly channels: ReadonlyArray<GuildTemplateChannelResponse>
-}
-
-export interface GuildTemplateResponse {
-  readonly code: string
-  readonly name: string
-  readonly description?: string | null | undefined
-  readonly usage_count: number
-  readonly creator_id: SnowflakeType
-  readonly creator?: UserResponse | null | undefined
-  readonly created_at: string
-  readonly updated_at: string
-  readonly source_guild_id: SnowflakeType
-  readonly serialized_source_guild: GuildTemplateSnapshotResponse
-  readonly is_dirty?: boolean | null | undefined
-}
-
-export interface CreateGuildFromTemplateRequest {
-  readonly name: string
-  readonly icon?: string | null | undefined
-}
-
-export interface GetGuildParams {
-  readonly with_counts?: boolean | undefined
-}
 
 export interface GuildWithCountsResponse {
   readonly id: SnowflakeType
@@ -4152,6 +4039,48 @@ export interface GuildPatchRequestPartial {
   readonly safety_alerts_channel_id?: SnowflakeType | null | undefined
   readonly public_updates_channel_id?: SnowflakeType | null | undefined
   readonly premium_progress_bar_enabled?: boolean | null | undefined
+}
+
+export interface GuildResponse {
+  readonly id: SnowflakeType
+  readonly name: string
+  readonly icon?: string | null | undefined
+  readonly description?: string | null | undefined
+  readonly home_header?: string | null | undefined
+  readonly splash?: string | null | undefined
+  readonly discovery_splash?: string | null | undefined
+  readonly features: ReadonlyArray<GuildFeatures>
+  readonly banner?: string | null | undefined
+  readonly owner_id: SnowflakeType
+  readonly application_id?: SnowflakeType | null | undefined
+  readonly region: string
+  readonly afk_channel_id?: SnowflakeType | null | undefined
+  readonly afk_timeout: AfkTimeouts
+  readonly system_channel_id?: SnowflakeType | null | undefined
+  readonly system_channel_flags: number
+  readonly widget_enabled: boolean
+  readonly widget_channel_id?: SnowflakeType | null | undefined
+  readonly verification_level: VerificationLevels
+  readonly roles: ReadonlyArray<GuildRoleResponse>
+  readonly default_message_notifications: UserNotificationSettings
+  readonly mfa_level: GuildMFALevel
+  readonly explicit_content_filter: GuildExplicitContentFilterTypes
+  readonly max_presences?: number | null | undefined
+  readonly max_members?: number | null | undefined
+  readonly max_stage_video_channel_users?: number | null | undefined
+  readonly max_video_channel_users?: number | null | undefined
+  readonly vanity_url_code?: string | null | undefined
+  readonly premium_tier: PremiumGuildTiers
+  readonly premium_subscription_count: number
+  readonly preferred_locale: AvailableLocalesEnum
+  readonly rules_channel_id?: SnowflakeType | null | undefined
+  readonly safety_alerts_channel_id?: SnowflakeType | null | undefined
+  readonly public_updates_channel_id?: SnowflakeType | null | undefined
+  readonly premium_progress_bar_enabled: boolean
+  readonly nsfw: boolean
+  readonly nsfw_level: GuildNSFWContentLevel
+  readonly emojis: ReadonlyArray<EmojiResponse>
+  readonly stickers: ReadonlyArray<GuildStickerResponse>
 }
 
 export interface ListGuildAuditLogEntriesParams {
@@ -4901,6 +4830,13 @@ export type ListGuildChannels200 = ReadonlyArray<
   | ThreadResponse
 >
 
+export interface CreateOrUpdateThreadTagRequest {
+  readonly name: string
+  readonly emoji_id?: SnowflakeType | null | undefined
+  readonly emoji_name?: string | null | undefined
+  readonly moderated?: boolean | null | undefined
+}
+
 export interface CreateGuildChannelRequest {
   readonly type?: 0 | 2 | 4 | 5 | 13 | 14 | 15 | null | undefined
   readonly name: string
@@ -5080,6 +5016,7 @@ export interface PrivateGuildMemberResponse {
   readonly pending: boolean
   readonly premium_since?: string | null | undefined
   readonly roles: ReadonlyArray<SnowflakeType>
+  readonly collectibles?: UserCollectiblesResponse | null | undefined
   readonly user: UserResponse
   readonly mute: boolean
   readonly deaf: boolean
@@ -5111,7 +5048,7 @@ export interface UpdateGuildMemberRequest {
   readonly flags?: number | null | undefined
 }
 
-export interface SetGuildMfaLevelRequest {
+export interface GuildMFARequest {
   readonly level: GuildMFALevel
 }
 
@@ -5307,7 +5244,7 @@ export type ListGuildVoiceRegions200 = ReadonlyArray<VoiceRegionResponse>
 
 export type ListGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
-export interface CreateGuildRoleRequest {
+export interface CreateRoleRequest {
   readonly name?: string | null | undefined
   readonly permissions?: number | null | undefined
   readonly color?: number | null | undefined
@@ -5317,14 +5254,17 @@ export interface CreateGuildRoleRequest {
   readonly unicode_emoji?: string | null | undefined
 }
 
-export type BulkUpdateGuildRolesRequest = ReadonlyArray<{
+export interface UpdateRolePositionsRequest {
   readonly id?: SnowflakeType | null | undefined
   readonly position?: number | null | undefined
-}>
+}
+
+export type BulkUpdateGuildRolesRequest =
+  ReadonlyArray<UpdateRolePositionsRequest>
 
 export type BulkUpdateGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
-export interface UpdateGuildRoleRequest {
+export interface UpdateRoleRequestPartial {
   readonly name?: string | null | undefined
   readonly permissions?: number | null | undefined
   readonly color?: number | null | undefined
@@ -5755,7 +5695,7 @@ export interface TextInputComponentForModalRequest {
   readonly type: 4
   readonly custom_id: string
   readonly style: TextInputStyleTypes
-  readonly label: string
+  readonly label?: string | null | undefined
   readonly value?: string | null | undefined
   readonly placeholder?: string | null | undefined
   readonly required?: boolean | null | undefined
@@ -5871,11 +5811,14 @@ export type InviteRevoke200 =
   | GroupDMInviteResponse
   | GuildInviteResponse
 
+export type CreateOrJoinLobbyRequestFlagsEnum = 1
+
 export interface CreateOrJoinLobbyRequest {
   readonly idle_timeout_seconds?: number | null | undefined
   readonly lobby_metadata?: Record<string, unknown> | null | undefined
   readonly member_metadata?: Record<string, unknown> | null | undefined
   readonly secret: string
+  readonly flags?: CreateOrJoinLobbyRequestFlagsEnum | null | undefined
 }
 
 export interface LobbyMemberResponse {
@@ -5890,6 +5833,7 @@ export interface LobbyResponse {
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly members?: ReadonlyArray<LobbyMemberResponse> | null | undefined
   readonly linked_channel?: GuildChannelResponse | null | undefined
+  readonly flags: UInt32Type
 }
 
 export type LobbyMemberRequestFlagsEnum = 1
@@ -5900,16 +5844,22 @@ export interface LobbyMemberRequest {
   readonly flags?: LobbyMemberRequestFlagsEnum | null | undefined
 }
 
+export type CreateLobbyRequestFlagsEnum = 1
+
 export interface CreateLobbyRequest {
   readonly idle_timeout_seconds?: number | null | undefined
   readonly members?: ReadonlyArray<LobbyMemberRequest> | null | undefined
   readonly metadata?: Record<string, unknown> | null | undefined
+  readonly flags?: CreateLobbyRequestFlagsEnum | null | undefined
 }
+
+export type EditLobbyRequestFlagsEnum = 1
 
 export interface EditLobbyRequest {
   readonly idle_timeout_seconds?: number | null | undefined
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly members?: ReadonlyArray<LobbyMemberRequest> | null | undefined
+  readonly flags?: EditLobbyRequestFlagsEnum | null | undefined
 }
 
 export interface EditLobbyChannelLinkRequest {
@@ -7343,24 +7293,8 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
-    createGuild: options =>
-      HttpClientRequest.post(`/guilds`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"], {
-          "429": "RatelimitedResponse",
-          "4xx": "ErrorResponse",
-        }),
-      ),
     getGuildTemplate: code =>
       HttpClientRequest.get(`/guilds/templates/${code}`).pipe(
-        onRequest(["2xx"], {
-          "429": "RatelimitedResponse",
-          "4xx": "ErrorResponse",
-        }),
-      ),
-    createGuildFromTemplate: (code, options) =>
-      HttpClientRequest.post(`/guilds/templates/${code}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -9205,27 +9139,10 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
-  readonly createGuild: (
-    options: GuildCreateRequest,
-  ) => Effect.Effect<
-    GuildResponse,
-    | HttpClientError.HttpClientError
-    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
-    | DiscordRestError<"ErrorResponse", ErrorResponse>
-  >
   readonly getGuildTemplate: (
     code: string,
   ) => Effect.Effect<
     GuildTemplateResponse,
-    | HttpClientError.HttpClientError
-    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
-    | DiscordRestError<"ErrorResponse", ErrorResponse>
-  >
-  readonly createGuildFromTemplate: (
-    code: string,
-    options: CreateGuildFromTemplateRequest,
-  ) => Effect.Effect<
-    GuildResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
@@ -9539,7 +9456,7 @@ export interface DiscordRest {
   >
   readonly setGuildMfaLevel: (
     guildId: string,
-    options: SetGuildMfaLevelRequest,
+    options: GuildMFARequest,
   ) => Effect.Effect<
     GuildMFALevelResponse,
     | HttpClientError.HttpClientError
@@ -9615,7 +9532,7 @@ export interface DiscordRest {
   >
   readonly createGuildRole: (
     guildId: string,
-    options: CreateGuildRoleRequest,
+    options: CreateRoleRequest,
   ) => Effect.Effect<
     GuildRoleResponse,
     | HttpClientError.HttpClientError
@@ -9652,7 +9569,7 @@ export interface DiscordRest {
   readonly updateGuildRole: (
     guildId: string,
     roleId: string,
-    options: UpdateGuildRoleRequest,
+    options: UpdateRoleRequestPartial,
   ) => Effect.Effect<
     GuildRoleResponse,
     | HttpClientError.HttpClientError
