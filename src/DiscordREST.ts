@@ -190,7 +190,9 @@ const make = Effect.gen(function* () {
       if (request.body._tag === "Uint8Array") {
         formData.value.set(
           "payload_json",
-          new Blob([request.body.body], { type: "application/json" }),
+          new Blob([request.body.body as Uint8Array<ArrayBuffer>], {
+            type: "application/json",
+          }),
           "",
         )
       }
