@@ -116,7 +116,9 @@ const make = Effect.gen(function* () {
     }
   })
 
-  const defaultClient = yield* HttpClient.HttpClient
+  const defaultClient = (yield* HttpClient.HttpClient).pipe(
+    HttpClient.withTracerPropagation(false),
+  )
   const rateLimitedClient: HttpClient.HttpClient = defaultClient.pipe(
     HttpClient.tapRequest(request =>
       Effect.zipRight(requestRateLimit(request.url, request), globalRateLimit),
