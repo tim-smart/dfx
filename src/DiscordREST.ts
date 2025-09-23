@@ -178,30 +178,35 @@ const make = Effect.gen(function* () {
     ),
   )
 
-  const httpClient = HttpClient.mapRequestInput(rateLimitedClient, req => {
-    const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
-    let request = req.pipe(
-      HttpRequest.prependUrl(rest.baseUrl),
-      HttpRequest.setHeaders({
-        Authorization: `Bot ${Redacted.value(token)}`,
-        "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
-      }),
-    )
-    const formData = Context.getOption(fiber.currentContext, DiscordFormData)
-    if (Option.isSome(formData)) {
-      if (request.body._tag === "Uint8Array") {
-        formData.value.set(
-          "payload_json",
-          new Blob([request.body.body as Uint8Array<ArrayBuffer>], {
-            type: "application/json",
-          }),
-          "",
+  const httpClient = HttpClient.mapRequestInputEffect(rateLimitedClient, req =>
+    Effect.sync(() => {
+      const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
+      let request = req.pipe(
+        HttpRequest.prependUrl(rest.baseUrl),
+        HttpRequest.setHeaders({
+          Authorization: `Bot ${Redacted.value(token)}`,
+          "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
+        }),
+      )
+      const formData = Context.getOption(fiber.currentContext, DiscordFormData)
+      if (Option.isSome(formData)) {
+        if (request.body._tag === "Uint8Array") {
+          formData.value.set(
+            "payload_json",
+            new Blob([request.body.body as Uint8Array<ArrayBuffer>], {
+              type: "application/json",
+            }),
+            "",
+          )
+        }
+        request = HttpRequest.setBody(
+          request,
+          HttpBody.formData(formData.value),
         )
       }
-      request = HttpRequest.setBody(request, HttpBody.formData(formData.value))
-    }
-    return request
-  })
+      return request
+    }),
+  )
 
   return DiscordREST.of({
     ...Discord.make(httpClient),
@@ -228,10 +233,9 @@ export type DiscordRESTError =
   | Discord.DiscordRestError<"RatelimitedResponse", Discord.RatelimitedResponse>
   | Discord.DiscordRestError<"ErrorResponse", Discord.ErrorResponse>
 
-export class DiscordFormData extends Context.Tag("DiscordFormData")<
-  DiscordFormData,
-  FormData
->() {}
+export class DiscordFormData extends Context.Tag(
+  "dfx/DiscordREST/DiscordFormData",
+)<DiscordFormData, FormData>() {}
 
 export interface DiscordREST {
   readonly _: unique symbol
