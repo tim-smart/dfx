@@ -3821,11 +3821,18 @@ export const AfkTimeouts = {
 } as const
 export type AfkTimeouts = (typeof AfkTimeouts)[keyof typeof AfkTimeouts]
 
+export interface GuildTemplateRoleColorsResponse {
+  readonly primary_color: number
+  readonly secondary_color?: number | null | undefined
+  readonly tertiary_color?: number | null | undefined
+}
+
 export interface GuildTemplateRoleResponse {
   readonly id: number
   readonly name: string
   readonly permissions: string
   readonly color: number
+  readonly colors?: GuildTemplateRoleColorsResponse | null | undefined
   readonly hoist: boolean
   readonly mentionable: boolean
   readonly icon?: string | null | undefined
@@ -5024,6 +5031,7 @@ export interface PrivateGuildMemberResponse {
   readonly user: UserResponse
   readonly mute: boolean
   readonly deaf: boolean
+  readonly permissions?: string | undefined
 }
 
 export interface SearchGuildMembersParams {
@@ -5930,6 +5938,7 @@ export interface LobbyResponse {
   readonly members: ReadonlyArray<LobbyMemberResponse>
   readonly linked_channel?: GuildChannelResponse | undefined
   readonly flags: UInt32Type
+  readonly override_event_webhooks_url?: string | null | undefined
 }
 
 export type LobbyMemberRequestFlagsEnum = 1
@@ -5947,6 +5956,7 @@ export interface CreateLobbyRequest {
   readonly members?: ReadonlyArray<LobbyMemberRequest> | null | undefined
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly flags?: CreateLobbyRequestFlagsEnum | null | undefined
+  readonly override_event_webhooks_url?: string | null | undefined
 }
 
 export type EditLobbyRequestFlagsEnum = 1
@@ -5956,6 +5966,7 @@ export interface EditLobbyRequest {
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly members?: ReadonlyArray<LobbyMemberRequest> | null | undefined
   readonly flags?: EditLobbyRequestFlagsEnum | null | undefined
+  readonly override_event_webhooks_url?: string | null | undefined
 }
 
 export interface EditLobbyChannelLinkRequest {
@@ -6075,6 +6086,7 @@ export const ApplicationIdentityProviderAuthType = {
   EPIC_ONLINE_SERVICES_ID_TOKEN: "EPIC_ONLINE_SERVICES_ID_TOKEN",
   STEAM_SESSION_TICKET: "STEAM_SESSION_TICKET",
   UNITY_SERVICES_ID_TOKEN: "UNITY_SERVICES_ID_TOKEN",
+  DISCORD_BOT_ISSUED_ACCESS_TOKEN: "DISCORD_BOT_ISSUED_ACCESS_TOKEN",
 } as const
 export type ApplicationIdentityProviderAuthType =
   (typeof ApplicationIdentityProviderAuthType)[keyof typeof ApplicationIdentityProviderAuthType]
