@@ -1,0 +1,7 @@
+ignoredBuiltDependencies:
+  - esbuild
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - msgpackr-extract
+  - nx
+  - unrs-resolver
