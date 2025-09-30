@@ -243,6 +243,8 @@ export interface TeamResponse {
   readonly members: ReadonlyArray<TeamMemberResponse>
 }
 
+export interface GameResponse {}
+
 export interface PrivateApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
@@ -275,6 +277,7 @@ export interface PrivateApplicationResponse {
   readonly approximate_user_authorization_count: number
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team?: TeamResponse | null | undefined
+  readonly linked_games?: ReadonlyArray<GameResponse> | null | undefined
 }
 
 /**
@@ -6087,6 +6090,7 @@ export const ApplicationIdentityProviderAuthType = {
   STEAM_SESSION_TICKET: "STEAM_SESSION_TICKET",
   UNITY_SERVICES_ID_TOKEN: "UNITY_SERVICES_ID_TOKEN",
   DISCORD_BOT_ISSUED_ACCESS_TOKEN: "DISCORD_BOT_ISSUED_ACCESS_TOKEN",
+  APPLE_ID_TOKEN: "APPLE_ID_TOKEN",
 } as const
 export type ApplicationIdentityProviderAuthType =
   (typeof ApplicationIdentityProviderAuthType)[keyof typeof ApplicationIdentityProviderAuthType]
