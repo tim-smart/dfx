@@ -243,8 +243,6 @@ export interface TeamResponse {
   readonly members: ReadonlyArray<TeamMemberResponse>
 }
 
-export interface GameResponse {}
-
 export interface PrivateApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
@@ -277,7 +275,6 @@ export interface PrivateApplicationResponse {
   readonly approximate_user_authorization_count: number
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team?: TeamResponse | null | undefined
-  readonly linked_games?: ReadonlyArray<GameResponse> | null | undefined
 }
 
 /**
@@ -1243,6 +1240,7 @@ export interface EntitlementResponse {
     | null
     | undefined
   readonly consumed?: boolean | null | undefined
+  readonly gifter_user_id?: SnowflakeType | null | undefined
 }
 
 export type GetEntitlements200 = ReadonlyArray<null | EntitlementResponse>
@@ -4046,7 +4044,6 @@ export interface GuildPatchRequestPartial {
   readonly afk_timeout?: AfkTimeouts | null | undefined
   readonly afk_channel_id?: SnowflakeType | null | undefined
   readonly system_channel_id?: SnowflakeType | null | undefined
-  readonly owner_id?: SnowflakeType | undefined
   readonly splash?: string | null | undefined
   readonly banner?: string | null | undefined
   readonly system_channel_flags?: number | null | undefined
@@ -5061,14 +5058,6 @@ export interface UpdateGuildMemberRequest {
   readonly channel_id?: SnowflakeType | null | undefined
   readonly communication_disabled_until?: string | null | undefined
   readonly flags?: number | null | undefined
-}
-
-export interface GuildMFARequest {
-  readonly level: GuildMFALevel
-}
-
-export interface GuildMFALevelResponse {
-  readonly level: GuildMFALevel
 }
 
 export interface WelcomeMessageResponse {
@@ -6091,6 +6080,7 @@ export const ApplicationIdentityProviderAuthType = {
   UNITY_SERVICES_ID_TOKEN: "UNITY_SERVICES_ID_TOKEN",
   DISCORD_BOT_ISSUED_ACCESS_TOKEN: "DISCORD_BOT_ISSUED_ACCESS_TOKEN",
   APPLE_ID_TOKEN: "APPLE_ID_TOKEN",
+  PLAYSTATION_NETWORK_ID_TOKEN: "PLAYSTATION_NETWORK_ID_TOKEN",
 } as const
 export type ApplicationIdentityProviderAuthType =
   (typeof ApplicationIdentityProviderAuthType)[keyof typeof ApplicationIdentityProviderAuthType]
@@ -6100,6 +6090,10 @@ export interface PartnerSdkUnmergeProvisionalAccountRequest {
   readonly client_secret?: string | null | undefined
   readonly external_auth_token: string
   readonly external_auth_type: ApplicationIdentityProviderAuthType
+}
+
+export interface BotPartnerSdkUnmergeProvisionalAccountRequest {
+  readonly external_user_id: string
 }
 
 export interface PartnerSdkTokenRequest {
@@ -7425,10 +7419,6 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
-    deleteGuild: guildId =>
-      HttpClientRequest.del(`/guilds/${guildId}`).pipe(
-        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
-      ),
     updateGuild: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}`).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
@@ -7671,14 +7661,6 @@ export const make = (
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
-      ),
-    setGuildMfaLevel: (guildId, options) =>
-      HttpClientRequest.post(`/guilds/${guildId}/mfa`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
-        onRequest(["2xx"], {
-          "429": "RatelimitedResponse",
-          "4xx": "ErrorResponse",
-        }),
       ),
     getGuildNewMemberWelcome: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/new-member-welcome`).pipe(
@@ -8194,6 +8176,13 @@ export const make = (
       ),
     partnerSdkUnmergeProvisionalAccount: options =>
       HttpClientRequest.post(`/partner-sdk/provisional-accounts/unmerge`).pipe(
+        HttpClientRequest.bodyUnsafeJson(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    botPartnerSdkUnmergeProvisionalAccount: options =>
+      HttpClientRequest.post(
+        `/partner-sdk/provisional-accounts/unmerge/bot`,
+      ).pipe(
         HttpClientRequest.bodyUnsafeJson(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
@@ -9272,14 +9261,6 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
-  readonly deleteGuild: (
-    guildId: string,
-  ) => Effect.Effect<
-    void,
-    | HttpClientError.HttpClientError
-    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
-    | DiscordRestError<"ErrorResponse", ErrorResponse>
-  >
   readonly updateGuild: (
     guildId: string,
     options: GuildPatchRequestPartial,
@@ -9567,15 +9548,6 @@ export interface DiscordRest {
     roleId: string,
   ) => Effect.Effect<
     void,
-    | HttpClientError.HttpClientError
-    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
-    | DiscordRestError<"ErrorResponse", ErrorResponse>
-  >
-  readonly setGuildMfaLevel: (
-    guildId: string,
-    options: GuildMFARequest,
-  ) => Effect.Effect<
-    GuildMFALevelResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
@@ -10165,6 +10137,14 @@ export interface DiscordRest {
   >
   readonly partnerSdkUnmergeProvisionalAccount: (
     options: PartnerSdkUnmergeProvisionalAccountRequest,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly botPartnerSdkUnmergeProvisionalAccount: (
+    options: BotPartnerSdkUnmergeProvisionalAccountRequest,
   ) => Effect.Effect<
     void,
     | HttpClientError.HttpClientError
