@@ -9,7 +9,6 @@ import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import { pipe } from "effect/Function"
-import * as HashSet from "effect/HashSet"
 import * as Layer from "effect/Layer"
 import type * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
@@ -26,7 +25,7 @@ const make = Effect.gen(function* () {
   const { gateway: config } = yield* DiscordConfig
   const limiter = yield* RateLimiter
   const shard = yield* Shard
-  const currentShards = yield* Ref.make(HashSet.empty<RunningShard>())
+  const currentShards = new Set<RunningShard>()
 
   const gateway = yield* rest.getBotGateway().pipe(
     Effect.catchAll(() =>
@@ -75,7 +74,9 @@ const make = Effect.gen(function* () {
       ),
     ),
     Effect.flatMap(c => shard.connect([c.id, c.totalCount])),
-    Effect.flatMap(shard => Ref.update(currentShards, HashSet.add(shard))),
+    Effect.tap(shard => {
+      currentShards.add(shard)
+    }),
     Effect.forever,
   )
 
@@ -86,13 +87,15 @@ const make = Effect.gen(function* () {
   ).pipe(
     Effect.scoped,
     Effect.catchAllCause(Effect.logError),
-    Effect.ensuring(Ref.set(currentShards, HashSet.empty())),
+    Effect.ensuring(Effect.sync(() => currentShards.clear())),
     Effect.forever,
     Effect.forkScoped,
     Effect.interruptible,
   )
 
-  return { shards: Ref.get(currentShards) } as const
+  return {
+    shards: Effect.sync(() => currentShards as ReadonlySet<RunningShard>),
+  } as const
 }).pipe(
   Effect.annotateLogs({
     package: "dfx",

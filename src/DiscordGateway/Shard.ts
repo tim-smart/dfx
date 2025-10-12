@@ -171,7 +171,7 @@ export const make = Effect.gen(function* () {
         }
       }).pipe(Effect.forkScoped, Effect.interruptible)
 
-      return { id: shard } as const
+      return { id: shard, write } as const
     },
     (effect, shard) =>
       Effect.annotateLogs(effect, {

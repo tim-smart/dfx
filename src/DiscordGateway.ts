@@ -12,7 +12,6 @@ import type { RateLimitStore } from "dfx/RateLimit"
 import type * as Discord from "dfx/types"
 import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
-import type * as HashSet from "effect/HashSet"
 import * as Layer from "effect/Layer"
 import type * as Stream from "effect/Stream"
 
@@ -43,7 +42,7 @@ export interface DiscordGateway {
     ) => Effect.Effect<A, E, R>,
   ) => Effect.Effect<never, E, R>
   readonly send: (payload: Discord.GatewaySendPayload) => Effect.Effect<boolean>
-  readonly shards: Effect.Effect<HashSet.HashSet<RunningShard>>
+  readonly shards: Effect.Effect<ReadonlySet<RunningShard>>
 }
 
 export const DiscordGateway = GenericTag<DiscordGateway>("dfx/DiscordGateway")
