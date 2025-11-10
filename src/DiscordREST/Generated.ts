@@ -380,6 +380,10 @@ export const EmbeddedActivityLocationKind = {
    * private channel
    */
   PRIVATE_CHANNEL: "pc",
+  /**
+   * party
+   */
+  PARTY: "party",
 } as const
 export type EmbeddedActivityLocationKind =
   (typeof EmbeddedActivityLocationKind)[keyof typeof EmbeddedActivityLocationKind]
@@ -2253,6 +2257,10 @@ export const MessageComponentTypes = {
    * Label component
    */
   LABEL: 18,
+  /**
+   * File upload component
+   */
+  FILE_UPLOAD: 19,
 } as const
 export type MessageComponentTypes =
   (typeof MessageComponentTypes)[keyof typeof MessageComponentTypes]
@@ -5724,6 +5732,15 @@ export interface ChannelSelectComponentForModalRequest {
   readonly channel_types?: ReadonlyArray<ChannelTypes> | null | undefined
 }
 
+export interface FileUploadComponentForModalRequest {
+  readonly type: 19
+  readonly id?: number | null | undefined
+  readonly custom_id: string
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly required?: boolean | null | undefined
+}
+
 export interface MentionableSelectComponentForModalRequest {
   readonly type: 7
   readonly id?: number | null | undefined
@@ -5788,6 +5805,7 @@ export interface LabelComponentForModalRequest {
   readonly description?: string | null | undefined
   readonly component:
     | ChannelSelectComponentForModalRequest
+    | FileUploadComponentForModalRequest
     | MentionableSelectComponentForModalRequest
     | RoleSelectComponentForModalRequest
     | StringSelectComponentForModalRequest

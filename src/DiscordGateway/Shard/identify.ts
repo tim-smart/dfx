@@ -2,8 +2,9 @@ import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as SendEvents from "dfx/DiscordGateway/Shard/sendEvents"
 import type * as Discord from "dfx/types"
-import * as OS from "os"
 import type { ShardState } from "dfx/DiscordGateway/Shard/StateStore"
+
+declare const process: { platform?: string | undefined } | undefined
 
 export interface Options {
   readonly token: string
@@ -17,7 +18,10 @@ const identify = ({ intents, presence, shard, token }: Options) =>
     token,
     intents,
     properties: {
-      os: OS.platform(),
+      os:
+        typeof process !== "undefined"
+          ? (process.platform ?? "unknown")
+          : "unknown",
       browser: "dfx",
       device: "dfx",
     },

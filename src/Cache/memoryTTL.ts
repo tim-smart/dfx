@@ -5,6 +5,10 @@ import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import * as Option from "effect/Option"
 
+declare const global: typeof globalThis & {
+  gc?: () => void
+}
+
 export interface MemoryTTLOpts {
   /** The approx. number of milliseconds to keep items */
   readonly ttl: Duration.Duration
