@@ -1,7 +1,7 @@
-import type * as Rest from "dfx/DiscordREST/Generated"
+import type * as Rest from "./DiscordREST/Generated.ts"
 import type { APIInteraction } from "discord-api-types/v10"
 
-export * from "dfx/DiscordREST/Generated"
+export * from "./DiscordREST/Generated.ts"
 export {
   APIInteraction,
   APIBaseApplicationCommandInteractionData,
@@ -1096,8 +1096,10 @@ export type GatewayGuildDeleteDispatch = _DataPayload<
 /**
  * @see {@link https://discord.com/developers/docs/topics/gateway-events#guild-delete}
  */
-export interface GatewayGuildDeleteDispatchData
-  extends Omit<APIUnavailableGuild, "unavailable"> {
+export interface GatewayGuildDeleteDispatchData extends Omit<
+  APIUnavailableGuild,
+  "unavailable"
+> {
   /**
    * `true` if this guild is unavailable due to an outage
    *
@@ -1905,8 +1907,7 @@ export type GatewayMessageReactionRemoveEmojiDispatch = _DataPayload<
 /**
  * @see {@link https://discord.com/developers/docs/topics/gateway-events#message-reaction-remove-emoji}
  */
-export interface GatewayMessageReactionRemoveEmojiDispatchData
-  extends GatewayMessageReactionRemoveData {
+export interface GatewayMessageReactionRemoveEmojiDispatchData extends GatewayMessageReactionRemoveData {
   /**
    * The emoji that was removed
    */
@@ -2271,8 +2272,7 @@ export type GatewayGuildAuditLogEntryCreateDispatch = _DataPayload<
 /**
  * @see {@link https://discord.com/developers/docs/topics/gateway-events#guild-audit-log-entry-create}
  */
-export interface GatewayGuildAuditLogEntryCreateDispatchData
-  extends APIAuditLogEntry {
+export interface GatewayGuildAuditLogEntryCreateDispatchData extends APIAuditLogEntry {
   /**
    * ID of the guild
    */
@@ -2471,8 +2471,7 @@ export interface GatewayRequestGuildMembersDataBase {
 /**
  * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-guild-members}
  */
-export interface GatewayRequestGuildMembersDataWithUserIds
-  extends GatewayRequestGuildMembersDataBase {
+export interface GatewayRequestGuildMembersDataWithUserIds extends GatewayRequestGuildMembersDataBase {
   /**
    * Used to specify which users you wish to fetch
    */
@@ -2482,8 +2481,7 @@ export interface GatewayRequestGuildMembersDataWithUserIds
 /**
  * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-guild-members}
  */
-export interface GatewayRequestGuildMembersDataWithQuery
-  extends GatewayRequestGuildMembersDataBase {
+export interface GatewayRequestGuildMembersDataWithQuery extends GatewayRequestGuildMembersDataBase {
   /**
    * String that username starts with, or an empty string to return all members
    */
@@ -2619,8 +2617,10 @@ export type _NonDispatchPayload = Omit<_BasePayload, "s" | "t"> & {
   s: null
 }
 
-export interface _DataPayload<Event extends GatewayDispatchEvents, D = unknown>
-  extends _BasePayload {
+export interface _DataPayload<
+  Event extends GatewayDispatchEvents,
+  D = unknown,
+> extends _BasePayload {
   op: GatewayOpcodes.Dispatch
   t: Event
   d: D

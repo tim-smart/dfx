@@ -1,8 +1,8 @@
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
-import * as SendEvents from "dfx/DiscordGateway/Shard/sendEvents"
-import type * as Discord from "dfx/types"
-import type { ShardState } from "dfx/DiscordGateway/Shard/StateStore"
+import * as SendEvents from "./sendEvents.ts"
+import type * as Discord from "../../types.ts"
+import type { ShardState } from "./StateStore.ts"
 
 declare const process: { platform?: string | undefined } | undefined
 

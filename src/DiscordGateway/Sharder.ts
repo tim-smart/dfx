@@ -1,11 +1,10 @@
-import { DiscordConfig } from "dfx/DiscordConfig"
-import type { RunningShard } from "dfx/DiscordGateway/Shard"
-import { Shard, ShardLive } from "dfx/DiscordGateway/Shard"
-import { ShardStore } from "dfx/DiscordGateway/ShardStore"
-import { DiscordREST, DiscordRESTLive } from "dfx/DiscordREST"
-import { RateLimiter, RateLimiterLive } from "dfx/RateLimit"
-import type * as Discord from "dfx/types"
-import { GenericTag } from "effect/Context"
+import { DiscordConfig } from "../DiscordConfig.ts"
+import type { RunningShard } from "./Shard.ts"
+import { Shard, ShardLive } from "./Shard.ts"
+import { ShardStore } from "./ShardStore.ts"
+import { DiscordREST, DiscordRESTLive } from "../DiscordREST.ts"
+import { RateLimiter, RateLimiterLive } from "../RateLimit.ts"
+import type * as Discord from "../types.ts"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import { pipe } from "effect/Function"
@@ -13,9 +12,11 @@ import * as Layer from "effect/Layer"
 import type * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
+import * as ServiceMap from "effect/ServiceMap"
 
-const claimRepeatPolicy = Schedule.spaced("3 minutes").pipe(
-  Schedule.whileInput((_: Option.Option<number>) => _._tag === "None"),
+const claimRepeatPolicy = Schedule.identity<Option.Option<number>>().pipe(
+  Schedule.either(Schedule.spaced("3 minutes")),
+  Schedule.while(_ => Effect.succeed(_.input._tag === "None")),
   Schedule.passthrough,
 ) as Schedule.Schedule<Option.Some<number>, Option.Option<number>>
 
@@ -28,8 +29,8 @@ const make = Effect.gen(function* () {
   const currentShards = new Set<RunningShard>()
 
   const gateway = yield* rest.getBotGateway().pipe(
-    Effect.catchAll(() =>
-      Effect.succeed<Discord.GatewayBotResponse>({
+    Effect.catch(() =>
+      Effect.succeed<Discord.APIGatewayBotInfo>({
         url: "wss://gateway.discord.gg/",
         shards: 1,
         session_start_limit: {
@@ -76,6 +77,7 @@ const make = Effect.gen(function* () {
     Effect.flatMap(c => shard.connect([c.id, c.totalCount])),
     Effect.tap(shard => {
       currentShards.add(shard)
+      return Effect.void
     }),
     Effect.forever,
   )
@@ -86,11 +88,10 @@ const make = Effect.gen(function* () {
     { concurrency: "unbounded", discard: true },
   ).pipe(
     Effect.scoped,
-    Effect.catchAllCause(Effect.logError),
+    Effect.catchCause(Effect.logError),
     Effect.ensuring(Effect.sync(() => currentShards.clear())),
     Effect.forever,
     Effect.forkScoped,
-    Effect.interruptible,
   )
 
   return {
@@ -103,13 +104,14 @@ const make = Effect.gen(function* () {
   }),
 )
 
-export interface Sharder {
-  readonly _: unique symbol
-}
-export const Sharder = GenericTag<Sharder, Effect.Effect.Success<typeof make>>(
-  "dfx/DiscordGateway/Sharder",
-)
-export const SharderLive = Layer.scoped(Sharder, make).pipe(
+export class Sharder extends ServiceMap.Service<
+  Sharder,
+  {
+    readonly shards: Effect.Effect<ReadonlySet<RunningShard>, never, never>
+  }
+>()("dfx/DiscordGateway/Sharder") {}
+
+export const SharderLive = Layer.effect(Sharder, make).pipe(
   Layer.provide(DiscordRESTLive),
   Layer.provide(RateLimiterLive),
   Layer.provide(ShardLive),

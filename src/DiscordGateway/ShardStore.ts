@@ -1,7 +1,7 @@
-import { GenericTag } from "effect/Context"
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
+import * as ServiceMap from "effect/ServiceMap"
 
 export interface ClaimIdContext {
   sharderCount: number
@@ -13,12 +13,11 @@ export interface ShardStoreService {
   allClaimed: (totalCount: number) => Effect.Effect<boolean>
   heartbeat?: (shardId: number) => Effect.Effect<void>
 }
-export interface ShardStore {
-  readonly _: unique symbol
-}
-export const ShardStore = GenericTag<ShardStore, ShardStoreService>(
-  "dfx/DiscordGateway/ShardStore",
-)
+
+export class ShardStore extends ServiceMap.Service<
+  ShardStore,
+  ShardStoreService
+>()("dfx/DiscordGateway/ShardStore") {}
 
 // Very basic shard id store, that does no health checks
 const memoryStore = (): ShardStoreService => {

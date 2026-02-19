@@ -10,9 +10,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "preserveSymlinks": true,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "noEmit": false,
-    "lib": ["ES2021", "DOM"],
+    "lib": ["ESNext", "DOM"],
     "sourceMap": true,
     "declarationMap": true,
     "strict": true,
@@ -33,6 +33,8 @@
     "baseUrl": ".",
     "target": "ESNext",
     "module": "ES2022",
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "incremental": true,
     "removeComments": false,
     "paths": {
@@ -41,7 +43,12 @@
       "dfx/examples/*": ["./examples/*"],
       "dfx/*": ["./src/*"]
     },
-    "plugins": [{ "name": "@effect/language-service" }]
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "namespaceImportPackages": ["effect", "@effect/platform-node"]
+      }
+    ]
   },
   "include": [],
   "exclude": ["node_modules", "build", "lib"]

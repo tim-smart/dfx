@@ -1,8 +1,9 @@
 import * as Effect from "effect/Effect"
 import * as Option from "effect/Option"
-import * as Context from "effect/Context"
 import * as Layer from "effect/Layer"
-import * as KVS from "@effect/platform/KeyValueStore"
+import * as ServiceMap from "effect/ServiceMap"
+import * as KeyValueStore from "effect/unstable/persistence/KeyValueStore"
+import { flow, pipe } from "effect/Function"
 
 export interface ShardState {
   readonly resumeUrl: string
@@ -16,10 +17,10 @@ export interface StateStore {
   readonly clear: Effect.Effect<void>
 }
 
-export class ShardStateStore extends Context.Tag("dfx/Shard/StateStore")<
+export class ShardStateStore extends ServiceMap.Service<
   ShardStateStore,
   { readonly forShard: (id: [id: number, count: number]) => StateStore }
->() {
+>()("dfx/Shard/StateStore") {
   static MemoryLive: Layer.Layer<ShardStateStore> = Layer.sync(
     ShardStateStore,
     () => {
@@ -29,7 +30,7 @@ export class ShardStateStore extends Context.Tag("dfx/Shard/StateStore")<
         forShard: ([id, count]) => {
           const key = `${id}-${count}`
           return {
-            get: Effect.sync(() => Option.fromNullable(store.get(key))),
+            get: Effect.sync(() => Option.fromUndefinedOr(store.get(key))),
             set(state) {
               return Effect.sync(() => {
                 store.set(key, state)
@@ -44,24 +45,28 @@ export class ShardStateStore extends Context.Tag("dfx/Shard/StateStore")<
     },
   )
 
-  static KVSLive: Layer.Layer<ShardStateStore, never, KVS.KeyValueStore> =
-    Layer.effect(
-      ShardStateStore,
-      Effect.gen(function* () {
-        const store = yield* KVS.KeyValueStore
-        return ShardStateStore.of({
-          forShard([id, count]) {
-            const key = `dfx-shard-state-${id}-${count}`
-            return {
-              get: Effect.map(
-                Effect.orDie(store.get(key)),
-                Option.map(JSON.parse),
-              ),
-              set: state => Effect.orDie(store.set(key, JSON.stringify(state))),
-              clear: Effect.orDie(store.remove(key)),
-            }
-          },
-        })
-      }),
-    )
+  static KVSLive: Layer.Layer<
+    ShardStateStore,
+    never,
+    KeyValueStore.KeyValueStore
+  > = Layer.effect(
+    ShardStateStore,
+    Effect.gen(function* () {
+      const store = yield* KeyValueStore.KeyValueStore
+      return ShardStateStore.of({
+        forShard([id, count]) {
+          const key = `dfx-shard-state-${id}-${count}`
+          return {
+            get: pipe(
+              store.get(key),
+              Effect.orDie,
+              Effect.map(flow(Option.fromUndefinedOr, Option.map(JSON.parse))),
+            ),
+            set: state => Effect.orDie(store.set(key, JSON.stringify(state))),
+            clear: Effect.orDie(store.remove(key)),
+          }
+        },
+      })
+    }),
+  )
 }

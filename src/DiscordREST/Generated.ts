@@ -1,8 +1,8 @@
 /* eslint-disable */
-import type * as HttpClient from "@effect/platform/HttpClient"
-import * as HttpClientError from "@effect/platform/HttpClientError"
-import * as HttpClientRequest from "@effect/platform/HttpClientRequest"
-import * as HttpClientResponse from "@effect/platform/HttpClientResponse"
+import type * as HttpClient from "effect/unstable/http/HttpClient"
+import * as HttpClientError from "effect/unstable/http/HttpClientError"
+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest"
+import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse"
 import * as Data from "effect/Data"
 import * as Effect from "effect/Effect"
 
@@ -14,33 +14,33 @@ export type Int53Type = number
 
 export interface UserAvatarDecorationResponse {
   readonly asset: string
-  readonly sku_id?: SnowflakeType | null | undefined
+  readonly sku_id: SnowflakeType | null
 }
 
 export type NameplatePalette = string
 
 export interface UserNameplateResponse {
-  readonly sku_id?: SnowflakeType | null | undefined
+  readonly sku_id: SnowflakeType | null
   readonly asset: string
   readonly label: string
   readonly palette: NameplatePalette
 }
 
 export interface UserCollectiblesResponse {
-  readonly nameplate?: UserNameplateResponse | null | undefined
+  readonly nameplate: UserNameplateResponse | null
 }
 
 export interface UserPrimaryGuildResponse {
-  readonly identity_guild_id?: SnowflakeType | null | undefined
-  readonly identity_enabled?: boolean | null | undefined
-  readonly tag?: string | null | undefined
-  readonly badge?: string | null | undefined
+  readonly identity_guild_id: SnowflakeType | null
+  readonly identity_enabled: boolean | null
+  readonly tag: string | null
+  readonly badge: string | null
 }
 
 export interface UserResponse {
   readonly id: SnowflakeType
   readonly username: string
-  readonly avatar?: string | null | undefined
+  readonly avatar: string | null
   readonly discriminator: string
   readonly public_flags: number
   readonly flags: Int53Type
@@ -48,13 +48,13 @@ export interface UserResponse {
   readonly system?: boolean | undefined
   readonly banner?: string | null | undefined
   readonly accent_color?: number | null | undefined
-  readonly global_name?: string | null | undefined
+  readonly global_name: string | null
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
   readonly collectibles?: UserCollectiblesResponse | null | undefined
-  readonly primary_guild?: UserPrimaryGuildResponse | null | undefined
+  readonly primary_guild: UserPrimaryGuildResponse | null
 }
 
 export const OAuth2Scopes = {
@@ -237,7 +237,7 @@ export interface TeamMemberResponse {
 
 export interface TeamResponse {
   readonly id: SnowflakeType
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly name: string
   readonly owner_user_id: SnowflakeType
   readonly members: ReadonlyArray<TeamMemberResponse>
@@ -246,9 +246,9 @@ export interface TeamResponse {
 export interface PrivateApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly description: string
-  readonly type?: ApplicationTypes | null | undefined
+  readonly type: ApplicationTypes | null
   readonly cover_image?: string | undefined
   readonly primary_sku_id?: SnowflakeType | undefined
   readonly bot?: UserResponse | undefined
@@ -267,18 +267,18 @@ export interface PrivateApplicationResponse {
   readonly max_participants?: number | null | undefined
   readonly tags?: ReadonlyArray<string> | undefined
   readonly redirect_uris: ReadonlyArray<string>
-  readonly interactions_endpoint_url?: string | null | undefined
-  readonly role_connections_verification_url?: string | null | undefined
+  readonly interactions_endpoint_url: string | null
+  readonly role_connections_verification_url: string | null
   readonly owner: UserResponse
-  readonly approximate_guild_count?: number | null | undefined
+  readonly approximate_guild_count: number | null
   readonly approximate_user_install_count: number
   readonly approximate_user_authorization_count: number
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
-  readonly team?: TeamResponse | null | undefined
+  readonly team: TeamResponse | null
 }
 
 /**
- * A single error, either for an API response or a specific field.
+ * Ratelimit error object returned by the Discord API
  */
 export interface RatelimitedResponse {
   /**
@@ -323,7 +323,7 @@ export interface InnerErrors {
 export type ErrorDetails = Record<string, unknown> | InnerErrors
 
 /**
- * A single error, either for an API response or a specific field.
+ * Errors object returned by the Discord API
  */
 export interface ErrorResponse {
   readonly errors?: ErrorDetails | undefined
@@ -416,9 +416,9 @@ export interface UploadApplicationAttachmentRequest {
 export interface ApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly description: string
-  readonly type?: ApplicationTypes | null | undefined
+  readonly type: ApplicationTypes | null
   readonly cover_image?: string | undefined
   readonly primary_sku_id?: SnowflakeType | undefined
   readonly bot?: UserResponse | undefined
@@ -831,7 +831,7 @@ export interface ApplicationCommandResponse {
   readonly id: SnowflakeType
   readonly application_id: SnowflakeType
   readonly version: SnowflakeType
-  readonly default_member_permissions?: string | null | undefined
+  readonly default_member_permissions: string | null
   readonly type: ApplicationCommandType
   readonly name: string
   readonly name_localized?: string | undefined
@@ -1245,6 +1245,7 @@ export interface EntitlementResponse {
     | undefined
   readonly consumed?: boolean | null | undefined
   readonly gifter_user_id?: SnowflakeType | null | undefined
+  readonly parent_id?: SnowflakeType | null | undefined
 }
 
 export type GetEntitlements200 = ReadonlyArray<null | EntitlementResponse>
@@ -1438,8 +1439,8 @@ export interface ForumTagResponse {
   readonly id: SnowflakeType
   readonly name: string
   readonly moderated: boolean
-  readonly emoji_id?: SnowflakeType | null | undefined
-  readonly emoji_name?: string | null | undefined
+  readonly emoji_id: SnowflakeType | null
+  readonly emoji_name: string | null
 }
 
 export interface DefaultReactionEmojiResponse {
@@ -1540,8 +1541,8 @@ export interface PrivateGroupChannelResponse {
   readonly flags: number
   readonly last_pin_timestamp?: string | null | undefined
   readonly recipients: ReadonlyArray<UserResponse>
-  readonly name?: string | null | undefined
-  readonly icon?: string | null | undefined
+  readonly name: string | null
+  readonly icon: string | null
   readonly owner_id: SnowflakeType
   readonly managed?: boolean | undefined
   readonly application_id?: SnowflakeType | undefined
@@ -1549,7 +1550,7 @@ export interface PrivateGroupChannelResponse {
 
 export interface ThreadMetadataResponse {
   readonly archived: boolean
-  readonly archive_timestamp?: string | null | undefined
+  readonly archive_timestamp: string | null
   readonly auto_archive_duration: ThreadAutoArchiveDuration
   readonly locked: boolean
   readonly create_timestamp?: string | undefined
@@ -1557,18 +1558,18 @@ export interface ThreadMetadataResponse {
 }
 
 export interface GuildMemberResponse {
-  readonly avatar?: string | null | undefined
+  readonly avatar: string | null
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
-  readonly banner?: string | null | undefined
-  readonly communication_disabled_until?: string | null | undefined
+  readonly banner: string | null
+  readonly communication_disabled_until: string | null
   readonly flags: number
   readonly joined_at: string
-  readonly nick?: string | null | undefined
+  readonly nick: string | null
   readonly pending: boolean
-  readonly premium_since?: string | null | undefined
+  readonly premium_since: string | null
   readonly roles: ReadonlyArray<SnowflakeType>
   readonly collectibles?: UserCollectiblesResponse | null | undefined
   readonly user: UserResponse
@@ -1734,7 +1735,7 @@ export interface InviteChannelRecipientResponse {
 export interface InviteChannelResponse {
   readonly id: SnowflakeType
   readonly type: ChannelTypes
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly icon?: string | undefined
   readonly recipients?:
     | ReadonlyArray<InviteChannelRecipientResponse>
@@ -1747,9 +1748,9 @@ export interface FriendInviteResponse {
   readonly inviter?: UserResponse | undefined
   readonly max_age?: number | undefined
   readonly created_at?: string | undefined
-  readonly expires_at?: string | null | undefined
+  readonly expires_at: string | null
   readonly friends_count?: number | undefined
-  readonly channel?: InviteChannelResponse | null | undefined
+  readonly channel: InviteChannelResponse | null
   readonly is_contact?: boolean | undefined
   readonly uses?: number | undefined
   readonly max_uses?: number | undefined
@@ -1762,7 +1763,7 @@ export interface GroupDMInviteResponse {
   readonly inviter?: UserResponse | undefined
   readonly max_age?: number | undefined
   readonly created_at?: string | undefined
-  readonly expires_at?: string | null | undefined
+  readonly expires_at: string | null
   readonly channel: InviteChannelResponse
   readonly approximate_member_count?: number | null | undefined
 }
@@ -1917,15 +1918,15 @@ export type GuildNSFWContentLevel =
 export interface InviteGuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly splash?: string | null | undefined
-  readonly banner?: string | null | undefined
-  readonly description?: string | null | undefined
-  readonly icon?: string | null | undefined
+  readonly splash: string | null
+  readonly banner: string | null
+  readonly description: string | null
+  readonly icon: string | null
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly verification_level?: VerificationLevels | null | undefined
-  readonly vanity_url_code?: string | null | undefined
-  readonly nsfw_level?: GuildNSFWContentLevel | null | undefined
-  readonly nsfw?: boolean | null | undefined
+  readonly verification_level: VerificationLevels | null
+  readonly vanity_url_code: string | null
+  readonly nsfw_level: GuildNSFWContentLevel | null
+  readonly nsfw: boolean | null
   readonly premium_subscription_count: number
 }
 
@@ -1940,9 +1941,9 @@ export type InviteTargetTypes =
 export interface InviteApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly description: string
-  readonly type?: ApplicationTypes | null | undefined
+  readonly type: ApplicationTypes | null
   readonly cover_image?: string | undefined
   readonly primary_sku_id?: SnowflakeType | undefined
   readonly bot?: UserResponse | undefined
@@ -1993,19 +1994,36 @@ export interface ScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
-  readonly creator_id?: SnowflakeType | null | undefined
+  readonly description: string | null
+  readonly channel_id: SnowflakeType | null
+  readonly creator_id: SnowflakeType | null
   readonly creator?: UserResponse | undefined
-  readonly image?: string | null | undefined
+  readonly image: string | null
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null | undefined
+  readonly scheduled_end_time: string | null
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: GuildScheduledEventEntityTypes
-  readonly entity_id?: SnowflakeType | null | undefined
+  readonly entity_id: SnowflakeType | null
   readonly user_count?: number | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
+}
+
+export interface GuildRoleColorsResponse {
+  readonly primary_color: number
+  readonly secondary_color: number | null
+  readonly tertiary_color: number | null
+}
+
+export interface InviteGuildRoleResponse {
+  readonly id: SnowflakeType
+  readonly name: string
+  readonly position: number
+  readonly color: number
+  readonly colors: GuildRoleColorsResponse
+  readonly icon: string | null
+  readonly unicode_emoji: string | null
+  readonly permissions?: string | undefined
 }
 
 export interface GuildInviteResponse {
@@ -2014,7 +2032,7 @@ export interface GuildInviteResponse {
   readonly inviter?: UserResponse | undefined
   readonly max_age?: number | undefined
   readonly created_at?: string | undefined
-  readonly expires_at?: string | null | undefined
+  readonly expires_at: string | null
   readonly is_contact?: boolean | undefined
   readonly flags?: number | undefined
   readonly guild: InviteGuildResponse
@@ -2030,6 +2048,7 @@ export interface GuildInviteResponse {
   readonly approximate_member_count?: number | null | undefined
   readonly approximate_presence_count?: number | null | undefined
   readonly is_nickname_changeable?: boolean | undefined
+  readonly roles?: ReadonlyArray<InviteGuildRoleResponse> | null | undefined
 }
 
 export type ListChannelInvites200 = ReadonlyArray<
@@ -2261,6 +2280,18 @@ export const MessageComponentTypes = {
    * File upload component
    */
   FILE_UPLOAD: 19,
+  /**
+   * Radio group component
+   */
+  RADIO_GROUP: 21,
+  /**
+   * Checkbox group component
+   */
+  CHECKBOX_GROUP: 22,
+  /**
+   * Checkbox component
+   */
+  CHECKBOX: 23,
 } as const
 export type MessageComponentTypes =
   (typeof MessageComponentTypes)[keyof typeof MessageComponentTypes]
@@ -2312,8 +2343,8 @@ export interface ChannelSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values?: number | null | undefined
-  readonly max_values?: number | null | undefined
+  readonly min_values: number | null
+  readonly max_values: number | null
   readonly disabled?: boolean | undefined
   readonly channel_types?: ReadonlyArray<ChannelTypes> | undefined
   readonly default_values?:
@@ -2336,8 +2367,8 @@ export interface MentionableSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values?: number | null | undefined
-  readonly max_values?: number | null | undefined
+  readonly min_values: number | null
+  readonly max_values: number | null
   readonly disabled?: boolean | undefined
   readonly default_values?:
     | ReadonlyArray<
@@ -2351,8 +2382,8 @@ export interface RoleSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values?: number | null | undefined
-  readonly max_values?: number | null | undefined
+  readonly min_values: number | null
+  readonly max_values: number | null
   readonly disabled?: boolean | undefined
   readonly default_values?:
     | ReadonlyArray<RoleSelectDefaultValueResponse>
@@ -2372,8 +2403,8 @@ export interface StringSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values?: number | null | undefined
-  readonly max_values?: number | null | undefined
+  readonly min_values: number | null
+  readonly max_values: number | null
   readonly disabled?: boolean | undefined
   readonly options: ReadonlyArray<StringSelectOptionResponse>
 }
@@ -2396,12 +2427,12 @@ export interface TextInputComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly style: TextInputStyleTypes
-  readonly label?: string | null | undefined
+  readonly label: string | null
   readonly value?: string | undefined
   readonly placeholder?: string | undefined
   readonly required?: boolean | undefined
-  readonly min_length?: number | null | undefined
-  readonly max_length?: number | null | undefined
+  readonly min_length: number | null
+  readonly max_length: number | null
 }
 
 export interface UserSelectComponentResponse {
@@ -2409,8 +2440,8 @@ export interface UserSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values?: number | null | undefined
-  readonly max_values?: number | null | undefined
+  readonly min_values: number | null
+  readonly max_values: number | null
   readonly disabled?: boolean | undefined
   readonly default_values?:
     | ReadonlyArray<UserSelectDefaultValueResponse>
@@ -2445,14 +2476,14 @@ export interface FileComponentResponse {
   readonly type: 13
   readonly id: number
   readonly file: UnfurledMediaResponse
-  readonly name?: string | null | undefined
-  readonly size?: number | null | undefined
+  readonly name: string | null
+  readonly size: number | null
   readonly spoiler: boolean
 }
 
 export interface MediaGalleryItemResponse {
   readonly media: UnfurledMediaResponse
-  readonly description?: string | null | undefined
+  readonly description: string | null
   readonly spoiler: boolean
 }
 
@@ -2472,7 +2503,7 @@ export interface ThumbnailComponentResponse {
   readonly type: 11
   readonly id: number
   readonly media: UnfurledMediaResponse
-  readonly description?: string | null | undefined
+  readonly description: string | null
   readonly spoiler: boolean
 }
 
@@ -2506,7 +2537,7 @@ export interface SeparatorComponentResponse {
 export interface ContainerComponentResponse {
   readonly type: 17
   readonly id: number
-  readonly accent_color?: number | null | undefined
+  readonly accent_color: number | null
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
     | FileComponentResponse
@@ -2544,8 +2575,8 @@ export interface GuildStickerResponse {
   readonly name: string
   readonly tags: string
   readonly type: 2
-  readonly format_type?: StickerFormatTypes | null | undefined
-  readonly description?: string | null | undefined
+  readonly format_type: StickerFormatTypes | null
+  readonly description: string | null
   readonly available: boolean
   readonly guild_id: SnowflakeType
   readonly user?: UserResponse | undefined
@@ -2556,8 +2587,8 @@ export interface StandardStickerResponse {
   readonly name: string
   readonly tags: string
   readonly type: 1
-  readonly format_type?: StickerFormatTypes | null | undefined
-  readonly description?: string | null | undefined
+  readonly format_type: StickerFormatTypes | null
+  readonly description: string | null
   readonly pack_id: SnowflakeType
   readonly sort_value: number
 }
@@ -2578,9 +2609,9 @@ export interface MessageActivityResponse {}
 export interface BasicApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly description: string
-  readonly type?: ApplicationTypes | null | undefined
+  readonly type: ApplicationTypes | null
   readonly cover_image?: string | undefined
   readonly primary_sku_id?: SnowflakeType | undefined
   readonly bot?: UserResponse | undefined
@@ -2607,6 +2638,10 @@ export const InteractionTypes = {
    * Sent when a user submits a modal previously sent by your application
    */
   MODAL_SUBMIT: 5,
+  /**
+   * Sent when Discord is checking if a user can purchase a Social Layer SKU
+   */
+  SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY: 6,
 } as const
 export type InteractionTypes =
   (typeof InteractionTypes)[keyof typeof InteractionTypes]
@@ -2662,8 +2697,8 @@ export interface ResolvedObjectsResponse {
 }
 
 export interface MessageReactionEmojiResponse {
-  readonly id?: SnowflakeType | null | undefined
-  readonly name?: string | null | undefined
+  readonly id: SnowflakeType | null
+  readonly name: string | null
   readonly animated?: boolean | undefined
 }
 
@@ -2769,7 +2804,7 @@ export interface MinimalContentMessageResponse {
   readonly attachments: ReadonlyArray<MessageAttachmentResponse>
   readonly embeds: ReadonlyArray<MessageEmbedResponse>
   readonly timestamp: string
-  readonly edited_timestamp?: string | null | undefined
+  readonly edited_timestamp: string | null
   readonly flags: number
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
@@ -2812,7 +2847,7 @@ export interface BasicMessageResponse {
   readonly attachments: ReadonlyArray<MessageAttachmentResponse>
   readonly embeds: ReadonlyArray<MessageEmbedResponse>
   readonly timestamp: string
-  readonly edited_timestamp?: string | null | undefined
+  readonly edited_timestamp: string | null
   readonly flags: number
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
@@ -2871,7 +2906,7 @@ export interface MessageResponse {
   readonly attachments: ReadonlyArray<MessageAttachmentResponse>
   readonly embeds: ReadonlyArray<MessageEmbedResponse>
   readonly timestamp: string
-  readonly edited_timestamp?: string | null | undefined
+  readonly edited_timestamp: string | null
   readonly flags: number
   readonly components: ReadonlyArray<
     | ActionRowComponentResponse
@@ -3267,8 +3302,6 @@ export interface CustomClientThemeShareRequest {
   readonly base_theme?: MessageShareCustomUserThemeBaseTheme | null | undefined
 }
 
-export interface ConfettiPotionCreateRequest {}
-
 export interface MessageReferenceRequest {
   readonly guild_id?: SnowflakeType | null | undefined
   readonly channel_id?: SnowflakeType | null | undefined
@@ -3304,7 +3337,6 @@ export interface MessageCreateRequest {
     | CustomClientThemeShareRequest
     | null
     | undefined
-  readonly confetti_potion?: ConfettiPotionCreateRequest | null | undefined
   readonly message_reference?: MessageReferenceRequest | null | undefined
   readonly nonce?: number | string | null | undefined
   readonly enforce_nonce?: boolean | null | undefined
@@ -3450,7 +3482,6 @@ export interface BaseCreateMessageCreateRequest {
     | CustomClientThemeShareRequest
     | null
     | undefined
-  readonly confetti_potion?: ConfettiPotionCreateRequest | null | undefined
 }
 
 export interface CreateForumThreadRequest {
@@ -3575,9 +3606,9 @@ export const WebhookTypes = {
 export type WebhookTypes = (typeof WebhookTypes)[keyof typeof WebhookTypes]
 
 export interface ApplicationIncomingWebhookResponse {
-  readonly application_id?: SnowflakeType | null | undefined
-  readonly avatar?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
+  readonly application_id: SnowflakeType | null
+  readonly avatar: string | null
+  readonly channel_id: SnowflakeType | null
   readonly guild_id?: SnowflakeType | null | undefined
   readonly id: SnowflakeType
   readonly name: string
@@ -3587,7 +3618,7 @@ export interface ApplicationIncomingWebhookResponse {
 
 export interface WebhookSourceGuildResponse {
   readonly id: SnowflakeType
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly name: string
 }
 
@@ -3597,9 +3628,9 @@ export interface WebhookSourceChannelResponse {
 }
 
 export interface ChannelFollowerWebhookResponse {
-  readonly application_id?: SnowflakeType | null | undefined
-  readonly avatar?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
+  readonly application_id: SnowflakeType | null
+  readonly avatar: string | null
+  readonly channel_id: SnowflakeType | null
   readonly guild_id?: SnowflakeType | null | undefined
   readonly id: SnowflakeType
   readonly name: string
@@ -3610,9 +3641,9 @@ export interface ChannelFollowerWebhookResponse {
 }
 
 export interface GuildIncomingWebhookResponse {
-  readonly application_id?: SnowflakeType | null | undefined
-  readonly avatar?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
+  readonly application_id: SnowflakeType | null
+  readonly avatar: string | null
+  readonly channel_id: SnowflakeType | null
   readonly guild_id?: SnowflakeType | null | undefined
   readonly id: SnowflakeType
   readonly name: string
@@ -3832,8 +3863,8 @@ export type AfkTimeouts = (typeof AfkTimeouts)[keyof typeof AfkTimeouts]
 
 export interface GuildTemplateRoleColorsResponse {
   readonly primary_color: number
-  readonly secondary_color?: number | null | undefined
-  readonly tertiary_color?: number | null | undefined
+  readonly secondary_color: number | null
+  readonly tertiary_color: number | null
 }
 
 export interface GuildTemplateRoleResponse {
@@ -3841,67 +3872,58 @@ export interface GuildTemplateRoleResponse {
   readonly name: string
   readonly permissions: string
   readonly color: number
-  readonly colors?: GuildTemplateRoleColorsResponse | null | undefined
+  readonly colors: GuildTemplateRoleColorsResponse | null
   readonly hoist: boolean
   readonly mentionable: boolean
-  readonly icon?: string | null | undefined
-  readonly unicode_emoji?: string | null | undefined
+  readonly icon: string | null
+  readonly unicode_emoji: string | null
 }
 
 export interface GuildTemplateChannelTags {
-  readonly id?: number | null | undefined
+  readonly id: number | null
   readonly name: string
-  readonly emoji_id?: SnowflakeType | null | undefined
-  readonly emoji_name?: string | null | undefined
-  readonly moderated?: boolean | null | undefined
+  readonly emoji_id: SnowflakeType | null
+  readonly emoji_name: string | null
+  readonly moderated: boolean | null
 }
 
 export interface IconEmojiResponse {}
 
 export interface GuildTemplateChannelResponse {
-  readonly id?: number | null | undefined
+  readonly id: number | null
   readonly type: 0 | 2 | 4 | 15
-  readonly name?: string | null | undefined
-  readonly position?: number | null | undefined
-  readonly topic?: string | null | undefined
+  readonly name: string | null
+  readonly position: number | null
+  readonly topic: string | null
   readonly bitrate: number
   readonly user_limit: number
   readonly nsfw: boolean
   readonly rate_limit_per_user: number
-  readonly parent_id?: SnowflakeType | null | undefined
-  readonly default_auto_archive_duration?:
-    | ThreadAutoArchiveDuration
-    | null
-    | undefined
+  readonly parent_id: SnowflakeType | null
+  readonly default_auto_archive_duration: ThreadAutoArchiveDuration | null
   readonly permission_overwrites: ReadonlyArray<null | ChannelPermissionOverwriteResponse>
-  readonly available_tags?:
-    | ReadonlyArray<GuildTemplateChannelTags>
-    | null
-    | undefined
+  readonly available_tags: ReadonlyArray<GuildTemplateChannelTags> | null
   readonly template: string
-  readonly default_reaction_emoji?:
-    | DefaultReactionEmojiResponse
-    | null
-    | undefined
-  readonly default_thread_rate_limit_per_user?: number | null | undefined
-  readonly default_sort_order?: ThreadSortOrder | null | undefined
-  readonly default_forum_layout?: ForumLayout | null | undefined
-  readonly default_tag_setting?: ThreadSearchTagSetting | null | undefined
-  readonly icon_emoji?: IconEmojiResponse | null | undefined
-  readonly theme_color?: number | null | undefined
+  readonly default_reaction_emoji: DefaultReactionEmojiResponse | null
+  readonly default_thread_rate_limit_per_user: number | null
+  readonly default_sort_order: ThreadSortOrder | null
+  readonly default_forum_layout: ForumLayout | null
+  readonly default_tag_setting: ThreadSearchTagSetting | null
+  readonly icon_emoji: IconEmojiResponse | null
+  readonly theme_color: number | null
 }
 
 export interface GuildTemplateSnapshotResponse {
   readonly name: string
-  readonly description?: string | null | undefined
-  readonly region?: string | null | undefined
+  readonly description: string | null
+  readonly region: string | null
   readonly verification_level: VerificationLevels
   readonly default_message_notifications: UserNotificationSettings
   readonly explicit_content_filter: GuildExplicitContentFilterTypes
   readonly preferred_locale: AvailableLocalesEnum
-  readonly afk_channel_id?: SnowflakeType | null | undefined
+  readonly afk_channel_id: SnowflakeType | null
   readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: SnowflakeType | null | undefined
+  readonly system_channel_id: SnowflakeType | null
   readonly system_channel_flags: number
   readonly roles: ReadonlyArray<GuildTemplateRoleResponse>
   readonly channels: ReadonlyArray<GuildTemplateChannelResponse>
@@ -3910,25 +3932,19 @@ export interface GuildTemplateSnapshotResponse {
 export interface GuildTemplateResponse {
   readonly code: string
   readonly name: string
-  readonly description?: string | null | undefined
+  readonly description: string | null
   readonly usage_count: number
   readonly creator_id: SnowflakeType
-  readonly creator?: UserResponse | null | undefined
+  readonly creator: UserResponse | null
   readonly created_at: string
   readonly updated_at: string
   readonly source_guild_id: SnowflakeType
   readonly serialized_source_guild: GuildTemplateSnapshotResponse
-  readonly is_dirty?: boolean | null | undefined
+  readonly is_dirty: boolean | null
 }
 
 export interface GetGuildParams {
   readonly with_counts?: boolean | undefined
-}
-
-export interface GuildRoleColorsResponse {
-  readonly primary_color: number
-  readonly secondary_color?: number | null | undefined
-  readonly tertiary_color?: number | null | undefined
 }
 
 export interface GuildRoleTagsResponse {
@@ -3943,7 +3959,7 @@ export interface GuildRoleTagsResponse {
 export interface GuildRoleResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly description?: string | null | undefined
+  readonly description: string | null
   readonly permissions: string
   readonly position: number
   readonly color: number
@@ -3951,8 +3967,8 @@ export interface GuildRoleResponse {
   readonly hoist: boolean
   readonly managed: boolean
   readonly mentionable: boolean
-  readonly icon?: string | null | undefined
-  readonly unicode_emoji?: string | null | undefined
+  readonly icon: string | null
+  readonly unicode_emoji: string | null
   readonly tags?: GuildRoleTagsResponse | undefined
   readonly flags: number
 }
@@ -3993,39 +4009,43 @@ export type PremiumGuildTiers =
 export interface GuildWithCountsResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
-  readonly description?: string | null | undefined
-  readonly home_header?: string | null | undefined
-  readonly splash?: string | null | undefined
-  readonly discovery_splash?: string | null | undefined
+  readonly icon: string | null
+  readonly description: string | null
+  readonly home_header: string | null
+  readonly splash: string | null
+  readonly discovery_splash: string | null
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly banner?: string | null | undefined
+  readonly banner: string | null
   readonly owner_id: SnowflakeType
-  readonly application_id?: SnowflakeType | null | undefined
+  readonly application_id: SnowflakeType | null
   readonly region: string
-  readonly afk_channel_id?: SnowflakeType | null | undefined
+  readonly afk_channel_id: SnowflakeType | null
   readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: SnowflakeType | null | undefined
+  readonly system_channel_id: SnowflakeType | null
   readonly system_channel_flags: number
   readonly widget_enabled: boolean
-  readonly widget_channel_id?: SnowflakeType | null | undefined
+  readonly widget_channel_id: SnowflakeType | null
   readonly verification_level: VerificationLevels
   readonly roles: ReadonlyArray<GuildRoleResponse>
   readonly default_message_notifications: UserNotificationSettings
   readonly mfa_level: GuildMFALevel
   readonly explicit_content_filter: GuildExplicitContentFilterTypes
-  readonly max_presences?: number | null | undefined
+  readonly max_presences: number | null
   readonly max_members: number
   readonly max_stage_video_channel_users: number
   readonly max_video_channel_users: number
-  readonly vanity_url_code?: string | null | undefined
+  readonly vanity_url_code: string | null
   readonly premium_tier: PremiumGuildTiers
   readonly premium_subscription_count: number
   readonly preferred_locale: AvailableLocalesEnum
-  readonly rules_channel_id?: SnowflakeType | null | undefined
-  readonly safety_alerts_channel_id?: SnowflakeType | null | undefined
-  readonly public_updates_channel_id?: SnowflakeType | null | undefined
+  readonly rules_channel_id: SnowflakeType | null
+  readonly safety_alerts_channel_id: SnowflakeType | null
+  readonly public_updates_channel_id: SnowflakeType | null
   readonly premium_progress_bar_enabled: boolean
+  readonly premium_progress_bar_enabled_user_updated_at?:
+    | string
+    | null
+    | undefined
   readonly nsfw: boolean
   readonly nsfw_level: GuildNSFWContentLevel
   readonly emojis: ReadonlyArray<EmojiResponse>
@@ -4067,39 +4087,43 @@ export interface GuildPatchRequestPartial {
 export interface GuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
-  readonly description?: string | null | undefined
-  readonly home_header?: string | null | undefined
-  readonly splash?: string | null | undefined
-  readonly discovery_splash?: string | null | undefined
+  readonly icon: string | null
+  readonly description: string | null
+  readonly home_header: string | null
+  readonly splash: string | null
+  readonly discovery_splash: string | null
   readonly features: ReadonlyArray<GuildFeatures>
-  readonly banner?: string | null | undefined
+  readonly banner: string | null
   readonly owner_id: SnowflakeType
-  readonly application_id?: SnowflakeType | null | undefined
+  readonly application_id: SnowflakeType | null
   readonly region: string
-  readonly afk_channel_id?: SnowflakeType | null | undefined
+  readonly afk_channel_id: SnowflakeType | null
   readonly afk_timeout: AfkTimeouts
-  readonly system_channel_id?: SnowflakeType | null | undefined
+  readonly system_channel_id: SnowflakeType | null
   readonly system_channel_flags: number
   readonly widget_enabled: boolean
-  readonly widget_channel_id?: SnowflakeType | null | undefined
+  readonly widget_channel_id: SnowflakeType | null
   readonly verification_level: VerificationLevels
   readonly roles: ReadonlyArray<GuildRoleResponse>
   readonly default_message_notifications: UserNotificationSettings
   readonly mfa_level: GuildMFALevel
   readonly explicit_content_filter: GuildExplicitContentFilterTypes
-  readonly max_presences?: number | null | undefined
+  readonly max_presences: number | null
   readonly max_members: number
   readonly max_stage_video_channel_users: number
   readonly max_video_channel_users: number
-  readonly vanity_url_code?: string | null | undefined
+  readonly vanity_url_code: string | null
   readonly premium_tier: PremiumGuildTiers
   readonly premium_subscription_count: number
   readonly preferred_locale: AvailableLocalesEnum
-  readonly rules_channel_id?: SnowflakeType | null | undefined
-  readonly safety_alerts_channel_id?: SnowflakeType | null | undefined
-  readonly public_updates_channel_id?: SnowflakeType | null | undefined
+  readonly rules_channel_id: SnowflakeType | null
+  readonly safety_alerts_channel_id: SnowflakeType | null
+  readonly public_updates_channel_id: SnowflakeType | null
   readonly premium_progress_bar_enabled: boolean
+  readonly premium_progress_bar_enabled_user_updated_at?:
+    | string
+    | null
+    | undefined
   readonly nsfw: boolean
   readonly nsfw_level: GuildNSFWContentLevel
   readonly emojis: ReadonlyArray<EmojiResponse>
@@ -4194,14 +4218,14 @@ export interface ListGuildAuditLogEntriesParams {
 }
 
 export interface AuditLogObjectChangeResponse {
-  readonly key?: string | null | undefined
+  readonly key: string | null
 }
 
 export interface AuditLogEntryResponse {
   readonly id: SnowflakeType
   readonly action_type: AuditLogActionTypes
-  readonly user_id?: SnowflakeType | null | undefined
-  readonly target_id?: SnowflakeType | null | undefined
+  readonly user_id: SnowflakeType | null
+  readonly target_id: SnowflakeType | null
   readonly changes?: ReadonlyArray<AuditLogObjectChangeResponse> | undefined
   readonly options?: Record<string, unknown> | undefined
   readonly reason?: string | undefined
@@ -4218,13 +4242,13 @@ export type IntegrationTypes =
 
 export interface AccountResponse {
   readonly id: string
-  readonly name?: string | null | undefined
+  readonly name: string | null
 }
 
 export interface PartialDiscordIntegrationResponse {
   readonly id: SnowflakeType
   readonly type: "discord"
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly account: AccountResponse
   readonly application_id: SnowflakeType
 }
@@ -4232,14 +4256,14 @@ export interface PartialDiscordIntegrationResponse {
 export interface PartialExternalConnectionIntegrationResponse {
   readonly id: SnowflakeType
   readonly type: "twitch" | "youtube"
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly account: AccountResponse
 }
 
 export interface PartialGuildSubscriptionIntegrationResponse {
   readonly id: SnowflakeType
   readonly type: "guild_subscription"
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly account: AccountResponse
 }
 
@@ -4251,16 +4275,16 @@ export interface ExternalScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
-  readonly creator_id?: SnowflakeType | null | undefined
+  readonly description: string | null
+  readonly channel_id: SnowflakeType | null
+  readonly creator_id: SnowflakeType | null
   readonly creator?: UserResponse | undefined
-  readonly image?: string | null | undefined
+  readonly image: string | null
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null | undefined
+  readonly scheduled_end_time: string | null
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: 3
-  readonly entity_id?: SnowflakeType | null | undefined
+  readonly entity_id: SnowflakeType | null
   readonly user_count?: number | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
@@ -4273,23 +4297,20 @@ export interface StageScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
-  readonly creator_id?: SnowflakeType | null | undefined
+  readonly description: string | null
+  readonly channel_id: SnowflakeType | null
+  readonly creator_id: SnowflakeType | null
   readonly creator?: UserResponse | undefined
-  readonly image?: string | null | undefined
+  readonly image: string | null
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null | undefined
+  readonly scheduled_end_time: string | null
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: 1
-  readonly entity_id?: SnowflakeType | null | undefined
+  readonly entity_id: SnowflakeType | null
   readonly user_count?: number | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
-  readonly entity_metadata?:
-    | EntityMetadataStageInstanceResponse
-    | null
-    | undefined
+  readonly entity_metadata: EntityMetadataStageInstanceResponse | null
 }
 
 export interface EntityMetadataVoiceResponse {}
@@ -4298,20 +4319,20 @@ export interface VoiceScheduledEventResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null | undefined
-  readonly channel_id?: SnowflakeType | null | undefined
-  readonly creator_id?: SnowflakeType | null | undefined
+  readonly description: string | null
+  readonly channel_id: SnowflakeType | null
+  readonly creator_id: SnowflakeType | null
   readonly creator?: UserResponse | undefined
-  readonly image?: string | null | undefined
+  readonly image: string | null
   readonly scheduled_start_time: string
-  readonly scheduled_end_time?: string | null | undefined
+  readonly scheduled_end_time: string | null
   readonly status: GuildScheduledEventStatuses
   readonly entity_type: 2
-  readonly entity_id?: SnowflakeType | null | undefined
+  readonly entity_id: SnowflakeType | null
   readonly user_count?: number | undefined
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
-  readonly entity_metadata?: EntityMetadataVoiceResponse | null | undefined
+  readonly entity_metadata: EntityMetadataVoiceResponse | null
 }
 
 export const AutomodEventType = {
@@ -4823,7 +4844,7 @@ export interface ListGuildBansParams {
 
 export interface GuildBanResponse {
   readonly user: UserResponse
-  readonly reason?: string | null | undefined
+  readonly reason: string | null
 }
 
 export type ListGuildBans200 = ReadonlyArray<GuildBanResponse>
@@ -4916,9 +4937,9 @@ export interface UpdateGuildEmojiRequest {
 export interface IntegrationApplicationResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
   readonly description: string
-  readonly type?: ApplicationTypes | null | undefined
+  readonly type: ApplicationTypes | null
   readonly cover_image?: string | undefined
   readonly primary_sku_id?: SnowflakeType | undefined
   readonly bot?: UserResponse | undefined
@@ -4926,7 +4947,7 @@ export interface IntegrationApplicationResponse {
 
 export interface DiscordIntegrationResponse {
   readonly type: "discord"
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly account: AccountResponse
   readonly enabled: boolean
   readonly id: SnowflakeType
@@ -4977,7 +4998,7 @@ export type IntegrationExpireGracePeriodTypes =
 
 export interface ExternalConnectionIntegrationResponse {
   readonly type: "twitch" | "youtube"
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly account: AccountResponse
   readonly enabled: boolean
   readonly id: string
@@ -4994,7 +5015,7 @@ export interface ExternalConnectionIntegrationResponse {
 
 export interface GuildSubscriptionIntegrationResponse {
   readonly type: "guild_subscription"
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly account: AccountResponse
   readonly enabled: boolean
   readonly id: SnowflakeType
@@ -5019,21 +5040,24 @@ export type ListGuildMembers200 = ReadonlyArray<GuildMemberResponse>
 
 export interface UpdateMyGuildMemberRequest {
   readonly nick?: string | null | undefined
+  readonly avatar?: string | null | undefined
+  readonly bio?: string | null | undefined
+  readonly banner?: string | null | undefined
 }
 
 export interface PrivateGuildMemberResponse {
-  readonly avatar?: string | null | undefined
+  readonly avatar: string | null
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
-  readonly banner?: string | null | undefined
-  readonly communication_disabled_until?: string | null | undefined
+  readonly banner: string | null
+  readonly communication_disabled_until: string | null
   readonly flags: number
   readonly joined_at: string
-  readonly nick?: string | null | undefined
+  readonly nick: string | null
   readonly pending: boolean
-  readonly premium_since?: string | null | undefined
+  readonly premium_since: string | null
   readonly roles: ReadonlyArray<SnowflakeType>
   readonly collectibles?: UserCollectiblesResponse | null | undefined
   readonly user: UserResponse
@@ -5081,8 +5105,8 @@ export type NewMemberActionType =
   (typeof NewMemberActionType)[keyof typeof NewMemberActionType]
 
 export interface SettingsEmojiResponse {
-  readonly id?: SnowflakeType | null | undefined
-  readonly name?: string | null | undefined
+  readonly id: SnowflakeType | null
+  readonly name: string | null
   readonly animated: boolean
 }
 
@@ -5204,11 +5228,11 @@ export interface GuildOnboardingResponse {
 export interface GuildPreviewResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
-  readonly description?: string | null | undefined
-  readonly home_header?: string | null | undefined
-  readonly splash?: string | null | undefined
-  readonly discovery_splash?: string | null | undefined
+  readonly icon: string | null
+  readonly description: string | null
+  readonly home_header: string | null
+  readonly splash: string | null
+  readonly discovery_splash: string | null
   readonly features: ReadonlyArray<GuildFeatures>
   readonly approximate_member_count: number
   readonly approximate_presence_count: number
@@ -5225,7 +5249,7 @@ export interface PreviewPruneGuildParams {
 }
 
 export interface GuildPruneResponse {
-  readonly pruned?: number | null | undefined
+  readonly pruned: number | null
 }
 
 export interface PruneGuildRequest {
@@ -5250,10 +5274,17 @@ export type ListGuildVoiceRegions200 = ReadonlyArray<VoiceRegionResponse>
 
 export type ListGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
+export interface RoleColors {
+  readonly primary_color?: number | null | undefined
+  readonly secondary_color?: number | null | undefined
+  readonly tertiary_color?: number | null | undefined
+}
+
 export interface CreateRoleRequest {
   readonly name?: string | null | undefined
   readonly permissions?: number | null | undefined
   readonly color?: number | null | undefined
+  readonly colors?: RoleColors | null | undefined
   readonly hoist?: boolean | null | undefined
   readonly mentionable?: boolean | null | undefined
   readonly icon?: string | null | undefined
@@ -5270,10 +5301,13 @@ export type BulkUpdateGuildRolesRequest =
 
 export type BulkUpdateGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
+export type GuildRoleMemberCounts200 = Record<string, unknown>
+
 export interface UpdateRoleRequestPartial {
   readonly name?: string | null | undefined
   readonly permissions?: number | null | undefined
   readonly color?: number | null | undefined
+  readonly colors?: RoleColors | null | undefined
   readonly hoist?: boolean | null | undefined
   readonly mentionable?: boolean | null | undefined
   readonly icon?: string | null | undefined
@@ -5416,8 +5450,8 @@ export interface SoundboardSoundResponse {
   readonly name: string
   readonly sound_id: SnowflakeType
   readonly volume: number
-  readonly emoji_id?: SnowflakeType | null | undefined
-  readonly emoji_name?: string | null | undefined
+  readonly emoji_id: SnowflakeType | null
+  readonly emoji_name: string | null
   readonly guild_id?: SnowflakeType | undefined
   readonly available: boolean
   readonly user?: UserResponse | undefined
@@ -5475,20 +5509,20 @@ export interface VanityURLErrorResponse {
 }
 
 export interface VanityURLResponse {
-  readonly code?: string | null | undefined
+  readonly code: string | null
   readonly uses: number
   readonly error?: VanityURLErrorResponse | null | undefined
 }
 
 export interface VoiceStateResponse {
-  readonly channel_id?: SnowflakeType | null | undefined
+  readonly channel_id: SnowflakeType | null
   readonly deaf: boolean
-  readonly guild_id?: SnowflakeType | null | undefined
+  readonly guild_id: SnowflakeType | null
   readonly member?: GuildMemberResponse | undefined
   readonly mute: boolean
-  readonly request_to_speak_timestamp?: string | null | undefined
+  readonly request_to_speak_timestamp: string | null
   readonly suppress: boolean
-  readonly self_stream?: boolean | null | undefined
+  readonly self_stream: boolean | null
   readonly self_deaf: boolean
   readonly self_mute: boolean
   readonly self_video: boolean
@@ -5516,12 +5550,12 @@ export type GetGuildWebhooks200 = ReadonlyArray<
 export interface GuildWelcomeScreenChannelResponse {
   readonly channel_id: SnowflakeType
   readonly description: string
-  readonly emoji_id?: SnowflakeType | null | undefined
-  readonly emoji_name?: string | null | undefined
+  readonly emoji_id: SnowflakeType | null
+  readonly emoji_name: string | null
 }
 
 export interface GuildWelcomeScreenResponse {
-  readonly description?: string | null | undefined
+  readonly description: string | null
   readonly welcome_channels: ReadonlyArray<GuildWelcomeScreenChannelResponse>
 }
 
@@ -5543,7 +5577,7 @@ export interface WelcomeScreenPatchRequestPartial {
 
 export interface WidgetSettingsResponse {
   readonly enabled: boolean
-  readonly channel_id?: SnowflakeType | null | undefined
+  readonly channel_id: SnowflakeType | null
 }
 
 export interface UpdateGuildWidgetSettingsRequest {
@@ -5567,7 +5601,7 @@ export interface WidgetMember {
   readonly id: string
   readonly username: string
   readonly discriminator: WidgetUserDiscriminator
-  readonly avatar?: null | undefined
+  readonly avatar: null
   readonly status: string
   readonly avatar_url: string
   readonly activity?: WidgetActivity | undefined
@@ -5582,7 +5616,7 @@ export interface WidgetMember {
 export interface WidgetResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly instant_invite?: string | null | undefined
+  readonly instant_invite: string | null
   readonly channels: ReadonlyArray<WidgetChannel>
   readonly members: ReadonlyArray<WidgetMember>
   readonly presence_count: number
@@ -5630,6 +5664,7 @@ export const InteractionCallbackTypes = {
   APPLICATION_COMMAND_AUTOCOMPLETE_RESULT: 8,
   MODAL: 9,
   LAUNCH_ACTIVITY: 12,
+  SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY: 13,
 } as const
 export type InteractionCallbackTypes =
   (typeof InteractionCallbackTypes)[keyof typeof InteractionCallbackTypes]
@@ -5732,6 +5767,30 @@ export interface ChannelSelectComponentForModalRequest {
   readonly channel_types?: ReadonlyArray<ChannelTypes> | null | undefined
 }
 
+export interface CheckboxComponentForModalRequest {
+  readonly type: 23
+  readonly id?: number | null | undefined
+  readonly custom_id: string
+  readonly default?: boolean | null | undefined
+}
+
+export interface CheckboxGroupOptionForRequest {
+  readonly label: string
+  readonly value: string
+  readonly description?: string | null | undefined
+  readonly default?: boolean | null | undefined
+}
+
+export interface CheckboxGroupComponentForModalRequest {
+  readonly type: 22
+  readonly id?: number | null | undefined
+  readonly custom_id: string
+  readonly min_values?: number | null | undefined
+  readonly max_values?: number | null | undefined
+  readonly required?: boolean | null | undefined
+  readonly options: ReadonlyArray<CheckboxGroupOptionForRequest>
+}
+
 export interface FileUploadComponentForModalRequest {
   readonly type: 19
   readonly id?: number | null | undefined
@@ -5754,6 +5813,21 @@ export interface MentionableSelectComponentForModalRequest {
     | ReadonlyArray<RoleSelectDefaultValue | UserSelectDefaultValue>
     | null
     | undefined
+}
+
+export interface RadioGroupOptionForRequest {
+  readonly label: string
+  readonly value: string
+  readonly description?: string | null | undefined
+  readonly default?: boolean | null | undefined
+}
+
+export interface RadioGroupComponentForModalRequest {
+  readonly type: 21
+  readonly id?: number | null | undefined
+  readonly custom_id: string
+  readonly required?: boolean | null | undefined
+  readonly options: ReadonlyArray<RadioGroupOptionForRequest>
 }
 
 export interface RoleSelectComponentForModalRequest {
@@ -5805,8 +5879,11 @@ export interface LabelComponentForModalRequest {
   readonly description?: string | null | undefined
   readonly component:
     | ChannelSelectComponentForModalRequest
+    | CheckboxComponentForModalRequest
+    | CheckboxGroupComponentForModalRequest
     | FileUploadComponentForModalRequest
     | MentionableSelectComponentForModalRequest
+    | RadioGroupComponentForModalRequest
     | RoleSelectComponentForModalRequest
     | StringSelectComponentForModalRequest
     | TextInputComponentForModalRequest
@@ -5836,6 +5913,15 @@ export interface ModalInteractionCallbackRequest {
 
 export interface PongInteractionCallbackRequest {
   readonly type: 1
+}
+
+export interface SocialLayerSKUPurchaseEligibilityCallbackData {
+  readonly eligible: boolean
+}
+
+export interface SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest {
+  readonly type: 13
+  readonly data: SocialLayerSKUPurchaseEligibilityCallbackData
 }
 
 export interface IncomingWebhookUpdateForInteractionCallbackRequestPartial {
@@ -5875,6 +5961,7 @@ export type CreateInteractionResponseRequest =
   | LaunchActivityInteractionCallbackRequest
   | ModalInteractionCallbackRequest
   | PongInteractionCallbackRequest
+  | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
   | UpdateMessageInteractionCallbackRequest
 
 export interface InteractionResponse {
@@ -5925,6 +6012,58 @@ export type InviteRevoke200 =
   | GroupDMInviteResponse
   | GuildInviteResponse
 
+export interface UpdateInviteTargetUsersRequest {
+  readonly target_users_file: Blob
+}
+
+export const TargetUsersJobStatusTypes = {
+  /**
+   * The default value.
+   */
+  UNSPECIFIED: 0,
+  /**
+   * The job is still being processed.
+   */
+  PROCESSING: 1,
+  /**
+   * The job has been completed successfully.
+   */
+  COMPLETED: 2,
+  /**
+   * The job has failed, see error_message field for more details.
+   */
+  FAILED: 3,
+} as const
+export type TargetUsersJobStatusTypes =
+  (typeof TargetUsersJobStatusTypes)[keyof typeof TargetUsersJobStatusTypes]
+
+export interface TargetUsersJobStatusResponse {
+  /**
+   * The status of the job processing the target users.
+   */
+  readonly status: TargetUsersJobStatusTypes
+  /**
+   * The total number of users in the provided list.
+   */
+  readonly total_users: UInt32Type
+  /**
+   * The number of users processed so far.
+   */
+  readonly processed_users: UInt32Type
+  /**
+   * The timestamp when the job was created.
+   */
+  readonly created_at: string | null
+  /**
+   * The timestamp when the job was successfully completed.
+   */
+  readonly completed_at: string | null
+  /**
+   * The error message if the job failed.
+   */
+  readonly error_message: string | null
+}
+
 export type CreateOrJoinLobbyRequestFlagsEnum = 1
 
 export interface CreateOrJoinLobbyRequest {
@@ -5937,14 +6076,14 @@ export interface CreateOrJoinLobbyRequest {
 
 export interface LobbyMemberResponse {
   readonly id: SnowflakeType
-  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly metadata: Record<string, unknown> | null
   readonly flags: number
 }
 
 export interface LobbyResponse {
   readonly id: SnowflakeType
   readonly application_id: SnowflakeType
-  readonly metadata?: Record<string, unknown> | null | undefined
+  readonly metadata: Record<string, unknown> | null
   readonly members: ReadonlyArray<LobbyMemberResponse>
   readonly linked_channel?: GuildChannelResponse | undefined
   readonly flags: UInt32Type
@@ -6020,6 +6159,7 @@ export interface LobbyMessageResponse {
   readonly channel_id: SnowflakeType
   readonly author: UserResponse
   readonly metadata?: Record<string, unknown> | undefined
+  readonly moderation_metadata?: Record<string, unknown> | undefined
   readonly flags: number
   readonly application_id?: SnowflakeType | undefined
 }
@@ -6053,12 +6193,19 @@ export interface SDKMessageRequest {
     | CustomClientThemeShareRequest
     | null
     | undefined
-  readonly confetti_potion?: ConfettiPotionCreateRequest | null | undefined
   readonly message_reference?: MessageReferenceRequest | null | undefined
   readonly nonce?: number | string | null | undefined
   readonly enforce_nonce?: boolean | null | undefined
   readonly tts?: boolean | null | undefined
 }
+
+/**
+ * The moderation metadata attached to the message
+ */
+export type UpdateLobbyMessageExternalModerationMetadataRequest = Record<
+  string,
+  unknown
+>
 
 export interface OAuth2GetAuthorizationResponse {
   readonly application: ApplicationResponse
@@ -6089,6 +6236,14 @@ export interface OAuth2GetOpenIDConnectUserInfoResponse {
   readonly picture?: string | undefined
   readonly locale?: string | undefined
 }
+
+/**
+ * The moderation metadata attached to the message
+ */
+export type UpdateUserMessageExternalModerationMetadataRequest = Record<
+  string,
+  unknown
+>
 
 export const ApplicationIdentityProviderAuthType = {
   OIDC: "OIDC",
@@ -6168,7 +6323,7 @@ export interface StageInstanceResponse {
   readonly privacy_level: StageInstancesPrivacyLevels
   readonly id: SnowflakeType
   readonly discoverable_disabled: boolean
-  readonly guild_scheduled_event_id?: SnowflakeType | null | undefined
+  readonly guild_scheduled_event_id: SnowflakeType | null
 }
 
 export interface UpdateStageInstanceRequest {
@@ -6180,7 +6335,7 @@ export interface StickerPackResponse {
   readonly id: SnowflakeType
   readonly sku_id: SnowflakeType
   readonly name: string
-  readonly description?: string | null | undefined
+  readonly description: string | null
   readonly stickers: ReadonlyArray<StandardStickerResponse>
   readonly cover_sticker_id?: SnowflakeType | undefined
   readonly banner_asset_id?: SnowflakeType | undefined
@@ -6215,7 +6370,7 @@ export type PremiumTypes = (typeof PremiumTypes)[keyof typeof PremiumTypes]
 export interface UserPIIResponse {
   readonly id: SnowflakeType
   readonly username: string
-  readonly avatar?: string | null | undefined
+  readonly avatar: string | null
   readonly discriminator: string
   readonly public_flags: number
   readonly flags: Int53Type
@@ -6223,7 +6378,7 @@ export interface UserPIIResponse {
   readonly system?: boolean | undefined
   readonly banner?: string | null | undefined
   readonly accent_color?: number | null | undefined
-  readonly global_name?: string | null | undefined
+  readonly global_name: string | null
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
@@ -6242,6 +6397,14 @@ export interface BotAccountPatchRequest {
   readonly avatar?: string | null | undefined
   readonly banner?: string | null | undefined
 }
+
+export interface GetCurrentUserApplicationEntitlementsParams {
+  readonly sku_ids?: string | ReadonlyArray<null | SnowflakeType> | undefined
+  readonly exclude_consumed?: boolean | undefined
+}
+
+export type GetCurrentUserApplicationEntitlements200 =
+  ReadonlyArray<null | EntitlementResponse>
 
 export interface ApplicationUserRoleConnectionResponse {
   readonly platform_name?: string | null | undefined
@@ -6295,7 +6458,7 @@ export type ConnectedAccountProviders =
 export interface ConnectedAccountGuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
+  readonly icon: string | null
 }
 
 export interface ConnectedAccountIntegrationResponse {
@@ -6314,7 +6477,7 @@ export type ConnectedAccountVisibility =
 
 export interface ConnectedAccountResponse {
   readonly id: string
-  readonly name?: string | null | undefined
+  readonly name: string | null
   readonly type: ConnectedAccountProviders
   readonly friend_sync: boolean
   readonly integrations?:
@@ -6339,8 +6502,8 @@ export interface ListMyGuildsParams {
 export interface MyGuildResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly icon?: string | null | undefined
-  readonly banner?: string | null | undefined
+  readonly icon: string | null
+  readonly banner: string | null
   readonly owner: boolean
   readonly permissions: string
   readonly features: ReadonlyArray<GuildFeatures>
@@ -6655,14 +6818,15 @@ export const make = (
       Effect.orElseSucceed(response.json, () => "Unexpected status code"),
       description =>
         Effect.fail(
-          new HttpClientError.ResponseError({
-            request: response.request,
-            response,
-            reason: "StatusCode",
-            description:
-              typeof description === "string"
-                ? description
-                : JSON.stringify(description),
+          new HttpClientError.HttpClientError({
+            reason: new HttpClientError.StatusCodeError({
+              request: response.request,
+              response,
+              description:
+                typeof description === "string"
+                  ? description
+                  : JSON.stringify(description),
+            }),
           }),
         ),
     )
@@ -6680,7 +6844,7 @@ export const make = (
         )
     : f => request => Effect.flatMap(httpClient.execute(request), f)
   const decodeSuccess = <A>(response: HttpClientResponse.HttpClientResponse) =>
-    response.json as Effect.Effect<A, HttpClientError.ResponseError>
+    response.json as Effect.Effect<A, HttpClientError.HttpClientError>
   const decodeVoid = (_response: HttpClientResponse.HttpClientResponse) =>
     Effect.void
   const decodeError =
@@ -6689,10 +6853,10 @@ export const make = (
       response: HttpClientResponse.HttpClientResponse,
     ): Effect.Effect<
       never,
-      DiscordRestError<Tag, E> | HttpClientError.ResponseError
+      DiscordRestError<Tag, E> | HttpClientError.HttpClientError
     > =>
       Effect.flatMap(
-        response.json as Effect.Effect<E, HttpClientError.ResponseError>,
+        response.json as Effect.Effect<E, HttpClientError.HttpClientError>,
         cause => Effect.fail(DiscordRestError(tag, cause, response)),
       )
   const onRequest = (
@@ -6724,7 +6888,7 @@ export const make = (
       ),
     updateMyApplication: options =>
       HttpClientRequest.patch(`/applications/@me`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6739,7 +6903,7 @@ export const make = (
       ),
     updateApplication: (applicationId, options) =>
       HttpClientRequest.patch(`/applications/${applicationId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6774,7 +6938,7 @@ export const make = (
       ),
     bulkSetApplicationCommands: (applicationId, options) =>
       HttpClientRequest.put(`/applications/${applicationId}/commands`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6782,7 +6946,7 @@ export const make = (
       ),
     createApplicationCommand: (applicationId, options) =>
       HttpClientRequest.post(`/applications/${applicationId}/commands`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["200", "201"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6807,7 +6971,7 @@ export const make = (
       HttpClientRequest.patch(
         `/applications/${applicationId}/commands/${commandId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6822,7 +6986,7 @@ export const make = (
       ),
     createApplicationEmoji: (applicationId, options) =>
       HttpClientRequest.post(`/applications/${applicationId}/emojis`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6847,7 +7011,7 @@ export const make = (
       HttpClientRequest.patch(
         `/applications/${applicationId}/emojis/${emojiId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6875,7 +7039,7 @@ export const make = (
       HttpClientRequest.post(
         `/applications/${applicationId}/entitlements`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6918,7 +7082,7 @@ export const make = (
       HttpClientRequest.put(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6928,7 +7092,7 @@ export const make = (
       HttpClientRequest.post(
         `/applications/${applicationId}/guilds/${guildId}/commands`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["200", "201"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6967,7 +7131,7 @@ export const make = (
       HttpClientRequest.patch(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -6995,7 +7159,7 @@ export const make = (
       HttpClientRequest.put(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}/permissions`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7014,7 +7178,7 @@ export const make = (
       HttpClientRequest.put(
         `/applications/${applicationId}/role-connections/metadata`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7036,7 +7200,7 @@ export const make = (
       ),
     updateChannel: (channelId, options) =>
       HttpClientRequest.patch(`/channels/${channelId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7044,7 +7208,7 @@ export const make = (
       ),
     followChannel: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/followers`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7059,7 +7223,7 @@ export const make = (
       ),
     createChannelInvite: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/invites`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7080,7 +7244,7 @@ export const make = (
       ),
     createMessage: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/messages`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7090,7 +7254,7 @@ export const make = (
       HttpClientRequest.post(
         `/channels/${channelId}/messages/bulk-delete`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     listPins: (channelId, options) =>
@@ -7135,7 +7299,7 @@ export const make = (
       HttpClientRequest.patch(
         `/channels/${channelId}/messages/${messageId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7198,7 +7362,7 @@ export const make = (
       HttpClientRequest.post(
         `/channels/${channelId}/messages/${messageId}/threads`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7208,7 +7372,7 @@ export const make = (
       HttpClientRequest.put(
         `/channels/${channelId}/permissions/${overwriteId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deleteChannelPermissionOverwrite: (channelId, overwriteId) =>
@@ -7256,7 +7420,7 @@ export const make = (
       ),
     addGroupDmUser: (channelId, userId, options) =>
       HttpClientRequest.put(`/channels/${channelId}/recipients/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7270,7 +7434,7 @@ export const make = (
       HttpClientRequest.post(
         `/channels/${channelId}/send-soundboard-sound`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     listThreadMembers: (channelId, options) =>
@@ -7319,7 +7483,7 @@ export const make = (
       ),
     createThread: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/threads`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7400,7 +7564,7 @@ export const make = (
       ),
     createWebhook: (channelId, options) =>
       HttpClientRequest.post(`/channels/${channelId}/webhooks`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7439,7 +7603,7 @@ export const make = (
       ),
     updateGuild: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7469,7 +7633,7 @@ export const make = (
       ),
     createAutoModerationRule: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/auto-moderation/rules`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7494,7 +7658,7 @@ export const make = (
       HttpClientRequest.patch(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7521,17 +7685,17 @@ export const make = (
       ),
     banUserFromGuild: (guildId, userId, options) =>
       HttpClientRequest.put(`/guilds/${guildId}/bans/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     unbanUserFromGuild: (guildId, userId, options) =>
       HttpClientRequest.del(`/guilds/${guildId}/bans/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     bulkBanUsersFromGuild: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/bulk-ban`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7546,7 +7710,7 @@ export const make = (
       ),
     createGuildChannel: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/channels`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7554,7 +7718,7 @@ export const make = (
       ),
     bulkUpdateGuildChannels: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/channels`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     listGuildEmojis: guildId =>
@@ -7566,7 +7730,7 @@ export const make = (
       ),
     createGuildEmoji: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/emojis`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7585,7 +7749,7 @@ export const make = (
       ),
     updateGuildEmoji: (guildId, emojiId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7624,7 +7788,7 @@ export const make = (
       ),
     updateMyGuildMember: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/members/@me`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7650,7 +7814,7 @@ export const make = (
       ),
     addGuildMember: (guildId, userId, options) =>
       HttpClientRequest.put(`/guilds/${guildId}/members/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7662,7 +7826,7 @@ export const make = (
       ),
     updateGuildMember: (guildId, userId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/members/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7696,7 +7860,7 @@ export const make = (
       ),
     putGuildsOnboarding: (guildId, options) =>
       HttpClientRequest.put(`/guilds/${guildId}/onboarding`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7722,7 +7886,7 @@ export const make = (
       ),
     pruneGuild: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/prune`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7744,7 +7908,7 @@ export const make = (
       ),
     createGuildRole: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/roles`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7752,7 +7916,14 @@ export const make = (
       ),
     bulkUpdateGuildRoles: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/roles`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    guildRoleMemberCounts: guildId =>
+      HttpClientRequest.get(`/guilds/${guildId}/roles/member-counts`).pipe(
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7771,7 +7942,7 @@ export const make = (
       ),
     updateGuildRole: (guildId, roleId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/roles/${roleId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7789,7 +7960,7 @@ export const make = (
       ),
     createGuildScheduledEvent: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/scheduled-events`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7817,7 +7988,7 @@ export const make = (
       HttpClientRequest.patch(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7847,7 +8018,7 @@ export const make = (
       ),
     createGuildSoundboardSound: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/soundboard-sounds`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7872,7 +8043,7 @@ export const make = (
       HttpClientRequest.patch(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7906,7 +8077,7 @@ export const make = (
       ),
     updateGuildSticker: (guildId, stickerId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7921,7 +8092,7 @@ export const make = (
       ),
     createGuildTemplate: (guildId, options) =>
       HttpClientRequest.post(`/guilds/${guildId}/templates`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7943,7 +8114,7 @@ export const make = (
       ),
     updateGuildTemplate: (guildId, code, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/templates/${code}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7972,7 +8143,7 @@ export const make = (
       ),
     updateSelfVoiceState: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/voice-states/@me`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getVoiceState: (guildId, userId) =>
@@ -7984,7 +8155,7 @@ export const make = (
       ),
     updateVoiceState: (guildId, userId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/voice-states/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getGuildWebhooks: guildId =>
@@ -8003,7 +8174,7 @@ export const make = (
       ),
     updateGuildWelcomeScreen: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/welcome-screen`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8018,7 +8189,7 @@ export const make = (
       ),
     updateGuildWidgetSettings: (guildId, options) =>
       HttpClientRequest.patch(`/guilds/${guildId}/widget`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8043,7 +8214,7 @@ export const make = (
         HttpClientRequest.setUrlParams({
           with_response: options.params?.["with_response"] as any,
         }),
-        HttpClientRequest.bodyUnsafeJson(options.payload),
+        HttpClientRequest.bodyJsonUnsafe(options.payload),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8069,9 +8240,25 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
+    getInviteTargetUsers: code =>
+      HttpClientRequest.get(`/invites/${code}/target-users`).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    updateInviteTargetUsers: (code, options) =>
+      HttpClientRequest.put(`/invites/${code}/target-users`).pipe(
+        HttpClientRequest.bodyFormDataRecord(options as any),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    getInviteTargetUsersJobStatus: code =>
+      HttpClientRequest.get(`/invites/${code}/target-users/job-status`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     createOrJoinLobby: options =>
       HttpClientRequest.put(`/lobbies`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8079,7 +8266,7 @@ export const make = (
       ),
     createLobby: options =>
       HttpClientRequest.post(`/lobbies`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8094,7 +8281,7 @@ export const make = (
       ),
     editLobby: (lobbyId, options) =>
       HttpClientRequest.patch(`/lobbies/${lobbyId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8102,7 +8289,7 @@ export const make = (
       ),
     editLobbyChannelLink: (lobbyId, options) =>
       HttpClientRequest.patch(`/lobbies/${lobbyId}/channel-linking`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8121,7 +8308,7 @@ export const make = (
       ),
     bulkUpdateLobbyMembers: (lobbyId, options) =>
       HttpClientRequest.post(`/lobbies/${lobbyId}/members/bulk`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8129,7 +8316,7 @@ export const make = (
       ),
     addLobbyMember: (lobbyId, userId, options) =>
       HttpClientRequest.put(`/lobbies/${lobbyId}/members/${userId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8158,11 +8345,22 @@ export const make = (
       ),
     createLobbyMessage: (lobbyId, options) =>
       HttpClientRequest.post(`/lobbies/${lobbyId}/messages`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
         }),
+      ),
+    updateLobbyMessageExternalModerationMetadata: (
+      lobbyId,
+      messageId,
+      options,
+    ) =>
+      HttpClientRequest.put(
+        `/lobbies/${lobbyId}/messages/${messageId}/moderation-metadata`,
+      ).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getMyOauth2Authorization: () =>
       HttpClientRequest.get(`/oauth2/@me`).pipe(
@@ -8192,21 +8390,33 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
+    updateUserMessageExternalModerationMetadata: (
+      userId1,
+      userId2,
+      messageId,
+      options,
+    ) =>
+      HttpClientRequest.put(
+        `/partner-sdk/dms/${userId1}/${userId2}/messages/${messageId}/moderation-metadata`,
+      ).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     partnerSdkUnmergeProvisionalAccount: options =>
       HttpClientRequest.post(`/partner-sdk/provisional-accounts/unmerge`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     botPartnerSdkUnmergeProvisionalAccount: options =>
       HttpClientRequest.post(
         `/partner-sdk/provisional-accounts/unmerge/bot`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     partnerSdkToken: options =>
       HttpClientRequest.post(`/partner-sdk/token`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8214,7 +8424,7 @@ export const make = (
       ),
     botPartnerSdkToken: options =>
       HttpClientRequest.post(`/partner-sdk/token/bot`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8229,7 +8439,7 @@ export const make = (
       ),
     createStageInstance: options =>
       HttpClientRequest.post(`/stage-instances`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8248,7 +8458,7 @@ export const make = (
       ),
     updateStageInstance: (channelId, options) =>
       HttpClientRequest.patch(`/stage-instances/${channelId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8284,7 +8494,20 @@ export const make = (
       ),
     updateMyUser: options =>
       HttpClientRequest.patch(`/users/@me`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    getCurrentUserApplicationEntitlements: (applicationId, options) =>
+      HttpClientRequest.get(
+        `/users/@me/applications/${applicationId}/entitlements`,
+      ).pipe(
+        HttpClientRequest.setUrlParams({
+          sku_ids: options?.["sku_ids"] as any,
+          exclude_consumed: options?.["exclude_consumed"] as any,
+        }),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8303,7 +8526,7 @@ export const make = (
       HttpClientRequest.put(
         `/users/@me/applications/${applicationId}/role-connection`,
       ).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8317,7 +8540,7 @@ export const make = (
       ),
     createDm: options =>
       HttpClientRequest.post(`/users/@me/channels`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8381,7 +8604,7 @@ export const make = (
       ),
     updateWebhook: (webhookId, options) =>
       HttpClientRequest.patch(`/webhooks/${webhookId}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8401,7 +8624,7 @@ export const make = (
           thread_id: options.params?.["thread_id"] as any,
           with_components: options.params?.["with_components"] as any,
         }),
-        HttpClientRequest.bodyUnsafeJson(options.payload),
+        HttpClientRequest.bodyJsonUnsafe(options.payload),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8413,7 +8636,7 @@ export const make = (
       ),
     updateWebhookByToken: (webhookId, webhookToken, options) =>
       HttpClientRequest.patch(`/webhooks/${webhookId}/${webhookToken}`).pipe(
-        HttpClientRequest.bodyUnsafeJson(options),
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8427,7 +8650,7 @@ export const make = (
           wait: options.params?.["wait"] as any,
           thread_id: options.params?.["thread_id"] as any,
         }),
-        HttpClientRequest.bodyUnsafeJson(options.payload),
+        HttpClientRequest.bodyJsonUnsafe(options.payload),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getOriginalWebhookMessage: (webhookId, webhookToken, options) =>
@@ -8459,7 +8682,7 @@ export const make = (
           thread_id: options.params?.["thread_id"] as any,
           with_components: options.params?.["with_components"] as any,
         }),
-        HttpClientRequest.bodyUnsafeJson(options.payload),
+        HttpClientRequest.bodyJsonUnsafe(options.payload),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8494,7 +8717,7 @@ export const make = (
           thread_id: options.params?.["thread_id"] as any,
           with_components: options.params?.["with_components"] as any,
         }),
-        HttpClientRequest.bodyUnsafeJson(options.payload),
+        HttpClientRequest.bodyJsonUnsafe(options.payload),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8508,7 +8731,7 @@ export const make = (
           wait: options.params?.["wait"] as any,
           thread_id: options.params?.["thread_id"] as any,
         }),
-        HttpClientRequest.bodyUnsafeJson(options.payload),
+        HttpClientRequest.bodyJsonUnsafe(options.payload),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -9655,6 +9878,14 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  readonly guildRoleMemberCounts: (
+    guildId: string,
+  ) => Effect.Effect<
+    GuildRoleMemberCounts200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getGuildRole: (
     guildId: string,
     roleId: string,
@@ -10016,6 +10247,40 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  /**
+   * Get the target users for an invite.
+   */
+  readonly getInviteTargetUsers: (
+    code: string,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Update the target users for an existing invite.
+   */
+  readonly updateInviteTargetUsers: (
+    code: string,
+    options: UpdateInviteTargetUsersRequest,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Get the target users job status for an invite.
+   */
+  readonly getInviteTargetUsersJobStatus: (
+    code: string,
+  ) => Effect.Effect<
+    TargetUsersJobStatusResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly createOrJoinLobby: (
     options: CreateOrJoinLobbyRequest,
   ) => Effect.Effect<
@@ -10129,6 +10394,19 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  /**
+   * Update the external moderation metadata for a lobby message.
+   */
+  readonly updateLobbyMessageExternalModerationMetadata: (
+    lobbyId: string,
+    messageId: string,
+    options: UpdateLobbyMessageExternalModerationMetadataRequest,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly getMyOauth2Authorization: () => Effect.Effect<
     OAuth2GetAuthorizationResponse,
     | HttpClientError.HttpClientError
@@ -10149,6 +10427,20 @@ export interface DiscordRest {
   >
   readonly getOpenidConnectUserinfo: () => Effect.Effect<
     OAuth2GetOpenIDConnectUserInfoResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Update the external moderation metadata for a user message (DM).
+   */
+  readonly updateUserMessageExternalModerationMetadata: (
+    userId1: string,
+    userId2: string,
+    messageId: string,
+    options: UpdateUserMessageExternalModerationMetadataRequest,
+  ) => Effect.Effect<
+    void,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
@@ -10256,6 +10548,15 @@ export interface DiscordRest {
     options: BotAccountPatchRequest,
   ) => Effect.Effect<
     UserPIIResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly getCurrentUserApplicationEntitlements: (
+    applicationId: string,
+    options?: GetCurrentUserApplicationEntitlementsParams | undefined,
+  ) => Effect.Effect<
+    GetCurrentUserApplicationEntitlements200,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>

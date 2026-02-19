@@ -1,4 +1,4 @@
-import type * as Discord from "dfx/types"
+import type * as Discord from "../../types.ts"
 import * as Stream from "effect/Stream"
 
 export const opCode =

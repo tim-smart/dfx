@@ -1,11 +1,11 @@
-import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as PubSub from "effect/PubSub"
 import * as Layer from "effect/Layer"
-import * as Mailbox from "effect/Mailbox"
 import * as Stream from "effect/Stream"
-import type * as Discord from "dfx/types"
-import * as EffectUtils from "dfx/utils/Effect"
+import type * as Discord from "../types.ts"
+import * as EffectUtils from "../utils/Effect.ts"
+import * as Queue from "effect/Queue"
+import * as ServiceMap from "effect/ServiceMap"
 
 const fromDispatchFactory =
   <R, E>(source: Stream.Stream<Discord.GatewayReceivePayload, E, R>) =>
@@ -43,11 +43,11 @@ export const make = Effect.gen(function* () {
   )
 
   const sendMailbox = yield* Effect.acquireRelease(
-    Mailbox.make<Discord.GatewaySendPayload>(),
-    _ => _.shutdown,
+    Queue.make<Discord.GatewaySendPayload>(),
+    Queue.shutdown,
   )
   const send = (payload: Discord.GatewaySendPayload) =>
-    sendMailbox.offer(payload)
+    Queue.offer(sendMailbox, payload)
 
   const dispatch = Stream.fromPubSub(hub)
   const fromDispatch = fromDispatchFactory(dispatch)
@@ -66,8 +66,8 @@ export const make = Effect.gen(function* () {
 export interface Messsaging {
   readonly _: unique symbol
 }
-export const Messaging = GenericTag<
-  Messsaging,
-  Effect.Effect.Success<typeof make>
->("dfx/DiscordGateway/Messaging")
-export const MesssagingLive = Layer.scoped(Messaging, make)
+export class Messaging extends ServiceMap.Service<Messsaging>()(
+  "dfx/DiscordGateway/Messaging",
+  { make },
+) {}
+export const MesssagingLive = Layer.effect(Messaging, make)

@@ -3,12 +3,12 @@ import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
-import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
-import * as SendEvents from "dfx/DiscordGateway/Shard/sendEvents"
-import type * as Discord from "dfx/types"
-import * as EffectU from "dfx/utils/Effect"
-import type { ShardState } from "dfx/DiscordGateway/Shard/StateStore"
-import type * as Mailbox from "effect/Mailbox"
+import * as DiscordWS from "../DiscordWS.ts"
+import * as SendEvents from "./sendEvents.ts"
+import type * as Discord from "../../types.ts"
+import * as EffectU from "../../utils/Effect.ts"
+import type { ShardState } from "./StateStore.ts"
+import * as Queue from "effect/Queue"
 
 const payload = (state: Effect.Effect<Option.Option<ShardState>>) =>
   Effect.map(state, state =>
@@ -26,19 +26,19 @@ const payloadOrReconnect = (
   )
 
 export const send = (
-  hellos: Mailbox.ReadonlyMailbox<Discord.GatewayHelloData>,
-  acks: Mailbox.ReadonlyMailbox<void>,
+  hellos: Queue.Dequeue<Discord.GatewayHelloData>,
+  acks: Queue.Dequeue<void>,
   state: Effect.Effect<Option.Option<ShardState>>,
   send: (p: DiscordWS.MessageSend) => Effect.Effect<void>,
 ) =>
   Effect.flatMap(Ref.make(true), ackedRef => {
     const sendPayload = payloadOrReconnect(ackedRef, state).pipe(
-      Effect.zipLeft(Ref.set(ackedRef, false)),
+      Effect.tap(Ref.set(ackedRef, false)),
       Effect.flatMap(send),
     )
 
     const heartbeats = EffectU.foreverSwitch(
-      Effect.zipLeft(hellos.take, Ref.set(ackedRef, true)),
+      Effect.tap(Queue.take(hellos), Ref.set(ackedRef, true)),
       p =>
         Effect.schedule(
           sendPayload,
@@ -51,8 +51,8 @@ export const send = (
         ),
     )
 
-    const run = acks.take.pipe(
-      Effect.zipLeft(Ref.set(ackedRef, true)),
+    const run = Queue.take(acks).pipe(
+      Effect.tap(Ref.set(ackedRef, true)),
       Effect.forever,
     )
 

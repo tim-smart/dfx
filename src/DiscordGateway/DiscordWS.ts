@@ -1,14 +1,15 @@
-import { GenericTag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Ref from "effect/Ref"
-import type * as Discord from "dfx/types"
-import * as Socket from "@effect/platform/Socket"
-import * as Mailbox from "effect/Mailbox"
+import type * as Discord from "../types.ts"
 import * as Schedule from "effect/Schedule"
 import * as Cause from "effect/Cause"
 import * as Option from "effect/Option"
-import * as LogLevel from "effect/LogLevel"
+import type * as LogLevel from "effect/LogLevel"
+import * as ServiceMap from "effect/ServiceMap"
+import * as Queue from "effect/Queue"
+import * as Socket from "effect/unstable/socket/Socket"
+import type * as Scope from "effect/Scope"
 
 export type Message = Discord.GatewayReceivePayload
 export type MessageSend = Discord.GatewaySendPayload | Reconnect
@@ -28,16 +29,15 @@ export interface DiscordWSCodecService {
   encode: (p: Discord.GatewaySendPayload) => Uint8Array | string
   decode: (p: Uint8Array | string) => Discord.GatewayReceivePayload
 }
-export interface DiscordWSCodec {
-  readonly _: unique symbol
-}
 
 const decoder = new TextDecoder()
-const logLevelTrace = Option.some(LogLevel.Trace)
+const logLevelTrace = Option.some<LogLevel.LogLevel>("Trace")
 
-export const DiscordWSCodec = GenericTag<DiscordWSCodec, DiscordWSCodecService>(
-  "dfx/DiscordGateway/DiscordWS/Codec",
-)
+export class DiscordWSCodec extends ServiceMap.Service<
+  DiscordWSCodec,
+  DiscordWSCodecService
+>()("dfx/DiscordGateway/DiscordWS/Codec") {}
+
 export const JsonDiscordWSCodecLive = Layer.succeed(DiscordWSCodec, {
   type: "json",
   encode: p => JSON.stringify(p),
@@ -58,7 +58,7 @@ const make = Effect.gen(function* () {
       )
       const setUrl = (url: string) =>
         Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
-      const messages = yield* Mailbox.make<Message>()
+      const messages = yield* Queue.make<Message>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
         closeCodeIsError: _ => true,
         openTimeout: 5000,
@@ -71,44 +71,44 @@ const make = Effect.gen(function* () {
         })
       const write = (message: MessageSend): Effect.Effect<void> => {
         if (message === Reconnect) {
-          return Effect.catchAllCause(
+          return Effect.catchCause(
             writeRaw(new Socket.CloseEvent(3000, "reconnecting")),
             logWriteError,
           )
         }
-        return Effect.catchAllCause(
+        return Effect.catchCause(
           writeRaw(encoding.encode(message)),
           logWriteError,
         )
       }
       yield* onConnecting.pipe(
-        Effect.zipRight(
-          Effect.withFiberRuntime<void, Socket.SocketError>(fiber =>
+        Effect.andThen(
+          Effect.withFiber<void, Socket.SocketError>(fiber =>
             socket.runRaw(_ => {
               const message = encoding.decode(_)
-              messages.unsafeOffer(message)
+              Queue.offerUnsafe(messages, message)
               ;(fiber as any).log([message], Cause.empty, logLevelTrace)
             }),
           ),
         ),
         Effect.retry({
-          while: e => e.reason === "Close" && e.code === 3000,
+          while: e =>
+            e.reason._tag === "SocketCloseError" && e.reason.code === 3000,
         }),
-        Effect.catchAllCause(cause =>
+        Effect.catchCause(cause =>
           Effect.logDebug("Got socket error, reconnecting", cause),
         ),
         Effect.repeat(
           Schedule.exponential(500).pipe(
-            Schedule.union(Schedule.spaced(10000)),
+            Schedule.either(Schedule.spaced(10000)),
           ),
         ),
         Effect.annotateLogs("channel", "inbound"),
         Effect.forkScoped,
-        Effect.interruptible,
       )
 
       return {
-        take: messages.take,
+        take: Queue.take(messages),
         setUrl,
         write,
       } as const
@@ -121,11 +121,23 @@ const make = Effect.gen(function* () {
   return { connect } as const
 })
 
-export interface DiscordWS {
-  readonly _: unique symbol
-}
-export const DiscordWS = GenericTag<
+export class DiscordWS extends ServiceMap.Service<
   DiscordWS,
-  Effect.Effect.Success<typeof make>
->("dfx/DiscordGateway/DiscordWS")
+  {
+    readonly connect: (args_0: OpenOpts) => Effect.Effect<
+      {
+        readonly take: Effect.Effect<
+          Discord.GatewayReceivePayload,
+          never,
+          never
+        >
+        readonly setUrl: (url: string) => Effect.Effect<void, never, never>
+        readonly write: (message: MessageSend) => Effect.Effect<void>
+      },
+      never,
+      Socket.WebSocketConstructor | Scope.Scope
+    >
+  }
+>()("dfx/DiscordGateway/DiscordWS") {}
+
 export const DiscordWSLive = Layer.effect(DiscordWS, make)

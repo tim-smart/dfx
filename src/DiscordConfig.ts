@@ -1,17 +1,12 @@
-import * as Discord from "dfx/types"
+import * as Discord from "./types.ts"
 import * as Config from "effect/Config"
-import type * as ConfigError from "effect/ConfigError"
-import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import type * as Redacted from "effect/Redacted"
+import * as ServiceMap from "effect/ServiceMap"
 
 const VERSION = 10
-
-export interface DiscordConfig {
-  readonly _: unique symbol
-}
 
 export interface DiscordConfigService {
   readonly token: Redacted.Redacted
@@ -30,9 +25,10 @@ export interface DiscordConfigService {
     readonly identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export const DiscordConfig = GenericTag<DiscordConfig, DiscordConfigService>(
-  "dfx/DiscordConfig",
-)
+export class DiscordConfig extends ServiceMap.Service<
+  DiscordConfig,
+  DiscordConfigService
+>()("dfx/DiscordConfig") {}
 
 export interface MakeOpts {
   readonly token: Redacted.Redacted
@@ -66,6 +62,6 @@ export const layer = (opts: MakeOpts): Layer.Layer<DiscordConfig> =>
   Layer.succeed(DiscordConfig, make(opts))
 
 export const layerConfig = (
-  _: Config.Config.Wrap<MakeOpts>,
-): Layer.Layer<DiscordConfig, ConfigError.ConfigError> =>
-  Layer.effect(DiscordConfig, Effect.map(Config.unwrap(_), make))
+  _: Config.Wrap<MakeOpts>,
+): Layer.Layer<DiscordConfig, Config.ConfigError> =>
+  Layer.effect(DiscordConfig, Effect.map(Config.unwrap(_).asEffect(), make))

@@ -1,4 +1,4 @@
-import * as Discord from "dfx/types"
+import * as Discord from "../../types.ts"
 
 export const heartbeat = (
   d: Discord.GatewayHeartbeatData,

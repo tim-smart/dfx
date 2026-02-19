@@ -1,27 +1,24 @@
-import { DiscordConfig } from "dfx/DiscordConfig"
-import type { MessageSend } from "dfx/DiscordGateway/DiscordWS"
-import {
-  DiscordWS,
-  DiscordWSLive,
-  Reconnect,
-} from "dfx/DiscordGateway/DiscordWS"
-import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
-import type { ShardState } from "dfx/DiscordGateway/Shard/StateStore"
-import { ShardStateStore } from "dfx/DiscordGateway/Shard/StateStore"
-import * as Heartbeats from "dfx/DiscordGateway/Shard/heartbeats"
-import * as Identify from "dfx/DiscordGateway/Shard/identify"
-import { RateLimiter, RateLimiterLive } from "dfx/RateLimit"
-import * as Discord from "dfx/types"
-import { GenericTag } from "effect/Context"
+import { DiscordConfig } from "../DiscordConfig.ts"
+import type { MessageSend } from "./DiscordWS.ts"
+import { DiscordWS, DiscordWSLive, Reconnect } from "./DiscordWS.ts"
+import { Messaging, MesssagingLive } from "./Messaging.ts"
+import type { ShardState } from "./Shard/StateStore.ts"
+import { ShardStateStore } from "./Shard/StateStore.ts"
+import * as Heartbeats from "./Shard/heartbeats.ts"
+import * as Identify from "./Shard/identify.ts"
+import { RateLimiter, RateLimiterLive } from "../RateLimit.ts"
+import * as Discord from "../types.ts"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
-import * as Mailbox from "effect/Mailbox"
 import * as Redacted from "effect/Redacted"
 import type * as Types from "effect/Types"
 import * as FiberHandle from "effect/FiberHandle"
 import { constant, constTrue, constVoid } from "effect/Function"
+import * as Queue from "effect/Queue"
+import * as ServiceMap from "effect/ServiceMap"
+import * as PubSub from "effect/PubSub"
 
 const enum Phase {
   Connecting,
@@ -65,7 +62,7 @@ export const make = Effect.gen(function* () {
           return write(p)
         })
 
-      const resume = Effect.zipRight(
+      const resume = Effect.andThen(
         FiberHandle.clear(reconnectHandle),
         setPhase(Phase.Connected),
       )
@@ -74,18 +71,18 @@ export const make = Effect.gen(function* () {
 
       const socket = yield* dws.connect({ onConnecting })
       const write = (p: MessageSend) =>
-        Effect.zipRight(
+        Effect.andThen(
           limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
           socket.write(p),
         )
 
       const hellos = yield* Effect.acquireRelease(
-        Mailbox.make<Discord.GatewayHelloData>(),
-        _ => _.shutdown,
+        Queue.make<Discord.GatewayHelloData>(),
+        Queue.shutdown,
       )
       const acks = yield* Effect.acquireRelease(
-        Mailbox.make<void>(),
-        _ => _.shutdown,
+        Queue.make<void>(),
+        Queue.shutdown,
       )
 
       // heartbeats
@@ -129,12 +126,12 @@ export const make = Effect.gen(function* () {
           case Discord.GatewayOpcodes.Hello: {
             yield* write(yield* identify)
             yield* setPhase(Phase.Handshake)
-            hellos.unsafeOffer(p.d)
+            Queue.offerUnsafe(hellos, p.d)
             yield* FiberHandle.run(reconnectHandle, delayedReconnect)
             return
           }
           case Discord.GatewayOpcodes.HeartbeatAck: {
-            acks.unsafeOffer(void 0)
+            Queue.offerUnsafe(acks, void 0)
             return
           }
           case Discord.GatewayOpcodes.InvalidSession: {
@@ -149,7 +146,7 @@ export const make = Effect.gen(function* () {
             if (p.t === "READY" || p.t === "RESUMED") {
               yield* resume
             }
-            hub.unsafeOffer(p)
+            PubSub.publishUnsafe(hub, p)
             return
           }
           case Discord.GatewayOpcodes.Reconnect: {
@@ -161,15 +158,15 @@ export const make = Effect.gen(function* () {
 
       yield* Effect.whileLoop({
         while: constTrue,
-        body: constant(Effect.flatMap(sendMailbox.take, write)),
+        body: constant(Effect.flatMap(Queue.take(sendMailbox), write)),
         step: constVoid,
-      }).pipe(Effect.forkScoped, Effect.interruptible)
+      }).pipe(Effect.forkScoped)
 
       yield* Effect.gen(function* () {
         while (true) {
           yield* onPayload(yield* socket.take)
         }
-      }).pipe(Effect.forkScoped, Effect.interruptible)
+      }).pipe(Effect.forkScoped)
 
       return { id: shard, write } as const
     },
@@ -184,12 +181,11 @@ export const make = Effect.gen(function* () {
   return { connect } as const
 })
 
-type ShardService = Effect.Effect.Success<typeof make>
+type ShardService = Effect.Success<typeof make>
 
-export interface Shard {
-  readonly _: unique symbol
-}
-export const Shard = GenericTag<Shard, ShardService>("dfx/DiscordGateway/Shard")
+export class Shard extends ServiceMap.Service<Shard, ShardService>()(
+  "dfx/DiscordGateway/Shard",
+) {}
 export const ShardLive = Layer.effect(Shard, make).pipe(
   Layer.provide(DiscordWSLive),
   Layer.provide(MesssagingLive),
@@ -197,5 +193,6 @@ export const ShardLive = Layer.effect(Shard, make).pipe(
 )
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface RunningShard
-  extends Effect.Effect.Success<ReturnType<ShardService["connect"]>> {}
+export interface RunningShard extends Effect.Success<
+  ReturnType<ShardService["connect"]>
+> {}

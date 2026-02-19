@@ -1,19 +1,12 @@
-import * as HttpBody from "@effect/platform/HttpBody"
-import * as HttpClient from "@effect/platform/HttpClient"
-import type { HttpClientError } from "@effect/platform/HttpClientError"
-import * as HttpRequest from "@effect/platform/HttpClientRequest"
-import type * as HttpResponse from "@effect/platform/HttpClientResponse"
-import { DiscordConfig } from "dfx/DiscordConfig"
+import { DiscordConfig } from "./DiscordConfig.ts"
 import {
   rateLimitFromHeaders,
   retryAfter,
   routeFromConfig,
-} from "dfx/DiscordREST/utils"
-import { RateLimitStore, RateLimiter, RateLimiterLive } from "dfx/RateLimit"
-import * as Discord from "dfx/types"
-import { LIB_VERSION } from "dfx/version"
-import * as Context from "effect/Context"
-import { GenericTag } from "effect/Context"
+} from "./DiscordREST/utils.ts"
+import { RateLimitStore, RateLimiter, RateLimiterLive } from "./RateLimit.ts"
+import * as Discord from "./types.ts"
+import { LIB_VERSION } from "./version.ts"
 import * as Duration from "effect/Duration"
 import { millis } from "effect/Duration"
 import * as Effect from "effect/Effect"
@@ -22,6 +15,12 @@ import { flow } from "effect/Function"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Redacted from "effect/Redacted"
+import * as ServiceMap from "effect/ServiceMap"
+import * as HttpBody from "effect/unstable/http/HttpBody"
+import * as HttpClient from "effect/unstable/http/HttpClient"
+import type { HttpClientError } from "effect/unstable/http/HttpClientError"
+import * as HttpRequest from "effect/unstable/http/HttpClientRequest"
+import type * as HttpResponse from "effect/unstable/http/HttpClientResponse"
 
 const make = Effect.gen(function* () {
   const { rest, token } = yield* DiscordConfig
@@ -31,7 +30,7 @@ const make = Effect.gen(function* () {
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
-    Duration.decode(rest.globalRateLimit.window),
+    Duration.fromDurationInputUnsafe(rest.globalRateLimit.window),
     rest.globalRateLimit.limit,
   )
 
@@ -44,7 +43,7 @@ const make = Effect.gen(function* () {
       badRoutes.add(route)
       return Effect.log("bad route")
     }).pipe(
-      Effect.zipRight(
+      Effect.andThen(
         store.incrementCounter("dfx.rest.invalid", tenMinutesMillis, 10000),
       ),
       Effect.annotateLogs("route", route),
@@ -84,19 +83,19 @@ const make = Effect.gen(function* () {
     if (Option.isNone(rateLimitOption)) return
     const rateLimit = rateLimitOption.value
     const hasBucket = yield* store.hasBucket(rateLimit.bucket)
-    const fibers: Array<Fiber.RuntimeFiber<unknown, unknown>> = []
+    const fibers: Array<Fiber.Fiber<unknown, unknown>> = []
 
     badRoutes.delete(route)
     fibers.push(
-      yield* Effect.fork(store.putBucketRoute(route, rateLimit.bucket)),
+      yield* Effect.forkChild(store.putBucketRoute(route, rateLimit.bucket)),
     )
 
     if (!hasBucket || rateLimit.limit - 1 === rateLimit.remaining) {
       fibers.push(
-        yield* Effect.fork(store.removeCounter(`dfx.rest.?.${route}`)),
+        yield* Effect.forkChild(store.removeCounter(`dfx.rest.?.${route}`)),
       )
       fibers.push(
-        yield* Effect.fork(
+        yield* Effect.forkChild(
           store.putBucket({
             key: rateLimit.bucket,
             resetAfter: Duration.toMillis(rateLimit.retryAfter),
@@ -109,19 +108,17 @@ const make = Effect.gen(function* () {
       )
     }
 
-    for (const fiber of fibers) {
-      if (!fiber.unsafePoll()) {
-        yield* fiber.await
-      }
-    }
+    yield* Fiber.awaitAll(fibers)
   })
 
   const defaultClient = (yield* HttpClient.HttpClient).pipe(
-    HttpClient.withTracerPropagation(false),
+    HttpClient.transformResponse(
+      Effect.provideService(HttpClient.TracerPropagationEnabled, false),
+    ),
   )
   const rateLimitedClient: HttpClient.HttpClient = defaultClient.pipe(
     HttpClient.tapRequest(request =>
-      Effect.zipRight(requestRateLimit(request.url, request), globalRateLimit),
+      Effect.andThen(requestRateLimit(request.url, request), globalRateLimit),
     ),
     HttpClient.transformResponse(
       flow(
@@ -153,18 +150,18 @@ const make = Effect.gen(function* () {
                 "url",
                 request.url,
               ).pipe(
-                Effect.zipRight(
+                Effect.andThen(
                   addBadRoute(routeFromConfig(request.url, request.method)),
                 ),
-                Effect.zipRight(updateBuckets(request, response)),
-                Effect.zipRight(
+                Effect.andThen(updateBuckets(request, response)),
+                Effect.andThen(
                   Effect.sleep(
                     Option.getOrElse(retryAfter(response.headers), () =>
                       Duration.seconds(5),
                     ),
                   ),
                 ),
-                Effect.zipRight(rateLimitedClient.execute(request)),
+                Effect.andThen(rateLimitedClient.execute(request)),
               )
           }
 
@@ -180,7 +177,7 @@ const make = Effect.gen(function* () {
 
   const httpClient = HttpClient.mapRequestInputEffect(rateLimitedClient, req =>
     Effect.sync(() => {
-      const fiber = Option.getOrThrow(Fiber.getCurrentFiber())
+      const fiber = Fiber.getCurrent()!
       let request = req.pipe(
         HttpRequest.prependUrl(rest.baseUrl),
         HttpRequest.setHeaders({
@@ -188,7 +185,7 @@ const make = Effect.gen(function* () {
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       )
-      const formData = Context.getOption(fiber.currentContext, DiscordFormData)
+      const formData = ServiceMap.getOption(fiber.services, DiscordFormData)
       if (Option.isSome(formData)) {
         if (request.body._tag === "Uint8Array") {
           formData.value.set(
@@ -201,7 +198,7 @@ const make = Effect.gen(function* () {
         }
         request = HttpRequest.setBody(
           request,
-          HttpBody.formData(formData.value),
+          HttpBody.makeFormData(formData.value),
         )
       }
       return request
@@ -233,13 +230,10 @@ export type DiscordRESTError =
   | Discord.DiscordRestError<"RatelimitedResponse", Discord.RatelimitedResponse>
   | Discord.DiscordRestError<"ErrorResponse", Discord.ErrorResponse>
 
-export class DiscordFormData extends Context.Tag(
-  "dfx/DiscordREST/DiscordFormData",
-)<DiscordFormData, FormData>() {}
-
-export interface DiscordREST {
-  readonly _: unique symbol
-}
+export class DiscordFormData extends ServiceMap.Service<
+  DiscordFormData,
+  FormData
+>()("dfx/DiscordREST/DiscordFormData") {}
 
 export interface DiscordRestService extends Discord.DiscordRest {
   withFormData(
@@ -250,9 +244,11 @@ export interface DiscordRestService extends Discord.DiscordRest {
   ): <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
 }
 
-export const DiscordREST = GenericTag<DiscordREST, DiscordRestService>(
-  "dfx/DiscordREST",
-)
+export class DiscordREST extends ServiceMap.Service<
+  DiscordREST,
+  DiscordRestService
+>()("dfx/DiscordREST") {}
+
 export const DiscordRESTLive: Layer.Layer<
   DiscordREST,
   never,

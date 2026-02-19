@@ -1,19 +1,19 @@
-import type { HttpClient } from "@effect/platform/HttpClient"
-import type { WebSocketConstructor } from "@effect/platform/Socket"
-import type { DiscordConfig } from "dfx/DiscordConfig"
-import type { DiscordWSCodec } from "dfx/DiscordGateway/DiscordWS"
-import type { Messsaging } from "dfx/DiscordGateway/Messaging"
-import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
-import type { RunningShard } from "dfx/DiscordGateway/Shard"
-import type { ShardStateStore } from "dfx/DiscordGateway/Shard/StateStore"
-import { Sharder, SharderLive } from "dfx/DiscordGateway/Sharder"
-import type { ShardStore } from "dfx/DiscordGateway/ShardStore"
-import type { RateLimitStore } from "dfx/RateLimit"
-import type * as Discord from "dfx/types"
-import { GenericTag } from "effect/Context"
+import type { WebSocketConstructor } from "effect/unstable/socket/Socket"
+import type { DiscordConfig } from "./DiscordConfig.ts"
+import type { DiscordWSCodec } from "./DiscordGateway/DiscordWS.ts"
+import type { Messsaging } from "./DiscordGateway/Messaging.ts"
+import { Messaging, MesssagingLive } from "./DiscordGateway/Messaging.ts"
+import type { RunningShard } from "./DiscordGateway/Shard.ts"
+import type { ShardStateStore } from "./DiscordGateway/Shard/StateStore.ts"
+import { Sharder, SharderLive } from "./DiscordGateway/Sharder.ts"
+import type { ShardStore } from "./DiscordGateway/ShardStore.ts"
+import type { RateLimitStore } from "./RateLimit.ts"
+import type * as Discord from "./types.ts"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import type * as Stream from "effect/Stream"
+import type { HttpClient } from "effect/unstable/http/HttpClient"
+import * as ServiceMap from "effect/ServiceMap"
 
 export const TypeId = Symbol.for("dfx/DiscordGateway")
 export type TypeId = typeof TypeId
@@ -45,7 +45,8 @@ export interface DiscordGateway {
   readonly shards: Effect.Effect<ReadonlySet<RunningShard>>
 }
 
-export const DiscordGateway = GenericTag<DiscordGateway>("dfx/DiscordGateway")
+export const DiscordGateway =
+  ServiceMap.Service<DiscordGateway>("dfx/DiscordGateway")
 
 export const make: Effect.Effect<DiscordGateway, never, Messsaging | Sharder> =
   Effect.gen(function* () {
