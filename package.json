@@ -35,7 +35,7 @@
     "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "effect": "4.0.0-beta.2"
+    "effect": "4.0.0-beta.4"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -50,7 +50,7 @@
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.8.9",
     "@effect/language-service": "^0.74.0",
-    "@effect/platform-node": "4.0.0-beta.2",
+    "@effect/platform-node": "4.0.0-beta.4",
     "@eslint/compat": "^2.0.2",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.1",
@@ -65,7 +65,7 @@
     "babel-plugin-annotate-pure-calls": "^0.5.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
-    "effect": "4.0.0-beta.2",
+    "effect": "4.0.0-beta.4",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
