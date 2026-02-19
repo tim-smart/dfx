@@ -1,11 +1,11 @@
 export { response } from "../Helpers/interactions.ts"
 export * from "./builder.ts"
 export * from "./context.ts"
+export type { InteractionDefinition } from "./definitions.ts"
 export {
   autocomplete,
   global,
   guild,
-  InteractionDefinition,
   messageComponent,
   modalSubmit,
 } from "./definitions.ts"

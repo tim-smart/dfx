@@ -1,4 +1,4 @@
-/* eslint-disable */
+// oxlint-disable no-shadow
 import type * as HttpClient from "effect/unstable/http/HttpClient"
 import * as HttpClientError from "effect/unstable/http/HttpClientError"
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest"

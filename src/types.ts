@@ -2,7 +2,7 @@ import type * as Rest from "./DiscordREST/Generated.ts"
 import type { APIInteraction } from "discord-api-types/v10"
 
 export * from "./DiscordREST/Generated.ts"
-export {
+export type {
   APIInteraction,
   APIBaseApplicationCommandInteractionData,
   APIApplicationCommandAutocompleteInteraction,
@@ -23,8 +23,8 @@ export {
   APIPingInteraction,
   PermissionFlagsBits as Permissions,
   EmbedType,
-  MessageFlags,
 } from "discord-api-types/v10"
+export { MessageFlags } from "discord-api-types/v10"
 
 export type Snowflake = Rest.SnowflakeType
 
