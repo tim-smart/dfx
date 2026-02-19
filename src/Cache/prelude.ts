@@ -1,8 +1,8 @@
 import * as Effect from "effect/Effect"
 import type * as Scope from "effect/Scope"
 import * as Stream from "effect/Stream"
-import type { DiscordRESTError } from "dfx/DiscordREST"
-import { DiscordREST } from "dfx/DiscordREST"
+import type { DiscordRESTError } from "../DiscordREST.ts"
+import { DiscordREST } from "../DiscordREST.ts"
 import type {
   CacheDriver,
   CacheOp,
@@ -10,10 +10,10 @@ import type {
   ParentCacheOp,
   Cache,
   ParentCache,
-} from "dfx/Cache"
-import { CacheMissError, make, makeWithParent } from "dfx/Cache"
-import { DiscordGateway } from "dfx/DiscordGateway"
-import type * as Discord from "dfx/types"
+} from "../Cache.ts"
+import { CacheMissError, make, makeWithParent } from "../Cache.ts"
+import { DiscordGateway } from "../DiscordGateway.ts"
+import type * as Discord from "../types.ts"
 
 export interface OptsWithParentOptions<E, A> {
   readonly id: (a: A) => string

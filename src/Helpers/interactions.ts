@@ -1,4 +1,4 @@
-import * as Discord from "dfx/types"
+import * as Discord from "../types.ts"
 import * as Arr from "effect/Array"
 import { identity, pipe } from "effect/Function"
 import * as HashMap from "effect/HashMap"
@@ -73,7 +73,7 @@ export const isSubCommand =
  */
 export const subCommandOptions =
   (name: string) => (_: Discord.APIApplicationCommandInteraction["data"]) =>
-    Option.flatMapNullable(findSubCommand(name)(_), o => o.options)
+    Option.flatMapNullishOr(findSubCommand(name)(_), o => o.options)
 
 /**
  * A lens for accessing nested options in a interaction.
@@ -86,7 +86,7 @@ export const optionsWithNested = (data: {
   const optsFromOption = (opt: {
     readonly options?: ReadonlyArray<Discord.APIApplicationCommandInteractionDataOption>
   }): Array<Discord.APIApplicationCommandInteractionDataOption> =>
-    Option.fromNullable(opt.options).pipe(
+    Option.fromNullishOr(opt.options).pipe(
       Option.map(opts => [
         ...opts,
         ...opts.flatMap(_ => optsFromOption(_ as any)),
@@ -94,7 +94,7 @@ export const optionsWithNested = (data: {
       Option.match({ onNone: () => [], onSome: identity }),
     )
 
-  return Option.fromNullable(data.options).pipe(
+  return Option.fromNullishOr(data.options).pipe(
     Option.map(opts => [
       ...opts,
       ...opts.flatMap(_ => optsFromOption(_ as any)),
@@ -158,7 +158,7 @@ export const optionValue =
       | ReadonlyArray<Discord.APIApplicationCommandInteractionDataOption>
       | undefined
   }) =>
-    Option.flatMapNullable(getOption(name)(data), o =>
+    Option.flatMapNullishOr(getOption(name)(data), o =>
       "value" in o ? o.value : undefined,
     )
 
@@ -166,7 +166,7 @@ export const optionValue =
  * Try extract resolved data
  */
 export const resolved = (data: Discord.APIInteraction) =>
-  Option.flatMapNullable(Option.fromNullable(data.data), a =>
+  Option.flatMapNullishOr(Option.fromNullishOr(data.data), a =>
     "resolved" in a
       ? (a.resolved as Discord.InteractionDataResolved)
       : undefined,
@@ -185,15 +185,15 @@ export const resolveOptionValue =
   ) =>
   (a: Discord.APIInteraction): Option.Option<T> =>
     Option.Do.pipe(
-      Option.bind("data", () => Option.fromNullable(a.data as any)),
+      Option.bind("data", () => Option.fromNullishOr(a.data as any)),
       Option.bind("id", ({ data }) =>
-        Option.flatMapNullable(
+        Option.flatMapNullishOr(
           getOption(name)(data) as Option.Option<{ value: Discord.Snowflake }>,
           ({ value }) => value,
         ),
       ),
       Option.bind("r", () => resolved(a)),
-      Option.flatMapNullable(({ id, r }) => f(id, r)),
+      Option.flatMapNullishOr(({ id, r }) => f(id, r)),
     )
 
 /**
@@ -209,14 +209,14 @@ export const resolveValues =
   (a: Discord.APIInteraction): Option.Option<ReadonlyArray<T>> =>
     Option.Do.pipe(
       Option.bind("values", () =>
-        Option.flatMapNullable(
-          Option.fromNullable(a.data as any),
+        Option.flatMapNullishOr(
+          Option.fromNullishOr(a.data as any),
           a => a.values as unknown as Array<string>,
         ),
       ),
       Option.bind("r", () => resolved(a)),
       Option.map(({ r, values }) =>
-        Arr.getSomes(values.map(a => Option.fromNullable(f(a as any, r)))),
+        Arr.getSomes(values.map(a => Option.fromNullishOr(f(a as any, r)))),
       ),
     )
 
@@ -276,7 +276,7 @@ export const getComponent =
  */
 export const componentValue =
   (id: string) => (data: Discord.APIModalSubmission) =>
-    Option.flatMapNullable(
+    Option.flatMapNullishOr(
       getComponent(id)(data),
       o => (o as Discord.TextInputComponentResponse).value,
     )

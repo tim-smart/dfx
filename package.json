@@ -29,7 +29,6 @@
     "build-watch": "tsc -b tsconfig.json --watch",
     "lint": "eslint src/**/* test/**/* examples/**/*",
     "autofix": "pnpm lint --fix",
-    "tc": "tsc --noEmit",
     "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
     "test": "vitest",
     "coverage": "vitest run --coverage"

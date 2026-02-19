@@ -32,7 +32,7 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "target": "ESNext",
-    "module": "ES2022",
+    "module": "nodenext",
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "incremental": true,
@@ -41,7 +41,7 @@
       "dfx": ["./src/index.ts"],
       "dfx/test/*": ["./test/*"],
       "dfx/examples/*": ["./examples/*"],
-      "dfx/*": ["./src/*"]
+      "dfx/*": ["./src/*.ts", "./src/*"]
     },
     "plugins": [
       {

@@ -2,7 +2,7 @@ import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix, UI } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Config, Effect, Layer, LogLevel, Logger } from "effect"
+import { Config, Effect, Layer, Logger } from "effect"
 
 Dotenv.config()
 
@@ -58,11 +58,7 @@ const MainLive = GreetLive.pipe(
       token: Config.redacted("DISCORD_BOT_TOKEN"),
     }),
   ),
-  Layer.provide(Logger.logFmt),
+  Layer.provide(Logger.layer([Logger.consoleLogFmt])),
 )
 
-Layer.launch(MainLive).pipe(
-  Effect.catchAllCause(Effect.logError),
-  Logger.withMinimumLogLevel(LogLevel.Trace),
-  Effect.runFork,
-)
+Layer.launch(MainLive).pipe(Effect.catchCause(Effect.logError), Effect.runFork)

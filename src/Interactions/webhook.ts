@@ -1,25 +1,20 @@
 import * as Chunk from "effect/Chunk"
-import { GenericTag } from "effect/Context"
 import { identity } from "effect/Function"
 import * as Option from "effect/Option"
 import type * as Cause from "effect/Cause"
 import type * as Config from "effect/Config"
-import type * as ConfigError from "effect/ConfigError"
 import * as Redacted from "effect/Redacted"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
-import type * as D from "dfx/Interactions/definitions"
-import type { DefinitionNotFound } from "dfx/Interactions/handlers"
-import { handlers } from "dfx/Interactions/handlers"
-import type {
-  DiscordInteraction,
-  InteractionBuilder,
-} from "dfx/Interactions/index"
-import { Interaction } from "dfx/Interactions/index"
-import type * as Discord from "dfx/types"
+import * as ServiceMap from "effect/ServiceMap"
+import type * as D from "./definitions.ts"
+import type { DefinitionNotFound } from "./handlers.ts"
+import { handlers } from "./handlers.ts"
+import type { DiscordInteraction, InteractionBuilder } from "./index.ts"
+import { Interaction } from "./index.ts"
+import type * as Discord from "../types.ts"
 import * as Verify from "discord-verify"
-import { TypeIdError } from "@effect/platform/Error"
-import { InteractionsErrorTypeId } from "dfx/Interactions/error"
+import * as Data from "effect/Data"
 
 export class BadWebhookSignature {
   readonly _tag = "BadWebhookSignature"
@@ -34,10 +29,12 @@ const checkSignature = (
   crypto: SubtleCrypto,
   algorithm: any,
 ) =>
-  Option.all({
-    signature: Option.fromNullable(headers["x-signature-ed25519"]),
-    timestamp: Option.fromNullable(headers["x-signature-timestamp"]),
-  }).pipe(
+  Effect.fromOption(
+    Option.all({
+      signature: Option.fromNullishOr(headers["x-signature-ed25519"]),
+      timestamp: Option.fromNullishOr(headers["x-signature-timestamp"]),
+    }),
+  ).pipe(
     Effect.flatMap(_ =>
       Effect.promise(() =>
         Verify.verify(
@@ -51,7 +48,7 @@ const checkSignature = (
       ),
     ),
     Effect.filterOrFail(identity, () => new BadWebhookSignature()),
-    Effect.catchAllCause(() => Effect.fail(new BadWebhookSignature())),
+    Effect.catchCause(() => Effect.fail(new BadWebhookSignature())),
     Effect.asVoid,
   )
 
@@ -73,37 +70,33 @@ const makeConfig = ({
   algorithm: Verify.PlatformAlgorithm[algorithm],
 })
 
-export interface WebhookConfig {
-  readonly _: unique symbol
-}
-export const WebhookConfig = GenericTag<
+export class WebhookConfig extends ServiceMap.Service<
   WebhookConfig,
   ReturnType<typeof makeConfig>
->("dfx/Interactions/WebhookConfig")
+>()("dfx/Interactions/WebhookConfig") {}
 
 export const layer = (opts: MakeConfigOpts) =>
   Layer.succeed(WebhookConfig, makeConfig(opts))
 
 export const layerConfig: (
   config: Config.Config<MakeConfigOpts>,
-) => Layer.Layer<WebhookConfig, ConfigError.ConfigError> = (
+) => Layer.Layer<WebhookConfig, Config.ConfigError> = (
   config: Config.Config<MakeConfigOpts>,
-) => Layer.effect(WebhookConfig, Effect.map(config, makeConfig))
+) => Layer.effect(WebhookConfig, Effect.map(config.asEffect(), makeConfig))
 
-export class WebhookParseError extends TypeIdError(
-  InteractionsErrorTypeId,
-  "WebhookParseError",
-)<{ cause: unknown }> {}
+export class WebhookParseError extends Data.TaggedError("WebhookParseError")<{
+  cause: unknown
+}> {}
 
 const fromHeadersAndBody = (headers: Headers, body: string) =>
-  Effect.tap(WebhookConfig, ({ algorithm, crypto, publicKey }) =>
-    checkSignature(publicKey, headers, body, crypto, algorithm),
-  ).pipe(
-    Effect.flatMap(() =>
-      Effect.try({
-        try: () => JSON.parse(body) as Discord.APIInteraction,
-        catch: cause => new WebhookParseError({ cause }),
-      }),
+  WebhookConfig.use(({ algorithm, crypto, publicKey }) =>
+    checkSignature(publicKey, headers, body, crypto, algorithm).pipe(
+      Effect.andThen(
+        Effect.try({
+          try: () => JSON.parse(body) as Discord.APIInteraction,
+          catch: cause => new WebhookParseError({ cause }),
+        }),
+      ),
     ),
   )
 
@@ -181,7 +174,7 @@ export const makeHandler = <R, E, TE>(
   >): Effect.Effect<void, never, WebhookConfig> =>
     handle(headers, body).pipe(
       Effect.flatMap(success),
-      Effect.catchAllCause(error),
+      Effect.catchCause(error),
     )
 }
 

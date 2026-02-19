@@ -63,11 +63,9 @@ export const make = Effect.gen(function* () {
   } as const
 })
 
-export interface Messsaging {
-  readonly _: unique symbol
-}
-export class Messaging extends ServiceMap.Service<Messsaging>()(
+export class Messaging extends ServiceMap.Service<Messaging>()(
   "dfx/DiscordGateway/Messaging",
   { make },
 ) {}
+export type Messsaging = Messaging
 export const MesssagingLive = Layer.effect(Messaging, make)

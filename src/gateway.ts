@@ -1,25 +1,25 @@
-import * as CachePrelude from "dfx/Cache/prelude"
-import type { DiscordGateway } from "dfx/DiscordGateway"
-import { DiscordGatewayLive } from "dfx/DiscordGateway"
-import * as DiscordWS from "dfx/DiscordGateway/DiscordWS"
-import { JsonDiscordWSCodecLive } from "dfx/DiscordGateway/DiscordWS"
-import * as Shard from "dfx/DiscordGateway/Shard"
-import { ShardStateStore } from "dfx/DiscordGateway/Shard/StateStore"
-import * as SendEvent from "dfx/DiscordGateway/Shard/sendEvents"
-import * as ShardStore from "dfx/DiscordGateway/ShardStore"
-import { MemoryShardStoreLive } from "dfx/DiscordGateway/ShardStore"
-import type { DiscordREST } from "dfx/DiscordREST"
-import { DiscordRESTLive } from "dfx/DiscordREST"
-import type { InteractionsRegistry } from "dfx/Interactions/gateway"
-import { InteractionsRegistryLive } from "dfx/Interactions/gateway"
-import type { RateLimiter } from "dfx/RateLimit"
-import { MemoryRateLimitStoreLive, RateLimiterLive } from "dfx/RateLimit"
+import * as CachePrelude from "./Cache/prelude.ts"
+import type { DiscordGateway } from "./DiscordGateway.ts"
+import { DiscordGatewayLive } from "./DiscordGateway.ts"
+import * as DiscordWS from "./DiscordGateway/DiscordWS.ts"
+import { JsonDiscordWSCodecLive } from "./DiscordGateway/DiscordWS.ts"
+import * as Shard from "./DiscordGateway/Shard.ts"
+import { ShardStateStore } from "./DiscordGateway/Shard/StateStore.ts"
+import * as SendEvent from "./DiscordGateway/Shard/sendEvents.ts"
+import * as ShardStore from "./DiscordGateway/ShardStore.ts"
+import { MemoryShardStoreLive } from "./DiscordGateway/ShardStore.ts"
+import type { DiscordREST } from "./DiscordREST.ts"
+import { DiscordRESTLive } from "./DiscordREST.ts"
+import type { InteractionsRegistry } from "./Interactions/gateway.ts"
+import { InteractionsRegistryLive } from "./Interactions/gateway.ts"
+import type { RateLimiter } from "./RateLimit.ts"
+import { MemoryRateLimitStoreLive, RateLimiterLive } from "./RateLimit.ts"
 import * as Layer from "effect/Layer"
-import type * as HttpClient from "@effect/platform/HttpClient"
-import type { DiscordConfig } from "dfx/DiscordConfig"
-import type { WebSocketConstructor } from "@effect/platform/Socket"
+import type * as HttpClient from "effect/unstable/http/HttpClient"
+import type { DiscordConfig } from "./DiscordConfig.ts"
+import type { WebSocketConstructor } from "effect/unstable/socket/Socket"
 
-export { DiscordGateway, DiscordGatewayLive } from "dfx/DiscordGateway"
+export { DiscordGateway, DiscordGatewayLive } from "./DiscordGateway.ts"
 
 export {
   InteractionsRegistry,
@@ -27,7 +27,7 @@ export {
   interactionsSync,
   run as runIx,
   setInteractionsSync,
-} from "dfx/Interactions/gateway"
+} from "./Interactions/gateway.ts"
 
 export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore }
 

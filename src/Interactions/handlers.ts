@@ -1,10 +1,10 @@
 import type * as Chunk from "effect/Chunk"
 import * as Effect from "effect/Effect"
-import * as IxHelpers from "dfx/Helpers/interactions"
-import * as Ctx from "dfx/Interactions/context"
-import type * as D from "dfx/Interactions/definitions"
-import { flattenDefinitions, splitDefinitions } from "dfx/Interactions/utils"
-import * as Discord from "dfx/types"
+import * as IxHelpers from "../Helpers/interactions.ts"
+import * as Ctx from "./context.ts"
+import type * as D from "./definitions.ts"
+import { flattenDefinitions, splitDefinitions } from "./utils.ts"
+import * as Discord from "../types.ts"
 import type { Scope } from "effect/Scope"
 
 export class DefinitionNotFound {
@@ -57,6 +57,9 @@ export const handlers = <R, E, TE, A, B>(
         data,
       ) as Handler<Exclude<R, Scope>, E, B>
     },
+
+    [Discord.InteractionTypes.SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY]: i =>
+      Effect.fail(new DefinitionNotFound(i)),
 
     [Discord.InteractionTypes.MODAL_SUBMIT]: i => {
       const data = i.data as Discord.APIModalSubmission

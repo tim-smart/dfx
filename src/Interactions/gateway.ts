@@ -1,40 +1,37 @@
+import * as Arr from "effect/Array"
 import * as Chunk from "effect/Chunk"
-import type { Tag } from "effect/Context"
-import { GenericTag } from "effect/Context"
 import * as Duration from "effect/Duration"
-import { pipe } from "effect/Function"
 import * as Effect from "effect/Effect"
+import { pipe } from "effect/Function"
 import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
-import { DiscordGateway } from "dfx/DiscordGateway"
-import type { DiscordRESTError } from "dfx/DiscordREST"
-import { DiscordREST } from "dfx/DiscordREST"
+import * as Schedule from "effect/Schedule"
+import * as ServiceMap from "effect/ServiceMap"
+import { DiscordGateway } from "../DiscordGateway.ts"
+import type { DiscordRESTError } from "../DiscordREST.ts"
+import { DiscordREST } from "../DiscordREST.ts"
+import type { ListMyGuilds200, MyGuildResponse } from "../types.ts"
 import type {
   GlobalApplicationCommand,
   GuildApplicationCommand,
-} from "dfx/Interactions/definitions"
-import type { DefinitionNotFound } from "dfx/Interactions/handlers"
-import { handlers } from "dfx/Interactions/handlers"
-import type {
-  DiscordInteraction,
-  InteractionBuilder,
-} from "dfx/Interactions/index"
-import { builder, Interaction } from "dfx/Interactions/index"
-import * as EffectUtils from "dfx/utils/Effect"
-import * as Schedule from "effect/Schedule"
-import { globalValue } from "effect/GlobalValue"
-import * as FiberRef from "effect/FiberRef"
-import type { ListMyGuilds200, MyGuildResponse } from "dfx/types"
-import * as Arr from "effect/Array"
+} from "./definitions.ts"
+import type { DefinitionNotFound } from "./handlers.ts"
+import { handlers } from "./handlers.ts"
+import type { DiscordInteraction, InteractionBuilder } from "./index.ts"
+import { builder, Interaction } from "./index.ts"
+import * as EffectUtils from "../utils/Effect.ts"
 
-export const interactionsSync: FiberRef.FiberRef<boolean> = globalValue(
-  "dfx/Interactions/sync",
-  () => FiberRef.unsafeMake(true),
-)
+export const interactionsSync = ServiceMap.Reference("dfx/Interactions/sync", {
+  defaultValue: () => true,
+})
 
 export const setInteractionsSync = (enabled: boolean) =>
-  Layer.locally(interactionsSync, enabled)
+  Layer.provide(Layer.succeed(interactionsSync, enabled))
+
+const retryPolicy = Schedule.exponential("1 seconds").pipe(
+  Schedule.either(Schedule.spaced("20 seconds")),
+)
 
 export const run =
   <R, R2, E, TE, E2>(
@@ -89,7 +86,7 @@ export const run =
           const next: ListMyGuilds200 = yield* rest.listMyGuilds({
             after: results && Arr.lastNonEmpty(results).id,
           })
-          if (!Arr.isNonEmptyReadonlyArray(next)) break
+          if (!Arr.isReadonlyArrayNonEmpty(next)) break
           results = next
           yield* Effect.forEach(
             results!,
@@ -133,7 +130,7 @@ export const run =
         ),
       )
 
-      const sync = yield* FiberRef.get(interactionsSync)
+      const sync = yield* interactionsSync
 
       return yield* sync
         ? Effect.forever(
@@ -160,16 +157,12 @@ const makeRegistry = Effect.gen(function* () {
   yield* EffectUtils.foreverSwitch(Queue.take(queue), ix =>
     pipe(
       ix,
-      run(Effect.catchAllCause(_ => Effect.logError("unhandled error", _))),
+      run(Effect.catchCause(_ => Effect.logError("unhandled error", _))),
       Effect.delay(Duration.seconds(5)),
     ),
   ).pipe(
-    Effect.tapErrorCause(_ => Effect.logError("registry error", _)),
-    Effect.retry(
-      Schedule.exponential("1 seconds").pipe(
-        Schedule.union(Schedule.spaced("20 seconds")),
-      ),
-    ),
+    Effect.tapCause(_ => Effect.logError("registry error", _)),
+    Effect.retry(retryPolicy),
     Effect.forkScoped,
     Effect.interruptible,
   )
@@ -187,19 +180,14 @@ export interface InteractionsRegistryService {
     ix: InteractionBuilder<never, E, never>,
   ) => Effect.Effect<void>
 }
-export interface InteractionsRegistry {
-  readonly _: unique symbol
-}
 
-export const InteractionsRegistry: Tag<
+export class InteractionsRegistry extends ServiceMap.Service<
   InteractionsRegistry,
   InteractionsRegistryService
-> = GenericTag<InteractionsRegistry, InteractionsRegistryService>(
-  "dfx/Interactions/InteractionsRegistry",
-)
+>()("dfx/Interactions/InteractionsRegistry") {}
 
 export const InteractionsRegistryLive: Layer.Layer<
   InteractionsRegistry,
   never,
   DiscordREST | DiscordGateway
-> = Layer.scoped(InteractionsRegistry, makeRegistry)
+> = Layer.effect(InteractionsRegistry, makeRegistry)

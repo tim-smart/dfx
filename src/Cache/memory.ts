@@ -1,7 +1,7 @@
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
-import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
-import { createDriver, createParentDriver } from "dfx/Cache/driver"
+import type { CacheDriver, ParentCacheDriver } from "./driver.ts"
+import { createDriver, createParentDriver } from "./driver.ts"
 
 export const createWithParent = <T>(): Effect.Effect<
   ParentCacheDriver<never, T>
@@ -24,11 +24,11 @@ export const createWithParent = <T>(): Effect.Effect<
       get: (parentId, resourceId) =>
         Effect.sync(
           (): Option.Option<T> =>
-            Option.fromNullable(map.get(parentId)?.get(resourceId)),
+            Option.fromNullishOr(map.get(parentId)?.get(resourceId)),
         ),
 
       getForParent: parentId =>
-        Effect.sync(() => Option.fromNullable(map.get(parentId))),
+        Effect.sync(() => Option.fromNullishOr(map.get(parentId))),
 
       set: (parentId, resourceId, resource) =>
         Effect.sync(() => {
@@ -63,7 +63,7 @@ export const create = <T>(): Effect.Effect<CacheDriver<never, T>> =>
 
       get: resourceId =>
         Effect.sync(
-          (): Option.Option<T> => Option.fromNullable(map.get(resourceId)),
+          (): Option.Option<T> => Option.fromNullishOr(map.get(resourceId)),
         ),
 
       set: (resourceId, resource) =>

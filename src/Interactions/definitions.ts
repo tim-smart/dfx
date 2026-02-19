@@ -5,10 +5,10 @@ import type {
   DiscordInteraction,
   DiscordMessageComponent,
   DiscordModalSubmit,
-} from "dfx/Interactions/context"
-import type * as Discord from "dfx/types"
+} from "./context.ts"
+import type * as Discord from "../types.ts"
 import type { Scope } from "effect/Scope"
-import type { CommandHelper } from "./commandHelper"
+import type { CommandHelper } from "./commandHelper.ts"
 
 export type InteractionDefinition<R, E> =
   | GlobalApplicationCommand<R, E>

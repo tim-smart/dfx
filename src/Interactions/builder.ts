@@ -3,10 +3,10 @@ import { identity } from "effect/Function"
 import type * as Cause from "effect/Cause"
 import * as Effect from "effect/Effect"
 import { catchTag } from "effect/Effect"
-import type { DiscordRESTError } from "dfx/DiscordREST"
-import { DiscordREST } from "dfx/DiscordREST"
-import type * as D from "dfx/Interactions/definitions"
-import type * as Discord from "dfx/types"
+import type { DiscordRESTError } from "../DiscordREST.ts"
+import { DiscordREST } from "../DiscordREST.ts"
+import type * as D from "./definitions.ts"
+import type * as Discord from "../types.ts"
 
 type ExtractTag<A> = A extends { _tag: infer Tag }
   ? Tag extends string
@@ -78,7 +78,7 @@ export class InteractionBuilder<R, E, TE> {
   catchAllCause<R1, E1>(
     f: (cause: Cause.Cause<TE>) => Effect.Effect<void, E1, R1>,
   ) {
-    return this.transformTransform<R | R1, E1>(Effect.catchAllCause(f))
+    return this.transformTransform<R | R1, E1>(Effect.catchCause(f))
   }
 
   catchAllCauseRespond<R1, E1>(
@@ -86,11 +86,11 @@ export class InteractionBuilder<R, E, TE> {
       cause: Cause.Cause<E>,
     ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E1, R1>,
   ) {
-    return this.transformHandlers<R | R1, E1>(Effect.catchAllCause(f))
+    return this.transformHandlers<R | R1, E1>(Effect.catchCause(f))
   }
 
   catchAll<R1, E1>(f: (error: TE) => Effect.Effect<void, E1, R1>) {
-    return this.transformTransform<R | R1, E1>(Effect.catchAll(f))
+    return this.transformTransform<R | R1, E1>(Effect.catch(f))
   }
 
   catchAllRespond<R1, E1>(
@@ -98,7 +98,7 @@ export class InteractionBuilder<R, E, TE> {
       error: E,
     ) => Effect.Effect<Discord.CreateInteractionResponseRequest, E1, R1>,
   ) {
-    return this.transformHandlers<R | R1, E1>(Effect.catchAll(f))
+    return this.transformHandlers<R | R1, E1>(Effect.catch(f))
   }
 
   catchTag<T extends ExtractTag<E>, R1, E1>(
@@ -131,7 +131,7 @@ export class InteractionBuilder<R, E, TE> {
       Chunk.map(c => c.command),
     )
 
-    return Effect.flatMap(DiscordREST, rest =>
+    return DiscordREST.use(rest =>
       rest
         .getMyApplication()
         .pipe(
@@ -155,7 +155,7 @@ export class InteractionBuilder<R, E, TE> {
       Chunk.map(c => c.command),
     )
 
-    return Effect.flatMap(DiscordREST, rest =>
+    return DiscordREST.use(rest =>
       rest.bulkSetGuildApplicationCommands(
         appId,
         guildId,

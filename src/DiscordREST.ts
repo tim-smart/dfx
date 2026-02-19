@@ -198,7 +198,7 @@ const make = Effect.gen(function* () {
         }
         request = HttpRequest.setBody(
           request,
-          HttpBody.makeFormData(formData.value),
+          HttpBody.formData(formData.value),
         )
       }
       return request

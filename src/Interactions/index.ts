@@ -1,6 +1,6 @@
-export { response } from "dfx/Helpers/interactions"
-export * from "dfx/Interactions/builder"
-export * from "dfx/Interactions/context"
+export { response } from "../Helpers/interactions.ts"
+export * from "./builder.ts"
+export * from "./context.ts"
 export {
   autocomplete,
   global,
@@ -8,7 +8,7 @@ export {
   InteractionDefinition,
   messageComponent,
   modalSubmit,
-} from "dfx/Interactions/definitions"
+} from "./definitions.ts"
 
 // Filters
 export const id = (query: string) => (customId: string) => query === customId

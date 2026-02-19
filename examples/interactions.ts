@@ -2,7 +2,7 @@ import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix } from "dfx"
 import { DiscordLive, runIx } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Cause, Config, Effect, Layer, pipe } from "effect"
+import { Config, Effect, Layer, pipe } from "effect"
 
 Dotenv.config()
 
@@ -59,16 +59,10 @@ const greeting = Ix.global(
 const program = Effect.gen(function* () {
   const interactions = pipe(
     Ix.builder.add(hello).add(greeting),
-    runIx(
-      Effect.catchAll(e =>
-        Effect.sync(() => {
-          console.error("CAUGHT INTERACTION ERROR", e)
-        }),
-      ),
-    ),
+    runIx(Effect.catch(e => Effect.logError("CAUGHT INTERACTION ERROR", e))),
   )
 
-  yield* interactions
+  yield* Effect.asVoid(interactions)
 })
 
 const EnvLive = DiscordLive.pipe(
@@ -80,10 +74,6 @@ const EnvLive = DiscordLive.pipe(
 // Run it
 program.pipe(
   Effect.provide(EnvLive),
-  Effect.tapErrorCause(_ =>
-    Effect.sync(() => {
-      console.error(Cause.squash(_))
-    }),
-  ),
+  Effect.tapCause(Effect.logError),
   Effect.runFork,
 )

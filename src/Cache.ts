@@ -1,20 +1,20 @@
-import { TypeIdError } from "@effect/platform/Error"
-import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
+import type { CacheDriver, ParentCacheDriver } from "./Cache/driver.ts"
+import * as Data from "effect/Data"
 import * as Effect from "effect/Effect"
 import * as Option from "effect/Option"
 import * as Schedule from "effect/Schedule"
 import type * as Scope from "effect/Scope"
 import * as Stream from "effect/Stream"
 
-export * from "dfx/Cache/driver"
+export * from "./Cache/driver.ts"
 export {
   create as memoryDriver,
   createWithParent as memoryParentDriver,
-} from "dfx/Cache/memory"
+} from "./Cache/memory.ts"
 export {
   create as memoryTTLDriver,
   createWithParent as memoryTTLParentDriver,
-} from "dfx/Cache/memoryTTL"
+} from "./Cache/memoryTTL.ts"
 
 export type ParentCacheOp<T> =
   | { op: "create"; parentId: string; resourceId: string; resource: T }
@@ -28,7 +28,7 @@ export type CacheOp<T> =
   | { op: "delete"; resourceId: string }
 
 const retryPolicy = Schedule.exponential("500 millis").pipe(
-  Schedule.union(Schedule.spaced("10 seconds")),
+  Schedule.either(Schedule.spaced("10 seconds")),
 )
 
 export interface ParentCache<EDriver, EMiss, EPMiss, A> {
@@ -94,14 +94,14 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
         }
       }),
     ).pipe(
-      Effect.tapErrorCause(_ => Effect.logError("ops error, restarting", _)),
+      Effect.tapCause(cause => Effect.logError("ops error, restarting", cause)),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
       Effect.interruptible,
     )
     yield* driver.run.pipe(
-      Effect.tapErrorCause(_ =>
-        Effect.logError("cache driver error, restarting", _),
+      Effect.tapCause(cause =>
+        Effect.logError("cache driver error, restarting", cause),
       ),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
@@ -109,9 +109,8 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
     )
 
     const get = (parentId: string, id: string) =>
-      Effect.flatMap(
-        driver.get(parentId, id),
-        Option.match({
+      Effect.flatMap(driver.get(parentId, id), option =>
+        Option.match(option, {
           onNone: () =>
             Effect.tap(onMiss(parentId, id), a => driver.set(parentId, id, a)),
           onSome: Effect.succeed,
@@ -126,9 +125,8 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       id: string,
       f: (_: A) => Effect.Effect<A, E, R>,
     ) =>
-      get(parentId, id).pipe(
-        Effect.flatMap(f),
-        Effect.tap(_ => driver.set(parentId, id, _)),
+      Effect.flatMap(get(parentId, id), a =>
+        Effect.tap(f(a), next => driver.set(parentId, id, next)),
       )
 
     return {
@@ -139,9 +137,8 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       update,
 
       getForParent: (parentId: string) =>
-        Effect.flatMap(
-          driver.getForParent(parentId),
-          Option.match({
+        Effect.flatMap(driver.getForParent(parentId), option =>
+          Option.match(option, {
             onNone: () =>
               onParentMiss(parentId).pipe(
                 Effect.tap(entries =>
@@ -205,15 +202,15 @@ export const make = <EOps, EDriver, EMiss, A>({
         }
       }),
     ).pipe(
-      Effect.tapErrorCause(_ => Effect.logError("ops error, restarting", _)),
+      Effect.tapCause(cause => Effect.logError("ops error, restarting", cause)),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
       Effect.interruptible,
     )
 
     yield* driver.run.pipe(
-      Effect.tapErrorCause(_ =>
-        Effect.logError("cache driver error, restarting", _),
+      Effect.tapCause(cause =>
+        Effect.logError("cache driver error, restarting", cause),
       ),
       Effect.retry(retryPolicy),
       Effect.forkScoped,
@@ -221,9 +218,8 @@ export const make = <EOps, EDriver, EMiss, A>({
     )
 
     const get = (id: string) =>
-      Effect.flatMap(
-        driver.get(id),
-        Option.match({
+      Effect.flatMap(driver.get(id), option =>
+        Option.match(option, {
           onNone: () => Effect.tap(onMiss(id), a => driver.set(id, a)),
           onSome: Effect.succeed,
         }),
@@ -232,9 +228,8 @@ export const make = <EOps, EDriver, EMiss, A>({
     const put = (_: A) => driver.set(id(_), _)
 
     const update = <R, E>(id: string, f: (_: A) => Effect.Effect<A, E, R>) =>
-      get(id).pipe(
-        Effect.flatMap(f),
-        Effect.tap(_ => driver.set(id, _)),
+      Effect.flatMap(get(id), a =>
+        Effect.tap(f(a), next => driver.set(id, next)),
       )
 
     return {
@@ -252,13 +247,12 @@ export const make = <EOps, EDriver, EMiss, A>({
 
 export const CacheErrorTypeId = Symbol.for("dfx/Cache/CacheError")
 
-export class CacheMissError extends TypeIdError(
-  CacheErrorTypeId,
-  "CacheMissError",
-)<{
+export class CacheMissError extends Data.Error<{
   cacheName: string
   id: string
 }> {
+  readonly _tag = "CacheMissError"
+
   get message() {
     return `Cache miss for "${this.cacheName}" with id: ${this.id}`
   }

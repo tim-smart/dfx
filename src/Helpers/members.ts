@@ -1,4 +1,4 @@
-import type * as Discord from "dfx/types"
+import type * as Discord from "../types.ts"
 
 /**
  * From a list of roles, filter out the ones the guild member has.

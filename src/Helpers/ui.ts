@@ -19,13 +19,13 @@ import type {
   TextInputComponentForModalRequest,
   ThumbnailComponentForMessageRequest,
   UserSelectComponentForMessageRequest,
-} from "dfx/types"
+} from "../types.ts"
 import {
   TextInputStyleTypes,
   ButtonStyleTypes,
   MessageComponentTypes,
   MessageFlags,
-} from "dfx/types"
+} from "../types.ts"
 
 type ActionRowComponents = ReadonlyArray<
   | ActionRowComponentForMessageRequest["components"][number]

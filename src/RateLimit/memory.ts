@@ -1,6 +1,6 @@
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
-import type { BucketDetails, RateLimitStoreService } from "dfx/RateLimit"
+import type { BucketDetails, RateLimitStoreService } from "../RateLimit.ts"
 
 interface Counter {
   count: number
@@ -14,12 +14,12 @@ export const make = (): RateLimitStoreService => {
 
   const getCounter = (key: string) =>
     Option.filter(
-      Option.fromNullable(counters.get(key)),
+      Option.fromNullishOr(counters.get(key)),
       c => c.expires > Date.now(),
     )
 
   const getBucketForRoute = (route: string) =>
-    Effect.sync(() => Option.fromNullable(buckets.get(routes.get(route)!)))
+    Effect.sync(() => Option.fromNullishOr(buckets.get(routes.get(route)!)))
 
   return {
     hasBucket: key => Effect.sync(() => buckets.has(key)),

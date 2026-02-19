@@ -1,5 +1,5 @@
-import * as Flags from "dfx/Helpers/flags"
-import * as Discord from "dfx/types"
+import * as Flags from "./flags.ts"
+import * as Discord from "../types.ts"
 
 /**
  * All the intents

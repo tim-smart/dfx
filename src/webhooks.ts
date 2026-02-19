@@ -1,9 +1,9 @@
-import type { HttpClient } from "@effect/platform/HttpClient"
-import type { DiscordConfig } from "dfx/DiscordConfig"
-import type { DiscordREST } from "dfx/DiscordREST"
-import { DiscordRESTLive } from "dfx/DiscordREST"
-import type { RateLimiter } from "dfx/RateLimit"
-import { MemoryRateLimitStoreLive, RateLimiterLive } from "dfx/RateLimit"
+import type { HttpClient } from "effect/unstable/http/HttpClient"
+import type { DiscordConfig } from "./DiscordConfig.ts"
+import type { DiscordREST } from "./DiscordREST.ts"
+import { DiscordRESTLive } from "./DiscordREST.ts"
+import type { RateLimiter } from "./RateLimit.ts"
+import { MemoryRateLimitStoreLive, RateLimiterLive } from "./RateLimit.ts"
 import * as Layer from "effect/Layer"
 
 export {
@@ -14,7 +14,7 @@ export {
   layer as webhookLayer,
   layerConfig as webhookLayerConfig,
   WebhookParseError,
-} from "dfx/Interactions/webhook"
+} from "./Interactions/webhook.ts"
 
 export const DiscordLive: Layer.Layer<
   DiscordREST | RateLimiter,

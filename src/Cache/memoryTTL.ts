@@ -1,5 +1,5 @@
-import type { CacheDriver, ParentCacheDriver } from "dfx/Cache/driver"
-import { createDriver, createParentDriver } from "dfx/Cache/driver"
+import type { CacheDriver, ParentCacheDriver } from "./driver.ts"
+import { createDriver, createParentDriver } from "./driver.ts"
 import * as Array from "effect/Array"
 import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
@@ -103,7 +103,7 @@ const make = <T>({
 
     get: resourceId =>
       Effect.sync(
-        (): Option.Option<T> => Option.fromNullable(getSync(resourceId)),
+        (): Option.Option<T> => Option.fromNullishOr(getSync(resourceId)),
       ),
 
     refreshTTL: id =>
@@ -157,7 +157,7 @@ export const createWithParent = <T>(
       get: (_, id) => store.get(id),
 
       getForParent: parentId =>
-        Option.fromNullable(parentIds.get(parentId)).pipe(
+        Effect.fromNullishOr(parentIds.get(parentId)).pipe(
           Effect.flatMap(ids =>
             Effect.forEach(
               ids,
@@ -180,11 +180,11 @@ export const createWithParent = <T>(
               item._tag === "Some" ? acc.set(id, item.value) : acc,
             ),
           ),
-          Effect.option,
+          Effect.catchNoSuchElement,
         ),
 
       set: (parentId, resourceId, resource) =>
-        Effect.zipRight(
+        Effect.andThen(
           store.set(resourceId, resource),
           Effect.sync(() => {
             if (!parentIds.has(parentId)) {
@@ -195,7 +195,7 @@ export const createWithParent = <T>(
         ),
 
       delete: (parentId, resourceId) =>
-        Effect.zipRight(
+        Effect.andThen(
           store.delete(resourceId),
           Effect.sync(() => {
             parentIds.get(parentId)?.delete(resourceId)

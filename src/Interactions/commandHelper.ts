@@ -1,13 +1,14 @@
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import {
+  type DiscordSubCommand,
   SubCommandContext,
   SubCommandNotFound,
   type DiscordApplicationCommand,
   type DiscordInteraction,
-} from "dfx/Interactions/context"
-import type * as Discord from "dfx/types"
-import * as Helpers from "dfx/Helpers/interactions"
+} from "./context.ts"
+import type * as Discord from "../types.ts"
+import * as Helpers from "../Helpers/interactions.ts"
 import * as Arr from "effect/Array"
 import type { HashMap } from "effect/HashMap"
 
@@ -82,37 +83,25 @@ export class CommandHelper<A> {
   >(
     commands: NER,
   ): Effect.Effect<
-    Discord.CreateInteractionResponseRequest,
-    [NER[keyof NER]] extends [
-      { [Effect.EffectTypeId]: { _E: (_: never) => infer E } },
-    ]
-      ? E
-      : never,
-    | Exclude<
-        [NER[keyof NER]] extends [
-          { [Effect.EffectTypeId]: { _R: (_: never) => infer R } },
-        ]
-          ? R
-          : never,
-        SubCommandContext
-      >
+    Effect.Success<NER[keyof NER]>,
+    Effect.Error<NER[keyof NER]>,
+    | Exclude<Effect.Services<NER[keyof NER]>, DiscordSubCommand>
     | DiscordInteraction
     | DiscordApplicationCommand
   > {
     const commands_ = commands as Record<string, any>
-    return Effect.mapError(
-      Arr.findFirst(
-        Helpers.allSubCommands(this.data),
-        _ => !!commands_[_.name],
-      ),
-      () => new SubCommandNotFound({ data: this.data }),
-    ).pipe(
-      Effect.flatMap(command =>
+    const command = Arr.findFirst(
+      Helpers.allSubCommands(this.data),
+      _ => !!commands_[_.name],
+    )
+
+    return Option.match(command, {
+      onNone: () => Effect.fail(new SubCommandNotFound({ data: this.data })),
+      onSome: command =>
         Effect.provideService(commands_[command.name], SubCommandContext, {
           command,
         }),
-      ),
-    ) as any
+    }) as any
   }
 
   get optionsMap(): HashMap<string, string | undefined> {

@@ -1,9 +1,9 @@
 import * as Chunk from "effect/Chunk"
 import * as Effect from "effect/Effect"
-import type * as D from "dfx/Interactions/definitions"
-import type * as Discord from "dfx/types"
+import type * as D from "./definitions.ts"
+import type * as Discord from "../types.ts"
 import * as Array from "effect/Array"
-import { CommandHelper } from "dfx/Interactions/commandHelper"
+import { CommandHelper } from "./commandHelper.ts"
 
 export type DefinitionFlattened<R, E, TE, A> =
   D.InteractionDefinition<R, E> extends infer D
