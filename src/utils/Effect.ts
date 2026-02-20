@@ -60,5 +60,6 @@ export const foreverSwitch = <R, E, A, R1, E1, X>(
       ),
       Effect.forever({ disableYield: true }),
       Effect.raceFirst(Deferred.await(deferred)),
+      Effect.onExit(() => (fiber ? Fiber.interrupt(fiber) : Effect.void)),
     )
   })
