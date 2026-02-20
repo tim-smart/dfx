@@ -14,7 +14,7 @@ export interface DiscordConfigService {
     readonly baseUrl: string
     readonly globalRateLimit: {
       readonly limit: number
-      readonly window: Duration.DurationInput
+      readonly window: Duration.Input
     }
   }
   readonly gateway: {

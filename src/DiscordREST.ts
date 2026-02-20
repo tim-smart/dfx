@@ -30,7 +30,7 @@ const make = Effect.gen(function* () {
 
   const globalRateLimit = maybeWait(
     "dfx.rest.global",
-    Duration.fromDurationInputUnsafe(rest.globalRateLimit.window),
+    Duration.fromInputUnsafe(rest.globalRateLimit.window),
     rest.globalRateLimit.limit,
   )
 

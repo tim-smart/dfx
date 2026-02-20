@@ -6962,7 +6962,7 @@ export const make = (
         }),
       ),
     deleteApplicationCommand: (applicationId, commandId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/applications/${applicationId}/commands/${commandId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7002,7 +7002,7 @@ export const make = (
         }),
       ),
     deleteApplicationEmoji: (applicationId, emojiId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/applications/${applicationId}/emojis/${emojiId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7055,7 +7055,7 @@ export const make = (
         }),
       ),
     deleteEntitlement: (applicationId, entitlementId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/applications/${applicationId}/entitlements/${entitlementId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7117,7 +7117,7 @@ export const make = (
         }),
       ),
     deleteGuildApplicationCommand: (applicationId, guildId, commandId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/applications/${applicationId}/guilds/${guildId}/commands/${commandId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7192,7 +7192,7 @@ export const make = (
         }),
       ),
     deleteChannel: channelId =>
-      HttpClientRequest.del(`/channels/${channelId}`).pipe(
+      HttpClientRequest.delete(`/channels/${channelId}`).pipe(
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -7275,7 +7275,7 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deletePin: (channelId, messageId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/messages/pins/${messageId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7290,7 +7290,7 @@ export const make = (
         }),
       ),
     deleteMessage: (channelId, messageId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/messages/${messageId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7315,7 +7315,7 @@ export const make = (
         }),
       ),
     deleteAllMessageReactions: (channelId, messageId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/messages/${messageId}/reactions`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7335,7 +7335,7 @@ export const make = (
         }),
       ),
     deleteAllMessageReactionsByEmoji: (channelId, messageId, emojiName) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7347,13 +7347,13 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deleteMyMessageReaction: (channelId, messageId, emojiName) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/@me`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deleteUserMessageReaction: (channelId, messageId, emojiName, userId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/messages/${messageId}/reactions/${emojiName}/${userId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7376,7 +7376,7 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deleteChannelPermissionOverwrite: (channelId, overwriteId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/permissions/${overwriteId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7393,7 +7393,7 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deprecatedDeletePin: (channelId, messageId) =>
-      HttpClientRequest.del(`/channels/${channelId}/pins/${messageId}`).pipe(
+      HttpClientRequest.delete(`/channels/${channelId}/pins/${messageId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getAnswerVoters: (channelId, messageId, answerId, options) =>
@@ -7427,7 +7427,9 @@ export const make = (
         }),
       ),
     deleteGroupDmUser: (channelId, userId) =>
-      HttpClientRequest.del(`/channels/${channelId}/recipients/${userId}`).pipe(
+      HttpClientRequest.delete(
+        `/channels/${channelId}/recipients/${userId}`,
+      ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     sendSoundboardSound: (channelId, options) =>
@@ -7454,7 +7456,9 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     leaveThread: channelId =>
-      HttpClientRequest.del(`/channels/${channelId}/thread-members/@me`).pipe(
+      HttpClientRequest.delete(
+        `/channels/${channelId}/thread-members/@me`,
+      ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getThreadMember: (channelId, userId, options) =>
@@ -7476,7 +7480,7 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deleteThreadMember: (channelId, userId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/channels/${channelId}/thread-members/${userId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7649,7 +7653,7 @@ export const make = (
         }),
       ),
     deleteAutoModerationRule: (guildId, ruleId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/guilds/${guildId}/auto-moderation/rules/${ruleId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7689,7 +7693,7 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     unbanUserFromGuild: (guildId, userId, options) =>
-      HttpClientRequest.del(`/guilds/${guildId}/bans/${userId}`).pipe(
+      HttpClientRequest.delete(`/guilds/${guildId}/bans/${userId}`).pipe(
         HttpClientRequest.bodyJsonUnsafe(options),
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
@@ -7744,7 +7748,7 @@ export const make = (
         }),
       ),
     deleteGuildEmoji: (guildId, emojiId) =>
-      HttpClientRequest.del(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
+      HttpClientRequest.delete(`/guilds/${guildId}/emojis/${emojiId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildEmoji: (guildId, emojiId, options) =>
@@ -7763,7 +7767,7 @@ export const make = (
         }),
       ),
     deleteGuildIntegration: (guildId, integrationId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/guilds/${guildId}/integrations/${integrationId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7821,7 +7825,7 @@ export const make = (
         }),
       ),
     deleteGuildMember: (guildId, userId) =>
-      HttpClientRequest.del(`/guilds/${guildId}/members/${userId}`).pipe(
+      HttpClientRequest.delete(`/guilds/${guildId}/members/${userId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildMember: (guildId, userId, options) =>
@@ -7839,7 +7843,7 @@ export const make = (
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     deleteGuildMemberRole: (guildId, userId, roleId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -7937,7 +7941,7 @@ export const make = (
         }),
       ),
     deleteGuildRole: (guildId, roleId) =>
-      HttpClientRequest.del(`/guilds/${guildId}/roles/${roleId}`).pipe(
+      HttpClientRequest.delete(`/guilds/${guildId}/roles/${roleId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildRole: (guildId, roleId, options) =>
@@ -7979,7 +7983,7 @@ export const make = (
         }),
       ),
     deleteGuildScheduledEvent: (guildId, guildScheduledEventId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -8034,7 +8038,7 @@ export const make = (
         }),
       ),
     deleteGuildSoundboardSound: (guildId, soundId) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/guilds/${guildId}/soundboard-sounds/${soundId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -8072,7 +8076,7 @@ export const make = (
         }),
       ),
     deleteGuildSticker: (guildId, stickerId) =>
-      HttpClientRequest.del(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
+      HttpClientRequest.delete(`/guilds/${guildId}/stickers/${stickerId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateGuildSticker: (guildId, stickerId, options) =>
@@ -8106,7 +8110,7 @@ export const make = (
         }),
       ),
     deleteGuildTemplate: (guildId, code) =>
-      HttpClientRequest.del(`/guilds/${guildId}/templates/${code}`).pipe(
+      HttpClientRequest.delete(`/guilds/${guildId}/templates/${code}`).pipe(
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8234,7 +8238,7 @@ export const make = (
         }),
       ),
     inviteRevoke: code =>
-      HttpClientRequest.del(`/invites/${code}`).pipe(
+      HttpClientRequest.delete(`/invites/${code}`).pipe(
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -8296,7 +8300,7 @@ export const make = (
         }),
       ),
     leaveLobby: lobbyId =>
-      HttpClientRequest.del(`/lobbies/${lobbyId}/members/@me`).pipe(
+      HttpClientRequest.delete(`/lobbies/${lobbyId}/members/@me`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     createLinkedLobbyGuildInviteForSelf: lobbyId =>
@@ -8323,7 +8327,7 @@ export const make = (
         }),
       ),
     deleteLobbyMember: (lobbyId, userId) =>
-      HttpClientRequest.del(`/lobbies/${lobbyId}/members/${userId}`).pipe(
+      HttpClientRequest.delete(`/lobbies/${lobbyId}/members/${userId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     createLinkedLobbyGuildInviteForUser: (lobbyId, userId) =>
@@ -8453,7 +8457,7 @@ export const make = (
         }),
       ),
     deleteStageInstance: channelId =>
-      HttpClientRequest.del(`/stage-instances/${channelId}`).pipe(
+      HttpClientRequest.delete(`/stage-instances/${channelId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateStageInstance: (channelId, options) =>
@@ -8533,7 +8537,7 @@ export const make = (
         }),
       ),
     deleteApplicationUserRoleConnection: applicationId =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/users/@me/applications/${applicationId}/role-connection`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
@@ -8567,7 +8571,7 @@ export const make = (
         }),
       ),
     leaveGuild: guildId =>
-      HttpClientRequest.del(`/users/@me/guilds/${guildId}`).pipe(
+      HttpClientRequest.delete(`/users/@me/guilds/${guildId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     getMyGuildMember: guildId =>
@@ -8599,7 +8603,7 @@ export const make = (
         }),
       ),
     deleteWebhook: webhookId =>
-      HttpClientRequest.del(`/webhooks/${webhookId}`).pipe(
+      HttpClientRequest.delete(`/webhooks/${webhookId}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateWebhook: (webhookId, options) =>
@@ -8631,7 +8635,7 @@ export const make = (
         }),
       ),
     deleteWebhookByToken: (webhookId, webhookToken) =>
-      HttpClientRequest.del(`/webhooks/${webhookId}/${webhookToken}`).pipe(
+      HttpClientRequest.delete(`/webhooks/${webhookId}/${webhookToken}`).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
       ),
     updateWebhookByToken: (webhookId, webhookToken, options) =>
@@ -8666,7 +8670,7 @@ export const make = (
         }),
       ),
     deleteOriginalWebhookMessage: (webhookId, webhookToken, options) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/webhooks/${webhookId}/${webhookToken}/messages/@original`,
       ).pipe(
         HttpClientRequest.setUrlParams({
@@ -8701,7 +8705,7 @@ export const make = (
         }),
       ),
     deleteWebhookMessage: (webhookId, webhookToken, messageId, options) =>
-      HttpClientRequest.del(
+      HttpClientRequest.delete(
         `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
       ).pipe(
         HttpClientRequest.setUrlParams({
