@@ -122,7 +122,7 @@ export const run =
         return hasFiles ? rest.withFiles(r.files as any)(effect) : effect
       })
 
-      const run = gateway.handleDispatch("INTERACTION_CREATE", i =>
+      const interactionRun = gateway.handleDispatch("INTERACTION_CREATE", i =>
         Effect.withSpan(
           Effect.provideService(postHandler(handle[i.type](i)), Interaction, i),
           "dfx.Interaction",
@@ -134,12 +134,12 @@ export const run =
 
       return yield* sync
         ? Effect.forever(
-            Effect.all([run, globalSync, guildSync], {
+            Effect.all([interactionRun, globalSync, guildSync], {
               concurrency: "unbounded",
               discard: true,
             }),
           )
-        : run
+        : interactionRun
     })
 
 const makeRegistry = Effect.gen(function* () {

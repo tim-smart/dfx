@@ -22,11 +22,16 @@ export function toList<T extends Flags<any>>(
   flags: T,
 ): (bitfield: any) => Array<keyof T> {
   const entries = Object.entries(flags)
-  return val =>
-    entries.reduce(
-      (acc, [key, flag]) => ((val & flag) === flag ? [...acc, key] : acc),
-      [] as Array<keyof T>,
-    )
+  return val => {
+    const out = []
+    for (let i = 0; i < entries.length; i++) {
+      const [key, flag] = entries[i]
+      if ((val & flag) === flag) {
+        out.push(key)
+      }
+    }
+    return out
+  }
 }
 
 /**

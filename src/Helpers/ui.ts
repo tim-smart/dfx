@@ -69,61 +69,61 @@ export const singleColumn = <C extends ActionRowComponents>(
  * Helper to create a button component.
  */
 export const button = (
-  button: Partial<ButtonComponentForMessageRequest>,
+  options: Partial<ButtonComponentForMessageRequest>,
 ): ButtonComponentForMessageRequest => ({
   type: MessageComponentTypes.BUTTON,
   style: ButtonStyleTypes.PRIMARY,
-  ...button,
+  ...options,
 })
 
 /**
  * Helper to create a select component.
  */
 export const select = (
-  select: Omit<StringSelectComponentForMessageRequest, "type">,
+  options: Omit<StringSelectComponentForMessageRequest, "type">,
 ): StringSelectComponentForMessageRequest => ({
   type: MessageComponentTypes.STRING_SELECT,
-  ...select,
+  ...options,
 })
 
 /**
  * Helper to create a select component.
  */
 export const userSelect = (
-  select: Omit<UserSelectComponentForMessageRequest, "type">,
+  options: Omit<UserSelectComponentForMessageRequest, "type">,
 ): UserSelectComponentForMessageRequest => ({
   type: MessageComponentTypes.USER_SELECT,
-  ...select,
+  ...options,
 })
 
 /**
  * Helper to create a select component.
  */
 export const roleSelect = (
-  select: Omit<RoleSelectComponentForMessageRequest, "type">,
+  options: Omit<RoleSelectComponentForMessageRequest, "type">,
 ): RoleSelectComponentForMessageRequest => ({
   type: MessageComponentTypes.ROLE_SELECT,
-  ...select,
+  ...options,
 })
 
 /**
  * Helper to create a select component.
  */
 export const mentionableSelect = (
-  select: Omit<MentionableSelectComponentForMessageRequest, "type">,
+  options: Omit<MentionableSelectComponentForMessageRequest, "type">,
 ): MentionableSelectComponentForMessageRequest => ({
   type: MessageComponentTypes.MENTIONABLE_SELECT,
-  ...select,
+  ...options,
 })
 
 /**
  * Helper to create a select component.
  */
 export const channelSelect = (
-  select: Omit<ChannelSelectComponentForMessageRequest, "type">,
+  options: Omit<ChannelSelectComponentForMessageRequest, "type">,
 ): ChannelSelectComponentForMessageRequest => ({
   type: MessageComponentTypes.CHANNEL_SELECT,
-  ...select,
+  ...options,
 })
 
 type TextInputOpts = Omit<
@@ -238,7 +238,7 @@ type MessageComponents = NonNullable<MessageCreateRequest["components"]>[number]
  * Create a components v2 message
  */
 export const components = <const C extends ReadonlyArray<MessageComponents>>(
-  components: C,
+  items: C,
   options?: {
     readonly ephemeral?: boolean | undefined
   },
@@ -249,5 +249,5 @@ export const components = <const C extends ReadonlyArray<MessageComponents>>(
   flags: options?.ephemeral
     ? MessageFlags.Ephemeral | MessageFlags.IsComponentsV2
     : MessageFlags.IsComponentsV2,
-  components,
+  components: items,
 })

@@ -4,9 +4,9 @@ import type * as Discord from "../types.ts"
  * From a list of roles, filter out the ones the guild member has.
  */
 export const roles =
-  (roles: Array<Discord.GuildRoleResponse>) =>
+  (guildRoles: Array<Discord.GuildRoleResponse>) =>
   (member: Discord.GuildMemberResponse) =>
-    roles.filter(
+    guildRoles.filter(
       role => member.roles.includes(role.id) || role.name === "@everyone",
     )
 

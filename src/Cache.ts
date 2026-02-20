@@ -65,7 +65,7 @@ export interface ParentCache<EDriver, EMiss, EPMiss, A> {
 
 export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
   driver,
-  id,
+  id: identify,
   onMiss,
   onParentMiss,
   ops = Stream.empty,
@@ -118,7 +118,9 @@ export const makeWithParent = <EOps, EDriver, EMiss, EPMiss, A>({
       )
 
     const put = (_: A) =>
-      Effect.flatMap(id(_), ([parentId, id]) => driver.set(parentId, id, _))
+      Effect.flatMap(identify(_), ([parentId, id]) =>
+        driver.set(parentId, id, _),
+      )
 
     const update = <R, E>(
       parentId: string,
@@ -180,7 +182,7 @@ export interface Cache<EDriver, EMiss, A> {
 
 export const make = <EOps, EDriver, EMiss, A>({
   driver,
-  id,
+  id: identify,
   onMiss,
   ops = Stream.empty,
 }: {
@@ -225,7 +227,7 @@ export const make = <EOps, EDriver, EMiss, A>({
         }),
       )
 
-    const put = (_: A) => driver.set(id(_), _)
+    const put = (_: A) => driver.set(identify(_), _)
 
     const update = <R, E>(id: string, f: (_: A) => Effect.Effect<A, E, R>) =>
       Effect.flatMap(get(id), a =>

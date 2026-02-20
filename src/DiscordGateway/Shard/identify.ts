@@ -44,6 +44,7 @@ export const identifyOrResume = (
     state,
     Option.match({
       onNone: () => identify(opts),
-      onSome: state => resume(opts.token, state.sessionId, state.sequence),
+      onSome: shardState =>
+        resume(opts.token, shardState.sessionId, shardState.sequence),
     }),
   )

@@ -17,7 +17,7 @@ import * as Layer from "effect/Layer"
 export { DiscordREST, DiscordRESTLive } from "./DiscordREST.ts"
 
 export {
-  BucketDetails,
+  type BucketDetails,
   MemoryRateLimitStoreLive,
   RateLimitStore,
   RateLimiter,

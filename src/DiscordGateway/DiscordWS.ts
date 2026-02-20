@@ -4,12 +4,11 @@ import * as Ref from "effect/Ref"
 import type * as Discord from "../types.ts"
 import * as Schedule from "effect/Schedule"
 import * as Cause from "effect/Cause"
-import * as Option from "effect/Option"
-import type * as LogLevel from "effect/LogLevel"
 import * as ServiceMap from "effect/ServiceMap"
 import * as Queue from "effect/Queue"
 import * as Socket from "effect/unstable/socket/Socket"
 import type * as Scope from "effect/Scope"
+import { CurrentLoggers } from "effect/Logger"
 
 export type Message = Discord.GatewayReceivePayload
 export type MessageSend = Discord.GatewaySendPayload | Reconnect
@@ -31,7 +30,6 @@ export interface DiscordWSCodecService {
 }
 
 const decoder = new TextDecoder()
-const logLevelTrace = Option.some<LogLevel.LogLevel>("Trace")
 
 export class DiscordWSCodec extends ServiceMap.Service<
   DiscordWSCodec,
@@ -56,8 +54,8 @@ const make = Effect.gen(function* () {
       const urlRef = yield* Ref.make(
         `${url}?v=${version}&encoding=${encoding.type}`,
       )
-      const setUrl = (url: string) =>
-        Ref.set(urlRef, `${url}?v=${version}&encoding=${encoding.type}`)
+      const setUrl = (nextUrl: string) =>
+        Ref.set(urlRef, `${nextUrl}?v=${version}&encoding=${encoding.type}`)
       const messages = yield* Queue.make<Message>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
         closeCodeIsError: _ => true,
@@ -81,13 +79,22 @@ const make = Effect.gen(function* () {
           logWriteError,
         )
       }
+      const loggers = yield* CurrentLoggers
       yield* onConnecting.pipe(
         Effect.andThen(
           Effect.withFiber<void, Socket.SocketError>(fiber =>
             socket.runRaw(_ => {
               const message = encoding.decode(_)
               Queue.offerUnsafe(messages, message)
-              ;(fiber as any).log([message], Cause.empty, logLevelTrace)
+              loggers.forEach(logger => {
+                logger.log({
+                  message,
+                  cause: Cause.empty,
+                  fiber,
+                  logLevel: "Trace",
+                  date: new Date(),
+                })
+              })
             }),
           ),
         ),

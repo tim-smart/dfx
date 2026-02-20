@@ -23,7 +23,7 @@ const claimRepeatPolicy = Schedule.identity<Option.Option<number>>().pipe(
 const make = Effect.gen(function* () {
   const store = yield* ShardStore
   const rest = yield* DiscordREST
-  const { gateway: config } = yield* DiscordConfig
+  const { gateway: gatewayConfig } = yield* DiscordConfig
   const limiter = yield* RateLimiter
   const shard = yield* Shard
   const currentShards = new Set<RunningShard>()
@@ -43,7 +43,7 @@ const make = Effect.gen(function* () {
     ),
   )
 
-  const totalCount = config.shardCount ?? gateway.shards
+  const totalCount = gatewayConfig.shardCount ?? gateway.shards
   const currentCount = yield* Ref.make(0)
   const claimId = (sharderCount: number): Effect.Effect<number> =>
     pipe(
@@ -62,21 +62,21 @@ const make = Effect.gen(function* () {
 
   const spawner = pipe(
     takeConfig,
-    Effect.map(config => ({
-      ...config,
+    Effect.map(shardConfig => ({
+      ...shardConfig,
       url: gateway.url,
       concurrency: gateway.session_start_limit.max_concurrency,
     })),
     Effect.tap(({ concurrency, id }) =>
       limiter.maybeWait(
         `dfx.sharder.${id % concurrency}`,
-        Duration.millis(config.identifyRateLimit[0]),
-        config.identifyRateLimit[1],
+        Duration.millis(gatewayConfig.identifyRateLimit[0]),
+        gatewayConfig.identifyRateLimit[1],
       ),
     ),
     Effect.flatMap(c => shard.connect([c.id, c.totalCount])),
-    Effect.tap(shard => {
-      currentShards.add(shard)
+    Effect.tap(runningShard => {
+      currentShards.add(runningShard)
       return Effect.void
     }),
     Effect.forever,

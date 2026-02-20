@@ -1,4 +1,4 @@
-import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
+import { NodeHttpClient, NodeRuntime, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix, UI } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import Dotenv from "dotenv"
@@ -58,7 +58,9 @@ const MainLive = GreetLive.pipe(
       token: Config.redacted("DISCORD_BOT_TOKEN"),
     }),
   ),
-  Layer.provide(Logger.layer([Logger.consoleLogFmt])),
 )
 
-Layer.launch(MainLive).pipe(Effect.catchCause(Effect.logError), Effect.runFork)
+Layer.launch(MainLive).pipe(
+  Effect.catchCause(Effect.logError),
+  NodeRuntime.runMain,
+)

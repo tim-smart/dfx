@@ -108,8 +108,8 @@ export const applyOverwrites =
   (permissions: bigint) =>
   (overwrites: ReadonlyArray<Discord.ChannelPermissionOverwriteResponse>) =>
     overwrites.reduce(
-      (permissions, overwrite) =>
-        (permissions & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow),
+      (current, overwrite) =>
+        (current & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow),
       permissions,
     )
 

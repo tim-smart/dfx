@@ -44,17 +44,17 @@ export const make = ({
   token,
   rest: {
     baseUrl: `https://discord.com/api/v${VERSION}`,
-    ...(rest ?? {}),
+    ...rest,
     globalRateLimit: {
       limit: 50,
       window: Duration.seconds(1),
-      ...(rest?.globalRateLimit ?? {}),
+      ...rest?.globalRateLimit,
     },
   },
   gateway: {
     intents: Discord.GatewayIntentBits.Guilds,
     identifyRateLimit: [5000, 1],
-    ...(gateway ?? {}),
+    ...gateway,
   },
 })
 

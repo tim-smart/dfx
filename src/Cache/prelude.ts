@@ -210,8 +210,10 @@ export const channels = <RM, EM, E>(
       }),
       onMiss: (_, id) => rest.getChannel(id),
       onParentMiss: guildId =>
-        Effect.map(rest.listGuildChannels(guildId), a =>
-          a.map(a => [a.id, a as Discord.GetChannel200] as const),
+        Effect.map(rest.listGuildChannels(guildId), guildChannels =>
+          guildChannels.map(
+            channel => [channel.id, channel as Discord.GetChannel200] as const,
+          ),
         ),
     })
   })

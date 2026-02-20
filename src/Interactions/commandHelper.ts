@@ -90,16 +90,16 @@ export class CommandHelper<A> {
     | DiscordApplicationCommand
   > {
     const commands_ = commands as Record<string, any>
-    const command = Arr.findFirst(
+    const matchedCommand = Arr.findFirst(
       Helpers.allSubCommands(this.data),
       _ => !!commands_[_.name],
     )
 
-    return Option.match(command, {
+    return Option.match(matchedCommand, {
       onNone: () => Effect.fail(new SubCommandNotFound({ data: this.data })),
-      onSome: command =>
-        Effect.provideService(commands_[command.name], SubCommandContext, {
-          command,
+      onSome: subCommand =>
+        Effect.provideService(commands_[subCommand.name], SubCommandContext, {
+          command: subCommand,
         }),
     }) as any
   }

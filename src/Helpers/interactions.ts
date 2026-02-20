@@ -211,12 +211,14 @@ export const resolveValues =
       Option.bind("values", () =>
         Option.flatMapNullishOr(
           Option.fromNullishOr(a.data as any),
-          a => a.values as unknown as Array<string>,
+          data => data.values as unknown as Array<string>,
         ),
       ),
       Option.bind("r", () => resolved(a)),
       Option.map(({ r, values }) =>
-        Arr.getSomes(values.map(a => Option.fromNullishOr(f(a as any, r)))),
+        Arr.getSomes(
+          values.map(value => Option.fromNullishOr(f(value as any, r))),
+        ),
       ),
     )
 

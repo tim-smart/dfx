@@ -6,11 +6,11 @@ import * as Array from "effect/Array"
 import { CommandHelper } from "./commandHelper.ts"
 
 export type DefinitionFlattened<R, E, TE, A> =
-  D.InteractionDefinition<R, E> extends infer D
+  D.InteractionDefinition<R, E> extends infer Def
     ? {
-        [K in keyof D]: K extends "handle"
+        [K in keyof Def]: K extends "handle"
           ? (_: Discord.APIInteraction) => Effect.Effect<A, TE, R>
-          : D[K]
+          : Def[K]
       }
     : never
 
