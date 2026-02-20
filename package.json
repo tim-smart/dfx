@@ -34,7 +34,7 @@
     "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "effect": "4.0.0-beta.4"
+    "effect": "4.0.0-beta.6"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -49,7 +49,7 @@
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.8.9",
     "@effect/language-service": "^0.74.0",
-    "@effect/platform-node": "4.0.0-beta.4",
+    "@effect/platform-node": "4.0.0-beta.6",
     "@tim-smart/openapi-gen": "^1.0.0",
     "@types/chai": "^5.2.3",
     "@types/node": "^25.2.3",
@@ -59,7 +59,7 @@
     "babel-plugin-annotate-pure-calls": "^0.5.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
-    "effect": "4.0.0-beta.4",
+    "effect": "4.0.0-beta.6",
     "husky": "^9.1.7",
     "lerna": "^9.0.4",
     "lint-staged": "^16.2.7",

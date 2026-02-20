@@ -2,7 +2,7 @@ import { NodeHttpClient, NodeRuntime, NodeSocket } from "@effect/platform-node"
 import { Discord, DiscordConfig, Ix, UI } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import Dotenv from "dotenv"
-import { Config, Effect, Layer, Logger } from "effect"
+import { Config, Effect, Layer } from "effect"
 
 Dotenv.config()
 
