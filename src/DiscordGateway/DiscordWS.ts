@@ -9,6 +9,8 @@ import * as Queue from "effect/Queue"
 import * as Socket from "effect/unstable/socket/Socket"
 import type * as Scope from "effect/Scope"
 import { CurrentLoggers } from "effect/Logger"
+import * as LogLevel from "effect/LogLevel"
+import { MinimumLogLevel } from "effect/References"
 
 export type Message = Discord.GatewayReceivePayload
 export type MessageSend = Discord.GatewaySendPayload | Reconnect
@@ -79,6 +81,10 @@ const make = Effect.gen(function* () {
           logWriteError,
         )
       }
+      const traceEnabled = LogLevel.isLessThanOrEqualTo(
+        yield* MinimumLogLevel,
+        "Trace",
+      )
       const loggers = yield* CurrentLoggers
       yield* onConnecting.pipe(
         Effect.andThen(
@@ -86,6 +92,7 @@ const make = Effect.gen(function* () {
             socket.runRaw(_ => {
               const message = encoding.decode(_)
               Queue.offerUnsafe(messages, message)
+              if (!traceEnabled) return
               loggers.forEach(logger => {
                 logger.log({
                   message,

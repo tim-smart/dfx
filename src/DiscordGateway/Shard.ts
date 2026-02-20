@@ -19,6 +19,8 @@ import { constant, constTrue, constVoid } from "effect/Function"
 import * as Queue from "effect/Queue"
 import * as ServiceMap from "effect/ServiceMap"
 import * as PubSub from "effect/PubSub"
+import * as LogLevel from "effect/LogLevel"
+import { MinimumLogLevel } from "effect/References"
 
 const enum Phase {
   Connecting,
@@ -35,6 +37,10 @@ export const make = Effect.gen(function* () {
 
   const connect = Effect.fnUntraced(
     function* (shard: [id: number, count: number]) {
+      const traceEnabled = LogLevel.isLessThanOrEqualTo(
+        yield* MinimumLogLevel,
+        "Trace",
+      )
       const reconnectHandle = yield* FiberHandle.make()
       let phase = Phase.Connecting
       const stateStore = shardState.forShard(shard)
@@ -49,6 +55,7 @@ export const make = Effect.gen(function* () {
       const setPhase = (p: Phase): Effect.Effect<void> =>
         Effect.suspend(() => {
           phase = p
+          if (!traceEnabled) return Effect.void
           return Effect.annotateLogs(
             Effect.logTrace("phase transition"),
             "phase",

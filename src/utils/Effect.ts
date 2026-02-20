@@ -1,33 +1,40 @@
-import { pipe } from "effect/Function"
+import { constant, constTrue } from "effect/Function"
 import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
-import type * as Fiber from "effect/Fiber"
+import * as Fiber from "effect/Fiber"
 import * as PubSub from "effect/PubSub"
+import * as Scope from "effect/Scope"
+import * as Exit from "effect/Exit"
 
 export const subscribeForEachPar = <R, E, A, X>(
   self: PubSub.PubSub<A>,
   effect: (_: A) => Effect.Effect<X, E, R>,
 ): Effect.Effect<never, E, R> =>
-  Effect.flatMap(Deferred.make<never, E>(), deferred => {
-    const run = pipe(
-      PubSub.subscribe(self),
-      Effect.flatMap(queue =>
-        Effect.forever(
-          Effect.flatMap(PubSub.take(queue), a =>
-            Effect.forkChild(
-              Effect.catchCause(effect(a), cause =>
-                Deferred.failCause(deferred, cause),
-              ),
-            ),
-          ),
-          { disableYield: true },
-        ),
-      ),
-      Effect.scoped,
-    )
-
-    return Effect.raceFirst(run, Deferred.await(deferred))
-  })
+  Effect.scopedWith(
+    Effect.fnUntraced(function* (scope) {
+      const deferred = yield* Deferred.make<never, E>()
+      const sub = yield* PubSub.subscribe(self).pipe(Scope.provide(scope))
+      const services = yield* Effect.services<R>()
+      const runFork = Effect.runForkWith(services)
+      const track = Fiber.runIn(scope)
+      function onExit(exit: Exit.Exit<X, E>) {
+        if (Exit.isFailure(exit)) {
+          Deferred.doneUnsafe(deferred, exit as Exit.Exit<never, E>)
+        }
+      }
+      yield* Effect.whileLoop<[A, ...A[]], never, never>({
+        while: constTrue,
+        body: constant(PubSub.takeAll(sub)),
+        step(items) {
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i]
+            track(runFork(effect(item))).addObserver(onExit)
+          }
+        },
+      }).pipe(Effect.raceFirst(Deferred.await(deferred)))
+      return yield* Effect.never
+    }),
+  )
 
 export const foreverSwitch = <R, E, A, R1, E1, X>(
   self: Effect.Effect<A, E, R>,
