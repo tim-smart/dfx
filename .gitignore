@@ -8,3 +8,4 @@ build/
 src/version.ts
 .direnv/
 /tmp/
+.lalph/
