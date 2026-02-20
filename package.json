@@ -76,7 +76,7 @@
     "vite": "^7.3.1",
     "vitest": "4.0.18"
   },
-  "gitHead": "d3bf27e7ab929115456419bd2cd082ff0018a08e",
+  "gitHead": "c07904c6f8f6c7b887a7e5cd348571d9dd7d498d",
   "dependencies": {
     "discord-api-types": "^0.38.39"
   },
