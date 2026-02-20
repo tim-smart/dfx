@@ -1,0 +1,2 @@
+pnpm check
+lint-staged

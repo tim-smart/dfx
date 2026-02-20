@@ -27,11 +27,13 @@
     "build-pack": "concurrently \"pnpm build-cjs\" \"pnpm build-mjs\" && pnpm build-post",
     "build-all": "tsc -b tsconfig.json",
     "build-watch": "tsc -b tsconfig.json --watch",
+    "check": "pnpm lint && pnpm tsgo -b tsconfig.json",
     "lint": "oxlint src test examples",
     "autofix": "pnpm lint --fix",
     "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "prepare": "husky && effect-language-service patch"
   },
   "peerDependencies": {
     "effect": "4.0.0-beta.6"
@@ -54,6 +56,7 @@
     "@types/chai": "^5.2.3",
     "@types/node": "^25.2.3",
     "@types/ws": "^8.18.1",
+    "@typescript/native-preview": "7.0.0-dev.20260219.1",
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-v8": "^4.0.18",
     "babel-plugin-annotate-pure-calls": "^0.5.0",
@@ -76,5 +79,14 @@
   "gitHead": "d3bf27e7ab929115456419bd2cd082ff0018a08e",
   "dependencies": {
     "discord-api-types": "^0.38.39"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "oxlint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
