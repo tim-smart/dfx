@@ -36,7 +36,7 @@
     "prepare": "husky && effect-language-service patch"
   },
   "peerDependencies": {
-    "effect": "4.0.0-beta.13"
+    "effect": "4.0.0-beta.14"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -62,7 +62,7 @@
     "babel-plugin-annotate-pure-calls": "^0.5.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
-    "effect": "4.0.0-beta.13",
+    "effect": "4.0.0-beta.14",
     "husky": "^9.1.7",
     "lerna": "^9.0.4",
     "lint-staged": "^16.2.7",
@@ -76,7 +76,7 @@
     "vite": "^7.3.1",
     "vitest": "4.0.18"
   },
-  "gitHead": "8f299caa1306c17bef8fa3bd2528bda36e55c462",
+  "gitHead": "0d54571712ab8f506ebf334bff7f5c1db42c354a",
   "dependencies": {
     "discord-api-types": "^0.38.40"
   },
