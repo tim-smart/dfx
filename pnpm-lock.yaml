@@ -114,7 +114,6 @@ importers:
       discord-verify:
         specifier: ^1.2.0
         version: 1.2.0
-    publishDirectory: dist
 
 packages:
   "@babel/cli@7.28.6":
