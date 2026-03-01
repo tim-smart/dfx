@@ -42,8 +42,8 @@ importers:
         specifier: 4.0.0-beta.21
         version: 4.0.0-beta.21(effect@4.0.0-beta.21)(ioredis@5.9.3)
       "@tim-smart/openapi-gen":
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.0.3
+        version: 1.0.3
       "@types/chai":
         specifier: ^5.2.3
         version: 5.2.3
@@ -1886,10 +1886,10 @@ packages:
         integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==,
       }
 
-  "@tim-smart/openapi-gen@1.0.2":
+  "@tim-smart/openapi-gen@1.0.3":
     resolution:
       {
-        integrity: sha512-74vi+9w/bHR4SH34OIFkSuTbJAS/fMPnwgrUuEQM8OgoLdoNrTSSc25YLDjQyOrw9CwXywJ05K4PaAOoSMIFGg==,
+        integrity: sha512-OHt+2gdWaAq/fxOoZqQx6tYRRVeDPvrFy38fb5kDonx2hXC/PWRoHbmsCKZByd6ftmm0msdMevTL8XzGvUEB3Q==,
       }
     hasBin: true
 
@@ -8325,7 +8325,7 @@ snapshots:
 
   "@standard-schema/spec@1.1.0": {}
 
-  "@tim-smart/openapi-gen@1.0.2":
+  "@tim-smart/openapi-gen@1.0.3":
     dependencies:
       yaml: 2.8.2
 
