@@ -10805,28 +10805,30 @@ export interface DiscordRest {
   >
 }
 
-export interface DiscordRestError<Tag extends string, E> {
+export interface DiscordRestError<Tag extends string, E> extends Error {
   readonly _tag: Tag
   readonly request: HttpClientRequest.HttpClientRequest
   readonly response: HttpClientResponse.HttpClientResponse
-  readonly cause: E
+  readonly data: E
 }
 
 class DiscordRestErrorImpl extends Data.Error<{
   _tag: string
-  cause: any
+  data: any
   request: HttpClientRequest.HttpClientRequest
   response: HttpClientResponse.HttpClientResponse
+  cause: unknown
 }> {}
 
 export const DiscordRestError = <Tag extends string, E>(
   tag: Tag,
-  cause: E,
+  data: E,
   response: HttpClientResponse.HttpClientResponse,
 ): DiscordRestError<Tag, E> =>
   new DiscordRestErrorImpl({
     _tag: tag,
-    cause,
+    data,
+    cause: new Error(JSON.stringify(data)),
     response,
     request: response.request,
   }) as any
