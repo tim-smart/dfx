@@ -41,7 +41,7 @@ const make = Effect.gen(function* () {
   const addBadRoute = (route: string) =>
     Effect.suspend(() => {
       badRoutes.add(route)
-      return Effect.log("bad route")
+      return Effect.logDebug("bad route")
     }).pipe(
       Effect.andThen(
         store.incrementCounter("dfx.rest.invalid", tenMinutesMillis, 10000),
