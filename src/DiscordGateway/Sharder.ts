@@ -15,7 +15,7 @@ import * as Schedule from "effect/Schedule"
 import * as ServiceMap from "effect/ServiceMap"
 
 const claimRepeatPolicy = Schedule.identity<Option.Option<number>>().pipe(
-  Schedule.either(Schedule.spaced("3 minutes")),
+  Schedule.both(Schedule.spaced("3 minutes")),
   Schedule.while(_ => Effect.succeed(_.input._tag === "None")),
   Schedule.passthrough,
 ) as Schedule.Schedule<Option.Some<number>, Option.Option<number>>

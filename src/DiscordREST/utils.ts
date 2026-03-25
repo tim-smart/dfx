@@ -21,7 +21,6 @@ export const routeFromConfig = (path: string, method: string) => {
 export const numberHeader = (headers: Headers.Headers) => (key: string) =>
   pipe(
     Headers.get(headers, key),
-    Option.fromUndefinedOr,
     Option.map(parseFloat),
     Option.filter(n => !isNaN(n)),
   )
@@ -34,7 +33,7 @@ export const retryAfter = (headers: Headers.Headers) =>
 
 export const rateLimitFromHeaders = (headers: Headers.Headers) =>
   Option.all({
-    bucket: Option.fromUndefinedOr(Headers.get(headers, "x-ratelimit-bucket")),
+    bucket: Headers.get(headers, "x-ratelimit-bucket"),
     retryAfter: retryAfter(headers),
     limit: numberHeader(headers)("x-ratelimit-limit"),
     remaining: numberHeader(headers)("x-ratelimit-remaining"),

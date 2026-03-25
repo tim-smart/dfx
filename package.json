@@ -44,7 +44,7 @@
     "prepare": "husky && effect-language-service patch"
   },
   "peerDependencies": {
-    "effect": "4.0.0-beta.22"
+    "effect": "4.0.0-beta.40"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -59,7 +59,7 @@
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.8.9",
     "@effect/language-service": "^0.77.0",
-    "@effect/platform-node": "4.0.0-beta.22",
+    "@effect/platform-node": "4.0.0-beta.40",
     "@tim-smart/openapi-gen": "^1.0.3",
     "@types/chai": "^5.2.3",
     "@types/node": "^25.3.3",
@@ -70,7 +70,7 @@
     "babel-plugin-annotate-pure-calls": "^0.5.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
-    "effect": "4.0.0-beta.22",
+    "effect": "4.0.0-beta.40",
     "husky": "^9.1.7",
     "lerna": "^9.0.4",
     "lint-staged": "^16.3.0",
@@ -84,7 +84,7 @@
     "vite": "^7.3.1",
     "vitest": "4.0.18"
   },
-  "gitHead": "72e3d9162fa75a95672a698a62a34c141b3870a3",
+  "gitHead": "ccfbdaa6f1bb9f7be627c82d422c64f31813813e",
   "dependencies": {
     "discord-api-types": "^0.38.40"
   },
