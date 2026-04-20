@@ -44,7 +44,7 @@
     "prepare": "husky && effect-language-service patch"
   },
   "peerDependencies": {
-    "effect": "4.0.0-beta.52"
+    "effect": ">=4.0.0-beta.52 <5.0.0"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
