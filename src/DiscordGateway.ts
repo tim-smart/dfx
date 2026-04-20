@@ -13,7 +13,7 @@ import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import type * as Stream from "effect/Stream"
 import type { HttpClient } from "effect/unstable/http/HttpClient"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
 export const TypeId = Symbol.for("dfx/DiscordGateway")
 export type TypeId = typeof TypeId
@@ -46,7 +46,7 @@ export interface DiscordGateway {
 }
 
 export const DiscordGateway =
-  ServiceMap.Service<DiscordGateway>("dfx/DiscordGateway")
+  Context.Service<DiscordGateway>("dfx/DiscordGateway")
 
 export const make: Effect.Effect<DiscordGateway, never, Messsaging | Sharder> =
   Effect.gen(function* () {

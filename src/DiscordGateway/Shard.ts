@@ -17,7 +17,7 @@ import type * as Types from "effect/Types"
 import * as FiberHandle from "effect/FiberHandle"
 import { constant, constTrue, constVoid } from "effect/Function"
 import * as Queue from "effect/Queue"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 import * as PubSub from "effect/PubSub"
 import * as LogLevel from "effect/LogLevel"
 import { MinimumLogLevel } from "effect/References"
@@ -190,7 +190,7 @@ export const make = Effect.gen(function* () {
 
 type ShardService = Effect.Success<typeof make>
 
-export class Shard extends ServiceMap.Service<Shard, ShardService>()(
+export class Shard extends Context.Service<Shard, ShardService>()(
   "dfx/DiscordGateway/Shard",
 ) {}
 export const ShardLive = Layer.effect(Shard, make).pipe(

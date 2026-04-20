@@ -5,7 +5,7 @@ import * as Stream from "effect/Stream"
 import type * as Discord from "../types.ts"
 import * as EffectUtils from "../utils/Effect.ts"
 import * as Queue from "effect/Queue"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
 const fromDispatchFactory =
   <R, E>(source: Stream.Stream<Discord.GatewayReceivePayload, E, R>) =>
@@ -63,7 +63,7 @@ export const make = Effect.gen(function* () {
   } as const
 })
 
-export class Messaging extends ServiceMap.Service<Messaging>()(
+export class Messaging extends Context.Service<Messaging>()(
   "dfx/DiscordGateway/Messaging",
   { make },
 ) {}

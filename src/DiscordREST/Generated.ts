@@ -203,6 +203,281 @@ export interface ApplicationOAuth2InstallParamsResponse {
   readonly permissions: string
 }
 
+export const ApplicationEventWebhooksStatus = {
+  /**
+   * Webhook events are disabled by developer
+   */
+  DISABLED: 1,
+  /**
+   * Webhook events are enabled by developer
+   */
+  ENABLED: 2,
+  /**
+   * Webhook events are disabled by Discord, usually due to inactivity
+   */
+  DISABLED_BY_DISCORD: 3,
+} as const
+export type ApplicationEventWebhooksStatus =
+  (typeof ApplicationEventWebhooksStatus)[keyof typeof ApplicationEventWebhooksStatus]
+
+export const ActionTypes = {
+  /**
+   * User started typing in a channel
+   */
+  TYPING_START: "TYPING_START",
+  /**
+   * Invite to a channel was created
+   */
+  INVITE_CREATE: "INVITE_CREATE",
+  /**
+   * Invite to a channel was deleted
+   */
+  INVITE_DELETE: "INVITE_DELETE",
+  /**
+   * Guild channel webhook was created, updated, or deleted
+   */
+  WEBHOOKS_UPDATE: "WEBHOOKS_UPDATE",
+  /**
+   * New guild channel created
+   */
+  CHANNEL_CREATE: "CHANNEL_CREATE",
+  /**
+   * Voice channel status was updated
+   */
+  VOICE_CHANNEL_STATUS_UPDATE: "VOICE_CHANNEL_STATUS_UPDATE",
+  /**
+   * Channel was updated
+   */
+  CHANNEL_UPDATE: "CHANNEL_UPDATE",
+  /**
+   * Channel was deleted
+   */
+  CHANNEL_DELETE: "CHANNEL_DELETE",
+  /**
+   * Message was pinned or unpinned
+   */
+  CHANNEL_PINS_UPDATE: "CHANNEL_PINS_UPDATE",
+  /**
+   * Thread created, also sent when being added to a private thread
+   */
+  THREAD_CREATE: "THREAD_CREATE",
+  /**
+   * Thread was updated
+   */
+  THREAD_UPDATE: "THREAD_UPDATE",
+  /**
+   * Thread was deleted
+   */
+  THREAD_DELETE: "THREAD_DELETE",
+  /**
+   * Sent when gaining access to a channel, contains all active threads in that channel
+   */
+  THREAD_LIST_SYNC: "THREAD_LIST_SYNC",
+  /**
+   * Thread member for the current user was updated
+   */
+  THREAD_MEMBER_UPDATE: "THREAD_MEMBER_UPDATE",
+  /**
+   * Some user(s) were added to or removed from a thread
+   */
+  THREAD_MEMBERS_UPDATE: "THREAD_MEMBERS_UPDATE",
+  /**
+   * Lazy-load for unavailable guild, guild became available, or user joined a new guild
+   */
+  GUILD_CREATE: "GUILD_CREATE",
+  /**
+   * Guild was updated
+   */
+  GUILD_UPDATE: "GUILD_UPDATE",
+  /**
+   * Guild became unavailable, or user left/was removed from a guild
+   */
+  GUILD_DELETE: "GUILD_DELETE",
+  /**
+   * Guild emojis were updated
+   */
+  GUILD_EMOJIS_UPDATE: "GUILD_EMOJIS_UPDATE",
+  /**
+   * Guild stickers were updated
+   */
+  GUILD_STICKERS_UPDATE: "GUILD_STICKERS_UPDATE",
+  /**
+   * Guild integration was updated
+   */
+  GUILD_INTEGRATIONS_UPDATE: "GUILD_INTEGRATIONS_UPDATE",
+  /**
+   * New user joined a guild
+   */
+  GUILD_MEMBER_ADD: "GUILD_MEMBER_ADD",
+  /**
+   * Guild member was updated
+   */
+  GUILD_MEMBER_UPDATE: "GUILD_MEMBER_UPDATE",
+  /**
+   * User was removed from a guild
+   */
+  GUILD_MEMBER_REMOVE: "GUILD_MEMBER_REMOVE",
+  /**
+   * User was banned from a guild
+   */
+  GUILD_BAN_ADD: "GUILD_BAN_ADD",
+  /**
+   * User was unbanned from a guild
+   */
+  GUILD_BAN_REMOVE: "GUILD_BAN_REMOVE",
+  /**
+   * Guild role was created
+   */
+  GUILD_ROLE_CREATE: "GUILD_ROLE_CREATE",
+  /**
+   * Guild role was updated
+   */
+  GUILD_ROLE_UPDATE: "GUILD_ROLE_UPDATE",
+  /**
+   * Guild role was deleted
+   */
+  GUILD_ROLE_DELETE: "GUILD_ROLE_DELETE",
+  /**
+   * Response to Request Guild Members
+   */
+  GUILD_MEMBERS_CHUNK: "GUILD_MEMBERS_CHUNK",
+  /**
+   * Message was created
+   */
+  MESSAGE_CREATE: "MESSAGE_CREATE",
+  /**
+   * Message was edited
+   */
+  MESSAGE_UPDATE: "MESSAGE_UPDATE",
+  /**
+   * Message was deleted
+   */
+  MESSAGE_DELETE: "MESSAGE_DELETE",
+  /**
+   * Multiple messages were deleted at once
+   */
+  MESSAGE_DELETE_BULK: "MESSAGE_DELETE_BULK",
+  /**
+   * User reacted to a message
+   */
+  MESSAGE_REACTION_ADD: "MESSAGE_REACTION_ADD",
+  /**
+   * User removed a reaction from a message
+   */
+  MESSAGE_REACTION_REMOVE: "MESSAGE_REACTION_REMOVE",
+  /**
+   * All reactions were explicitly removed from a message
+   */
+  MESSAGE_REACTION_REMOVE_ALL: "MESSAGE_REACTION_REMOVE_ALL",
+  /**
+   * All reactions for a given emoji were explicitly removed from a message
+   */
+  MESSAGE_REACTION_REMOVE_EMOJI: "MESSAGE_REACTION_REMOVE_EMOJI",
+  /**
+   * Properties about the user changed
+   */
+  USER_UPDATE: "USER_UPDATE",
+  /**
+   * Contains the initial state information
+   */
+  READY: "READY",
+  /**
+   * Response to Resume
+   */
+  RESUMED: "RESUMED",
+  /**
+   * User was updated
+   */
+  PRESENCE_UPDATE: "PRESENCE_UPDATE",
+  /**
+   * Someone joined, left, or moved a voice channel
+   */
+  VOICE_STATE_UPDATE: "VOICE_STATE_UPDATE",
+  /**
+   * Guild's voice server was updated
+   */
+  VOICE_SERVER_UPDATE: "VOICE_SERVER_UPDATE",
+  /**
+   * User used an interaction, such as an Application Command
+   */
+  INTERACTION_CREATE: "INTERACTION_CREATE",
+  /**
+   * Guild integration was created
+   */
+  INTEGRATION_CREATE: "INTEGRATION_CREATE",
+  /**
+   * Guild integration was updated
+   */
+  INTEGRATION_UPDATE: "INTEGRATION_UPDATE",
+  /**
+   * Guild integration was deleted
+   */
+  INTEGRATION_DELETE: "INTEGRATION_DELETE",
+  /**
+   * Application command permission was updated
+   */
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE:
+    "APPLICATION_COMMAND_PERMISSIONS_UPDATE",
+  /**
+   * Stage instance was created
+   */
+  STAGE_INSTANCE_CREATE: "STAGE_INSTANCE_CREATE",
+  /**
+   * Stage instance was updated
+   */
+  STAGE_INSTANCE_UPDATE: "STAGE_INSTANCE_UPDATE",
+  /**
+   * Stage instance was deleted or closed
+   */
+  STAGE_INSTANCE_DELETE: "STAGE_INSTANCE_DELETE",
+  /**
+   * A guild audit log entry was created
+   */
+  GUILD_AUDIT_LOG_ENTRY_CREATE: "GUILD_AUDIT_LOG_ENTRY_CREATE",
+  /**
+   * Guild scheduled event was created
+   */
+  GUILD_SCHEDULED_EVENT_CREATE: "GUILD_SCHEDULED_EVENT_CREATE",
+  /**
+   * Guild scheduled event was updated
+   */
+  GUILD_SCHEDULED_EVENT_UPDATE: "GUILD_SCHEDULED_EVENT_UPDATE",
+  /**
+   * Guild scheduled event was deleted
+   */
+  GUILD_SCHEDULED_EVENT_DELETE: "GUILD_SCHEDULED_EVENT_DELETE",
+  /**
+   * User subscribed to a guild scheduled event
+   */
+  GUILD_SCHEDULED_EVENT_USER_ADD: "GUILD_SCHEDULED_EVENT_USER_ADD",
+  /**
+   * User unsubscribed from a guild scheduled event
+   */
+  GUILD_SCHEDULED_EVENT_USER_REMOVE: "GUILD_SCHEDULED_EVENT_USER_REMOVE",
+  /**
+   * Auto Moderation rule was created
+   */
+  AUTO_MODERATION_RULE_CREATE: "AUTO_MODERATION_RULE_CREATE",
+  /**
+   * Auto Moderation rule was updated
+   */
+  AUTO_MODERATION_RULE_UPDATE: "AUTO_MODERATION_RULE_UPDATE",
+  /**
+   * Auto Moderation rule was deleted
+   */
+  AUTO_MODERATION_RULE_DELETE: "AUTO_MODERATION_RULE_DELETE",
+  /**
+   * Auto Moderation rule was triggered and an action was executed (.e.g. a message was blocked)
+   */
+  AUTO_MODERATION_ACTION_EXECUTION: "AUTO_MODERATION_ACTION_EXECUTION",
+  GUILD_SOUNDBOARD_SOUNDS_UPDATE: "GUILD_SOUNDBOARD_SOUNDS_UPDATE",
+  GUILD_SOUNDBOARD_SOUND_CREATE: "GUILD_SOUNDBOARD_SOUND_CREATE",
+  GUILD_SOUNDBOARD_SOUND_UPDATE: "GUILD_SOUNDBOARD_SOUND_UPDATE",
+  GUILD_SOUNDBOARD_SOUND_DELETE: "GUILD_SOUNDBOARD_SOUND_DELETE",
+  RATE_LIMITED: "RATE_LIMITED",
+} as const
+export type ActionTypes = (typeof ActionTypes)[keyof typeof ActionTypes]
+
 export const ApplicationExplicitContentFilterTypes = {
   /**
    * inherit guild content filter setting
@@ -229,10 +504,29 @@ export const TeamMembershipStates = {
 export type TeamMembershipStates =
   (typeof TeamMembershipStates)[keyof typeof TeamMembershipStates]
 
+export const TeamMemberRoles = {
+  /**
+   * Admins have similar access as owners, except they cannot take destructive actions on the team or team-owned apps.
+   */
+  ADMIN: "admin",
+  /**
+   * Developers can access information about team-owned apps, like the client secret or public key. They can also take limited actions on team-owned apps, like configuring interaction endpoints or resetting the bot token. Members with the Developer role cannot manage the team or its members, or take destructive actions on team-owned apps.
+   */
+  DEVELOPER: "developer",
+  /**
+   * Read-only members can access information about a team and any team-owned apps. Some examples include getting the IDs of applications and exporting payout records. Members can also invite bots associated with team-owned apps that are marked private.
+   */
+  READ_ONLY: "read_only",
+} as const
+export type TeamMemberRoles =
+  (typeof TeamMemberRoles)[keyof typeof TeamMemberRoles]
+
 export interface TeamMemberResponse {
   readonly user: UserResponse
   readonly team_id: SnowflakeType
   readonly membership_state: TeamMembershipStates
+  readonly role: TeamMemberRoles
+  readonly permissions: ReadonlyArray<string>
 }
 
 export interface TeamResponse {
@@ -270,9 +564,12 @@ export interface PrivateApplicationResponse {
   readonly interactions_endpoint_url: string | null
   readonly role_connections_verification_url: string | null
   readonly owner: UserResponse
-  readonly approximate_guild_count: number | null
+  readonly approximate_guild_count: number
   readonly approximate_user_install_count: number
   readonly approximate_user_authorization_count: number
+  readonly event_webhooks_url?: string | null | undefined
+  readonly event_webhooks_status?: ApplicationEventWebhooksStatus | undefined
+  readonly event_webhooks_types?: ReadonlyArray<any> | undefined
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team: TeamResponse | null
 }
@@ -369,6 +666,9 @@ export interface ApplicationFormPartial {
   readonly install_params?: ApplicationOAuth2InstallParams | null | undefined
   readonly role_connections_verification_url?: string | null | undefined
   readonly integration_types_config?: Record<string, unknown> | null | undefined
+  readonly event_webhooks_status?: 1 | 2 | null | undefined
+  readonly event_webhooks_url?: string | null | undefined
+  readonly event_webhooks_types?: ReadonlyArray<string> | null | undefined
 }
 
 export const EmbeddedActivityLocationKind = {
@@ -438,6 +738,16 @@ export interface ApplicationResponse {
   readonly tags?: ReadonlyArray<string> | undefined
 }
 
+export interface ClipSpeakingEventResponse {
+  readonly user_id: SnowflakeType
+  readonly speaking_flags: number
+}
+
+export interface ClipEventTimelineEntryResponse {
+  readonly timestamp_ms: number
+  readonly speaking?: ClipSpeakingEventResponse | undefined
+}
+
 export interface AttachmentResponse {
   readonly id: SnowflakeType
   readonly filename: string
@@ -451,10 +761,16 @@ export interface AttachmentResponse {
   readonly description?: string | undefined
   readonly content_type?: string | undefined
   readonly ephemeral?: boolean | undefined
+  readonly flags?: number | undefined
+  readonly placeholder?: string | undefined
+  readonly placeholder_version?: number | undefined
   readonly title?: string | null | undefined
   readonly application?: ApplicationResponse | undefined
   readonly clip_created_at?: string | undefined
   readonly clip_participants?: ReadonlyArray<UserResponse> | undefined
+  readonly clip_events_timeline?:
+    | ReadonlyArray<ClipEventTimelineEntryResponse>
+    | undefined
 }
 
 export interface ActivitiesAttachmentResponse {
@@ -1235,20 +1551,20 @@ export interface EntitlementResponse {
   readonly user_id: SnowflakeType
   readonly guild_id?: SnowflakeType | null | undefined
   readonly deleted: boolean
-  readonly starts_at?: string | null | undefined
-  readonly ends_at?: string | null | undefined
+  readonly starts_at: string | null
+  readonly ends_at: string | null
   readonly type: EntitlementTypes
   readonly fulfilled_at?: string | null | undefined
   readonly fulfillment_status?:
     | EntitlementTenantFulfillmentStatusResponse
     | null
     | undefined
-  readonly consumed?: boolean | null | undefined
+  readonly consumed?: boolean | undefined
   readonly gifter_user_id?: SnowflakeType | null | undefined
   readonly parent_id?: SnowflakeType | null | undefined
 }
 
-export type GetEntitlements200 = ReadonlyArray<null | EntitlementResponse>
+export type GetEntitlements200 = ReadonlyArray<EntitlementResponse>
 
 export type EntitlementOwnerTypes = number
 
@@ -1444,8 +1760,8 @@ export interface ForumTagResponse {
 }
 
 export interface DefaultReactionEmojiResponse {
-  readonly emoji_id?: SnowflakeType | null | undefined
-  readonly emoji_name?: string | null | undefined
+  readonly emoji_id: SnowflakeType | null
+  readonly emoji_name: string | null
 }
 
 export const ThreadSortOrder = {
@@ -1504,7 +1820,7 @@ export interface GuildChannelResponse {
   readonly user_limit?: number | undefined
   readonly rtc_region?: string | null | undefined
   readonly video_quality_mode?: VideoQualityModes | undefined
-  readonly permissions?: string | null | undefined
+  readonly permissions?: string | undefined
   readonly topic?: string | null | undefined
   readonly default_auto_archive_duration?: ThreadAutoArchiveDuration | undefined
   readonly default_thread_rate_limit_per_user?: number | undefined
@@ -1519,7 +1835,7 @@ export interface GuildChannelResponse {
     | null
     | undefined
   readonly default_sort_order?: ThreadSortOrder | null | undefined
-  readonly default_forum_layout?: ForumLayout | null | undefined
+  readonly default_forum_layout?: ForumLayout | undefined
   readonly default_tag_setting?: ThreadSearchTagSetting | null | undefined
   readonly hd_streaming_until?: string | undefined
   readonly hd_streaming_buyer_id?: SnowflakeType | undefined
@@ -1599,7 +1915,7 @@ export interface ThreadResponse {
   readonly user_limit?: number | undefined
   readonly rtc_region?: string | null | undefined
   readonly video_quality_mode?: VideoQualityModes | undefined
-  readonly permissions?: string | null | undefined
+  readonly permissions?: string | undefined
   readonly owner_id: SnowflakeType
   readonly thread_metadata: ThreadMetadataResponse
   readonly message_count: number
@@ -1878,6 +2194,10 @@ export const GuildFeatures = {
    * guild has enabled the welcome screen
    */
   WELCOME_SCREEN_ENABLED: "WELCOME_SCREEN_ENABLED",
+  /**
+   * guild is an official guild for one or more games
+   */
+  OFFICIAL_GAME_GUILD: "OFFICIAL_GAME_GUILD",
 } as const
 export type GuildFeatures = (typeof GuildFeatures)[keyof typeof GuildFeatures]
 
@@ -2139,10 +2459,16 @@ export interface MessageAttachmentResponse {
   readonly description?: string | undefined
   readonly content_type?: string | undefined
   readonly ephemeral?: boolean | undefined
+  readonly flags?: number | undefined
+  readonly placeholder?: string | undefined
+  readonly placeholder_version?: number | undefined
   readonly title?: string | null | undefined
   readonly application?: ApplicationResponse | undefined
   readonly clip_created_at?: string | undefined
   readonly clip_participants?: ReadonlyArray<UserResponse> | undefined
+  readonly clip_events_timeline?:
+    | ReadonlyArray<ClipEventTimelineEntryResponse>
+    | undefined
 }
 
 export interface MessageEmbedFieldResponse {
@@ -2193,22 +2519,6 @@ export interface MessageEmbedFooterResponse {
   readonly text: string
   readonly icon_url?: string | undefined
   readonly proxy_icon_url?: string | undefined
-}
-
-export interface MessageEmbedResponse {
-  readonly type: string
-  readonly url?: string | undefined
-  readonly title?: string | undefined
-  readonly description?: string | undefined
-  readonly color?: number | undefined
-  readonly timestamp?: string | undefined
-  readonly fields?: ReadonlyArray<MessageEmbedFieldResponse> | undefined
-  readonly author?: MessageEmbedAuthorResponse | undefined
-  readonly provider?: MessageEmbedProviderResponse | undefined
-  readonly image?: MessageEmbedImageResponse | undefined
-  readonly thumbnail?: MessageEmbedImageResponse | undefined
-  readonly video?: MessageEmbedVideoResponse | undefined
-  readonly footer?: MessageEmbedFooterResponse | undefined
 }
 
 export const MessageComponentTypes = {
@@ -2343,8 +2653,8 @@ export interface ChannelSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values: number | null
-  readonly max_values: number | null
+  readonly min_values: number
+  readonly max_values: number
   readonly disabled?: boolean | undefined
   readonly channel_types?: ReadonlyArray<ChannelTypes> | undefined
   readonly default_values?:
@@ -2367,8 +2677,8 @@ export interface MentionableSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values: number | null
-  readonly max_values: number | null
+  readonly min_values: number
+  readonly max_values: number
   readonly disabled?: boolean | undefined
   readonly default_values?:
     | ReadonlyArray<
@@ -2382,8 +2692,8 @@ export interface RoleSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values: number | null
-  readonly max_values: number | null
+  readonly min_values: number
+  readonly max_values: number
   readonly disabled?: boolean | undefined
   readonly default_values?:
     | ReadonlyArray<RoleSelectDefaultValueResponse>
@@ -2403,8 +2713,8 @@ export interface StringSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values: number | null
-  readonly max_values: number | null
+  readonly min_values: number
+  readonly max_values: number
   readonly disabled?: boolean | undefined
   readonly options: ReadonlyArray<StringSelectOptionResponse>
 }
@@ -2440,8 +2750,8 @@ export interface UserSelectComponentResponse {
   readonly id: number
   readonly custom_id: string
   readonly placeholder?: string | undefined
-  readonly min_values: number | null
-  readonly max_values: number | null
+  readonly min_values: number
+  readonly max_values: number
   readonly disabled?: boolean | undefined
   readonly default_values?:
     | ReadonlyArray<UserSelectDefaultValueResponse>
@@ -2549,6 +2859,24 @@ export interface ContainerComponentResponse {
   readonly spoiler: boolean
 }
 
+export interface MessageEmbedResponse {
+  readonly type: string
+  readonly url?: string | undefined
+  readonly title?: string | undefined
+  readonly description?: string | undefined
+  readonly color?: number | undefined
+  readonly timestamp?: string | undefined
+  readonly fields?: ReadonlyArray<MessageEmbedFieldResponse> | undefined
+  readonly author?: MessageEmbedAuthorResponse | undefined
+  readonly provider?: MessageEmbedProviderResponse | undefined
+  readonly image?: MessageEmbedImageResponse | undefined
+  readonly thumbnail?: MessageEmbedImageResponse | undefined
+  readonly video?: MessageEmbedVideoResponse | undefined
+  readonly footer?: MessageEmbedFooterResponse | undefined
+  readonly flags?: number | null | undefined
+  readonly components?: ReadonlyArray<ContainerComponentResponse> | undefined
+}
+
 export const StickerTypes = {
   /**
    * an official sticker in a pack, part of Nitro or in a removed purchasable pack
@@ -2604,7 +2932,20 @@ export interface MessageCallResponse {
   readonly participants: ReadonlyArray<SnowflakeType>
 }
 
-export interface MessageActivityResponse {}
+export const ActivityActionTypes = {
+  JOIN: 1,
+  SPECTATE: 2,
+  LISTEN: 3,
+  JOIN_REQUEST: 5,
+  STREAM_REQUEST: 6,
+} as const
+export type ActivityActionTypes =
+  (typeof ActivityActionTypes)[keyof typeof ActivityActionTypes]
+
+export interface MessageActivityResponse {
+  readonly type: ActivityActionTypes
+  readonly party_id?: string | undefined
+}
 
 export interface BasicApplicationResponse {
   readonly id: SnowflakeType
@@ -2873,12 +3214,12 @@ export interface BasicMessageResponse {
   readonly application?: BasicApplicationResponse | undefined
   readonly application_id?: SnowflakeType | undefined
   readonly interaction?: MessageInteractionResponse | undefined
-  readonly nonce?: number | string | null | undefined
+  readonly nonce?: number | string | undefined
   readonly webhook_id?: SnowflakeType | undefined
   readonly message_reference?: MessageReferenceResponse | undefined
   readonly thread?: ThreadResponse | undefined
   readonly mention_channels?:
-    | ReadonlyArray<null | MessageMentionChannelResponse>
+    | ReadonlyArray<MessageMentionChannelResponse>
     | undefined
   readonly role_subscription_data?:
     | MessageRoleSubscriptionDataResponse
@@ -2887,7 +3228,7 @@ export interface BasicMessageResponse {
   readonly position?: number | undefined
   readonly resolved?: ResolvedObjectsResponse | undefined
   readonly poll?: PollResponse | undefined
-  readonly shared_client_theme?: CustomClientThemeResponse | null | undefined
+  readonly shared_client_theme?: CustomClientThemeResponse | undefined
   readonly interaction_metadata?:
     | ApplicationCommandInteractionMetadataResponse
     | MessageComponentInteractionMetadataResponse
@@ -2932,12 +3273,12 @@ export interface MessageResponse {
   readonly application?: BasicApplicationResponse | undefined
   readonly application_id?: SnowflakeType | undefined
   readonly interaction?: MessageInteractionResponse | undefined
-  readonly nonce?: number | string | null | undefined
+  readonly nonce?: number | string | undefined
   readonly webhook_id?: SnowflakeType | undefined
   readonly message_reference?: MessageReferenceResponse | undefined
   readonly thread?: ThreadResponse | undefined
   readonly mention_channels?:
-    | ReadonlyArray<null | MessageMentionChannelResponse>
+    | ReadonlyArray<MessageMentionChannelResponse>
     | undefined
   readonly role_subscription_data?:
     | MessageRoleSubscriptionDataResponse
@@ -2946,7 +3287,7 @@ export interface MessageResponse {
   readonly position?: number | undefined
   readonly resolved?: ResolvedObjectsResponse | undefined
   readonly poll?: PollResponse | undefined
-  readonly shared_client_theme?: CustomClientThemeResponse | null | undefined
+  readonly shared_client_theme?: CustomClientThemeResponse | undefined
   readonly interaction_metadata?:
     | ApplicationCommandInteractionMetadataResponse
     | MessageComponentInteractionMetadataResponse
@@ -3518,7 +3859,7 @@ export interface CreatedThreadResponse {
   readonly user_limit?: number | undefined
   readonly rtc_region?: string | null | undefined
   readonly video_quality_mode?: VideoQualityModes | undefined
-  readonly permissions?: string | null | undefined
+  readonly permissions?: string | undefined
   readonly owner_id: SnowflakeType
   readonly thread_metadata: ThreadMetadataResponse
   readonly message_count: number
@@ -3587,6 +3928,13 @@ export interface TypingIndicatorResponse {}
 export interface ListMyPrivateArchivedThreadsParams {
   readonly before?: SnowflakeType | undefined
   readonly limit?: number | undefined
+}
+
+export interface UpdateVoiceChannelStatusRequest {
+  /**
+   * The new voice channel status
+   */
+  readonly status?: string | null | undefined
 }
 
 export const WebhookTypes = {
@@ -3901,7 +4249,7 @@ export interface GuildTemplateChannelResponse {
   readonly rate_limit_per_user: number
   readonly parent_id: SnowflakeType | null
   readonly default_auto_archive_duration: ThreadAutoArchiveDuration | null
-  readonly permission_overwrites: ReadonlyArray<null | ChannelPermissionOverwriteResponse>
+  readonly permission_overwrites: ReadonlyArray<ChannelPermissionOverwriteResponse>
   readonly available_tags: ReadonlyArray<GuildTemplateChannelTags> | null
   readonly template: string
   readonly default_reaction_emoji: DefaultReactionEmojiResponse | null
@@ -4006,6 +4354,11 @@ export const PremiumGuildTiers = {
 export type PremiumGuildTiers =
   (typeof PremiumGuildTiers)[keyof typeof PremiumGuildTiers]
 
+export interface GuildIncidentsDataResponse {
+  readonly invites_disabled_until: string | null
+  readonly dms_disabled_until: string | null
+}
+
 export interface GuildWithCountsResponse {
   readonly id: SnowflakeType
   readonly name: string
@@ -4050,6 +4403,7 @@ export interface GuildWithCountsResponse {
   readonly nsfw_level: GuildNSFWContentLevel
   readonly emojis: ReadonlyArray<EmojiResponse>
   readonly stickers: ReadonlyArray<GuildStickerResponse>
+  readonly incidents_data: GuildIncidentsDataResponse | null
   readonly approximate_member_count?: number | null | undefined
   readonly approximate_presence_count?: number | null | undefined
 }
@@ -4128,6 +4482,7 @@ export interface GuildResponse {
   readonly nsfw_level: GuildNSFWContentLevel
   readonly emojis: ReadonlyArray<EmojiResponse>
   readonly stickers: ReadonlyArray<GuildStickerResponse>
+  readonly incidents_data: GuildIncidentsDataResponse | null
 }
 
 export const AuditLogActionTypes = {
@@ -5092,6 +5447,159 @@ export interface UpdateGuildMemberRequest {
   readonly flags?: number | null | undefined
 }
 
+export const SortingMode = {
+  RELEVANCE: "relevance",
+  TIMESTAMP: "timestamp",
+} as const
+export type SortingMode = (typeof SortingMode)[keyof typeof SortingMode]
+
+export const AuthorType = {
+  USER: "user",
+  BOT: "bot",
+  WEBHOOK: "webhook",
+  NO_USER: "-user",
+  NO_BOT: "-bot",
+  NO_WEBHOOK: "-webhook",
+} as const
+export type AuthorType = (typeof AuthorType)[keyof typeof AuthorType]
+
+export const HasOption = {
+  LINK: "link",
+  EMBED: "embed",
+  FILE: "file",
+  IMAGE: "image",
+  VIDEO: "video",
+  SOUND: "sound",
+  STICKER: "sticker",
+  POLL: "poll",
+  SNAPSHOT: "snapshot",
+  NO_LINK: "-link",
+  NO_EMBED: "-embed",
+  NO_FILE: "-file",
+  NO_IMAGE: "-image",
+  NO_VIDEO: "-video",
+  NO_SOUND: "-sound",
+  NO_STICKER: "-sticker",
+  NO_POLL: "-poll",
+  NO_SNAPSHOT: "-snapshot",
+} as const
+export type HasOption = (typeof HasOption)[keyof typeof HasOption]
+
+export const SearchableEmbedType = {
+  IMAGE: "image",
+  VIDEO: "video",
+  GIFV: "gif",
+  SOUND: "sound",
+  ARTICLE: "article",
+} as const
+export type SearchableEmbedType =
+  (typeof SearchableEmbedType)[keyof typeof SearchableEmbedType]
+
+export interface GuildSearchParams {
+  readonly sort_by?: SortingMode | undefined
+  readonly sort_order?: SortingOrder | undefined
+  readonly content?: string | undefined
+  readonly slop?: number | undefined
+  readonly author_id?: ReadonlyArray<SnowflakeType> | undefined
+  readonly author_type?: ReadonlyArray<AuthorType> | undefined
+  readonly mentions?: ReadonlyArray<SnowflakeType> | undefined
+  readonly mentions_role_id?: ReadonlyArray<SnowflakeType> | undefined
+  readonly replied_to_user_id?: ReadonlyArray<SnowflakeType> | undefined
+  readonly replied_to_message_id?: ReadonlyArray<SnowflakeType> | undefined
+  readonly mention_everyone?: boolean | undefined
+  readonly min_id?: SnowflakeType | undefined
+  readonly max_id?: SnowflakeType | undefined
+  readonly limit?: number | undefined
+  readonly offset?: number | undefined
+  readonly has?: ReadonlyArray<HasOption> | undefined
+  readonly link_hostname?: ReadonlyArray<string> | undefined
+  readonly embed_provider?: ReadonlyArray<string> | undefined
+  readonly embed_type?: ReadonlyArray<SearchableEmbedType> | undefined
+  readonly attachment_extension?: ReadonlyArray<string> | undefined
+  readonly attachment_filename?: ReadonlyArray<string> | undefined
+  readonly pinned?: boolean | undefined
+  readonly include_nsfw?: boolean | undefined
+  readonly channel_id?: ReadonlyArray<SnowflakeType> | undefined
+}
+
+export interface SearchMessageResponse {
+  readonly type: MessageType
+  readonly content: string
+  readonly mentions: ReadonlyArray<UserResponse>
+  readonly mention_roles: ReadonlyArray<SnowflakeType>
+  readonly attachments: ReadonlyArray<MessageAttachmentResponse>
+  readonly embeds: ReadonlyArray<MessageEmbedResponse>
+  readonly timestamp: string
+  readonly edited_timestamp: string | null
+  readonly flags: number
+  readonly components: ReadonlyArray<
+    | ActionRowComponentResponse
+    | ContainerComponentResponse
+    | FileComponentResponse
+    | MediaGalleryComponentResponse
+    | SectionComponentResponse
+    | SeparatorComponentResponse
+    | TextDisplayComponentResponse
+  >
+  readonly stickers?:
+    | ReadonlyArray<GuildStickerResponse | StandardStickerResponse>
+    | undefined
+  readonly sticker_items?: ReadonlyArray<MessageStickerItemResponse> | undefined
+  readonly id: SnowflakeType
+  readonly channel_id: SnowflakeType
+  readonly author: UserResponse
+  readonly pinned: boolean
+  readonly mention_everyone: boolean
+  readonly tts: boolean
+  readonly call?: MessageCallResponse | undefined
+  readonly activity?: MessageActivityResponse | undefined
+  readonly application?: BasicApplicationResponse | undefined
+  readonly application_id?: SnowflakeType | undefined
+  readonly interaction?: MessageInteractionResponse | undefined
+  readonly nonce?: number | string | undefined
+  readonly webhook_id?: SnowflakeType | undefined
+  readonly message_reference?: MessageReferenceResponse | undefined
+  readonly thread?: ThreadResponse | undefined
+  readonly mention_channels?:
+    | ReadonlyArray<MessageMentionChannelResponse>
+    | undefined
+  readonly role_subscription_data?:
+    | MessageRoleSubscriptionDataResponse
+    | undefined
+  readonly purchase_notification?: PurchaseNotificationResponse | undefined
+  readonly position?: number | undefined
+  readonly resolved?: ResolvedObjectsResponse | undefined
+  readonly poll?: PollResponse | undefined
+  readonly shared_client_theme?: CustomClientThemeResponse | undefined
+  readonly interaction_metadata?:
+    | ApplicationCommandInteractionMetadataResponse
+    | MessageComponentInteractionMetadataResponse
+    | ModalSubmitInteractionMetadataResponse
+    | undefined
+  readonly message_snapshots?:
+    | ReadonlyArray<MessageSnapshotResponse>
+    | undefined
+  readonly reactions?: ReadonlyArray<MessageReactionResponse> | undefined
+  readonly referenced_message?: BasicMessageResponse | null | undefined
+  readonly hit: boolean
+}
+
+export interface GuildSearchResponse {
+  readonly messages: ReadonlyArray<ReadonlyArray<SearchMessageResponse>>
+  readonly doing_deep_historical_index: boolean
+  readonly total_results: number
+  readonly threads?: ReadonlyArray<ThreadResponse> | null | undefined
+  readonly members?: ReadonlyArray<ThreadMemberResponse> | null | undefined
+  readonly documents_indexed?: number | null | undefined
+}
+
+export interface SearchIndexNotReadyResponse {
+  readonly message: string
+  readonly code: number
+  readonly documents_indexed: number
+  readonly retry_after: number
+}
+
 export interface WelcomeMessageResponse {
   readonly author_ids: ReadonlyArray<SnowflakeType>
   readonly message: string
@@ -5131,8 +5639,8 @@ export interface GuildHomeSettingsResponse {
   readonly guild_id: SnowflakeType
   readonly enabled: boolean
   readonly welcome_message?: WelcomeMessageResponse | undefined
-  readonly new_member_actions: ReadonlyArray<null | NewMemberActionResponse>
-  readonly resource_channels: ReadonlyArray<null | ResourceChannelResponse>
+  readonly new_member_actions: ReadonlyArray<NewMemberActionResponse>
+  readonly resource_channels: ReadonlyArray<ResourceChannelResponse>
 }
 
 export interface OnboardingPromptOptionResponse {
@@ -5167,11 +5675,25 @@ export interface OnboardingPromptResponse {
   readonly type: OnboardingPromptType
 }
 
+export const GuildOnboardingMode = {
+  /**
+   * Only Default Channels considered in constraints
+   */
+  ONBOARDING_DEFAULT: 0,
+  /**
+   * Default Channels and Onboarding Prompts considered in constraints
+   */
+  ONBOARDING_ADVANCED: 1,
+} as const
+export type GuildOnboardingMode =
+  (typeof GuildOnboardingMode)[keyof typeof GuildOnboardingMode]
+
 export interface UserGuildOnboardingResponse {
   readonly guild_id: SnowflakeType
   readonly prompts: ReadonlyArray<OnboardingPromptResponse>
   readonly default_channel_ids: ReadonlyArray<SnowflakeType>
   readonly enabled: boolean
+  readonly mode: GuildOnboardingMode
 }
 
 export interface OnboardingPromptOptionRequest {
@@ -5195,19 +5717,6 @@ export interface UpdateOnboardingPromptRequest {
   readonly id: SnowflakeType
 }
 
-export const GuildOnboardingMode = {
-  /**
-   * Only Default Channels considered in constraints
-   */
-  ONBOARDING_DEFAULT: 0,
-  /**
-   * Default Channels and Onboarding Prompts considered in constraints
-   */
-  ONBOARDING_ADVANCED: 1,
-} as const
-export type GuildOnboardingMode =
-  (typeof GuildOnboardingMode)[keyof typeof GuildOnboardingMode]
-
 export interface UpdateGuildOnboardingRequest {
   readonly prompts?:
     | ReadonlyArray<UpdateOnboardingPromptRequest>
@@ -5223,6 +5732,7 @@ export interface GuildOnboardingResponse {
   readonly prompts: ReadonlyArray<OnboardingPromptResponse>
   readonly default_channel_ids: ReadonlyArray<SnowflakeType>
   readonly enabled: boolean
+  readonly mode: GuildOnboardingMode
 }
 
 export interface GuildPreviewResponse {
@@ -5915,8 +6425,27 @@ export interface PongInteractionCallbackRequest {
   readonly type: 1
 }
 
+export const SKUIneligibilityReason = {
+  /**
+   * Other / catch-all
+   */
+  OTHER: 0,
+  /**
+   * User already owns this SKU or one of its components
+   */
+  OWNS_SKU_OR_BUNDLE_COMPONENT: 1,
+  /**
+   * User account is not on an eligible platform
+   */
+  PLATFORM_RESTRICTION: 2,
+} as const
+export type SKUIneligibilityReason =
+  (typeof SKUIneligibilityReason)[keyof typeof SKUIneligibilityReason]
+
 export interface SocialLayerSKUPurchaseEligibilityCallbackData {
   readonly eligible: boolean
+  readonly ineligible_reason?: SKUIneligibilityReason | null | undefined
+  readonly ineligible_reason_description?: string | null | undefined
 }
 
 export interface SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest {
@@ -6404,10 +6933,10 @@ export interface GetCurrentUserApplicationEntitlementsParams {
 }
 
 export type GetCurrentUserApplicationEntitlements200 =
-  ReadonlyArray<null | EntitlementResponse>
+  ReadonlyArray<EntitlementResponse>
 
 export interface ApplicationUserRoleConnectionResponse {
-  readonly platform_name?: string | null | undefined
+  readonly platform_name?: string | undefined
   readonly platform_username?: string | null | undefined
   readonly metadata?: Record<string, unknown> | undefined
 }
@@ -7559,6 +8088,11 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
+    updateVoiceChannelStatus: (channelId, options) =>
+      HttpClientRequest.put(`/channels/${channelId}/voice-status`).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     listChannelWebhooks: channelId =>
       HttpClientRequest.get(`/channels/${channelId}/webhooks`).pipe(
         onRequest(["2xx"], {
@@ -7847,6 +8381,39 @@ export const make = (
         `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       ).pipe(
         onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    guildSearch: (guildId, options) =>
+      HttpClientRequest.get(`/guilds/${guildId}/messages/search`).pipe(
+        HttpClientRequest.setUrlParams({
+          sort_by: options?.["sort_by"] as any,
+          sort_order: options?.["sort_order"] as any,
+          content: options?.["content"] as any,
+          slop: options?.["slop"] as any,
+          author_id: options?.["author_id"] as any,
+          author_type: options?.["author_type"] as any,
+          mentions: options?.["mentions"] as any,
+          mentions_role_id: options?.["mentions_role_id"] as any,
+          replied_to_user_id: options?.["replied_to_user_id"] as any,
+          replied_to_message_id: options?.["replied_to_message_id"] as any,
+          mention_everyone: options?.["mention_everyone"] as any,
+          min_id: options?.["min_id"] as any,
+          max_id: options?.["max_id"] as any,
+          limit: options?.["limit"] as any,
+          offset: options?.["offset"] as any,
+          has: options?.["has"] as any,
+          link_hostname: options?.["link_hostname"] as any,
+          embed_provider: options?.["embed_provider"] as any,
+          embed_type: options?.["embed_type"] as any,
+          attachment_extension: options?.["attachment_extension"] as any,
+          attachment_filename: options?.["attachment_filename"] as any,
+          pinned: options?.["pinned"] as any,
+          include_nsfw: options?.["include_nsfw"] as any,
+          channel_id: options?.["channel_id"] as any,
+        }),
+        onRequest(["200", "202"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
       ),
     getGuildNewMemberWelcome: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/new-member-welcome`).pipe(
@@ -9460,6 +10027,18 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  /**
+   * Set a voice channel's status.
+   */
+  readonly updateVoiceChannelStatus: (
+    channelId: string,
+    options: UpdateVoiceChannelStatusRequest,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listChannelWebhooks: (
     channelId: string,
   ) => Effect.Effect<
@@ -9793,6 +10372,15 @@ export interface DiscordRest {
     roleId: string,
   ) => Effect.Effect<
     void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  readonly guildSearch: (
+    guildId: string,
+    options?: GuildSearchParams | undefined,
+  ) => Effect.Effect<
+    GuildSearchResponse | SearchIndexNotReadyResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>

@@ -1,7 +1,7 @@
 import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
 export interface ClaimIdContext {
   sharderCount: number
@@ -14,7 +14,7 @@ export interface ShardStoreService {
   heartbeat?: (shardId: number) => Effect.Effect<void>
 }
 
-export class ShardStore extends ServiceMap.Service<
+export class ShardStore extends Context.Service<
   ShardStore,
   ShardStoreService
 >()("dfx/DiscordGateway/ShardStore") {}

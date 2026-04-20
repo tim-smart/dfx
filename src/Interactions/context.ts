@@ -3,33 +3,33 @@ import type * as Discord from "../types.ts"
 import type { NoSuchElementError } from "effect/Cause"
 import * as Data from "effect/Data"
 import * as Effect from "effect/Effect"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
-export class Interaction extends ServiceMap.Service<
+export class Interaction extends Context.Service<
   Interaction,
   Discord.APIInteraction
 >()("dfx/Interactions/Interaction") {}
 export type DiscordInteraction = Interaction
 
-export class ApplicationCommand extends ServiceMap.Service<
+export class ApplicationCommand extends Context.Service<
   ApplicationCommand,
   Discord.APIApplicationCommandInteraction["data"]
 >()("dfx/Interactions/ApplicationCommand") {}
 export type DiscordApplicationCommand = ApplicationCommand
 
-export class MessageComponentData extends ServiceMap.Service<
+export class MessageComponentData extends Context.Service<
   MessageComponentData,
   Discord.APIMessageComponentInteractionData
 >()("dfx/Interactions/MessageComponentData") {}
 export type DiscordMessageComponent = MessageComponentData
 
-export class ModalSubmitData extends ServiceMap.Service<
+export class ModalSubmitData extends Context.Service<
   ModalSubmitData,
   Discord.APIModalSubmission
 >()("dfx/Interactions/ModalSubmitData") {}
 export type DiscordModalSubmit = ModalSubmitData
 
-export class FocusedOptionContext extends ServiceMap.Service<
+export class FocusedOptionContext extends Context.Service<
   FocusedOptionContext,
   Discord.APIApplicationCommandInteractionDataOption
 >()("dfx/Interactions/FocusedOptionContext") {}
@@ -38,7 +38,7 @@ export type DiscordFocusedOption = FocusedOptionContext
 export interface SubCommandContextData {
   readonly command: Discord.APIApplicationCommandInteractionDataSubcommandOption
 }
-export class SubCommandContext extends ServiceMap.Service<
+export class SubCommandContext extends Context.Service<
   SubCommandContext,
   SubCommandContextData
 >()("dfx/Interactions/SubCommandContext") {}

@@ -6,7 +6,7 @@ import type * as Config from "effect/Config"
 import * as Redacted from "effect/Redacted"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 import type * as D from "./definitions.ts"
 import type { DefinitionNotFound } from "./handlers.ts"
 import { handlers } from "./handlers.ts"
@@ -70,7 +70,7 @@ const makeConfig = ({
   algorithm: Verify.PlatformAlgorithm[algorithm],
 })
 
-export class WebhookConfig extends ServiceMap.Service<
+export class WebhookConfig extends Context.Service<
   WebhookConfig,
   ReturnType<typeof makeConfig>
 >()("dfx/Interactions/WebhookConfig") {}

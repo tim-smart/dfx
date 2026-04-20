@@ -12,7 +12,7 @@ import * as Layer from "effect/Layer"
 import type * as Option from "effect/Option"
 import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
 const claimRepeatPolicy = Schedule.identity<Option.Option<number>>().pipe(
   Schedule.both(Schedule.spaced("3 minutes")),
@@ -104,7 +104,7 @@ const make = Effect.gen(function* () {
   }),
 )
 
-export class Sharder extends ServiceMap.Service<
+export class Sharder extends Context.Service<
   Sharder,
   {
     readonly shards: Effect.Effect<ReadonlySet<RunningShard>, never, never>

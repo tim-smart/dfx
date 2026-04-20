@@ -15,7 +15,7 @@ import { flow } from "effect/Function"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Redacted from "effect/Redacted"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 import * as HttpBody from "effect/unstable/http/HttpBody"
 import * as HttpClient from "effect/unstable/http/HttpClient"
 import type { HttpClientError } from "effect/unstable/http/HttpClientError"
@@ -185,7 +185,7 @@ const make = Effect.gen(function* () {
           "User-Agent": `DiscordBot (https://github.com/tim-smart/dfx, ${LIB_VERSION})`,
         }),
       )
-      const formData = ServiceMap.getOption(fiber.services, DiscordFormData)
+      const formData = Context.getOption(fiber.context, DiscordFormData)
       if (Option.isSome(formData)) {
         if (request.body._tag === "Uint8Array") {
           formData.value.set(
@@ -230,7 +230,7 @@ export type DiscordRESTError =
   | Discord.DiscordRestError<"RatelimitedResponse", Discord.RatelimitedResponse>
   | Discord.DiscordRestError<"ErrorResponse", Discord.ErrorResponse>
 
-export class DiscordFormData extends ServiceMap.Service<
+export class DiscordFormData extends Context.Service<
   DiscordFormData,
   FormData
 >()("dfx/DiscordREST/DiscordFormData") {}
@@ -244,7 +244,7 @@ export interface DiscordRestService extends Discord.DiscordRest {
   ): <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
 }
 
-export class DiscordREST extends ServiceMap.Service<
+export class DiscordREST extends Context.Service<
   DiscordREST,
   DiscordRestService
 >()("dfx/DiscordREST") {}

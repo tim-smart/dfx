@@ -7,7 +7,7 @@ import * as Layer from "effect/Layer"
 import * as Queue from "effect/Queue"
 import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 import { DiscordGateway } from "../DiscordGateway.ts"
 import type { DiscordRESTError } from "../DiscordREST.ts"
 import { DiscordREST } from "../DiscordREST.ts"
@@ -22,7 +22,7 @@ import type { DiscordInteraction, InteractionBuilder } from "./index.ts"
 import { builder, Interaction } from "./index.ts"
 import * as EffectUtils from "../utils/Effect.ts"
 
-export const interactionsSync = ServiceMap.Reference("dfx/Interactions/sync", {
+export const interactionsSync = Context.Reference("dfx/Interactions/sync", {
   defaultValue: () => true,
 })
 
@@ -181,7 +181,7 @@ export interface InteractionsRegistryService {
   ) => Effect.Effect<void>
 }
 
-export class InteractionsRegistry extends ServiceMap.Service<
+export class InteractionsRegistry extends Context.Service<
   InteractionsRegistry,
   InteractionsRegistryService
 >()("dfx/Interactions/InteractionsRegistry") {}

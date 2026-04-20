@@ -4,7 +4,7 @@ import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Memory from "./RateLimit/memory.ts"
 import { delayFrom } from "./RateLimit/utils.ts"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
 export type BucketDetails = {
   key: "global" | string
@@ -35,7 +35,7 @@ export interface RateLimitStoreService {
   readonly removeCounter: (key: string) => Effect.Effect<void>
 }
 
-export class RateLimitStore extends ServiceMap.Service<
+export class RateLimitStore extends Context.Service<
   RateLimitStore,
   RateLimitStoreService
 >()("dfx/RateLimit/RateLimitStore") {}
@@ -75,7 +75,7 @@ const makeLimiter = Effect.gen(function* () {
   return { maybeWait }
 })
 
-export class RateLimiter extends ServiceMap.Service<
+export class RateLimiter extends Context.Service<
   RateLimiter,
   {
     maybeWait: (

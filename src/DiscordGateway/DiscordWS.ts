@@ -4,7 +4,7 @@ import * as Ref from "effect/Ref"
 import type * as Discord from "../types.ts"
 import * as Schedule from "effect/Schedule"
 import * as Cause from "effect/Cause"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 import * as Queue from "effect/Queue"
 import * as Socket from "effect/unstable/socket/Socket"
 import type * as Scope from "effect/Scope"
@@ -33,7 +33,7 @@ export interface DiscordWSCodecService {
 
 const decoder = new TextDecoder()
 
-export class DiscordWSCodec extends ServiceMap.Service<
+export class DiscordWSCodec extends Context.Service<
   DiscordWSCodec,
   DiscordWSCodecService
 >()("dfx/DiscordGateway/DiscordWS/Codec") {}
@@ -135,7 +135,7 @@ const make = Effect.gen(function* () {
   return { connect } as const
 })
 
-export class DiscordWS extends ServiceMap.Service<
+export class DiscordWS extends Context.Service<
   DiscordWS,
   {
     readonly connect: (args_0: OpenOpts) => Effect.Effect<

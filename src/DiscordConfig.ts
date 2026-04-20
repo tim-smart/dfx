@@ -4,7 +4,7 @@ import * as Duration from "effect/Duration"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import type * as Redacted from "effect/Redacted"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 
 const VERSION = 10
 
@@ -25,7 +25,7 @@ export interface DiscordConfigService {
     readonly identifyRateLimit: readonly [window: number, limit: number]
   }
 }
-export class DiscordConfig extends ServiceMap.Service<
+export class DiscordConfig extends Context.Service<
   DiscordConfig,
   DiscordConfigService
 >()("dfx/DiscordConfig") {}

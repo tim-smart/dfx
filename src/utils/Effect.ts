@@ -14,7 +14,7 @@ export const subscribeForEachPar = <R, E, A, X>(
     Effect.fnUntraced(function* (scope) {
       const deferred = yield* Deferred.make<never, E>()
       const sub = yield* PubSub.subscribe(self).pipe(Scope.provide(scope))
-      const services = yield* Effect.services<R>()
+      const services = yield* Effect.context<R>()
       const runFork = Effect.runForkWith(services)
       const track = Fiber.runIn(scope)
       function onExit(exit: Exit.Exit<X, E>) {

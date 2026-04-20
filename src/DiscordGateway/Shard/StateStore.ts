@@ -1,7 +1,7 @@
 import * as Effect from "effect/Effect"
 import * as Option from "effect/Option"
 import * as Layer from "effect/Layer"
-import * as ServiceMap from "effect/ServiceMap"
+import * as Context from "effect/Context"
 import * as KeyValueStore from "effect/unstable/persistence/KeyValueStore"
 import { flow, pipe } from "effect/Function"
 
@@ -17,7 +17,7 @@ export interface StateStore {
   readonly clear: Effect.Effect<void>
 }
 
-export class ShardStateStore extends ServiceMap.Service<
+export class ShardStateStore extends Context.Service<
   ShardStateStore,
   { readonly forShard: (id: [id: number, count: number]) => StateStore }
 >()("dfx/Shard/StateStore") {
