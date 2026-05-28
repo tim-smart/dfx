@@ -82,7 +82,7 @@ export const layerConfig: (
   config: Config.Config<MakeConfigOpts>,
 ) => Layer.Layer<WebhookConfig, Config.ConfigError> = (
   config: Config.Config<MakeConfigOpts>,
-) => Layer.effect(WebhookConfig, Effect.map(config.asEffect(), makeConfig))
+) => Layer.effect(WebhookConfig, Effect.map(config, makeConfig))
 
 export class WebhookParseError extends Data.TaggedError("WebhookParseError")<{
   cause: unknown

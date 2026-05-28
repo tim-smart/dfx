@@ -39,8 +39,8 @@ importers:
         specifier: ^0.77.0
         version: 0.77.0
       "@effect/platform-node":
-        specifier: 4.0.0-beta.52
-        version: 4.0.0-beta.52(effect@4.0.0-beta.52)(ioredis@5.9.3)
+        specifier: 4.0.0-beta.73
+        version: 4.0.0-beta.73(effect@4.0.0-beta.73)(ioredis@5.9.3)
       "@tim-smart/openapi-gen":
         specifier: ^1.0.3
         version: 1.0.3
@@ -58,10 +58,10 @@ importers:
         version: 7.0.0-dev.20260301.1
       "@vitejs/plugin-react":
         specifier: ^5.1.4
-        version: 5.1.4(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3))
+        version: 5.1.4(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0))
       "@vitest/coverage-v8":
         specifier: ^4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0))
       babel-plugin-annotate-pure-calls:
         specifier: ^0.5.0
         version: 0.5.0(@babel/core@7.29.0)
@@ -72,8 +72,8 @@ importers:
         specifier: ^17.3.1
         version: 17.3.1
       effect:
-        specifier: 4.0.0-beta.52
-        version: 4.0.0-beta.52
+        specifier: 4.0.0-beta.73
+        version: 4.0.0-beta.73
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -106,10 +106,10 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3)
+        version: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3)
+        version: 4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0)
     optionalDependencies:
       discord-verify:
         specifier: ^1.2.0
@@ -472,23 +472,23 @@ packages:
       }
     hasBin: true
 
-  "@effect/platform-node-shared@4.0.0-beta.52":
+  "@effect/platform-node-shared@4.0.0-beta.73":
     resolution:
       {
-        integrity: sha512-f4e0LD/VSlIWBRkjtaJ+zFDRZsdD4Fs3zPhvnkHn+N8qpAJ+HQ00oN5Zye7KJONPEI1JHUt2HwtbHeGCdnBFAw==,
+        integrity: sha512-/7L8eftDS40VWgLx2GVtBtb8x97Vx4OF5IlRJfh14L5xDFdb9MZXxOuHfHAi+71d90pkbFpOFVtQCSOBWKRAWg==,
       }
     engines: { node: ">=18.0.0" }
     peerDependencies:
-      effect: ^4.0.0-beta.52
+      effect: ^4.0.0-beta.73
 
-  "@effect/platform-node@4.0.0-beta.52":
+  "@effect/platform-node@4.0.0-beta.73":
     resolution:
       {
-        integrity: sha512-IFloMd95ot9SACJXPSVG060evsKSnGXlMqwQdyhSmsi7zMwiwbioItw1Up+EK5gJj7m3TRHO6b7fErqVgsN2kQ==,
+        integrity: sha512-YYkUnmcs6EiRk8K/xNCU3l3jl1YbrhCHCJp+y32DWlKhhZot24/hvw0zYw0aymAtuI9dzAdPryVZkksH4+7ovw==,
       }
     engines: { node: ">=18.0.0" }
     peerDependencies:
-      effect: ^4.0.0-beta.52
+      effect: ^4.0.0-beta.73
       ioredis: ^5.7.0
 
   "@emnapi/core@1.8.1":
@@ -1049,50 +1049,50 @@ packages:
         integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==,
       }
 
-  "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4":
     resolution:
       {
-        integrity: sha512-QZHtlVgbAdy2zAqNA9Gu1UpIuI8Xvsd1v8ic6B2pZmeFnFcMWiPLfWXh7TVw4eGEZ/C9TH281KwhVoeQUKbyjw==,
+        integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==,
       }
     cpu: [arm64]
     os: [darwin]
 
-  "@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.4":
     resolution:
       {
-        integrity: sha512-mdzd3AVzYKuUmiWOQ8GNhl64/IoFGol569zNRdkLReh6LRLHOXxU4U8eq0JwaD8iFHdVGqSy4IjFL4reoWCDFw==,
+        integrity: sha512-zExlW9zUJKZH/tOtVMttwjKa4Xm/3KcNjnE3dPN92uCktwavMxpgCA3MoJK/DOnTWsQgo224OaST27/mPNAf+w==,
       }
     cpu: [x64]
     os: [darwin]
 
-  "@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.4":
     resolution:
       {
-        integrity: sha512-YxQL+ax0XqBJDZiKimS2XQaf+2wDGVa1enVRGzEvLLVFeqa5kx2bWbtcSXgsxjQB7nRqqIGFIcLteF/sHeVtQg==,
+        integrity: sha512-dgX0P/9wGPJeHFBG+ZmhgE6bmtMt7NP5CRBGyyktpopdk/mW4POnrpQsSLtKI1dwpc+pPLuXHDh6vvskyQE/sw==,
       }
     cpu: [arm64]
     os: [linux]
 
-  "@msgpackr-extract/msgpackr-extract-linux-arm@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-linux-arm@3.0.4":
     resolution:
       {
-        integrity: sha512-fg0uy/dG/nZEXfYilKoRe7yALaNmHoYeIoJuJ7KJ+YyU2bvY8vPv27f7UKhGRpY6euFYqEVhxCFZgAUNQBM3nw==,
+        integrity: sha512-Tg3yX65f5GbtXLkrYEHE5oibZG9epyYWas7FogTTEJeDEF9JlXJzKgXaNhT3UXlTOeA+AfZpYZYZ0uPj7Cfquw==,
       }
     cpu: [arm]
     os: [linux]
 
-  "@msgpackr-extract/msgpackr-extract-linux-x64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-linux-x64@3.0.4":
     resolution:
       {
-        integrity: sha512-cvwNfbP07pKUfq1uH+S6KJ7dT9K8WOE4ZiAcsrSes+UY55E/0jLYc+vq+DO7jlmqRb5zAggExKm0H7O/CBaesg==,
+        integrity: sha512-8TNXMEjJc3QEy7R/x1INhgiU+XakDAFUzBhaz7+Rbrs8NH5UQeHQxxmzsSBJGyV6I1jW79undiQm8tOI+D+8FQ==,
       }
     cpu: [x64]
     os: [linux]
 
-  "@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4":
     resolution:
       {
-        integrity: sha512-x0fWaQtYp4E6sktbsdAqnehxDgEc/VwM7uLsRCYWaiGu0ykYdZPiS8zCWdnjHwyiumousxfBm4SO31eXqwEZhQ==,
+        integrity: sha512-CmCXPQrkbwExx3j946/PtHWHbYJiCRBRDl4BlkRQcJB/YOwQxJRTpoo7aTsortjgoJ1x7opzTSxn7C+ASSLVjQ==,
       }
     cpu: [x64]
     os: [win32]
@@ -3343,10 +3343,10 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
-  effect@4.0.0-beta.52:
+  effect@4.0.0-beta.73:
     resolution:
       {
-        integrity: sha512-Aa9T5CEV3pCoSDM8sOnalwYieJi5olb7vn8TbgMB3U1YGEOG9ypogng33qMFLKswZM2UimwrXL9Ri1x9Jo9z6w==,
+        integrity: sha512-rL7jjpT31JhxNiZ0X4sgu+WSJi7uwKTX2jz2OW7PrPLfz5DPjT9iXxxVrekxwpfGdgo92bvxbCc5kBlXgusQJw==,
       }
 
   ejs@3.1.10:
@@ -3592,10 +3592,10 @@ packages:
         integrity: sha512-UOiS2in6/Q0FK0R0q6UY9vYpQ21mr/Qn1KOnte7vsACuNJf514WvCCUHSRCPcgjPT2bAhNIJdlE6bVap1GKmeg==,
       }
 
-  fast-check@4.7.0:
+  fast-check@4.8.0:
     resolution:
       {
-        integrity: sha512-NsZRtqvSSoCP0HbNjUD+r1JH8zqZalyp6gLY9e7OYs7NK9b6AHOs2baBFeBG7bVNsuoukh89x2Yg3rPsul8ziQ==,
+        integrity: sha512-GOJ158CUMnN6cSahsv4+ExARvIDuzzinFjkp0E9WtiBa5zcVeLozVkWaE4IzFcc+Y48Wp1EDlUZsXRyAztQcSg==,
       }
     engines: { node: ">=12.17.0" }
 
@@ -4186,6 +4186,13 @@ packages:
         integrity: sha512-IBTdIkzZNOpqm7q3dRqJvMaldXjDHWkEDfrwGEQTs5eaQMWV+djAhR+wahyNNMAa+qpbDUhBMVt4ZKNwpPm7xQ==,
       }
     engines: { node: ^20.17.0 || >=22.9.0 }
+
+  ini@7.0.0:
+    resolution:
+      {
+        integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==,
+      }
+    engines: { node: ^22.22.2 || ^24.15.0 || >=26.0.0 }
 
   init-package-json@8.2.2:
     resolution:
@@ -5036,17 +5043,17 @@ packages:
         integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==,
       }
 
-  msgpackr-extract@3.0.3:
+  msgpackr-extract@3.0.4:
     resolution:
       {
-        integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==,
+        integrity: sha512-4kmO/MdyUIkLIvTPr8VHLil4AtoKIoniWPIEk5+CDy0xnWC84azhSFmuJ7PxZdsYtiP5kEeQsORAVIeMgxT+Hw==,
       }
     hasBin: true
 
-  msgpackr@1.11.10:
+  msgpackr@2.0.2:
     resolution:
       {
-        integrity: sha512-iCZNq+HszvF+fC3anCm4nBmWEnbeIAfpDs6IStAEKhQ2YSgkjzVG2FF9XJqwwQh5bH3N9OUTUt4QwVN6MLMLtA==,
+        integrity: sha512-c5hYOXFbP79Slh6Dzd2wzk+jnV7mX1UxfMYtilnY1NmalXPqG8DGb5cYCMBrW4AsH3zekBBZd4QrKz9NhtvYLQ==,
       }
 
   multimatch@5.0.0:
@@ -6740,10 +6747,10 @@ packages:
         integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==,
       }
 
-  undici@8.1.0:
+  undici@8.3.0:
     resolution:
       {
-        integrity: sha512-E9MkTS4xXLnRPYqxH2e6Hr2/49e7WFDKczKcCaFH4VaZs2iNvHMqeIkyUAD9vM8kujy9TjVrRlQ5KkdEJxB2pw==,
+        integrity: sha512-TkUDgb6tl7KOGZ+7e8E3d2FYgUQgF6z5YypqjWmixVQSQERFcVrVg0ySADm2LVLRh5ljAaHTCR5Fmz3Q34rB7Q==,
       }
     engines: { node: ">=22.19.0" }
 
@@ -6810,10 +6817,10 @@ packages:
       }
     hasBin: true
 
-  uuid@13.0.0:
+  uuid@14.0.0:
     resolution:
       {
-        integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==,
+        integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==,
       }
     hasBin: true
 
@@ -7109,10 +7116,10 @@ packages:
     engines: { node: ">= 14.6" }
     hasBin: true
 
-  yaml@2.8.3:
+  yaml@2.9.0:
     resolution:
       {
-        integrity: sha512-AvbaCLOO2Otw/lW5bmh9d/WEdcDFdQp2Z2ZUH3pX9U2ihyUY0nvLv7J6TrWowklRGPYbB/IuIMfYgxaCPg5Bpg==,
+        integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==,
       }
     engines: { node: ">= 14.6" }
     hasBin: true
@@ -7491,22 +7498,22 @@ snapshots:
 
   "@effect/language-service@0.77.0": {}
 
-  "@effect/platform-node-shared@4.0.0-beta.52(effect@4.0.0-beta.52)":
+  "@effect/platform-node-shared@4.0.0-beta.73(effect@4.0.0-beta.73)":
     dependencies:
       "@types/ws": 8.18.1
-      effect: 4.0.0-beta.52
+      effect: 4.0.0-beta.73
       ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  "@effect/platform-node@4.0.0-beta.52(effect@4.0.0-beta.52)(ioredis@5.9.3)":
+  "@effect/platform-node@4.0.0-beta.73(effect@4.0.0-beta.73)(ioredis@5.9.3)":
     dependencies:
-      "@effect/platform-node-shared": 4.0.0-beta.52(effect@4.0.0-beta.52)
-      effect: 4.0.0-beta.52
+      "@effect/platform-node-shared": 4.0.0-beta.73(effect@4.0.0-beta.73)
+      effect: 4.0.0-beta.73
       ioredis: 5.9.3
       mime: 4.1.0
-      undici: 8.1.0
+      undici: 8.3.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -7871,22 +7878,22 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
-  "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4":
     optional: true
 
-  "@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.4":
     optional: true
 
-  "@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.4":
     optional: true
 
-  "@msgpackr-extract/msgpackr-extract-linux-arm@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-linux-arm@3.0.4":
     optional: true
 
-  "@msgpackr-extract/msgpackr-extract-linux-x64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-linux-x64@3.0.4":
     optional: true
 
-  "@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3":
+  "@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4":
     optional: true
 
   "@napi-rs/wasm-runtime@0.2.4":
@@ -8537,7 +8544,7 @@ snapshots:
       "@typescript/native-preview-win32-arm64": 7.0.0-dev.20260301.1
       "@typescript/native-preview-win32-x64": 7.0.0-dev.20260301.1
 
-  "@vitejs/plugin-react@5.1.4(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3))":
+  "@vitejs/plugin-react@5.1.4(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0))":
     dependencies:
       "@babel/core": 7.29.0
       "@babel/plugin-transform-react-jsx-self": 7.27.1(@babel/core@7.29.0)
@@ -8545,11 +8552,11 @@ snapshots:
       "@rolldown/pluginutils": 1.0.0-rc.3
       "@types/babel__core": 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3)
+      vite: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
-  "@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3))":
+  "@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0))":
     dependencies:
       "@bcoe/v8-coverage": 1.0.2
       "@vitest/utils": 4.0.18
@@ -8561,7 +8568,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3)
+      vitest: 4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0)
 
   "@vitest/expect@4.0.18":
     dependencies:
@@ -8572,13 +8579,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  "@vitest/mocker@4.0.18(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3))":
+  "@vitest/mocker@4.0.18(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0))":
     dependencies:
       "@vitest/spy": 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3)
+      vite: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0)
 
   "@vitest/pretty-format@4.0.18":
     dependencies:
@@ -9186,18 +9193,18 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  effect@4.0.0-beta.52:
+  effect@4.0.0-beta.73:
     dependencies:
       "@standard-schema/spec": 1.1.0
-      fast-check: 4.7.0
+      fast-check: 4.8.0
       find-my-way-ts: 0.1.6
-      ini: 6.0.0
+      ini: 7.0.0
       kubernetes-types: 1.30.0
-      msgpackr: 1.11.10
+      msgpackr: 2.0.2
       multipasta: 0.2.7
       toml: 4.1.1
-      uuid: 13.0.0
-      yaml: 2.8.3
+      uuid: 14.0.0
+      yaml: 2.9.0
 
   ejs@3.1.10:
     dependencies:
@@ -9340,7 +9347,7 @@ snapshots:
 
   extendable-error@0.1.7: {}
 
-  fast-check@4.7.0:
+  fast-check@4.8.0:
     dependencies:
       pure-rand: 8.4.0
 
@@ -9688,6 +9695,8 @@ snapshots:
   ini@5.0.0: {}
 
   ini@6.0.0: {}
+
+  ini@7.0.0: {}
 
   init-package-json@8.2.2:
     dependencies:
@@ -10280,21 +10289,21 @@ snapshots:
 
   ms@2.1.3: {}
 
-  msgpackr-extract@3.0.3:
+  msgpackr-extract@3.0.4:
     dependencies:
       node-gyp-build-optional-packages: 5.2.2
     optionalDependencies:
-      "@msgpackr-extract/msgpackr-extract-darwin-arm64": 3.0.3
-      "@msgpackr-extract/msgpackr-extract-darwin-x64": 3.0.3
-      "@msgpackr-extract/msgpackr-extract-linux-arm": 3.0.3
-      "@msgpackr-extract/msgpackr-extract-linux-arm64": 3.0.3
-      "@msgpackr-extract/msgpackr-extract-linux-x64": 3.0.3
-      "@msgpackr-extract/msgpackr-extract-win32-x64": 3.0.3
+      "@msgpackr-extract/msgpackr-extract-darwin-arm64": 3.0.4
+      "@msgpackr-extract/msgpackr-extract-darwin-x64": 3.0.4
+      "@msgpackr-extract/msgpackr-extract-linux-arm": 3.0.4
+      "@msgpackr-extract/msgpackr-extract-linux-arm64": 3.0.4
+      "@msgpackr-extract/msgpackr-extract-linux-x64": 3.0.4
+      "@msgpackr-extract/msgpackr-extract-win32-x64": 3.0.4
     optional: true
 
-  msgpackr@1.11.10:
+  msgpackr@2.0.2:
     optionalDependencies:
-      msgpackr-extract: 3.0.3
+      msgpackr-extract: 3.0.4
 
   multimatch@5.0.0:
     dependencies:
@@ -11335,7 +11344,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici@8.1.0: {}
+  undici@8.3.0: {}
 
   unique-filename@5.0.0:
     dependencies:
@@ -11363,7 +11372,7 @@ snapshots:
 
   uuid@11.1.0: {}
 
-  uuid@13.0.0: {}
+  uuid@14.0.0: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
@@ -11374,7 +11383,7 @@ snapshots:
 
   validate-npm-package-name@6.0.2: {}
 
-  vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3):
+  vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0):
     dependencies:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.3)
@@ -11386,12 +11395,12 @@ snapshots:
       "@types/node": 25.3.3
       fsevents: 2.3.3
       tsx: 4.21.0
-      yaml: 2.8.3
+      yaml: 2.9.0
 
-  vitest@4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3):
+  vitest@4.0.18(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0):
     dependencies:
       "@vitest/expect": 4.0.18
-      "@vitest/mocker": 4.0.18(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3))
+      "@vitest/mocker": 4.0.18(vite@7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0))
       "@vitest/pretty-format": 4.0.18
       "@vitest/runner": 4.0.18
       "@vitest/snapshot": 4.0.18
@@ -11408,7 +11417,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.8.3)
+      vite: 7.3.1(@types/node@25.3.3)(tsx@4.21.0)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       "@types/node": 25.3.3
@@ -11528,7 +11537,7 @@ snapshots:
 
   yaml@2.8.2: {}
 
-  yaml@2.8.3: {}
+  yaml@2.9.0: {}
 
   yargs-parser@20.2.9: {}
 
