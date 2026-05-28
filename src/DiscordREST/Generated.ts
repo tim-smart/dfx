@@ -378,6 +378,18 @@ export const ActionTypes = {
    */
   USER_UPDATE: "USER_UPDATE",
   /**
+   * Entitlement was created
+   */
+  ENTITLEMENT_CREATE: "ENTITLEMENT_CREATE",
+  /**
+   * Entitlement was updated
+   */
+  ENTITLEMENT_UPDATE: "ENTITLEMENT_UPDATE",
+  /**
+   * Entitlement was deleted
+   */
+  ENTITLEMENT_DELETE: "ENTITLEMENT_DELETE",
+  /**
    * Contains the initial state information
    */
   READY: "READY",
@@ -397,6 +409,30 @@ export const ActionTypes = {
    * Guild's voice server was updated
    */
   VOICE_SERVER_UPDATE: "VOICE_SERVER_UPDATE",
+  /**
+   * Sent when a message is created in a lobby
+   */
+  LOBBY_MESSAGE_CREATE: "LOBBY_MESSAGE_CREATE",
+  /**
+   * Sent when a message is updated in a lobby
+   */
+  LOBBY_MESSAGE_UPDATE: "LOBBY_MESSAGE_UPDATE",
+  /**
+   * Sent when a message is deleted from a lobby
+   */
+  LOBBY_MESSAGE_DELETE: "LOBBY_MESSAGE_DELETE",
+  /**
+   * Sent when a direct message is created during an active Social SDK session
+   */
+  GAME_DIRECT_MESSAGE_CREATE: "GAME_DIRECT_MESSAGE_CREATE",
+  /**
+   * Sent when a direct message is deleted during an active Social SDK session
+   */
+  GAME_DIRECT_MESSAGE_DELETE: "GAME_DIRECT_MESSAGE_DELETE",
+  /**
+   * Sent when a direct message is updated during an active Social SDK session
+   */
+  GAME_DIRECT_MESSAGE_UPDATE: "GAME_DIRECT_MESSAGE_UPDATE",
   /**
    * User used an interaction, such as an Application Command
    */
@@ -418,6 +454,14 @@ export const ActionTypes = {
    */
   APPLICATION_COMMAND_PERMISSIONS_UPDATE:
     "APPLICATION_COMMAND_PERMISSIONS_UPDATE",
+  /**
+   * Sent when an app was authorized by a user to a server or their account
+   */
+  APPLICATION_AUTHORIZED: "APPLICATION_AUTHORIZED",
+  /**
+   * Sent when an app was deauthorized by a user
+   */
+  APPLICATION_DEAUTHORIZED: "APPLICATION_DEAUTHORIZED",
   /**
    * Stage instance was created
    */
@@ -474,6 +518,10 @@ export const ActionTypes = {
   GUILD_SOUNDBOARD_SOUND_CREATE: "GUILD_SOUNDBOARD_SOUND_CREATE",
   GUILD_SOUNDBOARD_SOUND_UPDATE: "GUILD_SOUNDBOARD_SOUND_UPDATE",
   GUILD_SOUNDBOARD_SOUND_DELETE: "GUILD_SOUNDBOARD_SOUND_DELETE",
+  /**
+   * User was added to a Quest (currently unavailable)
+   */
+  QUEST_USER_ENROLLMENT: "QUEST_USER_ENROLLMENT",
   RATE_LIMITED: "RATE_LIMITED",
 } as const
 export type ActionTypes = (typeof ActionTypes)[keyof typeof ActionTypes]
@@ -558,6 +606,7 @@ export interface PrivateApplicationResponse {
   readonly integration_types_config?: Record<string, unknown> | undefined
   readonly verify_key: string
   readonly flags: number
+  readonly flags_new: string
   readonly max_participants?: number | null | undefined
   readonly tags?: ReadonlyArray<string> | undefined
   readonly redirect_uris: ReadonlyArray<string>
@@ -569,7 +618,22 @@ export interface PrivateApplicationResponse {
   readonly approximate_user_authorization_count: number
   readonly event_webhooks_url?: string | null | undefined
   readonly event_webhooks_status?: ApplicationEventWebhooksStatus | undefined
-  readonly event_webhooks_types?: ReadonlyArray<any> | undefined
+  readonly event_webhooks_types?:
+    | ReadonlyArray<
+        | "APPLICATION_AUTHORIZED"
+        | "APPLICATION_DEAUTHORIZED"
+        | "ENTITLEMENT_CREATE"
+        | "ENTITLEMENT_DELETE"
+        | "ENTITLEMENT_UPDATE"
+        | "GAME_DIRECT_MESSAGE_CREATE"
+        | "GAME_DIRECT_MESSAGE_DELETE"
+        | "GAME_DIRECT_MESSAGE_UPDATE"
+        | "LOBBY_MESSAGE_CREATE"
+        | "LOBBY_MESSAGE_DELETE"
+        | "LOBBY_MESSAGE_UPDATE"
+        | "QUEST_USER_ENROLLMENT"
+      >
+    | undefined
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team: TeamResponse | null
 }
@@ -668,7 +732,23 @@ export interface ApplicationFormPartial {
   readonly integration_types_config?: Record<string, unknown> | null | undefined
   readonly event_webhooks_status?: 1 | 2 | null | undefined
   readonly event_webhooks_url?: string | null | undefined
-  readonly event_webhooks_types?: ReadonlyArray<string> | null | undefined
+  readonly event_webhooks_types?:
+    | ReadonlyArray<
+        | "APPLICATION_AUTHORIZED"
+        | "APPLICATION_DEAUTHORIZED"
+        | "ENTITLEMENT_CREATE"
+        | "ENTITLEMENT_DELETE"
+        | "ENTITLEMENT_UPDATE"
+        | "GAME_DIRECT_MESSAGE_CREATE"
+        | "GAME_DIRECT_MESSAGE_DELETE"
+        | "GAME_DIRECT_MESSAGE_UPDATE"
+        | "LOBBY_MESSAGE_CREATE"
+        | "LOBBY_MESSAGE_DELETE"
+        | "LOBBY_MESSAGE_UPDATE"
+        | "QUEST_USER_ENROLLMENT"
+      >
+    | null
+    | undefined
 }
 
 export const EmbeddedActivityLocationKind = {
@@ -734,18 +814,9 @@ export interface ApplicationResponse {
   readonly integration_types_config?: Record<string, unknown> | undefined
   readonly verify_key: string
   readonly flags: number
+  readonly flags_new: string
   readonly max_participants?: number | null | undefined
   readonly tags?: ReadonlyArray<string> | undefined
-}
-
-export interface ClipSpeakingEventResponse {
-  readonly user_id: SnowflakeType
-  readonly speaking_flags: number
-}
-
-export interface ClipEventTimelineEntryResponse {
-  readonly timestamp_ms: number
-  readonly speaking?: ClipSpeakingEventResponse | undefined
 }
 
 export interface AttachmentResponse {
@@ -768,9 +839,6 @@ export interface AttachmentResponse {
   readonly application?: ApplicationResponse | undefined
   readonly clip_created_at?: string | undefined
   readonly clip_participants?: ReadonlyArray<UserResponse> | undefined
-  readonly clip_events_timeline?:
-    | ReadonlyArray<ClipEventTimelineEntryResponse>
-    | undefined
 }
 
 export interface ActivitiesAttachmentResponse {
@@ -2279,6 +2347,7 @@ export interface InviteApplicationResponse {
   readonly integration_types_config?: Record<string, unknown> | undefined
   readonly verify_key: string
   readonly flags: number
+  readonly flags_new: string
   readonly max_participants?: number | null | undefined
   readonly tags?: ReadonlyArray<string> | undefined
 }
@@ -2466,9 +2535,6 @@ export interface MessageAttachmentResponse {
   readonly application?: ApplicationResponse | undefined
   readonly clip_created_at?: string | undefined
   readonly clip_participants?: ReadonlyArray<UserResponse> | undefined
-  readonly clip_events_timeline?:
-    | ReadonlyArray<ClipEventTimelineEntryResponse>
-    | undefined
 }
 
 export interface MessageEmbedFieldResponse {
@@ -3921,6 +3987,13 @@ export interface ThreadSearchResponse {
   readonly has_more: boolean
   readonly first_messages?: ReadonlyArray<MessageResponse> | undefined
   readonly total_results: number
+}
+
+export interface SearchIndexNotReadyResponse {
+  readonly message: string
+  readonly code: number
+  readonly documents_indexed: number
+  readonly retry_after: number
 }
 
 export interface TypingIndicatorResponse {}
@@ -5593,13 +5666,6 @@ export interface GuildSearchResponse {
   readonly documents_indexed?: number | null | undefined
 }
 
-export interface SearchIndexNotReadyResponse {
-  readonly message: string
-  readonly code: number
-  readonly documents_indexed: number
-  readonly retry_after: number
-}
-
 export interface WelcomeMessageResponse {
   readonly author_ids: ReadonlyArray<SnowflakeType>
   readonly message: string
@@ -5781,6 +5847,208 @@ export interface VoiceRegionResponse {
 }
 
 export type ListGuildVoiceRegions200 = ReadonlyArray<VoiceRegionResponse>
+
+export const GuildJoinRequestApplicationStatus = {
+  /**
+   * Applicant started but not yet submitted join request
+   */
+  STARTED: "STARTED",
+  /**
+   * Applicant submitted join request that is awaiting review
+   */
+  SUBMITTED: "SUBMITTED",
+  /**
+   * Join request rejected
+   */
+  REJECTED: "REJECTED",
+  /**
+   * Join request approved
+   */
+  APPROVED: "APPROVED",
+} as const
+export type GuildJoinRequestApplicationStatus =
+  (typeof GuildJoinRequestApplicationStatus)[keyof typeof GuildJoinRequestApplicationStatus]
+
+export interface GetGuildJoinRequestsParams {
+  readonly status?: undefined
+  readonly limit?: number | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+}
+
+export const GuildMemberVerificationFormFieldType = {
+  /**
+   * Field requiring applicant to acknowledge list of terms
+   */
+  TERMS: "TERMS",
+  /**
+   * Short text input field
+   */
+  TEXT_INPUT: "TEXT_INPUT",
+  /**
+   * Long-form text input field
+   */
+  PARAGRAPH: "PARAGRAPH",
+  /**
+   * Field where applicant selects one of many options
+   */
+  MULTIPLE_CHOICE: "MULTIPLE_CHOICE",
+} as const
+export type GuildMemberVerificationFormFieldType =
+  (typeof GuildMemberVerificationFormFieldType)[keyof typeof GuildMemberVerificationFormFieldType]
+
+export interface MultipleChoiceFormFieldResponse {
+  /**
+   * Type of form field
+   */
+  readonly field_type: "MULTIPLE_CHOICE"
+  /**
+   * Label shown above field
+   */
+  readonly label?: string | undefined
+  /**
+   * Optional helper text shown below label
+   */
+  readonly description?: string | undefined
+  /**
+   * Whether applicant must fill in field
+   */
+  readonly required?: boolean | undefined
+  /**
+   * Choices applicant can select from
+   */
+  readonly choices: ReadonlyArray<string>
+  /**
+   * Index of choice selected by applicant
+   */
+  readonly response?: number | undefined
+}
+
+export interface ParagraphFormFieldResponse {
+  /**
+   * Type of form field
+   */
+  readonly field_type: "PARAGRAPH"
+  /**
+   * Label shown above field
+   */
+  readonly label?: string | undefined
+  /**
+   * Optional helper text shown below label
+   */
+  readonly description?: string | undefined
+  /**
+   * Whether applicant must fill in field
+   */
+  readonly required?: boolean | undefined
+  /**
+   * Placeholder text shown in empty input
+   */
+  readonly placeholder?: string | undefined
+  /**
+   * Applicant's text response
+   */
+  readonly response?: string | undefined
+}
+
+export interface TermsFormFieldResponse {
+  /**
+   * Type of form field
+   */
+  readonly field_type: "TERMS"
+  /**
+   * Label shown above field
+   */
+  readonly label?: string | undefined
+  /**
+   * Optional helper text shown below label
+   */
+  readonly description?: string | undefined
+  /**
+   * Whether applicant must fill in field
+   */
+  readonly required?: boolean | undefined
+  /**
+   * Terms applicant must acknowledge
+   */
+  readonly values: ReadonlyArray<string>
+  /**
+   * Whether applicant accepted terms
+   */
+  readonly response?: boolean | undefined
+}
+
+export interface TextInputFormFieldResponse {
+  /**
+   * Type of form field
+   */
+  readonly field_type: "TEXT_INPUT"
+  /**
+   * Label shown above field
+   */
+  readonly label?: string | undefined
+  /**
+   * Optional helper text shown below label
+   */
+  readonly description?: string | undefined
+  /**
+   * Whether applicant must fill in field
+   */
+  readonly required?: boolean | undefined
+  /**
+   * Placeholder text shown in empty input
+   */
+  readonly placeholder?: string | undefined
+  /**
+   * Applicant's text response
+   */
+  readonly response?: string | undefined
+}
+
+export interface GuildJoinRequestResponse {
+  readonly id: SnowflakeType
+  readonly created_at: string
+  readonly reviewed_at: string | null
+  readonly application_status: GuildJoinRequestApplicationStatus | null
+  /**
+   * Reason request was rejected. Only set when application_status is REJECTED
+   */
+  readonly rejection_reason: string | null
+  readonly guild_id: SnowflakeType
+  readonly user_id: SnowflakeType
+  readonly user?: UserResponse | null | undefined
+  /**
+   * Applicant's responses on join request form
+   */
+  readonly form_responses?:
+    | ReadonlyArray<
+        | MultipleChoiceFormFieldResponse
+        | ParagraphFormFieldResponse
+        | TermsFormFieldResponse
+        | TextInputFormFieldResponse
+      >
+    | null
+    | undefined
+  readonly actioned_by_user?: UserResponse | null | undefined
+}
+
+export interface GuildJoinRequestsListResponse {
+  readonly total?: number | undefined
+  readonly guild_join_requests?:
+    | ReadonlyArray<GuildJoinRequestResponse>
+    | undefined
+}
+
+export interface ActionGuildJoinRequestRequest {
+  /**
+   * Whether to approve or reject the join request
+   */
+  readonly action?: undefined
+  /**
+   * Reason for rejection. Only used when action is REJECTED
+   */
+  readonly rejection_reason?: string | null | undefined
+}
 
 export type ListGuildRoles200 = ReadonlyArray<GuildRoleResponse>
 
@@ -6817,6 +7085,7 @@ export interface ProvisionalTokenResponse {
 }
 
 export interface BotPartnerSdkTokenRequest {
+  readonly provisional_user_id?: SnowflakeType | null | undefined
   readonly external_user_id: string
   readonly preferred_global_name?: string | null | undefined
 }
@@ -8063,7 +8332,7 @@ export const make = (
           limit: options?.["limit"] as any,
           offset: options?.["offset"] as any,
         }),
-        onRequest(["2xx"], {
+        onRequest(["200", "202"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
         }),
@@ -8465,6 +8734,27 @@ export const make = (
       ),
     listGuildVoiceRegions: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/regions`).pipe(
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    getGuildJoinRequests: (guildId, options) =>
+      HttpClientRequest.get(`/guilds/${guildId}/requests`).pipe(
+        HttpClientRequest.setUrlParams({
+          status: options?.["status"] as any,
+          limit: options?.["limit"] as any,
+          before: options?.["before"] as any,
+          after: options?.["after"] as any,
+        }),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    actionGuildJoinRequest: (guildId, requestId, options) =>
+      HttpClientRequest.patch(`/guilds/${guildId}/requests/${requestId}`).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -10005,7 +10295,7 @@ export interface DiscordRest {
     channelId: string,
     options?: ThreadSearchParams | undefined,
   ) => Effect.Effect<
-    ThreadSearchResponse,
+    ThreadSearchResponse | SearchIndexNotReadyResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
@@ -10440,6 +10730,31 @@ export interface DiscordRest {
     guildId: string,
   ) => Effect.Effect<
     ListGuildVoiceRegions200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * List join requests for guild, optionally filtered by application status
+   */
+  readonly getGuildJoinRequests: (
+    guildId: string,
+    options?: GetGuildJoinRequestsParams | undefined,
+  ) => Effect.Effect<
+    GuildJoinRequestsListResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Approve or reject guild join request
+   */
+  readonly actionGuildJoinRequest: (
+    guildId: string,
+    requestId: string,
+    options: ActionGuildJoinRequestRequest,
+  ) => Effect.Effect<
+    GuildJoinRequestResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
