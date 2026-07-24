@@ -14,8 +14,11 @@ import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
 import * as Context from "effect/Context"
 
-const claimRepeatPolicy = Schedule.identity<Option.Option<number>>().pipe(
-  Schedule.both(Schedule.spaced("3 minutes")),
+const claimRepeatPolicy = Schedule.max([
+  Schedule.identity<Option.Option<number>>(),
+  Schedule.spaced("3 minutes"),
+]).pipe(
+  Schedule.setInputType<Option.Option<number>>(),
   Schedule.while(_ => Effect.succeed(_.input._tag === "None")),
   Schedule.passthrough,
 ) as Schedule.Schedule<Option.Some<number>, Option.Option<number>>

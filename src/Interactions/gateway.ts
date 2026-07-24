@@ -29,9 +29,10 @@ export const interactionsSync = Context.Reference("dfx/Interactions/sync", {
 export const setInteractionsSync = (enabled: boolean) =>
   Layer.provide(Layer.succeed(interactionsSync, enabled))
 
-const retryPolicy = Schedule.exponential("1 seconds").pipe(
-  Schedule.either(Schedule.spaced("20 seconds")),
-)
+const retryPolicy = Schedule.min([
+  Schedule.exponential("1 seconds"),
+  Schedule.spaced("20 seconds"),
+])
 
 export const run =
   <R, R2, E, TE, E2>(

@@ -13,47 +13,173 @@ export type ApplicationTypes = 4
 export type Int53Type = number
 
 export interface UserAvatarDecorationResponse {
+  /**
+   * the avatar decoration hash
+   */
   readonly asset: string
+  /**
+   * id of the avatar decoration's SKU
+   */
   readonly sku_id: SnowflakeType | null
 }
 
-export type NameplatePalette = string
+export const NameplatePalette = {
+  /**
+   * Crimson color palette
+   */
+  CRIMSON: "crimson",
+  /**
+   * Berry color palette
+   */
+  BERRY: "berry",
+  /**
+   * Sky color palette
+   */
+  SKY: "sky",
+  /**
+   * Teal color palette
+   */
+  TEAL: "teal",
+  /**
+   * Forest color palette
+   */
+  FOREST: "forest",
+  /**
+   * Bubble gum color palette
+   */
+  BUBBLE_GUM: "bubble_gum",
+  /**
+   * Violet color palette
+   */
+  VIOLET: "violet",
+  /**
+   * Cobalt color palette
+   */
+  COBALT: "cobalt",
+  /**
+   * Clover color palette
+   */
+  CLOVER: "clover",
+  /**
+   * Lemon color palette
+   */
+  LEMON: "lemon",
+  /**
+   * White color palette
+   */
+  WHITE: "white",
+  /**
+   * Black color palette
+   */
+  BLACK: "black",
+} as const
+export type NameplatePalette =
+  (typeof NameplatePalette)[keyof typeof NameplatePalette]
 
 export interface UserNameplateResponse {
+  /**
+   * ID of the nameplate SKU
+   */
   readonly sku_id: SnowflakeType | null
+  /**
+   * Path to the nameplate asset
+   */
   readonly asset: string
+  /**
+   * The label of this nameplate. Currently unused
+   */
   readonly label: string
+  /**
+   * Background color of the nameplate
+   */
   readonly palette: NameplatePalette
 }
 
 export interface UserCollectiblesResponse {
+  /**
+   * Object mapping of nameplate data
+   */
   readonly nameplate: UserNameplateResponse | null
 }
 
 export interface UserPrimaryGuildResponse {
+  /**
+   * the id of the user's primary guild
+   */
   readonly identity_guild_id: SnowflakeType | null
+  /**
+   * whether the user is displaying the primary guild's server tag
+   */
   readonly identity_enabled: boolean | null
+  /**
+   * the text of the user's server tag, limited to 4 characters
+   */
   readonly tag: string | null
+  /**
+   * the server tag badge hash
+   */
   readonly badge: string | null
 }
 
 export interface UserResponse {
+  /**
+   * the user's id
+   */
   readonly id: SnowflakeType
+  /**
+   * the user's username, not unique across the platform
+   */
   readonly username: string
+  /**
+   * the user's avatar hash
+   */
   readonly avatar: string | null
+  /**
+   * the user's Discord-tag
+   */
   readonly discriminator: string
+  /**
+   * the public flags on a user's account
+   */
   readonly public_flags: number
+  /**
+   * the flags on a user's account
+   */
   readonly flags: Int53Type
+  /**
+   * whether the user belongs to an OAuth2 application
+   */
   readonly bot?: boolean | undefined
+  /**
+   * whether the user is an Official Discord System user (part of the urgent message system)
+   */
   readonly system?: boolean | undefined
+  /**
+   * the user's banner hash
+   */
   readonly banner?: string | null | undefined
+  /**
+   * the user's banner color encoded as an integer representation of hexadecimal color code
+   */
   readonly accent_color?: number | null | undefined
+  /**
+   * the user's display name, if it is set
+   */
   readonly global_name: string | null
+  /**
+   * data for the user's avatar decoration
+   */
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
+  /**
+   * data for the user's collectibles
+   */
   readonly collectibles?: UserCollectiblesResponse | null | undefined
+  /**
+   * the user's primary guild
+   */
   readonly primary_guild: UserPrimaryGuildResponse | null
 }
 
@@ -731,6 +857,9 @@ export interface ApplicationFormPartial {
   readonly role_connections_verification_url?: string | null | undefined
   readonly integration_types_config?: Record<string, unknown> | null | undefined
   readonly event_webhooks_status?: 1 | 2 | null | undefined
+  /**
+   * Event webhooks URL for the app to receive webhook events
+   */
   readonly event_webhooks_url?: string | null | undefined
   readonly event_webhooks_types?:
     | ReadonlyArray<
@@ -1211,6 +1340,19 @@ export interface ApplicationCommandSubcommandGroupOptionResponse {
     | undefined
 }
 
+export const ApplicationCommandHandler = {
+  /**
+   * The app handles the interaction using an interaction token
+   */
+  APP_HANDLER: 1,
+  /**
+   * Discord handles the interaction by launching an Activity and sending a follow-up message without coordinating with the app
+   */
+  DISCORD_LAUNCH_ACTIVITY: 2,
+} as const
+export type ApplicationCommandHandler =
+  (typeof ApplicationCommandHandler)[keyof typeof ApplicationCommandHandler]
+
 export interface ApplicationCommandResponse {
   readonly id: SnowflakeType
   readonly application_id: SnowflakeType
@@ -1248,6 +1390,10 @@ export interface ApplicationCommandResponse {
       >
     | undefined
   readonly nsfw?: boolean | undefined
+  /**
+   * Determines whether the interaction is handled by the app's interactions handler or by Discord
+   */
+  readonly handler?: ApplicationCommandHandler | undefined
 }
 
 export type ListApplicationCommands200 =
@@ -1443,8 +1589,6 @@ export interface ApplicationCommandSubcommandGroupOption {
     | undefined
 }
 
-export type ApplicationCommandHandler = number
-
 export interface ApplicationCommandUpdateRequest {
   readonly name: string
   readonly name_localizations?: Record<string, unknown> | null | undefined
@@ -1476,6 +1620,9 @@ export interface ApplicationCommandUpdateRequest {
     | ReadonlyArray<ApplicationIntegrationType>
     | null
     | undefined
+  /**
+   * Determines whether the interaction is handled by the app's interactions handler or by Discord
+   */
   readonly handler?: ApplicationCommandHandler | null | undefined
   readonly type?: ApplicationCommandType | null | undefined
   readonly id?: SnowflakeType | null | undefined
@@ -1518,6 +1665,9 @@ export interface ApplicationCommandCreateRequest {
     | ReadonlyArray<ApplicationIntegrationType>
     | null
     | undefined
+  /**
+   * Determines whether the interaction is handled by the app's interactions handler or by Discord
+   */
   readonly handler?: ApplicationCommandHandler | null | undefined
   readonly type?: ApplicationCommandType | null | undefined
 }
@@ -1553,6 +1703,9 @@ export interface ApplicationCommandPatchRequestPartial {
     | ReadonlyArray<ApplicationIntegrationType>
     | null
     | undefined
+  /**
+   * Determines whether the interaction is handled by the app's interactions handler or by Discord
+   */
   readonly handler?: ApplicationCommandHandler | null | undefined
 }
 
@@ -1634,11 +1787,31 @@ export interface EntitlementResponse {
 
 export type GetEntitlements200 = ReadonlyArray<EntitlementResponse>
 
-export type EntitlementOwnerTypes = number
+export const EntitlementOwnerTypes = {
+  /**
+   * A guild subscription
+   */
+  GUILD: 1,
+  /**
+   * A user subscription
+   */
+  USER: 2,
+} as const
+export type EntitlementOwnerTypes =
+  (typeof EntitlementOwnerTypes)[keyof typeof EntitlementOwnerTypes]
 
 export interface CreateEntitlementRequestData {
+  /**
+   * ID of the SKU to grant the entitlement to
+   */
   readonly sku_id: SnowflakeType
+  /**
+   * ID of the guild or user to grant the entitlement to
+   */
   readonly owner_id: SnowflakeType
+  /**
+   * 1 for a guild subscription, 2 for a user subscription
+   */
   readonly owner_type: EntitlementOwnerTypes
 }
 
@@ -1905,8 +2078,6 @@ export interface GuildChannelResponse {
   readonly default_sort_order?: ThreadSortOrder | null | undefined
   readonly default_forum_layout?: ForumLayout | undefined
   readonly default_tag_setting?: ThreadSearchTagSetting | null | undefined
-  readonly hd_streaming_until?: string | undefined
-  readonly hd_streaming_buyer_id?: SnowflakeType | undefined
 }
 
 export interface PrivateChannelResponse {
@@ -1942,22 +2113,64 @@ export interface ThreadMetadataResponse {
 }
 
 export interface GuildMemberResponse {
+  /**
+   * the member's guild avatar hash
+   */
   readonly avatar: string | null
+  /**
+   * data for the member's guild avatar decoration
+   */
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
+  /**
+   * the member's guild banner hash
+   */
   readonly banner: string | null
+  /**
+   * when the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out
+   */
   readonly communication_disabled_until: string | null
+  /**
+   * guild member flags represented as a bit set, defaults to 0
+   */
   readonly flags: number
+  /**
+   * when the user joined the guild
+   */
   readonly joined_at: string
+  /**
+   * this user's guild nickname
+   */
   readonly nick: string | null
+  /**
+   * whether the user has not yet passed the guild's Membership Screening requirements
+   */
   readonly pending: boolean
+  /**
+   * when the user started boosting the guild
+   */
   readonly premium_since: string | null
+  /**
+   * array of role object ids
+   */
   readonly roles: ReadonlyArray<SnowflakeType>
+  /**
+   * data for the member's collectibles
+   */
   readonly collectibles?: UserCollectiblesResponse | null | undefined
+  /**
+   * the user this guild member represents
+   */
   readonly user: UserResponse
+  /**
+   * whether the user is muted in voice channels
+   */
   readonly mute: boolean
+  /**
+   * whether the user is deafened in voice channels
+   */
   readonly deaf: boolean
 }
 
@@ -2113,7 +2326,9 @@ export const InviteTypes = {
 export type InviteTypes = (typeof InviteTypes)[keyof typeof InviteTypes]
 
 export interface InviteChannelRecipientResponse {
+  readonly id: SnowflakeType
   readonly username: string
+  readonly avatar: string | null
 }
 
 export interface InviteChannelResponse {
@@ -2229,6 +2444,10 @@ export const GuildFeatures = {
    * guild has disabled activity alerts in the configured safety alerts channel
    */
   RAID_ALERTS_DISABLED: "RAID_ALERTS_DISABLED",
+  /**
+   * guild has restricted member prune to administrators and the guild owner
+   */
+  PRUNE_REQUIRES_ADMIN: "PRUNE_REQUIRES_ADMIN",
   /**
    * guild is able to set role icons
    */
@@ -2370,32 +2589,230 @@ export const GuildScheduledEventEntityTypes = {
 export type GuildScheduledEventEntityTypes =
   (typeof GuildScheduledEventEntityTypes)[keyof typeof GuildScheduledEventEntityTypes]
 
+export const RecurrenceRuleFrequencies = {
+  DAILY: 3,
+  WEEKLY: 2,
+  MONTHLY: 1,
+  YEARLY: 0,
+} as const
+export type RecurrenceRuleFrequencies =
+  (typeof RecurrenceRuleFrequencies)[keyof typeof RecurrenceRuleFrequencies]
+
+export const RecurrenceRuleWeekdays = {
+  MONDAY: 0,
+  TUESDAY: 1,
+  WEDNESDAY: 2,
+  THURSDAY: 3,
+  FRIDAY: 4,
+  SATURDAY: 5,
+  SUNDAY: 6,
+} as const
+export type RecurrenceRuleWeekdays =
+  (typeof RecurrenceRuleWeekdays)[keyof typeof RecurrenceRuleWeekdays]
+
+export interface ByNWeekdayResponse {
+  /**
+   * The week to reoccur on (1-5, where 5 represents the last week)
+   */
+  readonly n: number
+  /**
+   * The day within the week to reoccur on
+   */
+  readonly day: RecurrenceRuleWeekdays
+}
+
+export const RecurrenceRuleMonths = {
+  JANUARY: 1,
+  FEBRUARY: 2,
+  MARCH: 3,
+  APRIL: 4,
+  MAY: 5,
+  JUNE: 6,
+  JULY: 7,
+  AUGUST: 8,
+  SEPTEMBER: 9,
+  OCTOBER: 10,
+  NOVEMBER: 11,
+  DECEMBER: 12,
+} as const
+export type RecurrenceRuleMonths =
+  (typeof RecurrenceRuleMonths)[keyof typeof RecurrenceRuleMonths]
+
+export interface RecurrenceRuleResponse {
+  /**
+   * Starting time of the recurrence interval
+   */
+  readonly start: string
+  /**
+   * Ending time of the recurrence interval
+   */
+  readonly end?: string | null | undefined
+  /**
+   * How often the event occurs
+   */
+  readonly frequency: RecurrenceRuleFrequencies
+  /**
+   * The spacing between events, defined by frequency
+   */
+  readonly interval: number
+  /**
+   * Set of specific days within a week for the event to recur on
+   */
+  readonly by_weekday: ReadonlyArray<RecurrenceRuleWeekdays> | null
+  /**
+   * List of specific days within a specific week to recur on
+   */
+  readonly by_n_weekday: ReadonlyArray<ByNWeekdayResponse> | null
+  /**
+   * Set of specific months to recur on
+   */
+  readonly by_month: ReadonlyArray<RecurrenceRuleMonths> | null
+  /**
+   * Set of specific dates within a month to recur on
+   */
+  readonly by_month_day: ReadonlyArray<number> | null
+  /**
+   * Set of days within a year to recur on (1-364)
+   */
+  readonly by_year_day?: ReadonlyArray<number> | null | undefined
+  /**
+   * Total number of times the event is allowed to recur
+   */
+  readonly count?: number | null | undefined
+}
+
 export type GuildScheduledEventPrivacyLevels = 2
 
+export const GuildScheduledEventUserResponses = {
+  /**
+   * User is not interested in the event
+   */
+  UNINTERESTED: 0,
+  /**
+   * User is interested in the event
+   */
+  INTERESTED: 1,
+} as const
+export type GuildScheduledEventUserResponses =
+  (typeof GuildScheduledEventUserResponses)[keyof typeof GuildScheduledEventUserResponses]
+
 export interface ScheduledEventUserResponse {
+  /**
+   * ID of the scheduled event
+   */
   readonly guild_scheduled_event_id: SnowflakeType
+  /**
+   * ID of the scheduled event exception
+   */
+  readonly guild_scheduled_event_exception_id?: SnowflakeType | null | undefined
+  /**
+   * ID of the user
+   */
   readonly user_id: SnowflakeType
+  /**
+   * User object for the RSVP user
+   */
   readonly user?: UserResponse | undefined
+  /**
+   * Guild member object for the RSVP user
+   */
   readonly member?: GuildMemberResponse | undefined
+  /**
+   * User's RSVP status for the event
+   */
+  readonly response: GuildScheduledEventUserResponses
+}
+
+export interface GuildScheduledEventExceptionResponse {
+  /**
+   * ID of the scheduled event this exception belongs to
+   */
+  readonly event_id: SnowflakeType
+  /**
+   * ID of the event exception
+   */
+  readonly event_exception_id: SnowflakeType
+  /**
+   * Overridden start time of this occurrence
+   */
+  readonly scheduled_start_time: string | null
+  /**
+   * Overridden end time of this occurrence
+   */
+  readonly scheduled_end_time: string | null
+  /**
+   * Whether this occurrence is canceled
+   */
+  readonly is_canceled: boolean
 }
 
 export interface ScheduledEventResponse {
+  /**
+   * ID of the scheduled event
+   */
   readonly id: SnowflakeType
+  /**
+   * ID of the guild the scheduled event belongs to
+   */
   readonly guild_id: SnowflakeType
+  /**
+   * Name of the scheduled event
+   */
   readonly name: string
+  /**
+   * Description of the scheduled event
+   */
   readonly description: string | null
+  /**
+   * Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL
+   */
   readonly channel_id: SnowflakeType | null
+  /**
+   * ID of the user that created the scheduled event
+   */
   readonly creator_id: SnowflakeType | null
+  /**
+   * User that created the scheduled event
+   */
   readonly creator?: UserResponse | undefined
+  /**
+   * Cover image hash of the scheduled event
+   */
   readonly image: string | null
+  /**
+   * When the scheduled event will start
+   */
   readonly scheduled_start_time: string
+  /**
+   * When the scheduled event will end, or null if no end time
+   */
   readonly scheduled_end_time: string | null
+  /**
+   * Status of the scheduled event
+   */
   readonly status: GuildScheduledEventStatuses
+  /**
+   * Type of hosting entity associated with the scheduled event
+   */
   readonly entity_type: GuildScheduledEventEntityTypes
+  /**
+   * ID of the hosting entity associated with the scheduled event
+   */
   readonly entity_id: SnowflakeType | null
+  /**
+   * Recurrence rule for the scheduled event, or null if not recurring
+   */
+  readonly recurrence_rule: RecurrenceRuleResponse | null
+  /**
+   * Number of users subscribed to the scheduled event
+   */
   readonly user_count?: number | undefined
+  /**
+   * Privacy level of the scheduled event
+   */
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
+  readonly guild_scheduled_event_exceptions: ReadonlyArray<GuildScheduledEventExceptionResponse>
 }
 
 export interface GuildRoleColorsResponse {
@@ -2456,6 +2873,7 @@ export interface CreateGuildInviteRequest {
   readonly target_user_id?: SnowflakeType | null | undefined
   readonly target_application_id?: SnowflakeType | null | undefined
   readonly target_type?: 1 | 2 | null | undefined
+  readonly role_ids?: string | ReadonlyArray<SnowflakeType> | null | undefined
 }
 
 export type CreateChannelInviteRequest =
@@ -3013,7 +3431,7 @@ export interface MessageActivityResponse {
   readonly party_id?: string | undefined
 }
 
-export interface BasicApplicationResponse {
+export interface BasicApplicationResponseWithBot {
   readonly id: SnowflakeType
   readonly name: string
   readonly icon: string | null
@@ -3110,34 +3528,79 @@ export interface MessageReactionEmojiResponse {
 }
 
 export interface PollMediaResponse {
+  /**
+   * The text of the field
+   */
   readonly text?: string | undefined
+  /**
+   * The emoji of the field
+   */
   readonly emoji?: MessageReactionEmojiResponse | undefined
 }
 
 export interface PollAnswerResponse {
+  /**
+   * The ID of the answer
+   */
   readonly answer_id: number
+  /**
+   * The data of the answer
+   */
   readonly poll_media: PollMediaResponse
 }
 
-export type PollLayoutTypes = number
+export type PollLayoutTypes = 1
 
 export interface PollResultsEntryResponse {
+  /**
+   * The answer_id
+   */
   readonly id: number
+  /**
+   * The number of votes for this answer
+   */
   readonly count: number
+  /**
+   * Whether the current user voted for this answer
+   */
   readonly me_voted: boolean
 }
 
 export interface PollResultsResponse {
+  /**
+   * The counts for each answer
+   */
   readonly answer_counts: ReadonlyArray<PollResultsEntryResponse>
+  /**
+   * Whether the votes have been precisely counted
+   */
   readonly is_finalized: boolean
 }
 
 export interface PollResponse {
+  /**
+   * The question of the poll. Only `text` is supported.
+   */
   readonly question: PollMediaResponse
+  /**
+   * Each of the answers available in the poll
+   */
   readonly answers: ReadonlyArray<PollAnswerResponse>
+  /**
+   * The time when the poll ends
+   */
   readonly expiry: string
+  /**
+   * Whether a user can select multiple answers
+   */
   readonly allow_multiselect: boolean
+  /**
+   * The layout type of the poll
+   */
   readonly layout_type: PollLayoutTypes
+  /**
+   * The results of the poll
+   */
   readonly results: PollResultsResponse
 }
 
@@ -3277,7 +3740,7 @@ export interface BasicMessageResponse {
   readonly tts: boolean
   readonly call?: MessageCallResponse | undefined
   readonly activity?: MessageActivityResponse | undefined
-  readonly application?: BasicApplicationResponse | undefined
+  readonly application?: BasicApplicationResponseWithBot | undefined
   readonly application_id?: SnowflakeType | undefined
   readonly interaction?: MessageInteractionResponse | undefined
   readonly nonce?: number | string | undefined
@@ -3336,7 +3799,7 @@ export interface MessageResponse {
   readonly tts: boolean
   readonly call?: MessageCallResponse | undefined
   readonly activity?: MessageActivityResponse | undefined
-  readonly application?: BasicApplicationResponse | undefined
+  readonly application?: BasicApplicationResponseWithBot | undefined
   readonly application_id?: SnowflakeType | undefined
   readonly interaction?: MessageInteractionResponse | undefined
   readonly nonce?: number | string | undefined
@@ -3665,40 +4128,89 @@ export interface MessageAttachmentRequest {
   readonly duration_secs?: number | null | undefined
   readonly waveform?: string | null | undefined
   readonly title?: string | null | undefined
+  readonly is_spoiler?: boolean | null | undefined
   readonly is_remix?: boolean | null | undefined
 }
 
 export interface PollEmoji {
+  /**
+   * The ID of the custom emoji
+   */
   readonly id?: SnowflakeType | null | undefined
+  /**
+   * The name of the emoji, or the unicode emoji character
+   */
   readonly name?: string | null | undefined
+  /**
+   * Whether the emoji is animated
+   */
   readonly animated?: boolean | null | undefined
 }
 
 export interface PollMedia {
+  /**
+   * The text of the field
+   */
   readonly text?: string | null | undefined
+  /**
+   * The emoji of the field
+   */
   readonly emoji?: PollEmoji | null | undefined
 }
 
 export interface PollEmojiCreateRequest {
+  /**
+   * The ID of the custom emoji
+   */
   readonly id?: SnowflakeType | null | undefined
+  /**
+   * The name of the emoji, or the unicode emoji character
+   */
   readonly name?: string | null | undefined
+  /**
+   * Whether the emoji is animated
+   */
   readonly animated?: boolean | null | undefined
 }
 
 export interface PollMediaCreateRequest {
+  /**
+   * The text of the field
+   */
   readonly text?: string | null | undefined
+  /**
+   * The emoji of the field
+   */
   readonly emoji?: PollEmojiCreateRequest | null | undefined
 }
 
 export interface PollAnswerCreateRequest {
+  /**
+   * The data of the answer
+   */
   readonly poll_media: PollMediaCreateRequest
 }
 
 export interface PollCreateRequest {
+  /**
+   * The question of the poll. Only `text` is supported.
+   */
   readonly question: PollMedia
+  /**
+   * Each of the answers available in the poll, up to 10
+   */
   readonly answers: ReadonlyArray<PollAnswerCreateRequest>
+  /**
+   * Whether a user can select multiple answers
+   */
   readonly allow_multiselect?: boolean | null | undefined
+  /**
+   * The layout type of the poll. Defaults to... DEFAULT!
+   */
   readonly layout_type?: PollLayoutTypes | null | undefined
+  /**
+   * Number of hours the poll should be open for, up to 32 days. Defaults to 24
+   */
   readonly duration?: number | null | undefined
 }
 
@@ -4308,8 +4820,6 @@ export interface GuildTemplateChannelTags {
   readonly moderated: boolean | null
 }
 
-export interface IconEmojiResponse {}
-
 export interface GuildTemplateChannelResponse {
   readonly id: number | null
   readonly type: 0 | 2 | 4 | 15
@@ -4330,7 +4840,6 @@ export interface GuildTemplateChannelResponse {
   readonly default_sort_order: ThreadSortOrder | null
   readonly default_forum_layout: ForumLayout | null
   readonly default_tag_setting: ThreadSearchTagSetting | null
-  readonly icon_emoji: IconEmojiResponse | null
   readonly theme_color: number | null
 }
 
@@ -4380,7 +4889,6 @@ export interface GuildRoleTagsResponse {
 export interface GuildRoleResponse {
   readonly id: SnowflakeType
   readonly name: string
-  readonly description: string | null
   readonly permissions: string
   readonly position: number
   readonly color: number
@@ -4428,7 +4936,13 @@ export type PremiumGuildTiers =
   (typeof PremiumGuildTiers)[keyof typeof PremiumGuildTiers]
 
 export interface GuildIncidentsDataResponse {
+  /**
+   * When invites get enabled again
+   */
   readonly invites_disabled_until: string | null
+  /**
+   * When direct messages get enabled again
+   */
   readonly dms_disabled_until: string | null
 }
 
@@ -4631,6 +5145,18 @@ export const AuditLogActionTypes = {
   HOME_SETTINGS_UPDATE: 191,
   VOICE_CHANNEL_STATUS_CREATE: 192,
   VOICE_CHANNEL_STATUS_DELETE: 193,
+  /**
+   * Scheduled event exception was created
+   */
+  GUILD_SCHEDULED_EVENT_EXCEPTION_CREATE: 200,
+  /**
+   * Scheduled event exception was updated
+   */
+  GUILD_SCHEDULED_EVENT_EXCEPTION_UPDATE: 201,
+  /**
+   * Scheduled event exception was deleted
+   */
+  GUILD_SCHEDULED_EVENT_EXCEPTION_DELETE: 202,
   GUILD_PROFILE_UPDATE: 211,
 } as const
 export type AuditLogActionTypes =
@@ -4696,70 +5222,223 @@ export interface PartialGuildSubscriptionIntegrationResponse {
 }
 
 export interface EntityMetadataExternalResponse {
+  /**
+   * Location of the external event
+   */
   readonly location: string
 }
 
 export interface ExternalScheduledEventResponse {
+  /**
+   * ID of the scheduled event
+   */
   readonly id: SnowflakeType
+  /**
+   * ID of the guild the scheduled event belongs to
+   */
   readonly guild_id: SnowflakeType
+  /**
+   * Name of the scheduled event
+   */
   readonly name: string
+  /**
+   * Description of the scheduled event
+   */
   readonly description: string | null
+  /**
+   * Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL
+   */
   readonly channel_id: SnowflakeType | null
+  /**
+   * ID of the user that created the scheduled event
+   */
   readonly creator_id: SnowflakeType | null
+  /**
+   * User that created the scheduled event
+   */
   readonly creator?: UserResponse | undefined
+  /**
+   * Cover image hash of the scheduled event
+   */
   readonly image: string | null
+  /**
+   * When the scheduled event will start
+   */
   readonly scheduled_start_time: string
+  /**
+   * When the scheduled event will end, or null if no end time
+   */
   readonly scheduled_end_time: string | null
+  /**
+   * Status of the scheduled event
+   */
   readonly status: GuildScheduledEventStatuses
+  /**
+   * Type of hosting entity associated with the scheduled event
+   */
   readonly entity_type: 3
+  /**
+   * ID of the hosting entity associated with the scheduled event
+   */
   readonly entity_id: SnowflakeType | null
+  /**
+   * Recurrence rule for the scheduled event, or null if not recurring
+   */
+  readonly recurrence_rule: RecurrenceRuleResponse | null
+  /**
+   * Number of users subscribed to the scheduled event
+   */
   readonly user_count?: number | undefined
+  /**
+   * Privacy level of the scheduled event
+   */
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
+  readonly guild_scheduled_event_exceptions: ReadonlyArray<GuildScheduledEventExceptionResponse>
   readonly entity_metadata: EntityMetadataExternalResponse
 }
 
 export interface EntityMetadataStageInstanceResponse {}
 
 export interface StageScheduledEventResponse {
+  /**
+   * ID of the scheduled event
+   */
   readonly id: SnowflakeType
+  /**
+   * ID of the guild the scheduled event belongs to
+   */
   readonly guild_id: SnowflakeType
+  /**
+   * Name of the scheduled event
+   */
   readonly name: string
+  /**
+   * Description of the scheduled event
+   */
   readonly description: string | null
+  /**
+   * Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL
+   */
   readonly channel_id: SnowflakeType | null
+  /**
+   * ID of the user that created the scheduled event
+   */
   readonly creator_id: SnowflakeType | null
+  /**
+   * User that created the scheduled event
+   */
   readonly creator?: UserResponse | undefined
+  /**
+   * Cover image hash of the scheduled event
+   */
   readonly image: string | null
+  /**
+   * When the scheduled event will start
+   */
   readonly scheduled_start_time: string
+  /**
+   * When the scheduled event will end, or null if no end time
+   */
   readonly scheduled_end_time: string | null
+  /**
+   * Status of the scheduled event
+   */
   readonly status: GuildScheduledEventStatuses
+  /**
+   * Type of hosting entity associated with the scheduled event
+   */
   readonly entity_type: 1
+  /**
+   * ID of the hosting entity associated with the scheduled event
+   */
   readonly entity_id: SnowflakeType | null
+  /**
+   * Recurrence rule for the scheduled event, or null if not recurring
+   */
+  readonly recurrence_rule: RecurrenceRuleResponse | null
+  /**
+   * Number of users subscribed to the scheduled event
+   */
   readonly user_count?: number | undefined
+  /**
+   * Privacy level of the scheduled event
+   */
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
+  readonly guild_scheduled_event_exceptions: ReadonlyArray<GuildScheduledEventExceptionResponse>
   readonly entity_metadata: EntityMetadataStageInstanceResponse | null
 }
 
 export interface EntityMetadataVoiceResponse {}
 
 export interface VoiceScheduledEventResponse {
+  /**
+   * ID of the scheduled event
+   */
   readonly id: SnowflakeType
+  /**
+   * ID of the guild the scheduled event belongs to
+   */
   readonly guild_id: SnowflakeType
+  /**
+   * Name of the scheduled event
+   */
   readonly name: string
+  /**
+   * Description of the scheduled event
+   */
   readonly description: string | null
+  /**
+   * Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL
+   */
   readonly channel_id: SnowflakeType | null
+  /**
+   * ID of the user that created the scheduled event
+   */
   readonly creator_id: SnowflakeType | null
+  /**
+   * User that created the scheduled event
+   */
   readonly creator?: UserResponse | undefined
+  /**
+   * Cover image hash of the scheduled event
+   */
   readonly image: string | null
+  /**
+   * When the scheduled event will start
+   */
   readonly scheduled_start_time: string
+  /**
+   * When the scheduled event will end, or null if no end time
+   */
   readonly scheduled_end_time: string | null
+  /**
+   * Status of the scheduled event
+   */
   readonly status: GuildScheduledEventStatuses
+  /**
+   * Type of hosting entity associated with the scheduled event
+   */
   readonly entity_type: 2
+  /**
+   * ID of the hosting entity associated with the scheduled event
+   */
   readonly entity_id: SnowflakeType | null
+  /**
+   * Recurrence rule for the scheduled event, or null if not recurring
+   */
+  readonly recurrence_rule: RecurrenceRuleResponse | null
+  /**
+   * Number of users subscribed to the scheduled event
+   */
   readonly user_count?: number | undefined
+  /**
+   * Privacy level of the scheduled event
+   */
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly user_rsvp?: ScheduledEventUserResponse | null | undefined
+  readonly guild_scheduled_event_exceptions: ReadonlyArray<GuildScheduledEventExceptionResponse>
   readonly entity_metadata: EntityMetadataVoiceResponse | null
 }
 
@@ -4837,10 +5516,6 @@ export const AutomodTriggerType = {
    */
   KEYWORD: 1,
   /**
-   * DEPRECATED
-   */
-  SPAM_LINK: 2,
-  /**
    * Check if content represents generic spam
    */
   ML_SPAM: 3,
@@ -4852,6 +5527,10 @@ export const AutomodTriggerType = {
    * Check if content contains more unique mentions than allowed
    */
   MENTION_SPAM: 5,
+  /**
+   * Check if user profile fields contains words from a list of keywords or matches regex
+   */
+  USER_PROFILE: 6,
 } as const
 export type AutomodTriggerType =
   (typeof AutomodTriggerType)[keyof typeof AutomodTriggerType]
@@ -4967,9 +5646,13 @@ export interface MentionSpamRuleResponse {
   readonly trigger_metadata: MentionSpamTriggerMetadataResponse
 }
 
-export interface SpamLinkTriggerMetadataResponse {}
+export interface UserProfileMetadataResponse {
+  readonly keyword_filter: ReadonlyArray<string>
+  readonly regex_patterns: ReadonlyArray<string>
+  readonly allow_list: ReadonlyArray<string>
+}
 
-export interface SpamLinkRuleResponse {
+export interface UserProfileRuleResponse {
   readonly id: SnowflakeType
   readonly guild_id: SnowflakeType
   readonly creator_id: SnowflakeType
@@ -4981,11 +5664,11 @@ export interface SpamLinkRuleResponse {
     | QuarantineUserActionResponse
     | UserCommunicationDisabledActionResponse
   >
-  readonly trigger_type: 2
+  readonly trigger_type: 6
   readonly enabled: boolean
   readonly exempt_roles: ReadonlyArray<SnowflakeType>
   readonly exempt_channels: ReadonlyArray<SnowflakeType>
-  readonly trigger_metadata: SpamLinkTriggerMetadataResponse
+  readonly trigger_metadata: UserProfileMetadataResponse
 }
 
 export interface GuildAuditLogResponse {
@@ -5013,7 +5696,7 @@ export interface GuildAuditLogResponse {
     | KeywordRuleResponse
     | MLSpamRuleResponse
     | MentionSpamRuleResponse
-    | SpamLinkRuleResponse
+    | UserProfileRuleResponse
     | null
   >
 }
@@ -5023,7 +5706,7 @@ export type ListAutoModerationRules200 = ReadonlyArray<
   | KeywordRuleResponse
   | MLSpamRuleResponse
   | MentionSpamRuleResponse
-  | SpamLinkRuleResponse
+  | UserProfileRuleResponse
   | null
 >
 
@@ -5155,25 +5838,51 @@ export interface MentionSpamUpsertRequest {
   readonly trigger_metadata?: MentionSpamTriggerMetadata | null | undefined
 }
 
+export interface UserProfileMetadata {
+  readonly keyword_filter?: ReadonlyArray<string> | null | undefined
+  readonly regex_patterns?: ReadonlyArray<string> | null | undefined
+  readonly allow_list?: ReadonlyArray<string> | null | undefined
+}
+
+export interface UserProfileUpsertRequest {
+  readonly name: string
+  readonly event_type: AutomodEventType
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly trigger_type: 6
+  readonly trigger_metadata: UserProfileMetadata
+}
+
 export type CreateAutoModerationRuleRequest =
   | DefaultKeywordListUpsertRequest
   | KeywordUpsertRequest
   | MLSpamUpsertRequest
   | MentionSpamUpsertRequest
+  | UserProfileUpsertRequest
 
 export type CreateAutoModerationRule200 =
   | DefaultKeywordRuleResponse
   | KeywordRuleResponse
   | MLSpamRuleResponse
   | MentionSpamRuleResponse
-  | SpamLinkRuleResponse
+  | UserProfileRuleResponse
 
 export type GetAutoModerationRule200 =
   | DefaultKeywordRuleResponse
   | KeywordRuleResponse
   | MLSpamRuleResponse
   | MentionSpamRuleResponse
-  | SpamLinkRuleResponse
+  | UserProfileRuleResponse
 
 export interface DefaultKeywordListUpsertRequestPartial {
   readonly name?: string | undefined
@@ -5251,18 +5960,38 @@ export interface MentionSpamUpsertRequestPartial {
   readonly trigger_metadata?: MentionSpamTriggerMetadata | null | undefined
 }
 
+export interface UserProfileUpsertRequestPartial {
+  readonly name?: string | undefined
+  readonly event_type?: AutomodEventType | undefined
+  readonly actions?:
+    | ReadonlyArray<
+        | BlockMessageAction
+        | FlagToChannelAction
+        | QuarantineUserAction
+        | UserCommunicationDisabledAction
+      >
+    | null
+    | undefined
+  readonly enabled?: boolean | null | undefined
+  readonly exempt_roles?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly exempt_channels?: ReadonlyArray<SnowflakeType> | null | undefined
+  readonly trigger_type?: 6 | undefined
+  readonly trigger_metadata?: UserProfileMetadata | undefined
+}
+
 export type UpdateAutoModerationRuleRequest =
   | DefaultKeywordListUpsertRequestPartial
   | KeywordUpsertRequestPartial
   | MLSpamUpsertRequestPartial
   | MentionSpamUpsertRequestPartial
+  | UserProfileUpsertRequestPartial
 
 export type UpdateAutoModerationRule200 =
   | DefaultKeywordRuleResponse
   | KeywordRuleResponse
   | MLSpamRuleResponse
   | MentionSpamRuleResponse
-  | SpamLinkRuleResponse
+  | UserProfileRuleResponse
 
 export interface ListGuildBansParams {
   readonly limit?: number | undefined
@@ -5360,6 +6089,17 @@ export interface CreateGuildEmojiRequest {
 export interface UpdateGuildEmojiRequest {
   readonly name?: string | undefined
   readonly roles?: ReadonlyArray<null | SnowflakeType> | null | undefined
+}
+
+export interface GuildIncidentActionsRequest {
+  /**
+   * When invites will be enabled again
+   */
+  readonly invites_disabled_until?: string | null | undefined
+  /**
+   * When direct messages will be enabled again
+   */
+  readonly dms_disabled_until?: string | null | undefined
 }
 
 export interface IntegrationApplicationResponse {
@@ -5474,22 +6214,64 @@ export interface UpdateMyGuildMemberRequest {
 }
 
 export interface PrivateGuildMemberResponse {
+  /**
+   * the member's guild avatar hash
+   */
   readonly avatar: string | null
+  /**
+   * data for the member's guild avatar decoration
+   */
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
+  /**
+   * the member's guild banner hash
+   */
   readonly banner: string | null
+  /**
+   * when the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out
+   */
   readonly communication_disabled_until: string | null
+  /**
+   * guild member flags represented as a bit set, defaults to 0
+   */
   readonly flags: number
+  /**
+   * when the user joined the guild
+   */
   readonly joined_at: string
+  /**
+   * this user's guild nickname
+   */
   readonly nick: string | null
+  /**
+   * whether the user has not yet passed the guild's Membership Screening requirements
+   */
   readonly pending: boolean
+  /**
+   * when the user started boosting the guild
+   */
   readonly premium_since: string | null
+  /**
+   * array of role object ids
+   */
   readonly roles: ReadonlyArray<SnowflakeType>
+  /**
+   * data for the member's collectibles
+   */
   readonly collectibles?: UserCollectiblesResponse | null | undefined
+  /**
+   * the user this guild member represents
+   */
   readonly user: UserResponse
+  /**
+   * whether the user is muted in voice channels
+   */
   readonly mute: boolean
+  /**
+   * whether the user is deafened in voice channels
+   */
   readonly deaf: boolean
   readonly permissions?: string | undefined
 }
@@ -5626,7 +6408,7 @@ export interface SearchMessageResponse {
   readonly tts: boolean
   readonly call?: MessageCallResponse | undefined
   readonly activity?: MessageActivityResponse | undefined
-  readonly application?: BasicApplicationResponse | undefined
+  readonly application?: BasicApplicationResponseWithBot | undefined
   readonly application_id?: SnowflakeType | undefined
   readonly interaction?: MessageInteractionResponse | undefined
   readonly nonce?: number | string | undefined
@@ -6102,6 +6884,60 @@ export type ListGuildScheduledEvents200 = ReadonlyArray<
   | VoiceScheduledEventResponse
 >
 
+export interface ByNWeekday {
+  /**
+   * The week to reoccur on (1-5, where 5 represents the last week)
+   */
+  readonly n: number
+  /**
+   * The day within the week to reoccur on
+   */
+  readonly day: RecurrenceRuleWeekdays
+}
+
+export interface RecurrenceRule {
+  /**
+   * Starting time of the recurrence interval
+   */
+  readonly start: string
+  /**
+   * Ending time of the recurrence interval
+   */
+  readonly end?: string | null | undefined
+  /**
+   * How often the event occurs
+   */
+  readonly frequency: RecurrenceRuleFrequencies
+  /**
+   * The spacing between events, defined by frequency
+   */
+  readonly interval?: number | null | undefined
+  /**
+   * Set of specific days within a week for the event to recur on
+   */
+  readonly by_weekday?: ReadonlyArray<RecurrenceRuleWeekdays> | null | undefined
+  /**
+   * List of specific days within a specific week to recur on
+   */
+  readonly by_n_weekday?: ReadonlyArray<ByNWeekday> | null | undefined
+  /**
+   * Set of specific months to recur on
+   */
+  readonly by_month?: ReadonlyArray<RecurrenceRuleMonths> | null | undefined
+  /**
+   * Set of specific dates within a month to recur on
+   */
+  readonly by_month_day?: ReadonlyArray<number> | null | undefined
+  /**
+   * Set of days within a year to recur on (1-364)
+   */
+  readonly by_year_day?: ReadonlyArray<number> | null | undefined
+  /**
+   * Total number of times the event is allowed to recur
+   */
+  readonly count?: number | null | undefined
+}
+
 export interface EntityMetadataExternal {
   readonly location: string
 }
@@ -6115,6 +6951,10 @@ export interface ExternalScheduledEventCreateRequest {
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly entity_type: 3
   readonly channel_id?: SnowflakeType | null | undefined
+  /**
+   * Recurrence rule for the scheduled event
+   */
+  readonly recurrence_rule?: RecurrenceRule | null | undefined
   readonly entity_metadata: EntityMetadataExternal
 }
 
@@ -6129,6 +6969,10 @@ export interface StageScheduledEventCreateRequest {
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly entity_type: 1
   readonly channel_id?: SnowflakeType | null | undefined
+  /**
+   * Recurrence rule for the scheduled event
+   */
+  readonly recurrence_rule?: RecurrenceRule | null | undefined
   readonly entity_metadata?: EntityMetadataStageInstance | null | undefined
 }
 
@@ -6143,6 +6987,10 @@ export interface VoiceScheduledEventCreateRequest {
   readonly privacy_level: GuildScheduledEventPrivacyLevels
   readonly entity_type: 2
   readonly channel_id?: SnowflakeType | null | undefined
+  /**
+   * Recurrence rule for the scheduled event
+   */
+  readonly recurrence_rule?: RecurrenceRule | null | undefined
   readonly entity_metadata?: EntityMetadataVoice | null | undefined
 }
 
@@ -6175,6 +7023,10 @@ export interface ExternalScheduledEventPatchRequestPartial {
   readonly entity_type?: 3 | null | undefined
   readonly privacy_level?: GuildScheduledEventPrivacyLevels | undefined
   readonly channel_id?: SnowflakeType | null | undefined
+  /**
+   * Recurrence rule for the scheduled event
+   */
+  readonly recurrence_rule?: RecurrenceRule | null | undefined
   readonly entity_metadata?: EntityMetadataExternal | undefined
 }
 
@@ -6188,6 +7040,10 @@ export interface StageScheduledEventPatchRequestPartial {
   readonly entity_type?: 1 | null | undefined
   readonly privacy_level?: GuildScheduledEventPrivacyLevels | undefined
   readonly channel_id?: SnowflakeType | null | undefined
+  /**
+   * Recurrence rule for the scheduled event
+   */
+  readonly recurrence_rule?: RecurrenceRule | null | undefined
   readonly entity_metadata?: EntityMetadataStageInstance | null | undefined
 }
 
@@ -6201,6 +7057,10 @@ export interface VoiceScheduledEventPatchRequestPartial {
   readonly entity_type?: 2 | null | undefined
   readonly privacy_level?: GuildScheduledEventPrivacyLevels | undefined
   readonly channel_id?: SnowflakeType | null | undefined
+  /**
+   * Recurrence rule for the scheduled event
+   */
+  readonly recurrence_rule?: RecurrenceRule | null | undefined
   readonly entity_metadata?: EntityMetadataVoice | null | undefined
 }
 
@@ -6214,6 +7074,40 @@ export type UpdateGuildScheduledEvent200 =
   | StageScheduledEventResponse
   | VoiceScheduledEventResponse
 
+export interface GuildScheduledEventExceptionCreateRequest {
+  /**
+   * Overridden start time of this occurrence
+   */
+  readonly scheduled_start_time?: string | null | undefined
+  /**
+   * Overridden end time of this occurrence
+   */
+  readonly scheduled_end_time?: string | null | undefined
+  /**
+   * The original start time of the occurrence to create an exception for
+   */
+  readonly original_scheduled_start_time: string
+  /**
+   * Whether this occurrence is canceled
+   */
+  readonly is_canceled?: boolean | null | undefined
+}
+
+export interface GuildScheduledEventExceptionPatchRequestPartial {
+  /**
+   * Overridden start time of this occurrence
+   */
+  readonly scheduled_start_time?: string | null | undefined
+  /**
+   * Overridden end time of this occurrence
+   */
+  readonly scheduled_end_time?: string | null | undefined
+  /**
+   * Whether this occurrence is canceled
+   */
+  readonly is_canceled?: boolean | null | undefined
+}
+
 export interface ListGuildScheduledEventUsersParams {
   readonly with_member?: boolean | undefined
   readonly limit?: number | undefined
@@ -6222,6 +7116,33 @@ export interface ListGuildScheduledEventUsersParams {
 }
 
 export type ListGuildScheduledEventUsers200 =
+  ReadonlyArray<ScheduledEventUserResponse>
+
+export interface CountGuildScheduledEventUsersParams {
+  readonly guild_scheduled_event_exception_ids?:
+    | ReadonlyArray<SnowflakeType>
+    | undefined
+}
+
+export interface ScheduledEventUserCountResponse {
+  /**
+   * The number of users subscribed to the scheduled event
+   */
+  readonly guild_scheduled_event_count: number
+  /**
+   * Map of exception IDs to user counts for each exception
+   */
+  readonly guild_scheduled_event_exception_counts: Record<string, unknown>
+}
+
+export interface ListGuildScheduledEventExceptionUsersParams {
+  readonly with_member?: boolean | undefined
+  readonly limit?: number | undefined
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+}
+
+export type ListGuildScheduledEventExceptionUsers200 =
   ReadonlyArray<ScheduledEventUserResponse>
 
 export interface SoundboardSoundResponse {
@@ -6764,6 +7685,7 @@ export type CreateInteractionResponseRequest =
 export interface InteractionResponse {
   readonly id: SnowflakeType
   readonly type: InteractionTypes
+  readonly activity_instance_id?: string | null | undefined
   readonly response_message_id?: SnowflakeType | undefined
   readonly response_message_loading?: boolean | undefined
   readonly response_message_ephemeral?: boolean | undefined
@@ -6776,8 +7698,13 @@ export interface CreateMessageInteractionCallbackResponse {
   readonly message: MessageResponse
 }
 
+export interface ActivityInstanceCallbackResponse {
+  readonly id: string
+}
+
 export interface LaunchActivityInteractionCallbackResponse {
   readonly type: 12
+  readonly activity_instance: ActivityInstanceCallbackResponse
 }
 
 export interface UpdateMessageInteractionCallbackResponse {
@@ -7090,6 +8017,79 @@ export interface BotPartnerSdkTokenRequest {
   readonly preferred_global_name?: string | null | undefined
 }
 
+export interface GetSkuSubscriptionsParams {
+  readonly before?: SnowflakeType | undefined
+  readonly after?: SnowflakeType | undefined
+  readonly limit?: number | undefined
+  readonly user_id?: SnowflakeType | undefined
+}
+
+export const SubscriptionResponseStatusType = {
+  /**
+   * Subscription is active and scheduled to renew
+   */
+  ACTIVE: 0,
+  /**
+   * Subscription is inactive and not being charged
+   */
+  INACTIVE: 1,
+  /**
+   * Subscription is active but will not renew
+   */
+  ENDING: 2,
+} as const
+export type SubscriptionResponseStatusType =
+  (typeof SubscriptionResponseStatusType)[keyof typeof SubscriptionResponseStatusType]
+
+export interface SubscriptionResponse {
+  /**
+   * ID of the subscription
+   */
+  readonly id: SnowflakeType
+  /**
+   * ID of the user who is subscribed
+   */
+  readonly user_id: SnowflakeType
+  /**
+   * List of SKUs subscribed to
+   */
+  readonly sku_ids: ReadonlyArray<SnowflakeType>
+  /**
+   * List of SKUs that this user will be subscribed to at renewal
+   */
+  readonly renewal_sku_ids: ReadonlyArray<SnowflakeType> | null
+  /**
+   * List of entitlements granted for this subscription
+   */
+  readonly entitlement_ids: ReadonlyArray<SnowflakeType>
+  /**
+   * Start of the current subscription period
+   */
+  readonly current_period_start: string
+  /**
+   * End of the current subscription period
+   */
+  readonly current_period_end: string
+  /**
+   * Current status of the subscription
+   */
+  readonly status: SubscriptionResponseStatusType
+  /**
+   * When the subscription was canceled
+   */
+  readonly canceled_at: string | null
+  /**
+   * ISO3166-1 alpha-2 country code of the payment source used to purchase the subscription
+   */
+  readonly country?: string | null | undefined
+}
+
+export type GetSkuSubscriptions200 = ReadonlyArray<SubscriptionResponse>
+
+export interface GetSkuSubscriptionParams {
+  readonly user_id?: SnowflakeType | undefined
+}
+
 export type GetSoundboardDefaultSounds200 =
   ReadonlyArray<SoundboardSoundResponse>
 
@@ -7099,7 +8099,7 @@ export const StageInstancesPrivacyLevels = {
    */
   PUBLIC: 1,
   /**
-   * The Stage instance is visible publicly. (deprecated)
+   * The Stage instance is visible to only guild members.
    */
   GUILD_ONLY: 2,
 } as const
@@ -7166,21 +8166,60 @@ export const PremiumTypes = {
 export type PremiumTypes = (typeof PremiumTypes)[keyof typeof PremiumTypes]
 
 export interface UserPIIResponse {
+  /**
+   * the user's id
+   */
   readonly id: SnowflakeType
+  /**
+   * the user's username, not unique across the platform
+   */
   readonly username: string
+  /**
+   * the user's avatar hash
+   */
   readonly avatar: string | null
+  /**
+   * the user's Discord-tag
+   */
   readonly discriminator: string
+  /**
+   * the public flags on a user's account
+   */
   readonly public_flags: number
+  /**
+   * the flags on a user's account
+   */
   readonly flags: Int53Type
+  /**
+   * whether the user belongs to an OAuth2 application
+   */
   readonly bot?: boolean | undefined
+  /**
+   * whether the user is an Official Discord System user (part of the urgent message system)
+   */
   readonly system?: boolean | undefined
+  /**
+   * the user's banner hash
+   */
   readonly banner?: string | null | undefined
+  /**
+   * the user's banner color encoded as an integer representation of hexadecimal color code
+   */
   readonly accent_color?: number | null | undefined
+  /**
+   * the user's display name, if it is set
+   */
   readonly global_name: string | null
+  /**
+   * data for the user's avatar decoration
+   */
   readonly avatar_decoration_data?:
     | UserAvatarDecorationResponse
     | null
     | undefined
+  /**
+   * data for the user's collectibles
+   */
   readonly collectibles?: UserCollectiblesResponse | null | undefined
   readonly primary_guild?: UserPrimaryGuildResponse | null | undefined
   readonly mfa_enabled: boolean
@@ -8562,6 +9601,14 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
+    updateGuildIncidentActions: (guildId, options) =>
+      HttpClientRequest.put(`/guilds/${guildId}/incident-actions`).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listGuildIntegrations: guildId =>
       HttpClientRequest.get(`/guilds/${guildId}/integrations`).pipe(
         onRequest(["2xx"], {
@@ -8855,9 +9902,82 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
+    createGuildScheduledEventException: (
+      guildId,
+      guildScheduledEventId,
+      options,
+    ) =>
+      HttpClientRequest.post(
+        `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/exceptions`,
+      ).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    deleteGuildScheduledEventException: (
+      guildId,
+      guildScheduledEventId,
+      exceptionId,
+    ) =>
+      HttpClientRequest.delete(
+        `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/exceptions/${exceptionId}`,
+      ).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
+    updateGuildScheduledEventException: (
+      guildId,
+      guildScheduledEventId,
+      exceptionId,
+      options,
+    ) =>
+      HttpClientRequest.patch(
+        `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/exceptions/${exceptionId}`,
+      ).pipe(
+        HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
     listGuildScheduledEventUsers: (guildId, guildScheduledEventId, options) =>
       HttpClientRequest.get(
         `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users`,
+      ).pipe(
+        HttpClientRequest.setUrlParams({
+          with_member: options?.["with_member"] as any,
+          limit: options?.["limit"] as any,
+          before: options?.["before"] as any,
+          after: options?.["after"] as any,
+        }),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    countGuildScheduledEventUsers: (guildId, guildScheduledEventId, options) =>
+      HttpClientRequest.get(
+        `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/users/counts`,
+      ).pipe(
+        HttpClientRequest.setUrlParams({
+          guild_scheduled_event_exception_ids: options?.[
+            "guild_scheduled_event_exception_ids"
+          ] as any,
+        }),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    listGuildScheduledEventExceptionUsers: (
+      guildId,
+      guildScheduledEventId,
+      guildScheduledEventExceptionId,
+      options,
+    ) =>
+      HttpClientRequest.get(
+        `/guilds/${guildId}/scheduled-events/${guildScheduledEventId}/${guildScheduledEventExceptionId}/users`,
       ).pipe(
         HttpClientRequest.setUrlParams({
           with_member: options?.["with_member"] as any,
@@ -9140,6 +10260,10 @@ export const make = (
           "4xx": "ErrorResponse",
         }),
       ),
+    deleteLobby: lobbyId =>
+      HttpClientRequest.delete(`/lobbies/${lobbyId}`).pipe(
+        onRequest([], { "429": "RatelimitedResponse", "4xx": "ErrorResponse" }),
+      ),
     editLobby: (lobbyId, options) =>
       HttpClientRequest.patch(`/lobbies/${lobbyId}`).pipe(
         HttpClientRequest.bodyJsonUnsafe(options),
@@ -9286,6 +10410,31 @@ export const make = (
     botPartnerSdkToken: options =>
       HttpClientRequest.post(`/partner-sdk/token/bot`).pipe(
         HttpClientRequest.bodyJsonUnsafe(options),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    getSkuSubscriptions: (skuId, options) =>
+      HttpClientRequest.get(`/skus/${skuId}/subscriptions`).pipe(
+        HttpClientRequest.setUrlParams({
+          before: options?.["before"] as any,
+          after: options?.["after"] as any,
+          limit: options?.["limit"] as any,
+          user_id: options?.["user_id"] as any,
+        }),
+        onRequest(["2xx"], {
+          "429": "RatelimitedResponse",
+          "4xx": "ErrorResponse",
+        }),
+      ),
+    getSkuSubscription: (skuId, subscriptionId, options) =>
+      HttpClientRequest.get(
+        `/skus/${skuId}/subscriptions/${subscriptionId}`,
+      ).pipe(
+        HttpClientRequest.setUrlParams({
+          user_id: options?.["user_id"] as any,
+        }),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
           "4xx": "ErrorResponse",
@@ -10556,6 +11705,18 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  /**
+   * Modifies the incident actions of the guild
+   */
+  readonly updateGuildIncidentActions: (
+    guildId: string,
+    options: GuildIncidentActionsRequest,
+  ) => Effect.Effect<
+    GuildIncidentsDataResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildIntegrations: (
     guildId: string,
   ) => Effect.Effect<
@@ -10868,12 +12029,79 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  /**
+   * Create an exception to a recurring guild scheduled event
+   */
+  readonly createGuildScheduledEventException: (
+    guildId: string,
+    guildScheduledEventId: string,
+    options: GuildScheduledEventExceptionCreateRequest,
+  ) => Effect.Effect<
+    GuildScheduledEventExceptionResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Delete an exception to a recurring guild scheduled event
+   */
+  readonly deleteGuildScheduledEventException: (
+    guildId: string,
+    guildScheduledEventId: string,
+    exceptionId: string,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Modify an exception to a recurring guild scheduled event
+   */
+  readonly updateGuildScheduledEventException: (
+    guildId: string,
+    guildScheduledEventId: string,
+    exceptionId: string,
+    options: GuildScheduledEventExceptionPatchRequestPartial,
+  ) => Effect.Effect<
+    GuildScheduledEventExceptionResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly listGuildScheduledEventUsers: (
     guildId: string,
     guildScheduledEventId: string,
     options?: ListGuildScheduledEventUsersParams | undefined,
   ) => Effect.Effect<
     ListGuildScheduledEventUsers200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Get the count of users subscribed to a guild scheduled event
+   */
+  readonly countGuildScheduledEventUsers: (
+    guildId: string,
+    guildScheduledEventId: string,
+    options?: CountGuildScheduledEventUsersParams | undefined,
+  ) => Effect.Effect<
+    ScheduledEventUserCountResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Get a list of users subscribed to a guild scheduled event exception
+   */
+  readonly listGuildScheduledEventExceptionUsers: (
+    guildId: string,
+    guildScheduledEventId: string,
+    guildScheduledEventExceptionId: string,
+    options?: ListGuildScheduledEventExceptionUsersParams | undefined,
+  ) => Effect.Effect<
+    ListGuildScheduledEventExceptionUsers200,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
@@ -11212,6 +12440,17 @@ export interface DiscordRest {
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>
   >
+  /**
+   * Deletes the specified lobby if it exists. It is safe to call even if the lobby is already deleted.
+   */
+  readonly deleteLobby: (
+    lobbyId: string,
+  ) => Effect.Effect<
+    void,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
   readonly editLobby: (
     lobbyId: string,
     options: EditLobbyRequest,
@@ -11380,6 +12619,31 @@ export interface DiscordRest {
     options: BotPartnerSdkTokenRequest,
   ) => Effect.Effect<
     ProvisionalTokenResponse,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Returns all subscriptions containing the SKU, filtered by user.
+   */
+  readonly getSkuSubscriptions: (
+    skuId: string,
+    options?: GetSkuSubscriptionsParams | undefined,
+  ) => Effect.Effect<
+    GetSkuSubscriptions200,
+    | HttpClientError.HttpClientError
+    | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
+    | DiscordRestError<"ErrorResponse", ErrorResponse>
+  >
+  /**
+   * Get a subscription by its ID.
+   */
+  readonly getSkuSubscription: (
+    skuId: string,
+    subscriptionId: string,
+    options?: GetSkuSubscriptionParams | undefined,
+  ) => Effect.Effect<
+    SubscriptionResponse,
     | HttpClientError.HttpClientError
     | DiscordRestError<"RatelimitedResponse", RatelimitedResponse>
     | DiscordRestError<"ErrorResponse", ErrorResponse>

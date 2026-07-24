@@ -113,9 +113,7 @@ const make = Effect.gen(function* () {
           Effect.logDebug("Got socket error, reconnecting", cause),
         ),
         Effect.repeat(
-          Schedule.exponential(500).pipe(
-            Schedule.either(Schedule.spaced(10000)),
-          ),
+          Schedule.min([Schedule.exponential(500), Schedule.spaced(10000)]),
         ),
         Effect.annotateLogs("channel", "inbound"),
         Effect.forkScoped,

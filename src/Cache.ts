@@ -27,9 +27,10 @@ export type CacheOp<T> =
   | { op: "update"; resourceId: string; resource: T }
   | { op: "delete"; resourceId: string }
 
-const retryPolicy = Schedule.exponential("500 millis").pipe(
-  Schedule.either(Schedule.spaced("10 seconds")),
-)
+const retryPolicy = Schedule.min([
+  Schedule.exponential("500 millis"),
+  Schedule.spaced("10 seconds"),
+])
 
 export interface ParentCache<EDriver, EMiss, EPMiss, A> {
   readonly get: (
