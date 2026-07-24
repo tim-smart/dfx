@@ -762,6 +762,7 @@ export interface PrivateApplicationResponse {
     | undefined
   readonly explicit_content_filter: ApplicationExplicitContentFilterTypes
   readonly team: TeamResponse | null
+  readonly eligible_oauth2_scopes: ReadonlyArray<OAuth2Scopes>
 }
 
 /**
@@ -2815,6 +2816,11 @@ export interface ScheduledEventResponse {
   readonly guild_scheduled_event_exceptions: ReadonlyArray<GuildScheduledEventExceptionResponse>
 }
 
+export interface GuildLivelinessResponse {
+  readonly msg_activity_bins: ReadonlyArray<number>
+  readonly last_updated_ts?: string | null | undefined
+}
+
 export interface GuildRoleColorsResponse {
   readonly primary_color: number
   readonly secondary_color: number | null
@@ -2848,6 +2854,9 @@ export interface GuildInviteResponse {
   readonly target_user?: UserResponse | undefined
   readonly target_application?: InviteApplicationResponse | undefined
   readonly guild_scheduled_event?: ScheduledEventResponse | undefined
+  readonly target_channel_id?: SnowflakeType | undefined
+  readonly target_message_id?: SnowflakeType | undefined
+  readonly liveliness?: GuildLivelinessResponse | null | undefined
   readonly uses?: number | undefined
   readonly max_uses?: number | undefined
   readonly temporary?: boolean | undefined
@@ -3695,6 +3704,10 @@ export interface MessageSnapshotResponse {
   readonly message: MinimalContentMessageResponse
 }
 
+export interface MessageLobbyMemberResponse {
+  readonly additional_name: string
+}
+
 export interface MessageReactionCountDetailsResponse {
   readonly burst: number
   readonly normal: number
@@ -3766,6 +3779,7 @@ export interface BasicMessageResponse {
   readonly message_snapshots?:
     | ReadonlyArray<MessageSnapshotResponse>
     | undefined
+  readonly lobby_member?: MessageLobbyMemberResponse | undefined
 }
 
 export interface MessageResponse {
@@ -3825,6 +3839,7 @@ export interface MessageResponse {
   readonly message_snapshots?:
     | ReadonlyArray<MessageSnapshotResponse>
     | undefined
+  readonly lobby_member?: MessageLobbyMemberResponse | undefined
   readonly reactions?: ReadonlyArray<MessageReactionResponse> | undefined
   readonly referenced_message?: BasicMessageResponse | null | undefined
 }
@@ -6434,9 +6449,11 @@ export interface SearchMessageResponse {
   readonly message_snapshots?:
     | ReadonlyArray<MessageSnapshotResponse>
     | undefined
+  readonly lobby_member?: MessageLobbyMemberResponse | undefined
   readonly reactions?: ReadonlyArray<MessageReactionResponse> | undefined
   readonly referenced_message?: BasicMessageResponse | null | undefined
   readonly hit: boolean
+  readonly restriction_count?: number | undefined
 }
 
 export interface GuildSearchResponse {
@@ -7724,6 +7741,8 @@ export interface InteractionCallbackResponse {
 export interface InviteResolveParams {
   readonly with_counts?: boolean | undefined
   readonly guild_scheduled_event_id?: SnowflakeType | undefined
+  readonly target_channel_id?: SnowflakeType | undefined
+  readonly target_message_id?: SnowflakeType | undefined
 }
 
 export type InviteResolve200 =
@@ -7802,6 +7821,7 @@ export interface LobbyMemberResponse {
   readonly id: SnowflakeType
   readonly metadata: Record<string, unknown> | null
   readonly flags: number
+  readonly additional_name?: string | undefined
 }
 
 export interface LobbyResponse {
@@ -7857,6 +7877,7 @@ export interface BulkLobbyMemberRequest {
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly flags?: BulkLobbyMemberRequestFlagsEnum | null | undefined
   readonly remove_member?: boolean | null | undefined
+  readonly additional_name?: string | null | undefined
 }
 
 export type BulkUpdateLobbyMembersRequest =
@@ -7869,6 +7890,7 @@ export type AddLobbyMemberRequestFlagsEnum = 1
 export interface AddLobbyMemberRequest {
   readonly metadata?: Record<string, unknown> | null | undefined
   readonly flags?: AddLobbyMemberRequestFlagsEnum | null | undefined
+  readonly additional_name?: string | null | undefined
 }
 
 export interface GetLobbyMessagesParams {
@@ -7882,6 +7904,7 @@ export interface LobbyMessageResponse {
   readonly lobby_id: SnowflakeType
   readonly channel_id: SnowflakeType
   readonly author: UserResponse
+  readonly lobby_member?: MessageLobbyMemberResponse | undefined
   readonly metadata?: Record<string, unknown> | undefined
   readonly moderation_metadata?: Record<string, unknown> | undefined
   readonly flags: number
@@ -10208,6 +10231,8 @@ export const make = (
           guild_scheduled_event_id: options?.[
             "guild_scheduled_event_id"
           ] as any,
+          target_channel_id: options?.["target_channel_id"] as any,
+          target_message_id: options?.["target_message_id"] as any,
         }),
         onRequest(["2xx"], {
           "429": "RatelimitedResponse",
