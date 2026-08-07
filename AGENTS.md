@@ -6,10 +6,6 @@ Notes:
 
 Run `pnpm check` to type check & lint the codebase.
 
-## Learning more about the "effect" and "@effect/\*" libraries
+## Learning more about the "effect"
 
-The full source code for the "effect" library is available in the following directory:
-
-`.repos/effect`
-
-**Do not** use node_modules for learning about the effect libraries.
+Read `node_modules/effect/AGENTS.md` **completely** to learn about the "effect" library.
