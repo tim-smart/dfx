@@ -35,16 +35,16 @@
     "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "tsc -b tsconfig.build.json",
     "build-watch": "tsc -b tsconfig.json --watch",
-    "check": "pnpm lint && pnpm tsgo -b tsconfig.json",
+    "check": "pnpm lint && pnpm tsc -b tsconfig.json",
     "lint": "oxlint src test examples",
     "autofix": "pnpm lint --fix",
     "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "prepare": "husky && effect-language-service patch"
+    "prepare": "husky"
   },
   "peerDependencies": {
-    "effect": ">=4.0.0-beta.101 <5.0.0"
+    "effect": ">=4.0.0-rc.113 <5.0.0"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -58,19 +58,17 @@
     "@changesets/cli": "^2.29.8",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.8.9",
-    "@effect/language-service": "^0.77.0",
-    "@effect/platform-node": "4.0.0-beta.105",
-    "@tim-smart/openapi-gen": "^1.0.3",
+    "@effect/platform-node": "4.0.0-rc.113",
+    "@tim-smart/openapi-gen": "^1.0.4",
     "@types/chai": "^5.2.3",
-    "@types/node": "^25.3.3",
+    "@types/node": "^26.5.0",
     "@types/ws": "^8.18.1",
-    "@typescript/native-preview": "7.0.0-dev.20260301.1",
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-v8": "^4.0.18",
     "babel-plugin-annotate-pure-calls": "^0.5.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
-    "effect": "4.0.0-beta.105",
+    "effect": "4.0.0-rc.113",
     "husky": "^9.1.7",
     "lerna": "^9.0.4",
     "lint-staged": "^16.3.0",
@@ -80,13 +78,13 @@
     "rimraf": "^6.1.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
     "vitest": "4.0.18"
   },
   "gitHead": "9285bcdcc32ca835ac2b88bb7e8a92afa0d1ac55",
   "dependencies": {
-    "discord-api-types": "^0.38.40"
+    "discord-api-types": "^0.38.55"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

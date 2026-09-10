@@ -5,6 +5,7 @@ import * as Fiber from "effect/Fiber"
 import * as PubSub from "effect/PubSub"
 import * as Scope from "effect/Scope"
 import * as Exit from "effect/Exit"
+import type { NonEmptyArray } from "effect/Array"
 
 export const subscribeForEachPar = <R, E, A, X>(
   self: PubSub.PubSub<A>,
@@ -22,7 +23,7 @@ export const subscribeForEachPar = <R, E, A, X>(
           Deferred.doneUnsafe(deferred, exit as Exit.Exit<never, E>)
         }
       }
-      yield* Effect.whileLoop<[A, ...A[]], never, never>({
+      yield* Effect.whileLoop<NonEmptyArray<A>, never, never>({
         while: constTrue,
         body: constant(PubSub.takeAll(sub)),
         step(items) {

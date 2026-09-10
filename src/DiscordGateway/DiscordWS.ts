@@ -60,10 +60,9 @@ const make = Effect.gen(function* () {
         Ref.set(urlRef, `${nextUrl}?v=${version}&encoding=${encoding.type}`)
       const messages = yield* Queue.make<Message>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
-        closeCodeIsError: _ => true,
         openTimeout: 5000,
       })
-      const writeRaw = yield* socket.writer
+      const writer = yield* socket.writer
       const logWriteError = (cause: Cause.Cause<Socket.SocketError>) =>
         Effect.annotateLogs(Effect.logDebug(cause), {
           module: "DiscordGateway/DiscordWS",
@@ -72,12 +71,12 @@ const make = Effect.gen(function* () {
       const write = (message: MessageSend): Effect.Effect<void> => {
         if (message === Reconnect) {
           return Effect.catchCause(
-            writeRaw(new Socket.CloseEvent(3000, "reconnecting")),
+            writer.write(new Socket.CloseEvent(3000, "reconnecting")),
             logWriteError,
           )
         }
         return Effect.catchCause(
-          writeRaw(encoding.encode(message)),
+          writer.write(encoding.encode(message)),
           logWriteError,
         )
       }
@@ -86,27 +85,35 @@ const make = Effect.gen(function* () {
         "Trace",
       )
       const loggers = yield* CurrentLoggers
-      yield* onConnecting.pipe(
-        Effect.andThen(
-          Effect.withFiber<void, Socket.SocketError>(fiber =>
-            socket.runRaw(_ => {
-              const message = encoding.decode(_)
-              Queue.offerUnsafe(messages, message)
-              if (!traceEnabled) return
-              loggers.forEach(logger => {
+      yield* Effect.gen(function* () {
+        const fiber = yield* Effect.fiber
+        yield* onConnecting
+        const reader = yield* socket.reader
+        return yield* Effect.whileLoop({
+          while: () => true,
+          body: () => reader.pull,
+          step(chunk) {
+            const decoded = chunk.map(encoding.decode)
+            Queue.offerAllUnsafe(messages, decoded)
+            Queue.flushUnsafe(messages)
+            if (!traceEnabled) return
+            loggers.forEach(logger => {
+              for (let i = 0; i < decoded.length; i++) {
                 logger.log({
-                  message,
+                  message: decoded[i],
                   cause: Cause.empty,
                   fiber,
                   logLevel: "Trace",
                   date: new Date(),
                 })
-              })
-            }),
-          ),
-        ),
+              }
+            })
+          },
+        })
+      }).pipe(
         Effect.retry({
           while: e =>
+            // oxlint-disable-next-line no-underscore-dangle
             e.reason._tag === "SocketCloseError" && e.reason.code === 3000,
         }),
         Effect.catchCause(cause =>

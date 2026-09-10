@@ -55,7 +55,7 @@ const MainLive = GreetLive.pipe(
   Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(
     DiscordConfig.layerConfig({
-      token: Config.redacted("DISCORD_BOT_TOKEN"),
+      token: Config.Redacted("DISCORD_BOT_TOKEN"),
     }),
   ),
 )

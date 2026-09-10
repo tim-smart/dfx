@@ -36,6 +36,7 @@
     "eslint/require-yield": "off",
     "eslint/no-fallthrough": "off",
     "eslint/no-await-in-loop": "off",
+    "eslint/no-underscore-dangle": "off",
     "unicorn/no-new-array": "off",
     "unicorn/consistent-function-scoping": "off",
     "unicorn/no-array-sort": "off",
