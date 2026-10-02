@@ -1,4 +1,4 @@
-import type { WebSocketConstructor } from "effect/unstable/socket/Socket"
+import type { WebSocketConstructor } from "effect/socket/Socket"
 import type { DiscordConfig } from "./DiscordConfig.ts"
 import type { DiscordWSCodec } from "./DiscordGateway/DiscordWS.ts"
 import type { Messsaging } from "./DiscordGateway/Messaging.ts"
@@ -12,7 +12,7 @@ import type * as Discord from "./types.ts"
 import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import type * as Stream from "effect/Stream"
-import type { HttpClient } from "effect/unstable/http/HttpClient"
+import type { HttpClient } from "effect/http/HttpClient"
 import * as Context from "effect/Context"
 
 export const TypeId = Symbol.for("dfx/DiscordGateway")

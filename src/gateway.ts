@@ -15,9 +15,9 @@ import { InteractionsRegistryLive } from "./Interactions/gateway.ts"
 import type { RateLimiter } from "./RateLimit.ts"
 import { MemoryRateLimitStoreLive, RateLimiterLive } from "./RateLimit.ts"
 import * as Layer from "effect/Layer"
-import type * as HttpClient from "effect/unstable/http/HttpClient"
+import type * as HttpClient from "effect/http/HttpClient"
 import type { DiscordConfig } from "./DiscordConfig.ts"
-import type { WebSocketConstructor } from "effect/unstable/socket/Socket"
+import type { WebSocketConstructor } from "effect/socket/Socket"
 
 export { DiscordGateway, DiscordGatewayLive } from "./DiscordGateway.ts"
 

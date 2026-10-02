@@ -11,7 +11,7 @@ import * as Context from "effect/Context"
 import { DiscordGateway } from "../DiscordGateway.ts"
 import type { DiscordRESTError } from "../DiscordREST.ts"
 import { DiscordREST } from "../DiscordREST.ts"
-import type { ListMyGuilds200, MyGuildResponse } from "../types.ts"
+import type { ListMyGuilds200 } from "../types.ts"
 import type {
   GlobalApplicationCommand,
   GuildApplicationCommand,
@@ -81,16 +81,13 @@ export const run =
 
       const runGuildSync = Effect.gen(function* () {
         const commands = GuildApplicationCommand.map(_ => _.command)
-        let results: Arr.NonEmptyReadonlyArray<MyGuildResponse> | undefined =
-          undefined
+        let after: string | undefined
         while (true) {
-          const next: ListMyGuilds200 = yield* rest.listMyGuilds({
-            after: results && Arr.lastNonEmpty(results).id,
-          })
-          if (!Arr.isReadonlyArrayNonEmpty(next)) break
-          results = next
+          const next: ListMyGuilds200 = yield* rest.listMyGuilds({ after })
+          if (next === null || !Arr.isReadonlyArrayNonEmpty(next)) break
+          after = Arr.lastNonEmpty(next).id
           yield* Effect.forEach(
-            results!,
+            next,
             guild =>
               rest.bulkSetGuildApplicationCommands(
                 application.id,

@@ -1,4 +1,4 @@
-import type { HttpClient } from "effect/unstable/http/HttpClient"
+import type { HttpClient } from "effect/http/HttpClient"
 import * as Cache from "./Cache.ts"
 import * as DiscordConfig from "./DiscordConfig.ts"
 import type { DiscordREST } from "./DiscordREST.ts"

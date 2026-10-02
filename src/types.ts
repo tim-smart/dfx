@@ -45,7 +45,8 @@ interface APIAutoModerationAction {
 export type APIChannel = Rest.GetChannel200
 export type APIEmoji = Rest.EmojiResponse
 export type APIGuild = Rest.GuildResponse
-export type APIGuildIntegration = Rest.ListGuildIntegrations200[number]
+export type APIGuildIntegration =
+  NonNullable<Rest.ListGuildIntegrations200>[number]
 export type APIGuildMember = Rest.GuildMemberResponse
 export type APIGuildScheduledEvent = Rest.ScheduledEventResponse
 export type APIMessage = Rest.MessageResponse

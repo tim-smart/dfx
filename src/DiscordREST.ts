@@ -16,11 +16,11 @@ import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Redacted from "effect/Redacted"
 import * as Context from "effect/Context"
-import * as HttpBody from "effect/unstable/http/HttpBody"
-import * as HttpClient from "effect/unstable/http/HttpClient"
-import type { HttpClientError } from "effect/unstable/http/HttpClientError"
-import * as HttpRequest from "effect/unstable/http/HttpClientRequest"
-import type * as HttpResponse from "effect/unstable/http/HttpClientResponse"
+import * as HttpBody from "effect/http/HttpBody"
+import * as HttpClient from "effect/http/HttpClient"
+import type { HttpClientError } from "effect/http/HttpClientError"
+import * as HttpRequest from "effect/http/HttpClientRequest"
+import type * as HttpResponse from "effect/http/HttpClientResponse"
 
 const make = Effect.gen(function* () {
   const { rest, token } = yield* DiscordConfig

@@ -44,7 +44,7 @@
     "prepare": "husky"
   },
   "peerDependencies": {
-    "effect": ">=4.0.0-rc.113 <5.0.0"
+    "effect": "^4.0.0"
   },
   "optionalDependencies": {
     "discord-verify": "^1.2.0"
@@ -58,8 +58,8 @@
     "@changesets/cli": "^2.29.8",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/build-utils": "^0.8.9",
-    "@effect/platform-node": "4.0.0-rc.113",
-    "@tim-smart/openapi-gen": "^1.0.4",
+    "@effect/platform-node": "^4.0.0",
+    "@tim-smart/openapi-gen": "^1.0.5",
     "@types/chai": "^5.2.3",
     "@types/node": "^26.5.0",
     "@types/ws": "^8.18.1",
@@ -68,7 +68,7 @@
     "babel-plugin-annotate-pure-calls": "^0.5.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.3.1",
-    "effect": "4.0.0-rc.113",
+    "effect": "^4.0.0",
     "husky": "^9.1.7",
     "lerna": "^9.0.4",
     "lint-staged": "^16.3.0",
@@ -84,7 +84,7 @@
   },
   "gitHead": "9285bcdcc32ca835ac2b88bb7e8a92afa0d1ac55",
   "dependencies": {
-    "discord-api-types": "^0.38.55"
+    "discord-api-types": "^0.38.56"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

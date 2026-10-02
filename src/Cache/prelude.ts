@@ -37,14 +37,12 @@ export const opsWithParent = <E, T>({
 }: OptsWithParentOptions<E, T>): Stream.Stream<ParentCacheOp<T>, E> => {
   const fromParentOps = Stream.flatMap(fromParent, ([parentId, a]) =>
     Stream.fromIterable(
-      a.map(
-        (resource): ParentCacheOp<T> => ({
-          op: "create",
-          parentId,
-          resourceId: id(resource),
-          resource,
-        }),
-      ),
+      a.map((resource): ParentCacheOp<T> => ({
+        op: "create",
+        parentId,
+        resourceId: id(resource),
+        resource,
+      })),
     ),
   )
 
@@ -105,31 +103,22 @@ export const ops = <E, T>({
   remove,
   update,
 }: OpsOptions<E, T>): Stream.Stream<CacheOp<T>, E> => {
-  const createOps = Stream.map(
-    create,
-    (resource): CacheOp<T> => ({
-      op: "create",
-      resourceId: id(resource),
-      resource,
-    }),
-  )
+  const createOps = Stream.map(create, (resource): CacheOp<T> => ({
+    op: "create",
+    resourceId: id(resource),
+    resource,
+  }))
 
-  const updateOps = Stream.map(
-    update,
-    (resource): CacheOp<T> => ({
-      op: "update",
-      resourceId: id(resource),
-      resource,
-    }),
-  )
+  const updateOps = Stream.map(update, (resource): CacheOp<T> => ({
+    op: "update",
+    resourceId: id(resource),
+    resource,
+  }))
 
-  const removeOps = Stream.map(
-    remove,
-    (resourceId): CacheOp<T> => ({
-      op: "delete",
-      resourceId,
-    }),
-  )
+  const removeOps = Stream.map(remove, (resourceId): CacheOp<T> => ({
+    op: "delete",
+    resourceId,
+  }))
 
   return Stream.merge(createOps, updateOps).pipe(Stream.merge(removeOps))
 }
@@ -211,7 +200,7 @@ export const channels = <RM, EM, E>(
       onMiss: (_, id) => rest.getChannel(id),
       onParentMiss: guildId =>
         Effect.map(rest.listGuildChannels(guildId), guildChannels =>
-          guildChannels.map(
+          (guildChannels ?? []).map(
             channel => [channel.id, channel as Discord.GetChannel200] as const,
           ),
         ),

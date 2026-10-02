@@ -8,8 +8,8 @@ importers:
   .:
     dependencies:
       discord-api-types:
-        specifier: ^0.38.55
-        version: 0.38.55
+        specifier: ^0.38.56
+        version: 0.38.56
     devDependencies:
       "@babel/cli":
         specifier: ^7.28.6
@@ -36,11 +36,11 @@ importers:
         specifier: ^0.8.9
         version: 0.8.9
       "@effect/platform-node":
-        specifier: 4.0.0-rc.113
-        version: 4.0.0-rc.113(effect@4.0.0-rc.113)(redis@6.2.1)
+        specifier: ^4.0.0
+        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
       "@tim-smart/openapi-gen":
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^1.0.5
+        version: 1.0.5
       "@types/chai":
         specifier: ^5.2.3
         version: 5.2.3
@@ -52,10 +52,10 @@ importers:
         version: 8.18.1
       "@vitejs/plugin-react":
         specifier: ^5.1.4
-        version: 5.2.0(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.0))
+        version: 5.2.0(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))
       "@vitest/coverage-v8":
         specifier: ^4.0.18
-        version: 4.1.11(vitest@4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0))
+        version: 4.1.11(vitest@4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1))
       babel-plugin-annotate-pure-calls:
         specifier: ^0.5.0
         version: 0.5.0(@babel/core@7.29.7)
@@ -66,8 +66,8 @@ importers:
         specifier: ^17.3.1
         version: 17.4.2
       effect:
-        specifier: 4.0.0-rc.113
-        version: 4.0.0-rc.113
+        specifier: ^4.0.0
+        version: 4.0.0
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -100,10 +100,10 @@ importers:
         version: 7.0.2
       vite:
         specifier: ^8.2.2
-        version: 8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.0)
+        version: 8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0)
+        version: 4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1)
     optionalDependencies:
       discord-verify:
         specifier: ^1.2.0
@@ -451,23 +451,23 @@ packages:
     engines: { node: ">=16.17.1" }
     hasBin: true
 
-  "@effect/platform-node-shared@4.0.0-rc.113":
+  "@effect/platform-node-shared@4.0.0":
     resolution:
       {
-        integrity: sha512-EPCfjvKlHmNDgqIlT85P1OcgNUNvRxNtBpTFOz1UGHwNJe6Ap7rP93Rue7kzFUeplQMy6EfoZEH4CJR4N0nJ1g==,
+        integrity: sha512-VBXHJU9UXVZPdQGGDRjGXpo+TpOzRwZuMrdKAtIxi1qwcRftmacZ1zTgIrzBa0Z2RA2KVkoOecQUsTlt/nJZhw==,
       }
     engines: { node: ">=18.0.0" }
     peerDependencies:
-      effect: ^4.0.0-rc.113
+      effect: ^4.0.0
 
-  "@effect/platform-node@4.0.0-rc.113":
+  "@effect/platform-node@4.0.0":
     resolution:
       {
-        integrity: sha512-8luSE2JcGVsALQ6cZOWh5jdZu+VgcUKIKPfhN/MjX+ZzIuK/krm3jZBHYZdhqkXjM9s8aYGBxNMHGF0WzF+Gpg==,
+        integrity: sha512-/L+4MUbl8FejPKLHLROYSOebvHnfixkP8KiblSD/DE5uH5xENZBHaux4nH6XMnRP+lr8ajpEJFS8sUrmmxFJeQ==,
       }
     engines: { node: ">=18.0.0" }
     peerDependencies:
-      effect: ^4.0.0-rc.113
+      effect: ^4.0.0
       redis: ">=5.0.0 <7.0.0"
 
   "@emnapi/core@1.4.5":
@@ -2018,10 +2018,10 @@ packages:
         integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==,
       }
 
-  "@tim-smart/openapi-gen@1.0.4":
+  "@tim-smart/openapi-gen@1.0.5":
     resolution:
       {
-        integrity: sha512-wOFcAF45vniZaiqzjR4+lGgjJMrSlLTaZtUdscsOU/YJ6xOLafrQX/qH6wqLSJW4vOfOjHwylIf5EU3adp1jKw==,
+        integrity: sha512-6yHAtYUN56skknQ8L5ki231s6hHv8EjdbpXcXow5ZDCWKVVsvyXEUA7EBJ2gW/TdBdP7XpfNqecy9asrgevDvg==,
       }
     hasBin: true
 
@@ -3517,10 +3517,10 @@ packages:
       }
     engines: { node: ">=8" }
 
-  discord-api-types@0.38.55:
+  discord-api-types@0.38.56:
     resolution:
       {
-        integrity: sha512-ytuaRTzdnHUCXJ6KjL9MrItQX0xKncBKEeYI1Bst4+ud47eejH3cG6gaesYakjpPcUhh68XYS2YwGq3mmujFsA==,
+        integrity: sha512-Hti4RZsGvF5C7SM8rF2MDHtIm0Hyfrlk84GpEA29nj91tvVVMvX+oQSCodu10t2ZcjFGofq8TX0YyC04B2E69Q==,
       }
 
   discord-verify@1.2.0:
@@ -3572,10 +3572,10 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
-  effect@4.0.0-rc.113:
+  effect@4.0.0:
     resolution:
       {
-        integrity: sha512-uZ4Bh7KSlw2sdVdNDHPLSNjLGH+MWap7cheIHZoB/1T/ZJ3pvI4KiN3kUp50MpFKXhygOMmReJJOwWMQPwpPAg==,
+        integrity: sha512-ooc1TG5t+FfzgYnFz2ff6BBKyZ7EwBRVXC7c4RhQUAD6/TZ2gTXXMeb4WX7a19ozQo4J73/QW+S00YAIresoMQ==,
       }
 
   ejs@5.0.1:
@@ -6037,10 +6037,10 @@ packages:
         integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==,
       }
 
-  react-is@19.2.8:
+  react-is@19.3.0:
     resolution:
       {
-        integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==,
+        integrity: sha512-UpMYezM4v5/18F28aC66AEsjXIgE02kyEMH6yLdgLXu/UTfa1Ntwck/nNLrbqJsEXW7gPb0coNO9FQse9WTovA==,
       }
 
   react-refresh@0.18.0:
@@ -6921,10 +6921,10 @@ packages:
       }
     engines: { node: ">=18.17" }
 
-  undici@8.10.2:
+  undici@8.11.2:
     resolution:
       {
-        integrity: sha512-/y4/bH9YNU5hi9NIrpOuvGXFcxrj3CMrV+/AYpowAYTpHn8gX/XPFjNy766FPoYY0miQhdW977JFWKGNhBdwyQ==,
+        integrity: sha512-u4UB2/IrKdU6lFxumHmmo1a3fCQO5tzQllRorfoRS63txhrB7xTpSn1PftwC4qEHkOaqP95fCWW4lJzwErwzhQ==,
       }
     engines: { node: ">=22.19.0" }
 
@@ -7232,10 +7232,10 @@ packages:
       }
     engines: { node: ^18.17.0 || >=20.5.0 }
 
-  ws@8.21.3:
+  ws@8.22.0:
     resolution:
       {
-        integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==,
+        integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==,
       }
     engines: { node: ">=10.0.0" }
     peerDependencies:
@@ -7284,6 +7284,14 @@ packages:
     resolution:
       {
         integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==,
+      }
+    engines: { node: ">= 14.6" }
+    hasBin: true
+
+  yaml@2.9.1:
+    resolution:
+      {
+        integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==,
       }
     engines: { node: ">= 14.6" }
     hasBin: true
@@ -7652,21 +7660,21 @@ snapshots:
       micromatch: 4.0.8
       pkg-entry-points: 1.1.2
 
-  "@effect/platform-node-shared@4.0.0-rc.113(effect@4.0.0-rc.113)":
+  "@effect/platform-node-shared@4.0.0(effect@4.0.0)":
     dependencies:
       "@types/ws": 8.18.1
-      effect: 4.0.0-rc.113
-      ws: 8.21.3
+      effect: 4.0.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  "@effect/platform-node@4.0.0-rc.113(effect@4.0.0-rc.113)(redis@6.2.1)":
+  "@effect/platform-node@4.0.0(effect@4.0.0)(redis@6.2.1)":
     dependencies:
-      "@effect/platform-node-shared": 4.0.0-rc.113(effect@4.0.0-rc.113)
-      effect: 4.0.0-rc.113
+      "@effect/platform-node-shared": 4.0.0(effect@4.0.0)
+      effect: 4.0.0
       redis: 6.2.1
-      undici: 8.10.2
+      undici: 8.11.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -8466,9 +8474,9 @@ snapshots:
 
   "@standard-schema/spec@1.1.0": {}
 
-  "@tim-smart/openapi-gen@1.0.4":
+  "@tim-smart/openapi-gen@1.0.5":
     dependencies:
-      yaml: 2.9.0
+      yaml: 2.9.1
 
   "@ts-graphviz/adapter@2.0.6":
     dependencies:
@@ -8700,7 +8708,7 @@ snapshots:
   "@typescript/typescript-win32-x64@7.0.2":
     optional: true
 
-  "@vitejs/plugin-react@5.2.0(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.0))":
+  "@vitejs/plugin-react@5.2.0(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1))":
     dependencies:
       "@babel/core": 7.29.7
       "@babel/plugin-transform-react-jsx-self": 7.29.7(@babel/core@7.29.7)
@@ -8708,11 +8716,11 @@ snapshots:
       "@rolldown/pluginutils": 1.0.0-rc.3
       "@types/babel__core": 7.20.5
       react-refresh: 0.18.0
-      vite: 8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.0)
+      vite: 8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1)
     transitivePeerDependencies:
       - supports-color
 
-  "@vitest/coverage-v8@4.1.11(vitest@4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0))":
+  "@vitest/coverage-v8@4.1.11(vitest@4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1))":
     dependencies:
       "@bcoe/v8-coverage": 1.0.2
       "@vitest/utils": 4.1.11
@@ -8724,7 +8732,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0)
+      vitest: 4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1)
 
   "@vitest/expect@4.0.18":
     dependencies:
@@ -8735,13 +8743,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  "@vitest/mocker@4.0.18(vite@7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0))":
+  "@vitest/mocker@4.0.18(vite@7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1))":
     dependencies:
       "@vitest/spy": 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0)
+      vite: 7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1)
 
   "@vitest/pretty-format@4.0.18":
     dependencies:
@@ -9326,7 +9334,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  discord-api-types@0.38.55: {}
+  discord-api-types@0.38.56: {}
 
   discord-verify@1.2.0:
     dependencies:
@@ -9353,7 +9361,7 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  effect@4.0.0-rc.113: {}
+  effect@4.0.0: {}
 
   ejs@5.0.1: {}
 
@@ -10968,7 +10976,7 @@ snapshots:
   pretty-format@30.5.1:
     dependencies:
       "@jest/react-is-18": react-is@18.3.1
-      "@jest/react-is-19": react-is@19.2.8
+      "@jest/react-is-19": react-is@19.3.0
       "@jest/schemas": 30.5.0
       ansi-styles: 5.2.0
 
@@ -11018,7 +11026,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-is@19.2.8: {}
+  react-is@19.3.0: {}
 
   react-refresh@0.18.0: {}
 
@@ -11555,7 +11563,7 @@ snapshots:
 
   undici@6.28.1: {}
 
-  undici@8.10.2: {}
+  undici@8.11.2: {}
 
   universal-user-agent@6.0.1: {}
 
@@ -11582,7 +11590,7 @@ snapshots:
 
   validate-npm-package-name@6.0.2: {}
 
-  vite@7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0):
+  vite@7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1):
     dependencies:
       esbuild: 0.28.2
       fdir: 6.5.0(picomatch@4.0.7)
@@ -11595,9 +11603,9 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.33.0
       tsx: 4.23.13
-      yaml: 2.9.0
+      yaml: 2.9.1
 
-  vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.0):
+  vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(tsx@4.23.13)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -11609,12 +11617,12 @@ snapshots:
       esbuild: 0.28.2
       fsevents: 2.3.3
       tsx: 4.23.13
-      yaml: 2.9.0
+      yaml: 2.9.1
 
-  vitest@4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0):
+  vitest@4.0.18(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1):
     dependencies:
       "@vitest/expect": 4.0.18
-      "@vitest/mocker": 4.0.18(vite@7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0))
+      "@vitest/mocker": 4.0.18(vite@7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1))
       "@vitest/pretty-format": 4.0.18
       "@vitest/runner": 4.0.18
       "@vitest/snapshot": 4.0.18
@@ -11631,7 +11639,7 @@ snapshots:
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.0)
+      vite: 7.3.6(@types/node@26.5.0)(lightningcss@1.33.0)(tsx@4.23.13)(yaml@2.9.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       "@types/node": 26.5.0
@@ -11716,7 +11724,7 @@ snapshots:
       imurmurhash: 0.1.4
       signal-exit: 4.1.0
 
-  ws@8.21.3: {}
+  ws@8.22.0: {}
 
   xtend@4.0.2: {}
 
@@ -11729,6 +11737,8 @@ snapshots:
   yallist@5.0.0: {}
 
   yaml@2.9.0: {}
+
+  yaml@2.9.1: {}
 
   yargs-parser@20.2.9: {}
 

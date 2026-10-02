@@ -1,7 +1,7 @@
 import * as Duration from "effect/Duration"
 import { pipe } from "effect/Function"
 import * as Option from "effect/Option"
-import * as Headers from "effect/unstable/http/Headers"
+import * as Headers from "effect/http/Headers"
 
 const majorResources = ["channels", "guilds", "webhooks"] as const
 
