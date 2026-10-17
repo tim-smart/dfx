@@ -72,8 +72,7 @@ dispatch. If your process stops before a handler finishes, the next RESUME
 starts after that dispatch and Discord won't send it again.
 
 To handle dispatches at least once, provide a `DispatchHook`. It runs for each
-dispatch before the sequence is stored, so a dispatch is only stored for RESUME
-after the hook completes:
+dispatch before the sequence is stored:
 
 ```typescript
 import { DispatchHook, DiscordIxLive } from "dfx/gateway"
@@ -97,8 +96,7 @@ const DiscordLayer = DiscordIxLive.pipe(
 What the hook gives you:
 
 - It runs once per received dispatch, one at a time per shard, in sequence
-  order. The stored sequence never passes a dispatch whose hook hasn't
-  completed.
+  order.
 - If the shard shuts down while the hook runs, the hook is interrupted and the
   sequence isn't stored, so the next RESUME replays that dispatch.
 - If the hook fails, the shard logs the error, reconnects and resumes from the
@@ -122,5 +120,4 @@ What it doesn't give you:
 
 The hook runs on the shard's read loop, which also processes heartbeat ACKs.
 Keep it short, for example by appending to a durable inbox and returning. A hook
-that takes longer than the heartbeat interval (about 41 seconds) can make the
-shard reconnect.
+that takes longer than the heartbeat interval can make the shard reconnect.

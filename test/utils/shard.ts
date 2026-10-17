@@ -3,6 +3,7 @@ import type { MessageSend } from "dfx/DiscordGateway/DiscordWS"
 import { DiscordWS, Reconnect } from "dfx/DiscordGateway/DiscordWS"
 import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
 import { make as makeShard, Shard } from "dfx/DiscordGateway/Shard"
+import { DispatchHook } from "dfx/DiscordGateway/Shard/DispatchHook"
 import type { ShardState } from "dfx/DiscordGateway/Shard/StateStore"
 import { ShardStateStore } from "dfx/DiscordGateway/Shard/StateStore"
 import { MemoryRateLimitStoreLive, RateLimiterLive } from "dfx/RateLimit"
@@ -21,7 +22,7 @@ import * as TestClock from "effect/testing/TestClock"
 
 export const shardId: [id: number, count: number] = [0, 1]
 export const sessionId = "session-1"
-export const resumeUrl = "wss://resume.example"
+const resumeUrl = "wss://resume.example"
 
 export const hello = (heartbeat_interval: number) =>
   ({
@@ -62,7 +63,7 @@ export interface Harness {
   ) => Effect.Effect<void>
   /** completes when the sequence has reached a hub subscriber */
   readonly published: (seq: number) => Effect.Effect<void>
-  /** completes when the shard closes or reconnects the socket */
+  /** completes when the shard writes `Reconnect` */
   readonly dropped: Effect.Effect<void>
   readonly firstHeartbeat: Effect.Effect<Discord.GatewayHeartbeat>
   readonly storedSequence: Effect.Effect<number | null>
@@ -78,12 +79,12 @@ export const within = <A, E>(effect: Effect.Effect<A, E>) =>
 
 /**
  * Runs `Shard.connect` against a scripted socket, the real memory state store
- * (with `set` recorded) and the real messaging hub. `extra` is provided to
- * both the shard layer and the test body.
+ * (with `set` recorded) and the real messaging hub. When `hook` is given it is
+ * provided as the `DispatchHook`, with each call recorded.
  */
 export const withShard = <A, E>(
   body: (h: Harness) => Effect.Effect<A, E>,
-  extra: (events: Array<Event>) => Layer.Layer<never> = () => Layer.empty,
+  hook?: (p: Discord.GatewayDispatchPayload) => Effect.Effect<void>,
 ): Promise<A> => {
   const events: Array<Event> = []
   const written: Array<MessageSend> = []
@@ -97,7 +98,6 @@ export const withShard = <A, E>(
       connect: ({ onConnecting }) =>
         Effect.gen(function* () {
           yield* onConnecting
-          yield* Effect.addFinalizer(() => Deferred.succeed(dropped, void 0))
           return {
             take: Queue.take(inbound),
             setUrl: () => Effect.void,
@@ -126,14 +126,10 @@ export const withShard = <A, E>(
               // yield first, as a real store would, so a publish that
               // happened before the set is seen first
               set: (state: ShardState) =>
-                Effect.yieldNow.pipe(
-                  Effect.andThen(
-                    Effect.sync(() => {
-                      events.push({ kind: "set", seq: state.sequence })
-                    }),
-                  ),
-                  Effect.andThen(inner.set(state)),
-                ),
+                Effect.flatMap(Effect.yieldNow, () => {
+                  events.push({ kind: "set", seq: state.sequence })
+                  return inner.set(state)
+                }),
             }
           },
         })
@@ -149,7 +145,16 @@ export const withShard = <A, E>(
       Layer.provide(
         DiscordConfig.layer({ token: Redacted.make("test-token") }),
       ),
-      Layer.provideMerge(extra(events)),
+      Layer.provideMerge(
+        hook
+          ? Layer.succeed(DispatchHook, (p, context) =>
+              Effect.suspend(() => {
+                events.push({ kind: "hook", seq: p.s, context })
+                return hook(p)
+              }),
+            )
+          : Layer.empty,
+      ),
     )
 
     return yield* Effect.gen(function* () {

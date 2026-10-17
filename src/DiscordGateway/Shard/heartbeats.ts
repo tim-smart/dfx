@@ -16,10 +16,6 @@ const payloadOrReconnect = (
       : Effect.succeed(DiscordWS.Reconnect),
   )
 
-/**
- * `sequence` is the last sequence received, which can be ahead of the one
- * stored for RESUME.
- */
 export const send = (
   hellos: Queue.Dequeue<Discord.GatewayHelloData>,
   acks: Queue.Dequeue<void>,

@@ -15,7 +15,6 @@ import * as Effect from "effect/Effect"
 import * as Layer from "effect/Layer"
 import * as Option from "effect/Option"
 import * as Redacted from "effect/Redacted"
-import type * as Types from "effect/Types"
 import * as FiberHandle from "effect/FiberHandle"
 import { constant, constTrue, constVoid } from "effect/Function"
 import * as Queue from "effect/Queue"
@@ -29,6 +28,8 @@ const enum Phase {
   Handshake,
   Connected,
 }
+
+const noSession: ShardState = { resumeUrl: "", sessionId: "", sequence: 0 }
 
 export const make = Effect.gen(function* () {
   const { gateway, token } = yield* DiscordConfig
@@ -47,20 +48,12 @@ export const make = Effect.gen(function* () {
       const reconnectHandle = yield* FiberHandle.make()
       let phase = Phase.Connecting
       const stateStore = shardState.forShard(shard)
-      const storedState = yield* stateStore.get
-      // copy, so READY doesn't change a stored object before it is committed
-      const resumeState: Types.Mutable<ShardState> = Option.match(storedState, {
-        onNone: () => ({ resumeUrl: "", sessionId: "", sequence: 0 }),
-        onSome: state => ({ ...state }),
-      })
-      // heartbeats use the last sequence received, RESUME uses the last one
-      // stored, which can lag behind while the dispatch hook runs
-      let lastReceived = Option.getOrNull(
-        Option.map(storedState, state => state.sequence),
-      )
-      // after a failed dispatch, frames from the old connection are skipped
-      // so nothing is stored past the failed sequence
-      let awaitingHello = false
+      const stored = Option.getOrUndefined(yield* stateStore.get)
+      // the state committed for RESUME, never mutated so stores may keep it
+      let resumeState: ShardState = stored ?? noSession
+      // heartbeats report the last sequence received, which runs ahead of
+      // `resumeState.sequence` while the dispatch hook runs
+      let lastReceived: number | null = stored?.sequence ?? null
       const setPhase = (p: Phase): Effect.Effect<void> =>
         Effect.suspend(() => {
           phase = p
@@ -91,6 +84,7 @@ export const make = Effect.gen(function* () {
           limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
           socket.write(p),
         )
+      const reconnect = Effect.andThen(onConnecting, socket.write(Reconnect))
 
       const hellos = yield* Effect.acquireRelease(
         Queue.make<Discord.GatewayHelloData>(),
@@ -121,21 +115,25 @@ export const make = Effect.gen(function* () {
       )
 
       // delayed reconnect
-      const delayedReconnect = Effect.delay(socket.write(Reconnect), 30_000)
+      const delayedReconnect = Effect.delay(reconnect, 30_000)
 
-      // pass a copy, so stores that keep the object don't see later changes
-      const commit = (sequence: number) =>
+      // uninterruptible, so a shutdown after the hook completes still stores
+      // the sequence and the dispatch is not replayed
+      const commit = (state: ShardState) =>
         Effect.uninterruptible(
           Effect.suspend(() => {
-            resumeState.sequence = sequence
-            return stateStore.set({ ...resumeState })
+            resumeState = state
+            return stateStore.set(state)
           }),
         )
 
       function* onPayload(p: Discord.GatewayReceivePayload) {
-        if (awaitingHello) {
-          if (p.op !== Discord.GatewayOpcodes.Hello) return
-          awaitingHello = false
+        // until HELLO, anything still queued is from the previous socket
+        if (
+          phase === Phase.Connecting &&
+          p.op !== Discord.GatewayOpcodes.Hello
+        ) {
+          return
         }
         if (typeof p.s === "number") {
           lastReceived = p.s
@@ -155,21 +153,25 @@ export const make = Effect.gen(function* () {
           }
           case Discord.GatewayOpcodes.InvalidSession: {
             if (!p.d) {
-              resumeState.sessionId = ""
+              resumeState = noSession
               lastReceived = null
               yield* stateStore.clear
             }
-            yield* socket.write(Reconnect)
+            yield* reconnect
             return
           }
           case Discord.GatewayOpcodes.Dispatch: {
-            if (p.t === "READY") {
-              resumeState.sessionId = p.d.session_id
-              resumeState.resumeUrl = p.d.resume_gateway_url
-            }
-            yield* onDispatch(p, { shard, sessionId: resumeState.sessionId })
-            if (resumeState.sessionId !== "" && resumeState.resumeUrl !== "") {
-              yield* commit(p.s)
+            const next: ShardState =
+              p.t === "READY"
+                ? {
+                    sessionId: p.d.session_id,
+                    resumeUrl: p.d.resume_gateway_url,
+                    sequence: p.s,
+                  }
+                : { ...resumeState, sequence: p.s }
+            yield* onDispatch(p, { shard, sessionId: next.sessionId })
+            if (next.sessionId !== "") {
+              yield* commit(next)
             }
             if (p.t === "READY") {
               yield* socket.setUrl(p.d.resume_gateway_url)
@@ -181,7 +183,7 @@ export const make = Effect.gen(function* () {
             return
           }
           case Discord.GatewayOpcodes.Reconnect: {
-            yield* socket.write(Reconnect)
+            yield* reconnect
             return
           }
         }
@@ -193,21 +195,24 @@ export const make = Effect.gen(function* () {
         step: constVoid,
       }).pipe(Effect.forkScoped)
 
-      // a failed dispatch drops the connection, so it resumes from the last
-      // stored sequence instead of leaving the shard half alive
+      // a failure here drops the connection and resumes from the committed
+      // sequence, instead of leaving heartbeats running with no reader
       yield* Effect.gen(function* () {
         while (true) {
           yield* onPayload(yield* socket.take)
         }
       }).pipe(
-        Effect.catchCause(cause => {
-          if (Cause.hasInterruptsOnly(cause)) return Effect.failCause(cause)
-          awaitingHello = true
-          return Effect.andThen(
-            Effect.logError("Failed to handle payload, reconnecting", cause),
-            socket.write(Reconnect),
-          )
-        }),
+        Effect.catchCause(cause =>
+          Cause.hasInterruptsOnly(cause)
+            ? Effect.failCause(cause)
+            : Effect.andThen(
+                Effect.logError(
+                  "Failed to handle payload, reconnecting",
+                  cause,
+                ),
+                reconnect,
+              ),
+        ),
         Effect.forever,
         Effect.forkScoped,
       )
