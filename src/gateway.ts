@@ -31,6 +31,12 @@ export {
 
 export { CachePrelude, DiscordWS, SendEvent, Shard, ShardStore }
 
+export {
+  DispatchHook,
+  type DispatchHookContext,
+  type DispatchHookService,
+} from "./DiscordGateway/Shard/DispatchHook.ts"
+
 export const DiscordLive: Layer.Layer<
   RateLimiter | DiscordGateway | DiscordREST,
   never,
