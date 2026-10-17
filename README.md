@@ -102,7 +102,7 @@ What the hook gives you:
 - If the shard shuts down while the hook runs, the hook is interrupted and the
   sequence isn't stored, so the next RESUME replays that dispatch.
 - If the hook fails, the shard logs the error, reconnects and resumes from the
-  last stored sequence.
+  last stored sequence. READY is the exception, see below.
 - Heartbeats keep reporting the latest sequence received, however long the
   hook takes.
 
@@ -115,6 +115,10 @@ What it doesn't give you:
 - Delivery beyond Discord's resume window. If the session can't be resumed,
   Discord sends an invalid session, the shard identifies again, and the missed
   dispatches are gone.
+- Recovery when a new session's READY fails. The session is only stored once
+  the hook and the store write for READY succeed. If either fails there is no
+  session to resume, so the shard identifies again and gets a new READY.
+  Dispatches the abandoned session sent after its READY are not replayed.
 
 The hook runs on the shard's read loop, which also processes heartbeat ACKs.
 Keep it short, for example by appending to a durable inbox and returning. A hook

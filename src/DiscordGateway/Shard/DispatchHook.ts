@@ -24,7 +24,10 @@ export type DispatchHookService = (
  * - If the shard shuts down while the hook is running, the hook is interrupted
  *   and the sequence is not stored, so a later RESUME replays the dispatch.
  * - If the hook fails, the shard reconnects and resumes from the last stored
- *   sequence.
+ *   sequence. The exception is a session's READY: the session is only stored
+ *   once READY's hook and store write succeed, so if either fails there is
+ *   nothing to resume. The shard identifies again and starts a new session,
+ *   and dispatches the old session sent after READY are not replayed.
  *
  * Use it to hand dispatches to durable storage. Delivery is at-least-once
  * within Discord's resume window: dispatches replayed after a RESUME run
