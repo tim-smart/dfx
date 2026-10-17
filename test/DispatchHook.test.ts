@@ -1,5 +1,5 @@
 import { DispatchHook } from "dfx/DiscordGateway/Shard/DispatchHook"
-import type * as Discord from "dfx/types"
+import * as Discord from "dfx/types"
 import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
 import * as Exit from "effect/Exit"
@@ -39,6 +39,28 @@ const blockOn =
     p.s === seq
       ? Effect.andThen(Deferred.succeed(started, void 0), Effect.never)
       : Effect.void
+
+const failOnce = (seq: number) => {
+  let failed = false
+  return (p: Discord.GatewayDispatchPayload) =>
+    Effect.suspend(() => {
+      if (p.s !== seq || failed) return Effect.void
+      failed = true
+      return Effect.die("hook failed")
+    })
+}
+
+/** IDENTIFY and RESUME payloads sent, with the token left out */
+const handshakes = (h: Harness) =>
+  h.written.flatMap((m): Array<{ op: number; d?: unknown }> =>
+    typeof m === "symbol"
+      ? []
+      : m.op === Discord.GatewayOpcodes.Identify
+        ? [{ op: m.op }]
+        : m.op === Discord.GatewayOpcodes.Resume
+          ? [{ op: m.op, d: m.d }]
+          : [],
+  )
 
 describe("DispatchHook", () => {
   it("runs before each dispatch is stored and published, with the READY session", () =>
@@ -103,23 +125,54 @@ describe("DispatchHook", () => {
     )
   })
 
-  it("a hook defect drops the connection without storing or publishing the dispatch", () =>
-    withHook(
-      p => (p.s === 3 ? Effect.die("hook failed") : Effect.void),
-      h =>
-        Effect.gen(function* () {
-          yield* h.receive(
-            hello(1000),
-            ready(1),
-            dispatch(2),
-            dispatch(3),
-            dispatch(4),
-          )
-          yield* within(h.dropped)
-          yield* settle
+  it("a hook defect reconnects and resumes from the stored sequence, replaying the dispatch through the hook", () =>
+    withHook(failOnce(3), h =>
+      Effect.gen(function* () {
+        yield* h.receive(
+          hello(1000),
+          ready(1),
+          dispatch(2),
+          dispatch(3),
+          dispatch(4),
+        )
+        yield* within(h.dropped)
+        yield* settle
 
-          expect(sequencesOf(h.events, "publish")).toEqual([1, 2])
-          expect(yield* h.storedSequence).toBe(2)
-        }),
+        expect(sequencesOf(h.events, "publish")).toEqual([1, 2])
+        expect(yield* h.storedSequence).toBe(2)
+
+        yield* h.receive(hello(1000), dispatch(3), dispatch(4))
+        yield* within(h.published(4))
+
+        expect(handshakes(h)).toEqual([
+          { op: Discord.GatewayOpcodes.Identify },
+          {
+            op: Discord.GatewayOpcodes.Resume,
+            d: expect.objectContaining({ session_id: sessionId, seq: 2 }),
+          },
+        ])
+        expect(sequencesOf(h.events, "hook")).toEqual([1, 2, 3, 3, 4])
+        expect(sequencesOf(h.events, "publish")).toEqual([1, 2, 3, 4])
+        expect(yield* h.storedSequence).toBe(4)
+      }),
+    ))
+
+  it("a hook defect on READY identifies again, as there is no session to resume", () =>
+    withHook(failOnce(1), h =>
+      Effect.gen(function* () {
+        yield* h.receive(hello(1000), ready(1), dispatch(2))
+        yield* within(h.dropped)
+        yield* settle
+
+        expect(yield* h.storedSequence).toBe(null)
+
+        yield* h.receive(hello(1000), ready(1), dispatch(2))
+        yield* within(h.published(2))
+
+        expect(handshakes(h)).toEqual([
+          { op: Discord.GatewayOpcodes.Identify },
+          { op: Discord.GatewayOpcodes.Identify },
+        ])
+      }),
     ))
 })
