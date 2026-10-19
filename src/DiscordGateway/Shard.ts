@@ -65,9 +65,10 @@ export const make = Effect.gen(function* () {
       // handshake is sent; kept across sockets so no reconnect skips the wait
       let failures = 0
       let retryAt = 0
-      // completes once IDENTIFY or RESUME is sent on the current socket
-      let handshakeSent = Deferred.makeUnsafe<void>()
-      Deferred.doneUnsafe(handshakeSent, Effect.void)
+      // true once IDENTIFY or RESUME is sent on the current socket, false if
+      // that handshake failed or was cancelled
+      let handshakeSent = Deferred.makeUnsafe<boolean>()
+      Deferred.doneUnsafe(handshakeSent, Effect.succeed(true))
       const setPhase = (p: Phase): Effect.Effect<void> =>
         Effect.suspend(() => {
           phase = p
@@ -90,10 +91,11 @@ export const make = Effect.gen(function* () {
         setPhase(Phase.Connected),
       )
 
-      // a new socket drops any handshake still pending on the old one
+      // a new socket drops any handshake still pending on the old one, after
+      // marking the old socket stale for anything waiting on that handshake
       const onConnecting = Effect.andThen(
-        FiberHandle.clear(reconnectHandle),
         setPhase(Phase.Connecting),
+        FiberHandle.clear(reconnectHandle),
       )
 
       const socket = yield* dws.connect({ onConnecting })
@@ -102,10 +104,29 @@ export const make = Effect.gen(function* () {
           limiter.maybeWait("dfx.shard.send", Duration.minutes(1), 120),
           socket.write(p),
         )
+      // doesn't clear `reconnectHandle`, so the handshake fiber can use it
+      // without interrupting itself
       const reconnect = Effect.andThen(
         setPhase(Phase.Connecting),
         socket.write(Reconnect),
       )
+
+      // backs off the next handshake, then drops the connection
+      const recover =
+        (failed: string) =>
+        (cause: Cause.Cause<never>): Effect.Effect<void> =>
+          Cause.hasInterruptsOnly(cause)
+            ? Effect.failCause(cause)
+            : Effect.gen(function* () {
+                failures++
+                const delay = retryDelay(failures)
+                retryAt = (yield* Clock.currentTimeMillis) + delay
+                yield* Effect.logError(
+                  `${failed}, reconnecting and waiting ${delay}ms before the handshake`,
+                  cause,
+                )
+                yield* reconnect
+              })
 
       const hellos = yield* Effect.acquireRelease(
         Queue.make<Discord.GatewayHelloData>(),
@@ -137,14 +158,16 @@ export const make = Effect.gen(function* () {
 
       // waits out any failure backoff, then identifies or resumes and
       // reconnects if the handshake doesn't complete within 30s
-      const handshake = (sent: Deferred.Deferred<void>) =>
+      const handshake = (sent: Deferred.Deferred<boolean>) =>
         Effect.gen(function* () {
           const wait = retryAt - (yield* Clock.currentTimeMillis)
           if (wait > 0) yield* Effect.sleep(wait)
           yield* write(yield* identify)
+          yield* Deferred.succeed(sent, true)
+          yield* Effect.delay(reconnect, 30_000)
         }).pipe(
-          Effect.ensuring(Deferred.succeed(sent, void 0)),
-          Effect.andThen(Effect.delay(reconnect, 30_000)),
+          Effect.ensuring(Deferred.succeed(sent, false)),
+          Effect.catchCause(recover("Failed to send the handshake")),
         )
 
       // uninterruptible, so a shutdown after the hook completes still stores
@@ -170,14 +193,11 @@ export const make = Effect.gen(function* () {
         ) {
           return
         }
-        // only ACKs are expected before the handshake, so hold anything else
-        // until it is sent, and drop it if the socket was replaced meanwhile
-        if (
-          p.op !== Discord.GatewayOpcodes.Hello &&
-          p.op !== Discord.GatewayOpcodes.HeartbeatAck
-        ) {
-          yield* Deferred.await(handshakeSent)
-          if (phase === Phase.Connecting) return
+        // Discord sends no dispatches before the handshake, so hold any until
+        // it is sent, and drop them if it failed or the socket was replaced
+        if (p.op === Discord.GatewayOpcodes.Dispatch) {
+          const sent = yield* Deferred.await(handshakeSent)
+          if (!sent || phase === Phase.Connecting) return
         }
         if (typeof p.s === "number") {
           lastReceived = p.s
@@ -187,7 +207,7 @@ export const make = Effect.gen(function* () {
           case Discord.GatewayOpcodes.Hello: {
             yield* setPhase(Phase.Handshake)
             Queue.offerUnsafe(hellos, p.d)
-            handshakeSent = Deferred.makeUnsafe<void>()
+            handshakeSent = Deferred.makeUnsafe<boolean>()
             yield* FiberHandle.run(reconnectHandle, handshake(handshakeSent))
             return
           }
@@ -246,20 +266,7 @@ export const make = Effect.gen(function* () {
           yield* onPayload(yield* socket.take)
         }
       }).pipe(
-        Effect.catchCause(cause =>
-          Cause.hasInterruptsOnly(cause)
-            ? Effect.failCause(cause)
-            : Effect.gen(function* () {
-                failures++
-                const delay = retryDelay(failures)
-                retryAt = (yield* Clock.currentTimeMillis) + delay
-                yield* Effect.logError(
-                  `Failed to handle payload, reconnecting and waiting ${delay}ms before the handshake`,
-                  cause,
-                )
-                yield* reconnect
-              }),
-        ),
+        Effect.catchCause(recover("Failed to handle payload")),
         Effect.forever,
         Effect.forkScoped,
       )
