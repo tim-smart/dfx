@@ -101,6 +101,11 @@ What the hook gives you:
   sequence isn't stored, so the next RESUME replays that dispatch.
 - If the hook fails, the shard logs the error, reconnects and resumes from the
   last stored sequence. READY is the exception, see below.
+- A hook that keeps failing doesn't flood Discord. The shard drops the
+  connection straight away, but waits before its next IDENTIFY or RESUME: 1
+  second after the first failure, doubling with each consecutive failure up to
+  2 minutes, and back to 1 second once a dispatch is stored. Socket reconnects
+  in the meantime, whatever causes them, don't shorten the wait.
 - Heartbeats keep reporting the latest sequence received, however long the
   hook takes.
 
@@ -117,6 +122,10 @@ What it doesn't give you:
   the hook and the store write for READY succeed. If either fails there is no
   session to resume, so the shard identifies again and gets a new READY.
   Dispatches the abandoned session sent after its READY are not replayed.
+- A guarantee about Discord's daily IDENTIFY limit. The backoff limits how
+  often each shard retries, so a single shard failing on READY identifies at
+  most every 2 minutes. Several shards failing at once can still use up the
+  limit between them.
 
 The hook runs on the shard's read loop, which also processes heartbeat ACKs.
 Keep it short, for example by appending to a durable inbox and returning. A hook

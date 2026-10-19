@@ -28,6 +28,10 @@ export type DispatchHookService = (
  *   once READY's hook and store write succeed, so if either fails there is
  *   nothing to resume. The shard identifies again and starts a new session,
  *   and dispatches the old session sent after READY are not replayed.
+ * - After a failure the shard waits before its next IDENTIFY or RESUME: 1s,
+ *   doubling with each consecutive failure up to 2 minutes, and back to 1s once
+ *   a dispatch is stored. The wait is per shard, so it does not keep a bot with
+ *   several failing shards within Discord's daily IDENTIFY limit.
  *
  * Use it to hand dispatches to durable storage. Delivery is at-least-once
  * within Discord's resume window: dispatches replayed after a RESUME run
