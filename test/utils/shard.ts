@@ -65,6 +65,11 @@ export interface Harness {
   readonly published: (seq: number) => Effect.Effect<void>
   /** completes when the shard writes `Reconnect` */
   readonly dropped: Effect.Effect<void>
+  /**
+   * The socket opened a new connection, as `DiscordWS` does after any close,
+   * whatever caused it. Follow it with a HELLO.
+   */
+  readonly reopen: Effect.Effect<void>
   readonly firstHeartbeat: Effect.Effect<Discord.GatewayHeartbeat>
   readonly storedSequence: Effect.Effect<number | null>
   readonly shardScope: Scope.Closeable
@@ -93,10 +98,12 @@ export const withShard = <A, E>(
     const inbound = yield* Queue.unbounded<Discord.GatewayReceivePayload>()
     const dropped = yield* Deferred.make<void>()
     const heartbeat = yield* Deferred.make<Discord.GatewayHeartbeat>()
+    let reopen: Effect.Effect<void> = Effect.void
 
     const FakeWS = Layer.succeed(DiscordWS, {
       connect: ({ onConnecting }) =>
         Effect.gen(function* () {
+          reopen = onConnecting
           yield* onConnecting
           return {
             take: Queue.take(inbound),
@@ -203,6 +210,7 @@ export const withShard = <A, E>(
           }),
         published: seq => Deferred.await(publishedDeferred(seq)),
         dropped: Deferred.await(dropped),
+        reopen: Effect.suspend(() => reopen),
         firstHeartbeat: Deferred.await(heartbeat),
         storedSequence: Effect.map(stateStore.get, state =>
           Option.getOrNull(Option.map(state, s => s.sequence)),
