@@ -1,38 +1,29 @@
-import * as Option from "effect/Option"
 import * as Effect from "effect/Effect"
 import * as Ref from "effect/Ref"
 import * as DiscordWS from "../DiscordWS.ts"
 import * as SendEvents from "./sendEvents.ts"
 import type * as Discord from "../../types.ts"
 import * as EffectU from "../../utils/Effect.ts"
-import type { ShardState } from "./StateStore.ts"
 import * as Queue from "effect/Queue"
-
-const payload = (state: Effect.Effect<Option.Option<ShardState>>) =>
-  Effect.map(state, shardState =>
-    SendEvents.heartbeat(
-      Option.getOrNull(Option.map(shardState, s => s.sequence)),
-    ),
-  )
 
 const payloadOrReconnect = (
   ref: Ref.Ref<boolean>,
-  state: Effect.Effect<Option.Option<ShardState>>,
+  sequence: Effect.Effect<number | null>,
 ) =>
-  Effect.flatMap(
-    Ref.get(ref),
-    (acked): Effect.Effect<DiscordWS.MessageSend> =>
-      acked ? payload(state) : Effect.succeed(DiscordWS.Reconnect),
+  Effect.flatMap(Ref.get(ref), (acked): Effect.Effect<DiscordWS.MessageSend> =>
+    acked
+      ? Effect.map(sequence, SendEvents.heartbeat)
+      : Effect.succeed(DiscordWS.Reconnect),
   )
 
 export const send = (
   hellos: Queue.Dequeue<Discord.GatewayHelloData>,
   acks: Queue.Dequeue<void>,
-  state: Effect.Effect<Option.Option<ShardState>>,
+  sequence: Effect.Effect<number | null>,
   sendMessage: (p: DiscordWS.MessageSend) => Effect.Effect<void>,
 ) =>
   Effect.flatMap(Ref.make(true), ackedRef => {
-    const sendPayload = payloadOrReconnect(ackedRef, state).pipe(
+    const sendPayload = payloadOrReconnect(ackedRef, sequence).pipe(
       Effect.tap(Ref.set(ackedRef, false)),
       Effect.flatMap(sendMessage),
     )
