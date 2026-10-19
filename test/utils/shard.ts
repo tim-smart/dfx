@@ -70,6 +70,8 @@ export interface Harness {
    * whatever caused it. Follow it with a HELLO.
    */
   readonly reopen: Effect.Effect<void>
+  /** makes the shard's store reads die until switched back */
+  readonly failStoreReads: (fail: boolean) => Effect.Effect<void>
   readonly firstHeartbeat: Effect.Effect<Discord.GatewayHeartbeat>
   readonly storedSequence: Effect.Effect<number | null>
   readonly shardScope: Scope.Closeable
@@ -99,6 +101,7 @@ export const withShard = <A, E>(
     const dropped = yield* Deferred.make<void>()
     const heartbeat = yield* Deferred.make<Discord.GatewayHeartbeat>()
     let reopen: Effect.Effect<void> = Effect.void
+    let storeReadsFail = false
 
     const FakeWS = Layer.succeed(DiscordWS, {
       connect: ({ onConnecting }) =>
@@ -130,6 +133,9 @@ export const withShard = <A, E>(
             const inner = store.forShard(id)
             return {
               ...inner,
+              get: Effect.suspend(() =>
+                storeReadsFail ? Effect.die("store read failed") : inner.get,
+              ),
               // yield first, as a real store would, so a publish that
               // happened before the set is seen first
               set: (state: ShardState) =>
@@ -211,6 +217,10 @@ export const withShard = <A, E>(
         published: seq => Deferred.await(publishedDeferred(seq)),
         dropped: Deferred.await(dropped),
         reopen: Effect.suspend(() => reopen),
+        failStoreReads: fail =>
+          Effect.sync(() => {
+            storeReadsFail = fail
+          }),
         firstHeartbeat: Deferred.await(heartbeat),
         storedSequence: Effect.map(stateStore.get, state =>
           Option.getOrNull(Option.map(state, s => s.sequence)),

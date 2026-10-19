@@ -36,6 +36,13 @@ const failOnce = (seq: number) => {
     })
 }
 
+const reconnectFrame = {
+  op: Discord.GatewayOpcodes.Reconnect,
+  d: null,
+  s: null,
+  t: null,
+} as Discord.GatewayReceivePayload
+
 const handshakes = (h: Harness) =>
   h.written.filter(
     m =>
@@ -256,5 +263,74 @@ describe("DispatchHook", () => {
         failingOn(failures, p => p.s === 4 || (p.s === 3 && failuresOn3++ < 2)),
       )
     })
+
+    const reconnects = (h: Harness) =>
+      h.written.filter(m => typeof m === "symbol").length
+
+    it("handle control frames while the handshake waits", () =>
+      withShard(
+        h =>
+          Effect.gen(function* () {
+            yield* h.receive(hello(heartbeatInterval), ready(1), dispatch(2))
+            yield* within(h.published(2))
+            yield* h.receive(dispatch(3))
+            yield* within(h.dropped)
+            yield* settle
+            const before = reconnects(h)
+
+            yield* h.reopen
+            yield* h.receive(hello(heartbeatInterval), reconnectFrame)
+            yield* settle
+
+            expect(reconnects(h)).toBe(before + 1)
+            expect(handshakes(h)).toHaveLength(1)
+          }),
+        failOnce(3),
+      ))
+
+    it("treat a failed store read during the handshake as a failure", () =>
+      withShard(h =>
+        Effect.gen(function* () {
+          yield* h.failStoreReads(true)
+          yield* h.receive(hello(heartbeatInterval))
+          yield* within(h.dropped)
+          yield* h.failStoreReads(false)
+
+          yield* h.reopen
+          yield* h.receive(hello(heartbeatInterval))
+          yield* TestClock.adjust(999)
+          yield* settle
+          expect(handshakes(h)).toHaveLength(0)
+
+          yield* TestClock.adjust(1)
+          yield* settle
+          expect(handshakes(h)).toHaveLength(1)
+        }),
+      ))
+
+    it("drop a frame waiting for the handshake when the socket is replaced", () =>
+      withShard(
+        h =>
+          Effect.gen(function* () {
+            yield* h.receive(hello(heartbeatInterval), ready(1), dispatch(2))
+            yield* within(h.published(2))
+            yield* h.receive(dispatch(3))
+            yield* within(h.dropped)
+            yield* settle
+
+            // a frame arrives while the handshake waits out the backoff, then
+            // the socket is replaced before anything is sent
+            yield* h.reopen
+            yield* h.receive(hello(heartbeatInterval), dispatch(4))
+            yield* settle
+            yield* h.reopen
+            yield* settle
+
+            expect(sequencesOf(h.events, "hook")).toEqual([1, 2, 3])
+            expect(sequencesOf(h.events, "publish")).toEqual([1, 2])
+            expect(yield* h.storedSequence).toBe(2)
+          }),
+        failOnce(3),
+      ))
   })
 })
