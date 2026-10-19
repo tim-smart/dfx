@@ -36,8 +36,8 @@ importers:
         specifier: ^0.8.9
         version: 0.8.9
       "@effect/platform-node":
-        specifier: ^4.0.0
-        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
+        specifier: ^4.0.5
+        version: 4.0.5(effect@4.0.5)(redis@6.2.1)
       "@tim-smart/openapi-gen":
         specifier: ^1.0.5
         version: 1.0.5
@@ -66,8 +66,8 @@ importers:
         specifier: ^17.3.1
         version: 17.4.2
       effect:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.5
+        version: 4.0.5
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -451,23 +451,23 @@ packages:
     engines: { node: ">=16.17.1" }
     hasBin: true
 
-  "@effect/platform-node-shared@4.0.0":
+  "@effect/platform-node-shared@4.0.5":
     resolution:
       {
-        integrity: sha512-VBXHJU9UXVZPdQGGDRjGXpo+TpOzRwZuMrdKAtIxi1qwcRftmacZ1zTgIrzBa0Z2RA2KVkoOecQUsTlt/nJZhw==,
+        integrity: sha512-a8rCdEkfZBGe9C6bsIjxVZuRp73svIyK5IHwHdDAVsvZXjrbkxusfI+rZ8WlX31RP1mKizwI/E72GQTNfdMWHw==,
       }
     engines: { node: ">=18.0.0" }
     peerDependencies:
-      effect: ^4.0.0
+      effect: ^4.0.5
 
-  "@effect/platform-node@4.0.0":
+  "@effect/platform-node@4.0.5":
     resolution:
       {
-        integrity: sha512-/L+4MUbl8FejPKLHLROYSOebvHnfixkP8KiblSD/DE5uH5xENZBHaux4nH6XMnRP+lr8ajpEJFS8sUrmmxFJeQ==,
+        integrity: sha512-v4KD5fWvEUa4QmWFpZFbBsRhmfnTP6ETCME2r9ifyXVDPjhfpxpTZl41prjgQFMqZBHdWWCl7YC5ImbXv5ui5g==,
       }
     engines: { node: ">=18.0.0" }
     peerDependencies:
-      effect: ^4.0.0
+      effect: ^4.0.5
       redis: ">=5.0.0 <7.0.0"
 
   "@emnapi/core@1.4.5":
@@ -2235,6 +2235,12 @@ packages:
         integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==,
       }
 
+  "@types/ws@8.18.2":
+    resolution:
+      {
+        integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==,
+      }
+
   "@typescript-eslint/project-service@8.70.0":
     resolution:
       {
@@ -3572,10 +3578,10 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
-  effect@4.0.0:
+  effect@4.0.5:
     resolution:
       {
-        integrity: sha512-ooc1TG5t+FfzgYnFz2ff6BBKyZ7EwBRVXC7c4RhQUAD6/TZ2gTXXMeb4WX7a19ozQo4J73/QW+S00YAIresoMQ==,
+        integrity: sha512-BY4/28NlpOd99yzmV741xbVGmp+1U7tks4oB7F/Png64bTa5tm5eCA6W0RiXsnuLDDoJpjfVSo4Dnq4BZb/89Q==,
       }
 
   ejs@5.0.1:
@@ -7660,19 +7666,19 @@ snapshots:
       micromatch: 4.0.8
       pkg-entry-points: 1.1.2
 
-  "@effect/platform-node-shared@4.0.0(effect@4.0.0)":
+  "@effect/platform-node-shared@4.0.5(effect@4.0.5)":
     dependencies:
-      "@types/ws": 8.18.1
-      effect: 4.0.0
+      "@types/ws": 8.18.2
+      effect: 4.0.5
       ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  "@effect/platform-node@4.0.0(effect@4.0.0)(redis@6.2.1)":
+  "@effect/platform-node@4.0.5(effect@4.0.5)(redis@6.2.1)":
     dependencies:
-      "@effect/platform-node-shared": 4.0.0(effect@4.0.0)
-      effect: 4.0.0
+      "@effect/platform-node-shared": 4.0.5(effect@4.0.5)
+      effect: 4.0.5
       redis: 6.2.1
       undici: 8.11.2
     transitivePeerDependencies:
@@ -8613,6 +8619,10 @@ snapshots:
     dependencies:
       "@types/node": 26.5.0
 
+  "@types/ws@8.18.2":
+    dependencies:
+      "@types/node": 26.5.0
+
   "@typescript-eslint/project-service@8.70.0(typescript@5.9.3)":
     dependencies:
       "@typescript-eslint/tsconfig-utils": 8.70.0(typescript@5.9.3)
@@ -9361,7 +9371,7 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  effect@4.0.0: {}
+  effect@4.0.5: {}
 
   ejs@5.0.1: {}
 
