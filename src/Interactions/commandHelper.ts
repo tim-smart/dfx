@@ -74,12 +74,12 @@ export class CommandHelper<A> {
   }
 
   subCommands<
-    NER extends SubCommandNames<A> extends never
+    NER extends (SubCommandNames<A> extends never
       ? never
       : Record<
           SubCommandNames<A>,
           Effect.Effect<Discord.CreateInteractionResponseRequest, any, any>
-        >,
+        >),
   >(
     commands: NER,
   ): Effect.Effect<
@@ -140,6 +140,13 @@ type SubCommands<A> = A extends {
 
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 
+type SubCommandsWithOptions<A> = Extract<
+  SubCommands<A>,
+  {
+    readonly options: ReadonlyArray<CommandOption>
+  }
+>
+
 // == Command options
 type CommandOptionType = Exclude<
   Discord.ApplicationCommandOptionType,
@@ -155,7 +162,7 @@ type CommandOptions<A> = OptionsWithLiteral<
 >
 
 type SubCommandOptions<A> = Extract<
-  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
+  Option<SubCommandsWithOptions<A>["options"][number]>,
   {
     readonly type: CommandOptionType
   }
@@ -192,8 +199,7 @@ type RequiredSubCommandOptions<A> = Extract<
 >
 
 type AllRequiredCommandOptions<A> =
-  | RequiredCommandOptions<A>
-  | RequiredSubCommandOptions<A>
+  RequiredCommandOptions<A> | RequiredSubCommandOptions<A>
 
 // == Resolveables
 type ResolvableType =
@@ -204,7 +210,7 @@ type ResolvableType =
 
 type Resolvables<A> = OptionsWithLiteral<A, { readonly type: ResolvableType }>
 type SubCommandResolvables<A> = Extract<
-  Option<Exclude<SubCommands<A>["options"], undefined>[number]>,
+  Option<SubCommandsWithOptions<A>["options"][number]>,
   {
     readonly type: ResolvableType
   }
