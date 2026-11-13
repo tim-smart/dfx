@@ -45,3 +45,38 @@ it("types nested options when another subcommand has no options", () => {
 
   expect(command).toBeDefined()
 })
+
+it("types conditionally included subcommand options", () => {
+  const enabled = Boolean(true)
+  const userOption = {
+    type: Discord.ApplicationCommandOptionType.USER,
+    name: "user",
+    description: "user description",
+  } as const
+  const command = Ix.global(
+    {
+      name: "command",
+      description: "command description",
+      options: [
+        {
+          type: Discord.ApplicationCommandOptionType.SUB_COMMAND,
+          name: "sub",
+          description: "sub description",
+          ...(enabled ? { options: [userOption] as const } : {}),
+        },
+      ],
+    },
+    ix =>
+      Effect.sync(() => {
+        expectTypeOf(ix.optionValueOptional("user")).toEqualTypeOf<
+          Option.Option<string>
+        >()
+        expectTypeOf(ix.resolve("user", id => id)).toEqualTypeOf<
+          Option.Option<string>
+        >()
+        return Ix.response({ type: 4, data: { content: "ok" } })
+      }),
+  )
+
+  expect(command).toBeDefined()
+})

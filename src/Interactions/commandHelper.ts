@@ -140,12 +140,11 @@ type SubCommands<A> = A extends {
 
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 
-type SubCommandsWithOptions<A> = Extract<
-  SubCommands<A>,
-  {
-    readonly options: ReadonlyArray<CommandOption>
-  }
->
+type OptionElements<A> = A extends {
+  readonly options?: ReadonlyArray<infer O>
+}
+  ? O
+  : never
 
 // == Command options
 type CommandOptionType = Exclude<
@@ -162,7 +161,7 @@ type CommandOptions<A> = OptionsWithLiteral<
 >
 
 type SubCommandOptions<A> = Extract<
-  Option<SubCommandsWithOptions<A>["options"][number]>,
+  Option<OptionElements<SubCommands<A>>>,
   {
     readonly type: CommandOptionType
   }
@@ -210,7 +209,7 @@ type ResolvableType =
 
 type Resolvables<A> = OptionsWithLiteral<A, { readonly type: ResolvableType }>
 type SubCommandResolvables<A> = Extract<
-  Option<SubCommandsWithOptions<A>["options"][number]>,
+  Option<OptionElements<SubCommands<A>>>,
   {
     readonly type: ResolvableType
   }
