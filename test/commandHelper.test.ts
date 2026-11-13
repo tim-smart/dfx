@@ -1,5 +1,5 @@
 import { Discord, Ix } from "dfx"
-import { Effect } from "effect"
+import { Effect, type Option } from "effect"
 import { expectTypeOf } from "vitest"
 
 it("types nested options when another subcommand has no options", () => {
@@ -14,7 +14,7 @@ it("types nested options when another subcommand has no options", () => {
           description: "sub-1 description",
           options: [
             {
-              type: Discord.ApplicationCommandOptionType.STRING,
+              type: Discord.ApplicationCommandOptionType.USER,
               name: "option-1",
               description: "option-1 value",
               required: true,
@@ -32,6 +32,9 @@ it("types nested options when another subcommand has no options", () => {
       ix.subCommands({
         "sub-1": Effect.sync(() => {
           expectTypeOf(ix.optionValue("option-1")).toEqualTypeOf<string>()
+          expectTypeOf(ix.resolve("option-1", id => id)).toEqualTypeOf<
+            Option.Option<string>
+          >()
           return Ix.response({ type: 4, data: { content: "ok" } })
         }),
         "sub-2": Effect.succeed(
