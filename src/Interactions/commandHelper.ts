@@ -140,12 +140,6 @@ type SubCommands<A> = A extends {
 
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 
-type OptionElements<A> = A extends {
-  readonly options?: ReadonlyArray<CommandOption>
-}
-  ? Exclude<A["options"], undefined>[number]
-  : never
-
 // == Command options
 type CommandOptionType = Exclude<
   Discord.ApplicationCommandOptionType,
@@ -160,8 +154,8 @@ type CommandOptions<A> = OptionsWithLiteral<
   }
 >
 
-type SubCommandOptions<A> = Extract<
-  Option<OptionElements<SubCommands<A>>>,
+type SubCommandOptions<A> = OptionsWithLiteral<
+  SubCommands<A>,
   {
     readonly type: CommandOptionType
   }
@@ -208,8 +202,8 @@ type ResolvableType =
   | typeof Discord.ApplicationCommandOptionType.CHANNEL
 
 type Resolvables<A> = OptionsWithLiteral<A, { readonly type: ResolvableType }>
-type SubCommandResolvables<A> = Extract<
-  Option<OptionElements<SubCommands<A>>>,
+type SubCommandResolvables<A> = OptionsWithLiteral<
+  SubCommands<A>,
   {
     readonly type: ResolvableType
   }
@@ -230,7 +224,7 @@ type Option<A> = A extends { readonly name: infer N }
   : never
 
 type OptionsWithLiteral<A, T> = A extends {
-  readonly options: ReadonlyArray<CommandOption>
+  readonly options?: ReadonlyArray<CommandOption>
 }
-  ? Extract<A["options"][number], Option<A["options"][number]> & T>
+  ? Extract<Option<Exclude<A["options"], undefined>[number]>, T>
   : never
