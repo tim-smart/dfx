@@ -26,6 +26,18 @@ it("types nested options when another subcommand has no options", () => {
           name: "sub-2",
           description: "sub-2 description",
         },
+        {
+          type: Discord.ApplicationCommandOptionType.SUB_COMMAND,
+          name: "sub-3",
+          description: "sub-3 description",
+          options: [],
+        },
+        {
+          type: Discord.ApplicationCommandOptionType.SUB_COMMAND,
+          name: "sub-4",
+          description: "sub-4 description",
+          options: undefined,
+        },
       ],
     },
     ix =>
@@ -38,6 +50,12 @@ it("types nested options when another subcommand has no options", () => {
           return Ix.response({ type: 4, data: { content: "ok" } })
         }),
         "sub-2": Effect.succeed(
+          Ix.response({ type: 4, data: { content: "ok" } }),
+        ),
+        "sub-3": Effect.succeed(
+          Ix.response({ type: 4, data: { content: "ok" } }),
+        ),
+        "sub-4": Effect.succeed(
           Ix.response({ type: 4, data: { content: "ok" } }),
         ),
       }),

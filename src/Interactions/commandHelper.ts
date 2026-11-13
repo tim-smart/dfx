@@ -141,9 +141,9 @@ type SubCommands<A> = A extends {
 type SubCommandNames<A> = Option<SubCommands<A>>["name"]
 
 type OptionElements<A> = A extends {
-  readonly options?: ReadonlyArray<infer O>
+  readonly options?: ReadonlyArray<CommandOption>
 }
-  ? O
+  ? Exclude<A["options"], undefined>[number]
   : never
 
 // == Command options
