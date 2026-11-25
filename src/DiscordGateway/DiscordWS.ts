@@ -5,6 +5,7 @@ import type * as Discord from "../types.ts"
 import * as Schedule from "effect/Schedule"
 import * as Cause from "effect/Cause"
 import * as Context from "effect/Context"
+import * as Deferred from "effect/Deferred"
 import * as Queue from "effect/Queue"
 import * as Socket from "effect/socket/Socket"
 import type * as Scope from "effect/Scope"
@@ -53,16 +54,22 @@ const make = Effect.gen(function* () {
       url = "wss://gateway.discord.gg/",
       version = 10,
     }: OpenOpts) {
-      const urlRef = yield* Ref.make(
-        `${url}?v=${version}&encoding=${encoding.type}`,
-      )
+      const baseUrl = `${url}?v=${version}&encoding=${encoding.type}`
+      const urlRef = yield* Ref.make(baseUrl)
       const setUrl = (nextUrl: string) =>
         Ref.set(urlRef, `${nextUrl}?v=${version}&encoding=${encoding.type}`)
+      const resetUrl = Ref.set(urlRef, baseUrl)
       const messages = yield* Queue.make<Message>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
         openTimeout: 5000,
       })
       const writer = yield* socket.writer
+      let active:
+        | {
+            readonly disconnect: Deferred.Deferred<void>
+            open: boolean
+          }
+        | undefined
       const logWriteError = (cause: Cause.Cause<Socket.SocketError>) =>
         Effect.annotateLogs(Effect.logDebug(cause), {
           module: "DiscordGateway/DiscordWS",
@@ -70,10 +77,21 @@ const make = Effect.gen(function* () {
         })
       const write = (message: MessageSend): Effect.Effect<void> => {
         if (message === Reconnect) {
-          return Effect.catchCause(
-            writer.write(new Socket.CloseEvent(3000, "reconnecting")),
-            logWriteError,
-          )
+          return Effect.suspend(() => {
+            const current = active
+            if (current === undefined) return Effect.void
+            active = undefined
+            const close = current.open
+              ? Effect.catchCause(
+                  writer.write(new Socket.CloseEvent(3000, "reconnecting")),
+                  logWriteError,
+                )
+              : Effect.void
+            return Effect.ensuring(
+              close,
+              Deferred.succeed(current.disconnect, void 0),
+            )
+          })
         }
         return Effect.catchCause(
           writer.write(encoding.encode(message)),
@@ -86,38 +104,55 @@ const make = Effect.gen(function* () {
       )
       const loggers = yield* CurrentLoggers
       yield* Effect.gen(function* () {
-        const fiber = yield* Effect.fiber
-        yield* onConnecting
-        const reader = yield* socket.reader
-        return yield* Effect.whileLoop({
-          while: () => true,
-          body: () => reader.pull,
-          step(chunk) {
-            const decoded = chunk.map(encoding.decode)
-            Queue.offerAllUnsafe(messages, decoded)
-            Queue.flushUnsafe(messages)
-            if (!traceEnabled) return
-            loggers.forEach(logger => {
-              for (let i = 0; i < decoded.length; i++) {
-                logger.log({
-                  message: decoded[i],
-                  cause: Cause.empty,
-                  fiber,
-                  logLevel: "Trace",
-                  date: new Date(),
-                })
-              }
-            })
-          },
+        const connection = {
+          disconnect: Deferred.makeUnsafe<void>(),
+          open: false,
+        }
+        active = connection
+        yield* Effect.addFinalizer(() =>
+          Effect.sync(() => {
+            if (active === connection) active = undefined
+          }),
+        )
+        const run = Effect.gen(function* () {
+          const fiber = yield* Effect.fiber
+          yield* onConnecting
+          const reader = yield* socket.reader
+          connection.open = true
+          yield* Effect.addFinalizer(() =>
+            Effect.sync(() => {
+              connection.open = false
+              if (active === connection) active = undefined
+            }),
+          )
+          return yield* Effect.whileLoop({
+            while: () => true,
+            body: () => reader.pull,
+            step(chunk) {
+              const decoded = chunk.map(encoding.decode)
+              Queue.offerAllUnsafe(messages, decoded)
+              Queue.flushUnsafe(messages)
+              if (!traceEnabled) return
+              loggers.forEach(logger => {
+                for (let i = 0; i < decoded.length; i++) {
+                  logger.log({
+                    message: decoded[i],
+                    cause: Cause.empty,
+                    fiber,
+                    logLevel: "Trace",
+                    date: new Date(),
+                  })
+                }
+              })
+            },
+          })
         })
+        yield* Effect.raceFirst(run, Deferred.await(connection.disconnect))
       }).pipe(
-        Effect.retry({
-          while: e =>
-            // oxlint-disable-next-line no-underscore-dangle
-            e.reason._tag === "SocketCloseError" && e.reason.code === 3000,
-        }),
-        Effect.catchCause(cause =>
-          Effect.logDebug("Got socket error, reconnecting", cause),
+        Effect.scoped,
+        Effect.catchCauseIf(
+          cause => !Cause.hasInterruptsOnly(cause),
+          cause => Effect.logDebug("Got socket error, reconnecting", cause),
         ),
         Effect.repeat(
           Schedule.min([Schedule.exponential(500), Schedule.spaced(10000)]),
@@ -129,6 +164,7 @@ const make = Effect.gen(function* () {
       return {
         take: Queue.take(messages),
         setUrl,
+        resetUrl,
         write,
       } as const
     },
@@ -151,6 +187,7 @@ export class DiscordWS extends Context.Service<
           never
         >
         readonly setUrl: (url: string) => Effect.Effect<void, never, never>
+        readonly resetUrl: Effect.Effect<void, never, never>
         readonly write: (message: MessageSend) => Effect.Effect<void>
       },
       never,

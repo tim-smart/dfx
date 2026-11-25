@@ -58,6 +58,8 @@ export interface Harness {
   /** hook, store and subscriber activity, in the order it happened */
   readonly events: Array<Event>
   readonly written: Array<MessageSend>
+  /** URL updates sent to the socket (`undefined` means reset to the base URL) */
+  readonly urls: Array<string | undefined>
   readonly receive: (
     ...frames: ReadonlyArray<Discord.GatewayReceivePayload>
   ) => Effect.Effect<void>
@@ -95,6 +97,7 @@ export const withShard = <A, E>(
 ): Promise<A> => {
   const events: Array<Event> = []
   const written: Array<MessageSend> = []
+  const urls: Array<string | undefined> = []
 
   return Effect.gen(function* () {
     const inbound = yield* Queue.unbounded<Discord.GatewayReceivePayload>()
@@ -110,7 +113,13 @@ export const withShard = <A, E>(
           yield* onConnecting
           return {
             take: Queue.take(inbound),
-            setUrl: () => Effect.void,
+            setUrl: url =>
+              Effect.sync(() => {
+                urls.push(url)
+              }),
+            resetUrl: Effect.sync(() => {
+              urls.push(undefined)
+            }),
             write: (message: MessageSend) =>
               Effect.sync(() => {
                 written.push(message)
@@ -210,6 +219,7 @@ export const withShard = <A, E>(
       return yield* body({
         events,
         written,
+        urls,
         receive: (...frames) =>
           Effect.sync(() => {
             Queue.offerAllUnsafe(inbound, frames)

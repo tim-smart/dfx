@@ -92,10 +92,19 @@ export const make = Effect.gen(function* () {
       )
 
       // a new socket drops any handshake still pending on the old one, after
-      // marking the old socket stale for anything waiting on that handshake
-      const onConnecting = Effect.andThen(
+      // marking the old socket stale for anything waiting on that handshake,
+      // and reconnects if HELLO doesn't arrive within 30s
+      const onConnecting: Effect.Effect<void> = Effect.andThen(
         setPhase(Phase.Connecting),
-        FiberHandle.clear(reconnectHandle),
+        Effect.asVoid(
+          FiberHandle.run(
+            reconnectHandle,
+            Effect.delay(
+              Effect.suspend(() => reconnect),
+              30_000,
+            ),
+          ),
+        ),
       )
 
       const socket = yield* dws.connect({ onConnecting })
@@ -220,6 +229,7 @@ export const make = Effect.gen(function* () {
               resumeState = noSession
               lastReceived = null
               yield* stateStore.clear
+              yield* socket.resetUrl
             }
             yield* reconnect
             return
