@@ -16,6 +16,11 @@ import { MinimumLogLevel } from "effect/References"
 export type Message = Discord.GatewayReceivePayload
 export type MessageSend = Discord.GatewaySendPayload | Reconnect
 
+export interface ReceivedMessage {
+  readonly attempt: number
+  readonly payload: Message
+}
+
 export const Reconnect = Symbol.for("dfx/DiscordGateway/WS/Reconnect")
 export type Reconnect = typeof Reconnect
 
@@ -23,7 +28,7 @@ export interface OpenOpts {
   url?: string
   version?: number
   encoding?: DiscordWSCodec
-  onConnecting: Effect.Effect<void>
+  onConnecting: (attempt: number) => Effect.Effect<void>
 }
 
 export interface DiscordWSCodecService {
@@ -59,11 +64,12 @@ const make = Effect.gen(function* () {
       const setUrl = (nextUrl: string) =>
         Ref.set(urlRef, `${nextUrl}?v=${version}&encoding=${encoding.type}`)
       const resetUrl = Ref.set(urlRef, baseUrl)
-      const messages = yield* Queue.make<Message>()
+      const messages = yield* Queue.make<ReceivedMessage>()
       const socket = yield* Socket.makeWebSocket(Ref.get(urlRef), {
         openTimeout: 5000,
       })
       const writer = yield* socket.writer
+      let currentAttempt = 0
       let active:
         | {
             readonly disconnect: Deferred.Deferred<void>
@@ -104,6 +110,7 @@ const make = Effect.gen(function* () {
       )
       const loggers = yield* CurrentLoggers
       yield* Effect.gen(function* () {
+        const attempt = ++currentAttempt
         const connection = {
           disconnect: Deferred.makeUnsafe<void>(),
           open: false,
@@ -115,7 +122,7 @@ const make = Effect.gen(function* () {
         )
         const run = Effect.gen(function* () {
           const fiber = yield* Effect.fiber
-          yield* onConnecting
+          yield* onConnecting(attempt)
           active = connection
           const reader = yield* socket.reader
           connection.open = true
@@ -130,7 +137,10 @@ const make = Effect.gen(function* () {
             body: () => reader.pull,
             step(chunk) {
               const decoded = chunk.map(encoding.decode)
-              Queue.offerAllUnsafe(messages, decoded)
+              Queue.offerAllUnsafe(
+                messages,
+                decoded.map(payload => ({ attempt, payload })),
+              )
               Queue.flushUnsafe(messages)
               if (!traceEnabled) return
               loggers.forEach(logger => {
@@ -161,8 +171,15 @@ const make = Effect.gen(function* () {
         Effect.forkScoped,
       )
 
+      const take: Effect.Effect<ReceivedMessage> = Effect.gen(function* () {
+        while (true) {
+          const message = yield* Queue.take(messages)
+          if (message.attempt === currentAttempt) return message
+        }
+      })
+
       return {
-        take: Queue.take(messages),
+        take,
         setUrl,
         resetUrl,
         write,
@@ -181,11 +198,7 @@ export class DiscordWS extends Context.Service<
   {
     readonly connect: (args_0: OpenOpts) => Effect.Effect<
       {
-        readonly take: Effect.Effect<
-          Discord.GatewayReceivePayload,
-          never,
-          never
-        >
+        readonly take: Effect.Effect<ReceivedMessage, never, never>
         readonly setUrl: (url: string) => Effect.Effect<void, never, never>
         readonly resetUrl: Effect.Effect<void, never, never>
         readonly write: (message: MessageSend) => Effect.Effect<void>

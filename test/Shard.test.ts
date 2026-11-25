@@ -21,6 +21,13 @@ const invalidSession = (resumable: boolean) =>
     t: null,
   }) as Discord.GatewayReceivePayload
 
+const reconnectFrame = {
+  op: Discord.GatewayOpcodes.Reconnect,
+  d: null,
+  s: null,
+  t: null,
+} as Discord.GatewayReceivePayload
+
 describe("Shard", () => {
   it("without a dispatch hook, stores each sequence before publishing it", () =>
     withShard(h =>
@@ -105,4 +112,57 @@ describe("Shard", () => {
       )
     },
   )
+
+  it("discards queued frames from an old connection without starting a handshake or closing its replacement", () => {
+    const started = Deferred.makeUnsafe<void>()
+    const release = Deferred.makeUnsafe<void>()
+    return withShard(
+      h =>
+        Effect.gen(function* () {
+          yield* h.receive(hello(41_250), ready(1))
+          yield* within(Deferred.await(started))
+          const handshakesBefore = h.written.filter(
+            m =>
+              typeof m !== "symbol" &&
+              (m.op === Discord.GatewayOpcodes.Identify ||
+                m.op === Discord.GatewayOpcodes.Resume),
+          ).length
+
+          // Open A and queue its HELLO and RECONNECT while the previous READY hook is blocked,
+          // then replace A with B before releasing the hook.
+          yield* h.reopen
+          yield* h.receive(hello(41_250), reconnectFrame)
+          yield* h.reopen
+
+          yield* Deferred.succeed(release, void 0)
+          yield* within(h.published(1))
+          yield* settle
+
+          expect(
+            h.written.filter(
+              m =>
+                typeof m !== "symbol" &&
+                (m.op === Discord.GatewayOpcodes.Identify ||
+                  m.op === Discord.GatewayOpcodes.Resume),
+            ),
+          ).toHaveLength(handshakesBefore)
+          expect(h.written.filter(m => m === Reconnect)).toEqual([])
+
+          yield* TestClock.adjust("29999 millis")
+          yield* settle
+          expect(h.written.filter(m => m === Reconnect)).toEqual([])
+
+          yield* TestClock.adjust("1 millis")
+          yield* within(h.dropped)
+          expect(h.written.filter(m => m === Reconnect)).toEqual([Reconnect])
+        }),
+      p =>
+        p.t === "READY"
+          ? Effect.gen(function* () {
+              yield* Deferred.succeed(started, void 0)
+              yield* Deferred.await(release)
+            })
+          : Effect.void,
+    )
+  })
 })

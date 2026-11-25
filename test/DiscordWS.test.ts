@@ -36,11 +36,17 @@ class BlackholedWebSocket extends EventTarget implements Socket.WebSocketLike {
     this.closeCode = code
   }
 
+  receive(payload: unknown) {
+    this.dispatchEvent(
+      new MessageEvent("message", { data: JSON.stringify(payload) }),
+    )
+  }
+
   send(_data: string | Uint8Array<ArrayBuffer>) {}
 }
 
 describe("DiscordWS", () => {
-  it("opens a new socket after write(Reconnect) even when close() never fires a close event, and honors resetUrl", () => {
+  it("opens a new socket after write(Reconnect) even when close() never fires a close event, drops stale queued frames, and honors resetUrl", () => {
     const sockets: Array<BlackholedWebSocket> = []
     const opened = new Map<number, Deferred.Deferred<BlackholedWebSocket>>()
     const socketAt = (index: number) => {
@@ -66,11 +72,21 @@ describe("DiscordWS", () => {
 
     return Effect.gen(function* () {
       const dws = yield* DiscordWS
-      const conn = yield* dws.connect({ onConnecting: Effect.void })
+      const conn = yield* dws.connect({ onConnecting: () => Effect.void })
 
       const first = yield* within(Deferred.await(socketAt(0)))
       yield* settle
       expect(first.url).toBe("wss://gateway.discord.gg/?v=10&encoding=json")
+
+      // Queue frames on the first socket that are never dequeued before reconnect
+      first.receive({
+        op: 10,
+        d: { heartbeat_interval: 1000 },
+        s: null,
+        t: null,
+      })
+      first.receive({ op: 7, d: null, s: null, t: null })
+      yield* settle
 
       yield* conn.setUrl("wss://resume.example")
       yield* conn.write(Reconnect)
@@ -82,6 +98,13 @@ describe("DiscordWS", () => {
       const second = yield* within(Deferred.await(socketAt(1)))
       yield* settle
       expect(second.url).toBe("wss://resume.example?v=10&encoding=json")
+
+      second.receive({ op: 11, d: null, s: null, t: null })
+      const received = yield* within(conn.take)
+      expect(received).toEqual({
+        attempt: 2,
+        payload: { op: 11, d: null, s: null, t: null },
+      })
 
       yield* conn.resetUrl
       yield* conn.write(Reconnect)

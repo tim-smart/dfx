@@ -53,7 +53,7 @@ export const make = Effect.gen(function* () {
         "Trace",
       )
       const reconnectHandle = yield* FiberHandle.make()
-      let connectionId = 0
+      let currentAttempt = 0
       let phase = Phase.Connecting
       const stateStore = shardState.forShard(shard)
       const stored = Option.getOrUndefined(yield* stateStore.get)
@@ -87,12 +87,14 @@ export const make = Effect.gen(function* () {
           return p === Reconnect ? reconnect : write(p)
         })
 
-      const reconnectFor = (id: number) =>
-        Effect.suspend(() => (connectionId === id ? reconnect : Effect.void))
-
-      const resumeFor = (id: number) =>
+      const reconnectFor = (attempt: number) =>
         Effect.suspend(() =>
-          connectionId === id
+          currentAttempt === attempt ? reconnect : Effect.void,
+        )
+
+      const resumeFor = (attempt: number) =>
+        Effect.suspend(() =>
+          currentAttempt === attempt
             ? Effect.andThen(
                 FiberHandle.clear(reconnectHandle),
                 setPhase(Phase.Connected),
@@ -103,18 +105,19 @@ export const make = Effect.gen(function* () {
       // a new socket drops any handshake still pending on the old one, after
       // marking the old socket stale for anything waiting on that handshake,
       // and reconnects if HELLO doesn't arrive within 30s
-      const onConnecting: Effect.Effect<void> = Effect.suspend(() => {
-        const id = ++connectionId
-        return Effect.andThen(
-          setPhase(Phase.Connecting),
-          Effect.asVoid(
-            FiberHandle.run(
-              reconnectHandle,
-              Effect.delay(reconnectFor(id), 30_000),
+      const onConnecting = (attempt: number): Effect.Effect<void> =>
+        Effect.suspend(() => {
+          currentAttempt = attempt
+          return Effect.andThen(
+            setPhase(Phase.Connecting),
+            Effect.asVoid(
+              FiberHandle.run(
+                reconnectHandle,
+                Effect.delay(reconnectFor(attempt), 30_000),
+              ),
             ),
-          ),
-        )
-      })
+          )
+        })
 
       const socket = yield* dws.connect({ onConnecting })
       const write = (p: MessageSend) =>
@@ -176,17 +179,17 @@ export const make = Effect.gen(function* () {
 
       // waits out any failure backoff, then identifies or resumes and
       // reconnects if the handshake doesn't complete within 30s
-      const handshake = (sent: Deferred.Deferred<boolean>, id: number) =>
+      const handshake = (sent: Deferred.Deferred<boolean>, attempt: number) =>
         Effect.gen(function* () {
           const wait = retryAt - (yield* Clock.currentTimeMillis)
           if (wait > 0) yield* Effect.sleep(wait)
-          if (connectionId !== id) return
+          if (currentAttempt !== attempt) return
           yield* write(yield* identify)
           yield* Deferred.succeed(sent, true)
-          yield* Effect.delay(reconnectFor(id), 30_000)
+          yield* Effect.delay(reconnectFor(attempt), 30_000)
         }).pipe(
           Effect.ensuring(Deferred.succeed(sent, false)),
-          Effect.catchCause(recover("Failed to send the handshake", id)),
+          Effect.catchCause(recover("Failed to send the handshake", attempt)),
         )
 
       // uninterruptible, so a shutdown after the hook completes still stores
@@ -204,7 +207,10 @@ export const make = Effect.gen(function* () {
           }),
         )
 
-      function* onPayload(p: Discord.GatewayReceivePayload, id: number) {
+      function* onPayload(p: Discord.GatewayReceivePayload, attempt: number) {
+        if (attempt !== currentAttempt) {
+          return
+        }
         // until HELLO, anything still queued is from the previous socket
         if (
           phase === Phase.Connecting &&
@@ -216,7 +222,8 @@ export const make = Effect.gen(function* () {
         // it is sent, and drop them if it failed or the socket was replaced
         if (p.op === Discord.GatewayOpcodes.Dispatch) {
           const sent = yield* Deferred.await(handshakeSent)
-          if (!sent || connectionId !== id || phase === Phase.Connecting) return
+          if (!sent || currentAttempt !== attempt || phase === Phase.Connecting)
+            return
         }
         if (typeof p.s === "number") {
           lastReceived = p.s
@@ -229,7 +236,7 @@ export const make = Effect.gen(function* () {
             handshakeSent = Deferred.makeUnsafe<boolean>()
             yield* FiberHandle.run(
               reconnectHandle,
-              handshake(handshakeSent, id),
+              handshake(handshakeSent, attempt),
             )
             return
           }
@@ -244,7 +251,7 @@ export const make = Effect.gen(function* () {
               yield* stateStore.clear
               yield* socket.resetUrl
             }
-            yield* reconnectFor(id)
+            yield* reconnectFor(attempt)
             return
           }
           case Discord.GatewayOpcodes.Dispatch: {
@@ -264,13 +271,13 @@ export const make = Effect.gen(function* () {
               yield* socket.setUrl(p.d.resume_gateway_url)
             }
             if (p.t === "READY" || p.t === "RESUMED") {
-              yield* resumeFor(id)
+              yield* resumeFor(attempt)
             }
             PubSub.publishUnsafe(hub, p)
             return
           }
           case Discord.GatewayOpcodes.Reconnect: {
-            yield* reconnectFor(id)
+            yield* reconnectFor(attempt)
             return
           }
         }
@@ -286,10 +293,10 @@ export const make = Effect.gen(function* () {
       // sequence, instead of leaving heartbeats running with no reader
       yield* Effect.gen(function* () {
         while (true) {
-          const payload = yield* socket.take
-          const id = connectionId
-          yield* Effect.gen(() => onPayload(payload, id)).pipe(
-            Effect.catchCause(recover("Failed to handle payload", id)),
+          const { attempt, payload } = yield* socket.take
+          if (attempt !== currentAttempt) continue
+          yield* Effect.gen(() => onPayload(payload, attempt)).pipe(
+            Effect.catchCause(recover("Failed to handle payload", attempt)),
           )
         }
       }).pipe(Effect.forkScoped)
