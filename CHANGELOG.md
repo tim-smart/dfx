@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/tim-smart/dfx/compare/dfx@1.1.1...dfx@1.1.2) (2026-11-25)
+
+### Bug Fixes
+
+- recover gateway connections when close handshake or HELLO stalls ([#20](https://github.com/tim-smart/dfx/issues/20)) ([acf47f7](https://github.com/tim-smart/dfx/commit/acf47f77a839b7b9ed9fdf80f005b17d8632cd15))
+- type nested options when another subcommand has no options ([#19](https://github.com/tim-smart/dfx/issues/19)) ([4625778](https://github.com/tim-smart/dfx/commit/4625778e6ffc67085b0cef6cbba84205ce5b7955))
+
 ## [1.1.1](https://github.com/tim-smart/dfx/compare/dfx@1.1.0...dfx@1.1.1) (2026-10-19)
 
 **Note:** Version bump only for package dfx
