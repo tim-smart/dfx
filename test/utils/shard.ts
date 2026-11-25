@@ -1,5 +1,5 @@
 import * as DiscordConfig from "dfx/DiscordConfig"
-import type { MessageSend } from "dfx/DiscordGateway/DiscordWS"
+import type { MessageSend, ReceivedMessage } from "dfx/DiscordGateway/DiscordWS"
 import { DiscordWS, Reconnect } from "dfx/DiscordGateway/DiscordWS"
 import { Messaging, MesssagingLive } from "dfx/DiscordGateway/Messaging"
 import { make as makeShard, Shard } from "dfx/DiscordGateway/Shard"
@@ -58,6 +58,8 @@ export interface Harness {
   /** hook, store and subscriber activity, in the order it happened */
   readonly events: Array<Event>
   readonly written: Array<MessageSend>
+  /** URL updates sent to the socket (`undefined` means reset to the base URL) */
+  readonly urls: Array<string | undefined>
   readonly receive: (
     ...frames: ReadonlyArray<Discord.GatewayReceivePayload>
   ) => Effect.Effect<void>
@@ -95,9 +97,11 @@ export const withShard = <A, E>(
 ): Promise<A> => {
   const events: Array<Event> = []
   const written: Array<MessageSend> = []
+  const urls: Array<string | undefined> = []
 
   return Effect.gen(function* () {
-    const inbound = yield* Queue.unbounded<Discord.GatewayReceivePayload>()
+    let attempt = 0
+    const inbound = yield* Queue.unbounded<ReceivedMessage>()
     const dropped = yield* Deferred.make<void>()
     const heartbeat = yield* Deferred.make<Discord.GatewayHeartbeat>()
     let reopen: Effect.Effect<void> = Effect.void
@@ -106,11 +110,17 @@ export const withShard = <A, E>(
     const FakeWS = Layer.succeed(DiscordWS, {
       connect: ({ onConnecting }) =>
         Effect.gen(function* () {
-          reopen = onConnecting
-          yield* onConnecting
+          reopen = Effect.suspend(() => onConnecting(++attempt))
+          yield* reopen
           return {
             take: Queue.take(inbound),
-            setUrl: () => Effect.void,
+            setUrl: url =>
+              Effect.sync(() => {
+                urls.push(url)
+              }),
+            resetUrl: Effect.sync(() => {
+              urls.push(undefined)
+            }),
             write: (message: MessageSend) =>
               Effect.sync(() => {
                 written.push(message)
@@ -210,9 +220,13 @@ export const withShard = <A, E>(
       return yield* body({
         events,
         written,
+        urls,
         receive: (...frames) =>
           Effect.sync(() => {
-            Queue.offerAllUnsafe(inbound, frames)
+            Queue.offerAllUnsafe(
+              inbound,
+              frames.map(payload => ({ attempt, payload })),
+            )
           }),
         published: seq => Deferred.await(publishedDeferred(seq)),
         dropped: Deferred.await(dropped),
