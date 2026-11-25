@@ -108,7 +108,6 @@ const make = Effect.gen(function* () {
           disconnect: Deferred.makeUnsafe<void>(),
           open: false,
         }
-        active = connection
         yield* Effect.addFinalizer(() =>
           Effect.sync(() => {
             if (active === connection) active = undefined
@@ -117,6 +116,7 @@ const make = Effect.gen(function* () {
         const run = Effect.gen(function* () {
           const fiber = yield* Effect.fiber
           yield* onConnecting
+          active = connection
           const reader = yield* socket.reader
           connection.open = true
           yield* Effect.addFinalizer(() =>

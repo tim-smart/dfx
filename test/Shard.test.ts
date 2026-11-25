@@ -1,5 +1,6 @@
 import { Reconnect } from "dfx/DiscordGateway/DiscordWS"
 import * as Discord from "dfx/types"
+import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
 import * as TestClock from "effect/testing/TestClock"
 import {
@@ -60,4 +61,48 @@ describe("Shard", () => {
         expect(h.urls).toEqual(["wss://resume.example", undefined])
       }),
     ))
+
+  it.each([
+    ["fails", true],
+    ["succeeds", false],
+  ] as const)(
+    "a delayed READY hook that %s after replacement does not close or cancel the new connection's HELLO timer",
+    (_: string, shouldFail: boolean) => {
+      const started = Deferred.makeUnsafe<void>()
+      const release = Deferred.makeUnsafe<void>()
+      return withShard(
+        h =>
+          Effect.gen(function* () {
+            yield* h.receive(hello(41_250), ready(1))
+            yield* within(Deferred.await(started))
+
+            yield* h.reopen
+            yield* Deferred.succeed(release, void 0)
+            if (shouldFail) {
+              yield* settle
+            } else {
+              yield* within(h.published(1))
+            }
+
+            expect(h.written.filter(m => m === Reconnect)).toEqual([])
+
+            yield* TestClock.adjust("29999 millis")
+            yield* settle
+            expect(h.written.filter(m => m === Reconnect)).toEqual([])
+
+            yield* TestClock.adjust("1 millis")
+            yield* within(h.dropped)
+            expect(h.written.filter(m => m === Reconnect)).toEqual([Reconnect])
+          }),
+        p =>
+          p.t === "READY"
+            ? Effect.gen(function* () {
+                yield* Deferred.succeed(started, void 0)
+                yield* Deferred.await(release)
+                if (shouldFail) return yield* Effect.die("hook failed")
+              })
+            : Effect.void,
+      )
+    },
+  )
 })
